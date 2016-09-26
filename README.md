@@ -3,7 +3,7 @@
 *Rising from the ashes of  paper RCI's , coming to a college near you.*
 
 ### Clients:
-Director of Residence Life, Michael Curtis and Director of Housing, Martha Peralta,  
+Director of Residence Life, Michael Curtis and Director of Housing, Marta Peralta,  
 Gordon College
 
 ### Team (in alphabetical order):
