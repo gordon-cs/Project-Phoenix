@@ -9,7 +9,7 @@ Gordon College
 ### Team (in alphabetical order):
 Eze Anyanwu  
 Stephanie Powers  
-Weiqui (Rachel) You  
+Weiqiu (Rachel) You  
 
 ### Problem Statement:
 *The Problem:*
