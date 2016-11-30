@@ -6,7 +6,8 @@ namespace Phoenix.Models.PreExistingViews
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class ROOM_ASSIGN
+    [Table("RoomAssign")]
+    public partial class RoomAssign
     {
         [Key]
         [Column(Order = 0)]

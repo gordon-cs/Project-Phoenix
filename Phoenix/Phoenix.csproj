@@ -134,14 +134,28 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\PreExistingViews\ACCOUNT.cs" />
-    <Compile Include="Models\PreExistingViews\CM_SESSION_MSTR.cs" />
-    <Compile Include="Models\PreExistingViews\CURRENT_RAS.cs" />
-    <Compile Include="Models\PreExistingViews\CURRENT_RDS.cs" />
+    <Compile Include="Migrations\201611300614577_InitialCreate.cs" />
+    <Compile Include="Migrations\201611300614577_InitialCreate.Designer.cs">
+      <DependentUpon>201611300614577_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201611301633504_CreateTables.cs" />
+    <Compile Include="Migrations\201611301633504_CreateTables.Designer.cs">
+      <DependentUpon>201611301633504_CreateTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Damage.cs" />
+    <Compile Include="Models\PreExistingViews\Account.cs" />
+    <Compile Include="Models\PreExistingViews\CurrentRA.cs" />
+    <Compile Include="Models\PreExistingViews\CurrentRD.cs" />
+    <Compile Include="Models\RCIComponent.cs" />
     <Compile Include="Models\RCIContext.cs" />
-    <Compile Include="Models\PreExistingViews\ROOM_ASSIGN.cs" />
-    <Compile Include="Models\PreExistingViews\ROOM_MASTER.cs" />
+    <Compile Include="Models\PreExistingViews\RoomAssign.cs" />
+    <Compile Include="Models\PreExistingViews\RoomChangeHistory.cs" />
+    <Compile Include="Models\PreExistingViews\Session.cs" />
     <Compile Include="Models\ResidentAccount.cs" />
+    <Compile Include="Models\ResidentAdvisorAccount.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\RoomRCI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +204,14 @@
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201611300614577_InitialCreate.resx">
+      <DependentUpon>201611300614577_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611301633504_CreateTables.resx">
+      <DependentUpon>201611301633504_CreateTables.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

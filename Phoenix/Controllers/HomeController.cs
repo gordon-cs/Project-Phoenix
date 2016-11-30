@@ -12,8 +12,8 @@ namespace Phoenix.Controllers
     {
         public ActionResult Index()
         {
-            RCIContext _context = new RCIContext();
-            var accounts = _context.ACCOUNT.ToList();
+            var _context = new RCIContext();
+            var accounts = _context.Account.ToList();
 
             return View();
         }

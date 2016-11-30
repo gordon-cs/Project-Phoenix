@@ -5,20 +5,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-using Phoenix.Models.PreExistingViews;
 
 namespace Phoenix.Models
 {
-    /// <summary>
-    /// 
-    ///
-    /// </summary>
-    [Table("ResidentAccount")]
-    public class ResidentAccount
+    [Table("ResidentAdvisorAccount")]
+    public class ResidentAdvisorAccount
     {
-        [Key]
+        [Key, ForeignKey("ResidentAccount")]
         public string ResidentAccountID { get; set; }
 
-        public string Year { get; set; }
+        public virtual ResidentAccount ResidentAccount { get; set; }
+        
     }
 }

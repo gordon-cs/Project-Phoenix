@@ -6,7 +6,8 @@ namespace Phoenix.Models.PreExistingViews
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class CM_SESSION_MSTR
+    [Table("Session")]
+    public partial class Session
     {
         [Key]
         [StringLength(8)]

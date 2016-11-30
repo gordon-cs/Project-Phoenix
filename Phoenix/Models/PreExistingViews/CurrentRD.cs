@@ -6,7 +6,8 @@ namespace Phoenix.Models.PreExistingViews
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class CURRENT_RDS
+    [Table("CurrentRD")]
+    public partial class CurrentRD
     {
         [Key]
         [StringLength(10)]

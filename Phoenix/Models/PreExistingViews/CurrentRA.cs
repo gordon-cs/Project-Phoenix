@@ -6,7 +6,8 @@ namespace Phoenix.Models.PreExistingViews
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class CURRENT_RAS
+    [Table("CurrentRA")]
+    public partial class CurrentRA
     {
         [Key]
         [Column(Order = 0)]

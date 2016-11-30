@@ -6,6 +6,8 @@ namespace Phoenix.Models
     using System.Linq;
 
     using Phoenix.Models.PreExistingViews;
+    using Phoenix.Migrations;
+
 
     public partial class RCIContext : DbContext
     {
@@ -14,22 +16,23 @@ namespace Phoenix.Models
         {
         }
 
-        /*  Pre-Existing Views. No Tables should be created for theses */
-        public virtual DbSet<ACCOUNT> ACCOUNT { get; set; }
-        public virtual DbSet<CM_SESSION_MSTR> CM_SESSION_MSTR { get; set; }
-        public virtual DbSet<CURRENT_RAS> CURRENT_RAS { get; set; }
-        public virtual DbSet<CURRENT_RDS> CURRENT_RDS { get; set; }
-        public virtual DbSet<ROOM_ASSIGN> ROOM_ASSIGN { get; set; }
-        public virtual DbSet<ROOM_MASTER> ROOM_MASTER { get; set; }
+        /* Pre-existing Views */
+        public virtual DbSet<Account> Account { get; set; }
+        public virtual DbSet<CurrentRA> CurrentRA { get; set; }
+        public virtual DbSet<CurrentRD> CurrentRD { get; set; }
+        public virtual DbSet<RoomAssign> RoomAssign { get; set; }
+        public virtual DbSet<RoomChangeHistory> RoomChangeHistory { get; set; }
+        public virtual DbSet<Session> Session { get; set; }
 
 
-        /* Tables we created */
-        public DbSet <>
-
+        /* Tables we create */
+        public virtual DbSet<ResidentAccount> ResidentAccount { get; set; }
+        public virtual DbSet<ResidentAdvisorAccount> ResidentAdvisorAccount { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-     
+            Database.SetInitializer<RCIContext>(new MigrateDatabaseToLatestVersion<RCIContext, Configuration>());
+            base.OnModelCreating(modelBuilder);        
         }
     }
 }

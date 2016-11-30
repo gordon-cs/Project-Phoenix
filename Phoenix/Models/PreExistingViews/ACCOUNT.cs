@@ -6,8 +6,8 @@ namespace Phoenix.Models.PreExistingViews
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("ACCOUNT")]
-    public partial class ACCOUNT
+    [Table("Account")]
+    public partial class Account
     {
         [Key]
         [Column(Order = 0)]
@@ -29,9 +29,5 @@ namespace Phoenix.Models.PreExistingViews
         [StringLength(20)]
         public string account_type { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Private { get; set; }
     }
 }
