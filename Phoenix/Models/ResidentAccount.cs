@@ -10,12 +10,11 @@ using Phoenix.Models.PreExistingViews;
 namespace Phoenix.Models
 {
     /// <summary>
-    /// 
-    ///
+    /// A record representing a residen
     /// </summary>
-    [Table("ResidentAccount")]
     public class ResidentAccount
     {
+        // Primary key
         [Key]
         public string ResidentAccountID { get; set; }
 

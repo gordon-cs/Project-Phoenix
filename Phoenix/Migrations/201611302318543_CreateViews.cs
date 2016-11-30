@@ -3,14 +3,11 @@ namespace Phoenix.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    /* Migration (A Database schema change list)
-     * Create SQL VIEWS by executing their corresponding SQL commands.
-     *
-     */
-    public partial class InitialCreate : DbMigration
+    public partial class CreateViews : DbMigration
     {
         public override void Up()
         {
+
             // Create Account View
             Sql("EXEC ('CREATE VIEW [dbo].[Account] AS SELECT ISNULL(ID_NUM, - 1) AS ID_NUM, firstname, lastname, email, AD_Username, account_type, CASE WHEN ID_NUM = ''999999097'' THEN 1 ELSE Private END AS Private FROM webSQL.dbo.view_rci')");
 
@@ -28,9 +25,9 @@ namespace Phoenix.Migrations
 
             // Create RoomChangeHistory View
             Sql("EXEC ('CREATE VIEW [dbo].[RoomChangeHistory] AS SELECT SESS_CDE, ID_NUM, ROOM_CHANGE_DTE, OLD_BLDG_LOC_CDE, OLD_BLDG_CDE, OLD_ROOM_CDE, NEW_BLDG_LOC_CDE, NEW_BLDG_CDE, NEW_ROOM_CDE, ROOM_CHANGE_REASON, ROOM_CHANGE_COMMENT, USER_NAME, JOB_NAME, JOB_TIME FROM TmsEPrd.dbo.GORD_RCI_ROOM_CHANGE_HIST')");
-            
+
         }
-        
+
         public override void Down()
         {
             // Drop Account View

@@ -6,8 +6,12 @@ using System.Web;
 
 namespace Phoenix.Models
 {
+    /// <summary>
+    /// Represents a room
+    /// </summary>
     public class Room
     {
+        // Primary Key
         [Key]
         public string RoomID { get; set; }
 

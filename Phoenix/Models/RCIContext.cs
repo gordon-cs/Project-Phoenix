@@ -6,8 +6,8 @@ namespace Phoenix.Models
     using System.Linq;
 
     using Phoenix.Models.PreExistingViews;
-    using Phoenix.Migrations;
-
+    //using Phoenix.Migrations;
+    using System.Data.Entity.ModelConfiguration.Conventions;
 
     public partial class RCIContext : DbContext
     {
@@ -28,10 +28,16 @@ namespace Phoenix.Models
         /* Tables we create */
         public virtual DbSet<ResidentAccount> ResidentAccount { get; set; }
         public virtual DbSet<ResidentAdvisorAccount> ResidentAdvisorAccount { get; set; }
+        public virtual DbSet<ResidentRCI> ResidentRCI { get; set; }
+        public virtual DbSet<RoomRCI> RoomRCI { get; set; }
+        public virtual DbSet<RCIComponent> RCIComponent { get; set; }
+        public virtual DbSet<Damage> Damage { get; set; }
+        public virtual DbSet<Room> Room { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            Database.SetInitializer<RCIContext>(new MigrateDatabaseToLatestVersion<RCIContext, Configuration>());
+            //Database.SetInitializer<RCIContext>(new MigrateDatabaseToLatestVersion<RCIContext, Configuration>());
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             base.OnModelCreating(modelBuilder);        
         }
     }

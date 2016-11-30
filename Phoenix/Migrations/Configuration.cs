@@ -10,7 +10,6 @@ namespace Phoenix.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "Phoenix.Models.RCIContext";
         }
 
         protected override void Seed(Phoenix.Models.RCIContext context)
