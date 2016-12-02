@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Phoenix.Models;
+using Phoenix.Models.PreExistingViews;
 
 namespace Phoenix.Controllers
 {
@@ -10,6 +12,11 @@ namespace Phoenix.Controllers
     {
         public ActionResult Index()
         {
+            var _context = new RCIContext();
+            var room = new Room { RoomID = "1", Capacity = 2 };
+            _context.Room.Add(room);
+            _context.SaveChanges();
+
             return View();
         }
 
