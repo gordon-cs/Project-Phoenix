@@ -26,8 +26,6 @@ namespace Phoenix.Models
 
 
         /* Tables we create */
-        public virtual DbSet<ResidentAccount> ResidentAccount { get; set; }
-        public virtual DbSet<ResidentAdvisorAccount> ResidentAdvisorAccount { get; set; }
         public virtual DbSet<ResidentRCI> ResidentRCI { get; set; }
         public virtual DbSet<RoomRCI> RoomRCI { get; set; }
         public virtual DbSet<RCIComponent> RCIComponent { get; set; }

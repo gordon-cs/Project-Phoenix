@@ -142,6 +142,10 @@
     <Compile Include="Migrations\201612040157181_Create_Views.Designer.cs">
       <DependentUpon>201612040157181_Create_Views.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612040645045_Dummy.cs" />
+    <Compile Include="Migrations\201612040645045_Dummy.Designer.cs">
+      <DependentUpon>201612040645045_Dummy.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Damage.cs" />
     <Compile Include="Models\PreExistingViews\Account.cs" />
@@ -177,6 +181,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\rci-input.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
@@ -213,6 +218,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612040157181_Create_Views.resx">
       <DependentUpon>201612040157181_Create_Views.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612040645045_Dummy.resx">
+      <DependentUpon>201612040645045_Dummy.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
