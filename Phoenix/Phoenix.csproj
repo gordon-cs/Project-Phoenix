@@ -134,13 +134,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201612040144560_Create_Views.cs" />
-    <Compile Include="Migrations\201612040144560_Create_Views.Designer.cs">
-      <DependentUpon>201612040144560_Create_Views.cs</DependentUpon>
+    <Compile Include="Migrations\201612040156151_Create_Tables.cs" />
+    <Compile Include="Migrations\201612040156151_Create_Tables.Designer.cs">
+      <DependentUpon>201612040156151_Create_Tables.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201612040147026_Create_Tables.cs" />
-    <Compile Include="Migrations\201612040147026_Create_Tables.Designer.cs">
-      <DependentUpon>201612040147026_Create_Tables.cs</DependentUpon>
+    <Compile Include="Migrations\201612040157181_Create_Views.cs" />
+    <Compile Include="Migrations\201612040157181_Create_Views.Designer.cs">
+      <DependentUpon>201612040157181_Create_Views.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Damage.cs" />
@@ -207,11 +207,11 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201612040144560_Create_Views.resx">
-      <DependentUpon>201612040144560_Create_Views.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201612040156151_Create_Tables.resx">
+      <DependentUpon>201612040156151_Create_Tables.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612040147026_Create_Tables.resx">
-      <DependentUpon>201612040147026_Create_Tables.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201612040157181_Create_Views.resx">
+      <DependentUpon>201612040157181_Create_Views.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -23,6 +23,10 @@ namespace Phoenix.Models
 
         public string SessionCode { get; set; }
 
+        /* Foreign key relationship to the related RoomRCI */
+        public int RoomRCIID { get; set; }
+        public virtual RoomRCI RoomRCI { get; set; }
+
         /* Foreign Key relationship to the resident's account */
         public string ResidentAccountID { get; set; }
 
