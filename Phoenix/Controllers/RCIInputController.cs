@@ -55,12 +55,12 @@ namespace Phoenix.Controllers
 
         // POST: RCIInput/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(FormCollection collection)
         {
             try
             {
                 // TODO: Add update logic here
-
+                var test = collection;
                 return RedirectToAction("Index");
             }
             catch
