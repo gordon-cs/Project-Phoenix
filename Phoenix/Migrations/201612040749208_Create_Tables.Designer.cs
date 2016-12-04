@@ -13,7 +13,7 @@ namespace Phoenix.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201612040156151_Create_Tables"; }
+            get { return "201612040749208_Create_Tables"; }
         }
         
         string IMigrationMetadata.Source
