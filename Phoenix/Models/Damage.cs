@@ -14,7 +14,7 @@ namespace Phoenix.Models
     {
         // Primary Key
         [Key]
-        public string DamageID { get; set; }
+        public int DamageID { get; set; }
 
         public string DamageDescription { get; set; }
 
@@ -22,7 +22,7 @@ namespace Phoenix.Models
 
         /* Foreign Key Relationship with RCIComponent */
         [ForeignKey("RCIComponent")]
-        public string RCIComponentID { get; set; }
+        public int RCIComponentID { get; set; }
         public virtual RCIComponent RCIComponent { get; set; } // Navigational Property
       
     }

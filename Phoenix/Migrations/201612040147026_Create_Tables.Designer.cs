@@ -7,13 +7,13 @@ namespace Phoenix.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class CreateViews : IMigrationMetadata
+    public sealed partial class Create_Tables : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(CreateViews));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Create_Tables));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611302318543_CreateViews"; }
+            get { return "201612040147026_Create_Tables"; }
         }
         
         string IMigrationMetadata.Source

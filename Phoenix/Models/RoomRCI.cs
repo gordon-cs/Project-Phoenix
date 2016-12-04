@@ -20,7 +20,7 @@ namespace Phoenix.Models
         }
 
         [Key]
-        public string RoomRCIID { get; set; }
+        public int RoomRCIID { get; set; }
 
         public string SessionCode { get; set; }
 

@@ -3,7 +3,7 @@ namespace Phoenix.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class CreateViews : DbMigration
+    public partial class Create_Views : DbMigration
     {
         public override void Up()
         {
