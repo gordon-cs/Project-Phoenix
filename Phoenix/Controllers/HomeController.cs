@@ -12,10 +12,6 @@ namespace Phoenix.Controllers
     {
         public ActionResult Index()
         {
-            var _context = new RCIContext();
-            var room = new Room { RoomID = "1", Capacity = 2 };
-            _context.Room.Add(room);
-            _context.SaveChanges();
 
             return View();
         }
