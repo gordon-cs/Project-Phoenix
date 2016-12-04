@@ -24,10 +24,7 @@ namespace Phoenix.Models
         public string SessionCode { get; set; }
 
         /* Foreign Key relationship to the resident's account */
-        [ForeignKey("ResidentAccount")]
         public string ResidentAccountID { get; set; }
-        public virtual ResidentAccount ResidentAccount { get; set; } // Navigational property
-
 
         public virtual ICollection<RCIComponent> RCIComponents { get; set; }
     }

@@ -19,18 +19,18 @@ namespace Phoenix.Models
         
         // Primary Key
         [Key]
-        public string RCIComponentID { get; set; }
+        public int RCIComponentID { get; set; }
 
         public string RCIComponentName { get; set; }
 
         /* Foreign Key To RoomRCI */
         [ForeignKey("RoomRCI")]
-        public string RoomRCIID { get; set; }
+        public int? RoomRCIID { get; set; }
         public virtual RoomRCI RoomRCI { get; set; }
 
         /* Foreign Key To ResidentRCI */
         [ForeignKey("ResidentRCI")]
-        public string ResidentRCIID { get; set; }
+        public int? ResidentRCIID { get; set; }
         public virtual ResidentRCI ResidentRCI { get; set; }
 
         public virtual ICollection<Damage> Damages { get; set; } // Collection of Damages
