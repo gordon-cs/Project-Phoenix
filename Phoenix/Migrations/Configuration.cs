@@ -5,7 +5,9 @@ namespace Phoenix.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
+
     using Phoenix.Models;
+
     internal sealed class Configuration : DbMigrationsConfiguration<Phoenix.Models.RCIContext>
     {
         public Configuration()
