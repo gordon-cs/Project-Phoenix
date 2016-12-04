@@ -19,7 +19,7 @@ namespace Phoenix.Models
 
         // Primary key
         [Key]
-        public string ResidentRCIID { get; set; }
+        public int ResidentRCIID { get; set; }
 
         public string SessionCode { get; set; }
 
