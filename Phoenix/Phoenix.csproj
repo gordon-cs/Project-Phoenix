@@ -157,6 +157,7 @@
     <Compile Include="Models\ResidentRCI.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\RoomRCI.cs" />
+    <Compile Include="Models\ViewModels\RCIForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

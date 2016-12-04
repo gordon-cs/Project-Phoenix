@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 
 using Phoenix.Models;
+using Phoenix.Models.ViewModels;
 
 namespace Phoenix.Controllers
 {
@@ -13,14 +14,14 @@ namespace Phoenix.Controllers
         // RCI context wrapper. It can be considered to be an object that represents the database.
         private RCIContext db;
 
-        private List<int> damagesToDelete;
+        // This list is static so it will persist across actions.
+        private static List<int> damagesToDelete = new List<int>();
+
         public RCIInputController()
         {
             db = new Models.RCIContext();
-            damagesToDelete = new List<int>();
         }
 
-        // GET: RCIInput
         public ActionResult Index()
         {
             var resRCI = db.ResidentRCI.FirstOrDefault();
@@ -28,64 +29,46 @@ namespace Phoenix.Controllers
             return View(resRCI);
         }
 
-        // GET: RCIInput/SaveRCI
-        public ActionResult SaveRCI(FormCollection collection)
+        /// <summary>
+        /// If an rci form was submitted, the method loops through it and creates Damage records for the damages the user entered.
+        /// If the user chose to delete some existing damages, the method loops through the damages the user wanted to delete and removes them from the dataabse.
+        /// </summary>
+        /// <param name="rci">The data sent to the method.</param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult SaveRCI(List<RCIForm> rci)
         {
-            //var damageList = new Lis
-            //// Save of newly added components
-            //foreach (var key in collection.Keys)
-            //{
-            //    var lol = collection[key];
-            //}
-            //// Delete all the damages that were enqueued for deletion.
-            //damagesToDelete.ForEach(p => db.Damage.Remove(db.Damage.Find(p)));
+            // Check if anything was submitted
+            if(rci != null)
+            {
+               // Save of newly added components
+                foreach (var damage in rci)
+                {
+                    var newDamage = new Damage { RCIComponentID = damage.name, DamageDescription = damage.value };
+                    db.Damage.Add(newDamage);  
+                }
+            }
 
+            // Check if any existing damages were enqueued for deletion
+            if (damagesToDelete.Any())
+            {
+                // Delete all the damages that were enqueued for deletion.
+                foreach(var damageID in damagesToDelete)
+                {
+                    var damage = db.Damage.Find(damageID);
+                    db.Damage.Remove(damage);
+                }
+            }
+
+            // Clear the queue
+            damagesToDelete.Clear();
+
+            // Save changes to database
+            db.SaveChanges();
+
+            /* Since SaveRCI is called with javascript, it returns its value (the Index View) to the javascript that called it and not directly to the browser. */
             return RedirectToAction("Index");
-        }
-
-        // GET: RCIInput/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: RCIInput/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: RCIInput/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: RCIInput/Edit/5
-        [HttpPost]
-        public ActionResult Edit(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-                var test = collection;
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        }     
 
         // GET: RCIInput/Delete/5
         [HttpPost]
@@ -98,21 +81,5 @@ namespace Phoenix.Controllers
             damagesToDelete.Add(id);
         }
 
-
-
-        // POST: RCIInput/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
