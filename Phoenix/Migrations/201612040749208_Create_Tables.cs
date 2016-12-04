@@ -7,8 +7,7 @@ namespace Phoenix.Migrations
     {
         public override void Up()
         {
-
-              
+           
             
             CreateTable(
                 "dbo.Damage",

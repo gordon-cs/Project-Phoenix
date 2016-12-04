@@ -1,12 +1,10 @@
 namespace Phoenix.Migrations
 {
+    using Models;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
-
-
-    using Phoenix.Models;
 
     internal sealed class Configuration : DbMigrationsConfiguration<Phoenix.Models.RCIContext>
     {

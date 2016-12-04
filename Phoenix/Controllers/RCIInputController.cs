@@ -31,14 +31,14 @@ namespace Phoenix.Controllers
         // GET: RCIInput/SaveRCI
         public ActionResult SaveRCI(FormCollection collection)
         {
-            var damageList = new Lis
-            // Save of newly added components
-            foreach (var key in collection.Keys)
-            {
-                var lol = collection[key];
-            }
-            // Delete all the damages that were enqueued for deletion.
-            damagesToDelete.ForEach(p => db.Damage.Remove(db.Damage.Find(p)));
+            //var damageList = new Lis
+            //// Save of newly added components
+            //foreach (var key in collection.Keys)
+            //{
+            //    var lol = collection[key];
+            //}
+            //// Delete all the damages that were enqueued for deletion.
+            //damagesToDelete.ForEach(p => db.Damage.Remove(db.Damage.Find(p)));
 
             return RedirectToAction("Index");
         }
@@ -88,6 +88,7 @@ namespace Phoenix.Controllers
         }
 
         // GET: RCIInput/Delete/5
+        [HttpPost]
         public void QueueDamageForDelete(int id)
         {
             if(!ModelState.IsValid)

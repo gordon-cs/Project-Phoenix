@@ -4,21 +4,24 @@
     ViewBag.Title = "Index";
 }
 
-<form method="post" action="/RCIInput/Edit">
+<form method="post" action="/RCIInput/SaveRCI">
     @foreach (var component in Model.RCIComponents)
     {
         <div>
             <h3>@component.RCIComponentName</h3>
             <h4>Added Damages</h4>
-            <div class="added-damages">
-                <ul id="existing-damages-@component.RCIComponentID">
-                    @foreach (var existingDamage in component.Damages)
-                    {
-                        <li>@existingDamage.DamageDescription<input type="hidden" name="@component.RCIComponentID" value="@existingDamage.DamageDescription"/></li>
+            <div id="existing-damages-@component.RCIComponentID">
+                @foreach (var existingDamage in component.Damages)
+                {
+                    <p>@existingDamage.DamageDescription | @Html.ActionLink("Delete", "QueueDamageForDelete", new { id = existingDamage.DamageID }, new { onclick = "deleteNewDamages(event,this);" } ) </p>
+                    <input type="hidden" value="@existingDamage.DamageDescription" />
 
-                    }
-                </ul>
+                }
             </div>
+            <div id="new-damages-@component.RCIComponentID">
+
+            </div>
+
             <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapse-@component.RCIComponentName" aria-expanded="false" aria-controls="collapse-@component.RCIComponentName">
                 +
             </a>
