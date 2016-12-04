@@ -1,0 +1,30 @@
+﻿@model Phoenix.Models.ResidentRCI
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@foreach (var component in Model.RCIComponents) {
+    <div>
+        <h3>@component.RCIComponentName</h3>
+        <h4>Added Damages</h4>
+        <div class="added-damages">
+            <ul>
+                @foreach (var existingDamage in component.Damages)
+                {
+                    <li>@existingDamage.DamageDescription</li>
+                }
+            </ul>
+        </div>
+        <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            +
+        </a>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Button with data-target
+        </button>
+        <div class="collapse" id="collapseExample">
+            <div class="well">
+            </div>
+        </div>
+    </div>
+}
