@@ -10,19 +10,37 @@ namespace Phoenix.Controllers
 {
     public class RCIInputController : Controller
     {
+        // RCI context wrapper. It can be considered to be an object that represents the database.
+        private RCIContext db;
+
+        private List<int> damagesToDelete;
+        public RCIInputController()
+        {
+            db = new Models.RCIContext();
+            damagesToDelete = new List<int>();
+        }
+
         // GET: RCIInput
         public ActionResult Index()
         {
-            var db = new RCIContext();
             var resRCI = db.ResidentRCI.FirstOrDefault();
 
             return View(resRCI);
         }
 
-        // GET: RCIInput/Details/5
-        public ActionResult Details(int id)
+        // GET: RCIInput/SaveRCI
+        public ActionResult SaveRCI(FormCollection collection)
         {
-            return View();
+            var damageList = new Lis
+            // Save of newly added components
+            foreach (var key in collection.Keys)
+            {
+                var lol = collection[key];
+            }
+            // Delete all the damages that were enqueued for deletion.
+            damagesToDelete.ForEach(p => db.Damage.Remove(db.Damage.Find(p)));
+
+            return RedirectToAction("Index");
         }
 
         // GET: RCIInput/Create
@@ -70,10 +88,16 @@ namespace Phoenix.Controllers
         }
 
         // GET: RCIInput/Delete/5
-        public ActionResult Delete(int id)
+        public void QueueDamageForDelete(int id)
         {
-            return View();
+            if(!ModelState.IsValid)
+            {
+                // indicate an error
+            }
+            damagesToDelete.Add(id);
         }
+
+
 
         // POST: RCIInput/Delete/5
         [HttpPost]
@@ -82,7 +106,6 @@ namespace Phoenix.Controllers
             try
             {
                 // TODO: Add delete logic here
-
                 return RedirectToAction("Index");
             }
             catch

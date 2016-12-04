@@ -78,20 +78,16 @@ namespace Phoenix.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.ResidentAdvisorAccount", "ResidentAccountID", "dbo.ResidentAccount");
             DropForeignKey("dbo.Damage", "RCIComponentID", "dbo.RCIComponent");
             DropForeignKey("dbo.RCIComponent", "RoomRCIID", "dbo.RoomRCI");
             DropForeignKey("dbo.RCIComponent", "ResidentRCIID", "dbo.ResidentRCI");
             DropForeignKey("dbo.RoomRCI", "RoomID", "dbo.Room");
             DropForeignKey("dbo.ResidentRCI", "RoomRCIID", "dbo.RoomRCI");
-            DropIndex("dbo.ResidentAdvisorAccount", new[] { "ResidentAccountID" });
             DropIndex("dbo.RoomRCI", new[] { "RoomID" });
             DropIndex("dbo.ResidentRCI", new[] { "RoomRCIID" });
             DropIndex("dbo.RCIComponent", new[] { "ResidentRCIID" });
             DropIndex("dbo.RCIComponent", new[] { "RoomRCIID" });
             DropIndex("dbo.Damage", new[] { "RCIComponentID" });
-            DropTable("dbo.ResidentAdvisorAccount");
-            DropTable("dbo.ResidentAccount");
             DropTable("dbo.Room");
             DropTable("dbo.RoomRCI");
             DropTable("dbo.ResidentRCI");
