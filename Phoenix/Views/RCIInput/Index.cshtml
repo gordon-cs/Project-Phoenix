@@ -4,21 +4,24 @@
     ViewBag.Title = "Index";
 }
 
-<form method="post" action="/RCIInput/SaveRCI">
+<form>
     @foreach (var component in Model.RCIComponents)
     {
+        var componentID = component.RCIComponentID;
         <div>
             <h3>@component.RCIComponentName</h3>
             <h4>Added Damages</h4>
-            <div id="existing-damages-@component.RCIComponentID">
+            <div id="existing-damages-@componentID">
                 @foreach (var existingDamage in component.Damages)
                 {
-                    <p>@existingDamage.DamageDescription | @Html.ActionLink("Delete", "QueueDamageForDelete", new { id = existingDamage.DamageID }, new { onclick = "deleteNewDamages(event,this);" } ) </p>
-                    <input type="hidden" value="@existingDamage.DamageDescription" />
-
+                    <div>
+                        <p>@existingDamage.DamageDescription | <a onclick="deleteExistingDamages(event,this,@existingDamage.DamageID);">Delete</a></p>
+                        <input type="hidden" value="@existingDamage.DamageDescription" />
+                    </div>
+                    
                 }
             </div>
-            <div id="new-damages-@component.RCIComponentID">
+            <div id="new-damages-@componentID">
 
             </div>
 
@@ -27,9 +30,8 @@
             </a>
             <div class="collapse" id="collapse-@component.RCIComponentName">
                 <div class="well">
-                    @{ var damageHtmlID = component.RCIComponentID; }
-                    <input type="text" class="form-control adding-damages" id="@damageHtmlID" placeholder="Add a damage description">
-                    <a class="btn btn-default" id="ok-@damageHtmlID" onclick="addDamage(@damageHtmlID);" data-toggle="collapse" href="#collapse-@component.RCIComponentName" aria-expanded="false" aria-controls="collapse-@component.RCIComponentName">OK</a>
+                    <input type="text" class="form-control adding-damages" id="text-input-@componentID" placeholder="Add a damage description">
+                    <a class="btn btn-default" id="submit-text-input-@componentID" onclick="addDamage(@componentID);" data-toggle="collapse" href="#collapse-@component.RCIComponentName" aria-expanded="false" aria-controls="collapse-@component.RCIComponentName">OK</a>
                 </div>
             </div>
         </div>
