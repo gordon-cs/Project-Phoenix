@@ -22,3 +22,14 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Site-wide color schemes*/
+.well {
+    background-color: #ebeaea;
+}
+.sub-well {
+    /* This is to customize bootstrap's well*/
+    background-color: #cccccb;
+}
+
+#014983

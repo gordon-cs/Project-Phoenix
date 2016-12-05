@@ -1,42 +1,50 @@
 ﻿@model Phoenix.Models.ResidentRCI
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Damage Input";
 }
 
+<h2>@ViewBag.Title</h2>
 <form>
     @foreach (var component in Model.RCIComponents)
     {
         var componentID = component.RCIComponentID;
-        <div>
+        <div class="well">
             <h3>@component.RCIComponentName</h3>
-            <h4>Added Damages</h4>
-            <div id="existing-damages-@componentID">
-                @foreach (var existingDamage in component.Damages)
+            <div class="panel panel-default">
+                <div class="panel-heading"><h4>Damages</h4></div>
+                    <div class="panel-body">
+                    <div id="existing-damages-@componentID">
+                        @foreach (var existingDamage in component.Damages)
                 {
-                    <div>
-                        <p>@existingDamage.DamageDescription | <a onclick="deleteExistingDamages(event,this,@existingDamage.DamageID);">Delete</a></p>
-                        <input type="hidden" value="@existingDamage.DamageDescription" />
-                    </div>
-                    
-                }
-            </div>
-            <div id="new-damages-@componentID">
+                            <div>
+                                <p>@existingDamage.DamageDescription | <a onclick="deleteExistingDamages(event,this,@existingDamage.DamageID);">Delete</a></p>
+                                <input type="hidden" value="@existingDamage.DamageDescription" />
+                            </div>
 
+                        }
+                    </div>
+                    <div id="new-damages-@componentID">
+
+                    </div>
+                </div>
             </div>
 
             <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapse-@component.RCIComponentName" aria-expanded="false" aria-controls="collapse-@component.RCIComponentName">
                 +
             </a>
             <div class="collapse" id="collapse-@component.RCIComponentName">
-                <div class="well">
+                <div class="sub-well well">
                     <input type="text" class="form-control adding-damages" id="text-input-@componentID" placeholder="Add a damage description">
                     <a class="btn btn-default" id="submit-text-input-@componentID" onclick="addDamage(@componentID);" data-toggle="collapse" href="#collapse-@component.RCIComponentName" aria-expanded="false" aria-controls="collapse-@component.RCIComponentName">OK</a>
                 </div>
             </div>
         </div>
-                        }
-    <input type="submit" value="Save" />
+                      }
+    <div>
+        <input type="submit" value="Save" />
+        <button>Cancel</button>
+    </div>
 </form>
 
 @Scripts.Render("~/bundles/rci-input")

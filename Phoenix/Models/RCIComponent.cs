@@ -8,7 +8,7 @@ using System.Web;
 namespace Phoenix.Models
 {
     /// <summary>
-    /// Represents a piece of the room whose state can be documented e.g. Table, chaire, wall, carpet... A component can have multiple damages listed
+    /// Represents a piece of the room whose state can be documented e.g. Table, chair, wall, carpet... A component can have multiple damages listed
     /// </summary>
     public class RCIComponent
     {
