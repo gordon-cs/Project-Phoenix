@@ -3,12 +3,17 @@
     padding-bottom: 20px;
 }
 
+body.rci-body {
+    font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif !important;
+    letter-spacing:.1em;
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
 }
-.body-content h2 {
+.body-content h3 {
    color: #808080; 
 }
 
@@ -45,6 +50,9 @@ textarea {
     background-color: #014983;
 }
 .navbar-inverse .navbar-brand {
+    color:#fff;
+}
+.navbar-inverse .navbar-brand:hover {
     color: #ebeaea;
 }
 .btn-primary {
