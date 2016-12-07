@@ -3,10 +3,18 @@
     padding-bottom: 20px;
 }
 
+body.rci-body {
+    font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif !important;
+    letter-spacing:.1em;
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+}
+.body-content h3 {
+   color: #808080; 
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -21,4 +29,33 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+/* Site-wide color schemes*/
+
+/*Customized Bootstrap component colors*/
+.well {
+    background-color: #ebeaea;
+}
+.well h3 {
+    color:#00aeef;
+    font-weight:bold;
+    margin-top: .25em;
+}
+.sub-well {
+    /* This is to customize bootstrap's well*/
+    background-color: #cccccb;
+}
+.navbar-inverse {
+    background-color: #014983;
+}
+.navbar-inverse .navbar-brand {
+    color:#fff;
+}
+.navbar-inverse .navbar-brand:hover {
+    color: #ebeaea;
+}
+.btn-primary {
+    background-color:#00aeef;
+    border:none;
 }
