@@ -26,6 +26,11 @@ namespace Phoenix.Migrations
             // Create RoomChangeHistory View
             Sql("EXEC ('CREATE VIEW [dbo].[RoomChangeHistory] AS SELECT SESS_CDE, ID_NUM, ROOM_CHANGE_DTE, OLD_BLDG_LOC_CDE, OLD_BLDG_CDE, OLD_ROOM_CDE, NEW_BLDG_LOC_CDE, NEW_BLDG_CDE, NEW_ROOM_CDE, ROOM_CHANGE_REASON, ROOM_CHANGE_COMMENT, USER_NAME, JOB_NAME, JOB_TIME FROM TmsEPrd.dbo.GORD_RCI_ROOM_CHANGE_HIST')");
 
+            // Create RoomMaster
+            Sql("EXEC ('CREATE VIEW [dbo].[RoomMaster] AS SELECT * FROM TmsEPrd.dbo.GORD_RCI_ROOM_MASTER')");
+
+            // Create Room
+            Sql("EXEC('CREATE VIEW [dbo].[Room] AS select APPID, LOC_CDE, BLDG_CDE, ROOM_CDE, ROOM_DESC, ROOM_TYPE, MAX_CAPACITY,ROOM_GENDER, RM_WHICH_FLOOR from TmsEPrd.dbo.GORD_RCI_ROOM_MASTER where ROOM_TYPE in (''SI'', ''DO'', ''TR'', ''QU'', ''SU'', ''AP'', ''LV'')')");
         }
 
         public override void Down()
@@ -47,6 +52,12 @@ namespace Phoenix.Migrations
 
             // Drop RoomChangeHistory View
             Sql("EXEC ('DROP VIEW RoomChangeHistory')");
+
+            // Drop RoomMaster View
+            Sql("EXEC ('DROP VIEW RoomMaster')");
+
+            // Drop Room View
+            Sql("EXEC ('DROP VIEW Room')");
         }
     }
 }

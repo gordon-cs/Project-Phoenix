@@ -28,11 +28,6 @@ namespace Phoenix.Migrations
             //    );
             //
 
-            // Add Room
-            context.Room.AddOrUpdate(
-                p => p.RoomID,
-                new Room { RoomID = "WIL-217", Capacity = 1 }
-                );
             // Add RoomRCI
             context.RoomRCI.AddOrUpdate(
                 p => p.RoomRCIID,
@@ -75,7 +70,23 @@ namespace Phoenix.Migrations
                 );
             context.RCIComponent.AddOrUpdate(
                 p => p.RCIComponentID,
-                new RCIComponent { RCIComponentName = "Shelves above desk", RoomRCIID = roomRCIID, ResidentRCIID = residentRCIID }
+                new RCIComponent { RCIComponentName = "Shelves", RoomRCIID = roomRCIID, ResidentRCIID = residentRCIID }
+                );
+            context.RCIComponent.AddOrUpdate(
+                p => p.RCIComponentID,
+                new RCIComponent { RCIComponentName = "Window", RoomRCIID = roomRCIID, ResidentRCIID = residentRCIID }
+                );
+            context.RCIComponent.AddOrUpdate(
+                p => p.RCIComponentID,
+                new RCIComponent { RCIComponentName = "Door", RoomRCIID = roomRCIID, ResidentRCIID = residentRCIID }
+                );
+            context.RCIComponent.AddOrUpdate(
+                p => p.RCIComponentID,
+                new RCIComponent { RCIComponentName = "Ceiling", RoomRCIID = roomRCIID, ResidentRCIID = residentRCIID }
+                );
+            context.RCIComponent.AddOrUpdate(
+                p => p.RCIComponentID,
+                new RCIComponent { RCIComponentName = "Wardrobe", RoomRCIID = roomRCIID, ResidentRCIID = residentRCIID }
                 );
 
             context.SaveChanges();
@@ -87,7 +98,11 @@ namespace Phoenix.Migrations
                 new Damage { DamageDescription = "Small scratch near leg", RCIComponentID = 2 },
                 new Damage { DamageDescription = "Upholstery torn", RCIComponentID = 2 },
                 new Damage { DamageDescription = "Watermelon-sized stain near front", RCIComponentID = 4 },
-                new Damage { DamageDescription = "Tear near bed", RCIComponentID = 4 }
+                new Damage { DamageDescription = "Tear near bed", RCIComponentID = 4 },
+                new Damage { DamageDescription = "leads to narnia", RCIComponentID = 9 },
+                new Damage { DamageDescription = "creaky left door", RCIComponentID = 9 },
+                new Damage { DamageDescription = "mountain range-shaped wood chips", RCIComponentID = 9 },
+                new Damage { DamageDescription = "intricate mural of the history of twine painted on right wall", RCIComponentID = 3 }
                 );
             context.SaveChanges();
         }
