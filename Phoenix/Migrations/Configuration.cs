@@ -31,7 +31,7 @@ namespace Phoenix.Migrations
             // Add RoomRCI
             context.RoomRCI.AddOrUpdate(
                 p => p.RoomRCIID,
-                new RoomRCI { RoomID = "WIL-217", SessionCode = "Spring" }
+                new RoomRCI { RoomID = "2652", SessionCode = "Spring" }
                 );
             context.SaveChanges();
 
@@ -102,7 +102,9 @@ namespace Phoenix.Migrations
                 new Damage { DamageDescription = "leads to narnia", RCIComponentID = 9 },
                 new Damage { DamageDescription = "creaky left door", RCIComponentID = 9 },
                 new Damage { DamageDescription = "mountain range-shaped wood chips", RCIComponentID = 9 },
-                new Damage { DamageDescription = "intricate mural of the history of twine painted on right wall", RCIComponentID = 3 }
+                new Damage { DamageDescription = "intricate mural of the history of twine painted on right wall", RCIComponentID = 3 },
+                new Damage { DamageDescription = "A resident ran off with this when I came in", RCIComponentID = 5 },
+                new Damage { DamageDescription = "Silhouette of someone who was defenestrated", RCIComponentID = 6 }
                 );
             context.SaveChanges();
         }
