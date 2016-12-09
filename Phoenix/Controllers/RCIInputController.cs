@@ -39,25 +39,31 @@ namespace Phoenix.Controllers
         public ActionResult SaveRCI(List<RCIForm> rci)
         {
             // Check if anything was submitted
-            if(rci != null)
+            if (rci != null)
             {
-               // Save of newly added components
+                var toAdd = new List<Damage>();
+                // Save of newly added components
                 foreach (var damage in rci)
                 {
                     var newDamage = new Damage { RCIComponentID = damage.name, DamageDescription = damage.value };
-                    db.Damage.Add(newDamage);  
+                    toAdd.Add(newDamage);
+                    //db.Damage.Add(newDamage);  
                 }
+                db.Damage.AddRange(toAdd);
             }
 
             // Check if any existing damages were enqueued for deletion
             if (damagesToDelete.Any())
             {
+                var toDelete = new List<Damage>();
                 // Delete all the damages that were enqueued for deletion.
-                foreach(var damageID in damagesToDelete)
+                foreach (var damageID in damagesToDelete)
                 {
                     var damage = db.Damage.Find(damageID);
-                    db.Damage.Remove(damage);
+                    toDelete.Add(damage);
+                    //db.Damage.Remove(damage);
                 }
+                db.Damage.RemoveRange(toDelete);
             }
 
             // Clear the queue

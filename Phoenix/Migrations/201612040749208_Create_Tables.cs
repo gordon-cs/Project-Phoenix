@@ -44,7 +44,7 @@ namespace Phoenix.Migrations
                         ResidentRCIID = c.Int(nullable: false, identity: true),
                         SessionCode = c.String(),
                         RoomRCIID = c.Int(nullable: false),
-                        ResidentAccountID = c.String(),
+                        ResidentAccountID = c.String(nullable: false),
                     })
                 .PrimaryKey(t => t.ResidentRCIID)
                 .ForeignKey("dbo.RoomRCI", t => t.RoomRCIID, cascadeDelete: true)
@@ -59,20 +59,7 @@ namespace Phoenix.Migrations
                         RoomID = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.RoomRCIID)
-                .ForeignKey("dbo.Room", t => t.RoomID)
-                .Index(t => t.RoomID);
-            
-            CreateTable(
-                "dbo.Room",
-                c => new
-                    {
-                        RoomID = c.String(nullable: false, maxLength: 128),
-                        Capacity = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.RoomID);
-            
-            
-            
+                .Index(t => t.RoomID);         
         }
         
         public override void Down()
@@ -80,14 +67,12 @@ namespace Phoenix.Migrations
             DropForeignKey("dbo.Damage", "RCIComponentID", "dbo.RCIComponent");
             DropForeignKey("dbo.RCIComponent", "RoomRCIID", "dbo.RoomRCI");
             DropForeignKey("dbo.RCIComponent", "ResidentRCIID", "dbo.ResidentRCI");
-            DropForeignKey("dbo.RoomRCI", "RoomID", "dbo.Room");
             DropForeignKey("dbo.ResidentRCI", "RoomRCIID", "dbo.RoomRCI");
             DropIndex("dbo.RoomRCI", new[] { "RoomID" });
             DropIndex("dbo.ResidentRCI", new[] { "RoomRCIID" });
             DropIndex("dbo.RCIComponent", new[] { "ResidentRCIID" });
             DropIndex("dbo.RCIComponent", new[] { "RoomRCIID" });
             DropIndex("dbo.Damage", new[] { "RCIComponentID" });
-            DropTable("dbo.Room");
             DropTable("dbo.RoomRCI");
             DropTable("dbo.ResidentRCI");
             DropTable("dbo.RCIComponent");
