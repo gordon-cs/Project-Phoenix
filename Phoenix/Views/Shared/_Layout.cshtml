@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online RCI -@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
+
+    @RenderSection("Styles", required: false)
+
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body class="rci-body">
@@ -31,8 +34,6 @@
             <p>&copy; @DateTime.Now.Year Phoenix</p>
         </footer>
     </div>
-
-
     @RenderSection("scripts", required: false)
 </body>
 </html>
