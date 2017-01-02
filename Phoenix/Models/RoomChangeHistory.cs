@@ -1,4 +1,4 @@
-namespace Phoenix.Models.PreExistingViews
+namespace Phoenix.Models
 {
     using System;
     using System.Collections.Generic;

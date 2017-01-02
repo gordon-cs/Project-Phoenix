@@ -1,35 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
-
 namespace Phoenix.Models
 {
-    /// <summary>
-    /// The RCI For a resident. It is made up of a collection of RCIComponents
-    /// </summary>
-    public class ResidentRCI
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
+
+    [Table("ResidentRCI")]
+    public partial class ResidentRCI
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ResidentRCI()
         {
-            RCIComponents = new List<RCIComponent>();
+            RCIComponent = new HashSet<RCIComponent>();
         }
 
-        // Primary key
-        [Key]
         public int ResidentRCIID { get; set; }
 
         public string SessionCode { get; set; }
 
-        /* Foreign key relationship to the related RoomRCI */
-        public int RoomRCIID { get; set; }
-        public virtual RoomRCI RoomRCI { get; set; }
+        public int? RoomRCIID { get; set; }
 
-        /* Foreign Key relationship to the resident's account */
+        [Required]
         public string ResidentAccountID { get; set; }
 
-        public virtual ICollection<RCIComponent> RCIComponents { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<RCIComponent> RCIComponent { get; set; }
+
+        public virtual RoomRCI RoomRCI { get; set; }
     }
 }

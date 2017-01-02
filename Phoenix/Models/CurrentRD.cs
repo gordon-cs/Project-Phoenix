@@ -1,4 +1,4 @@
-namespace Phoenix.Models.PreExistingViews
+namespace Phoenix.Models
 {
     using System;
     using System.Collections.Generic;
@@ -6,11 +6,10 @@ namespace Phoenix.Models.PreExistingViews
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Account")]
-    public partial class Account
+    [Table("CurrentRD")]
+    public partial class CurrentRD
     {
         [Key]
-        [Column(Order = 0)]
         [StringLength(10)]
         public string ID_NUM { get; set; }
 
@@ -23,11 +22,10 @@ namespace Phoenix.Models.PreExistingViews
         [StringLength(50)]
         public string email { get; set; }
 
-        [StringLength(50)]
-        public string AD_Username { get; set; }
+        [StringLength(512)]
+        public string Job_Title { get; set; }
 
-        [StringLength(20)]
-        public string account_type { get; set; }
-
+        [StringLength(512)]
+        public string Job_Title_Hall { get; set; }
     }
 }
