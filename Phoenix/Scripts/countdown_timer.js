@@ -1,5 +1,5 @@
 ﻿// End time
-var deadline = "2017-04-01";
+var deadline = "2017-03-20";
 
 // Call update clock function when user first loads page
 updateClock("clock-div", deadline);
