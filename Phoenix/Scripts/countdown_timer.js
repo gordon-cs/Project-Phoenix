@@ -40,23 +40,38 @@ a certain date.
 function getTimeRemaining(endDate) {
     // DateToCome - Now = Time in between in milliseconds
     var t = Date.parse(endDate) - Date.parse(new Date());
+    var result = {};
+    
+    // If the endDate is in the future
+    if (t > -1) {
 
-    // We always divide by milliseconds, because
-    // t is in milliseconds, and we don't need that level
-    // of accuracy.
-    var seconds = Math.floor((t / 1000) % 60);
-    var minutes = Math.floor((t / 1000 / 60) % 60);
-    var hours = Math.floor((t / 1000 / 60 / 60) % 24);
-    var days = Math.floor((t / 1000 / 60 / 60 / 24));
+        // We always divide by milliseconds, because
+        // t is in milliseconds, and we don't need that level
+        // of accuracy.
+        var seconds = Math.floor((t / 1000) % 60);
+        var minutes = Math.floor((t / 1000 / 60) % 60);
+        var hours = Math.floor((t / 1000 / 60 / 60) % 24);
+        var days = Math.floor((t / 1000 / 60 / 60 / 24));
 
-    var result = {
-        "total": t,
-        "seconds": seconds,
-        "minutes": minutes,
-        "hours": hours,
-        "days": days
-    };
-
+        result = {
+            "total": t,
+            "seconds": seconds,
+            "minutes": minutes,
+            "hours": hours,
+            "days": days
+        };
+    }
+    // If the end date is in the past we are not interested. Function should not return anything useful.
+    else {
+        result = {
+            "total": 0,
+            "seconds": 0,
+            "minutes": 0,
+            "hours": 0,
+            "days": 0
+        }
+    }
+    
     // return the result object
     return result;
 
