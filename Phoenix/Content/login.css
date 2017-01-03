@@ -1,0 +1,29 @@
+﻿/* CSS File for the "login" page */
+
+h2 {
+    text-align: center;
+    margin-top: 70px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    margin: auto;
+}
+
+table {
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td {
+    padding: 10px;
+}
+
+button {
+    margin: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
