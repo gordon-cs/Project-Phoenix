@@ -3,7 +3,9 @@
     ViewBag.Title = "Login";
 }
 
-@Styles.Render("~/Content/login.css")
+@section Styles {
+    @Styles.Render("~/Content/login.css")
+}
 
 <h2>@ViewBag.Title</h2>
 <form>
