@@ -130,46 +130,43 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RCIInputController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201612040749208_Create_Tables.cs" />
-    <Compile Include="Migrations\201612040749208_Create_Tables.Designer.cs">
-      <DependentUpon>201612040749208_Create_Tables.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612040750523_Create_Views.cs" />
-    <Compile Include="Migrations\201612040750523_Create_Views.Designer.cs">
-      <DependentUpon>201612040750523_Create_Views.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\CurrentRA.cs" />
+    <Compile Include="Models\CurrentRD.cs" />
     <Compile Include="Models\Damage.cs" />
-    <Compile Include="Models\PreExistingViews\Account.cs" />
-    <Compile Include="Models\PreExistingViews\CurrentRA.cs" />
-    <Compile Include="Models\PreExistingViews\CurrentRD.cs" />
     <Compile Include="Models\RCIComponent.cs" />
     <Compile Include="Models\RCIContext.cs" />
-    <Compile Include="Models\PreExistingViews\RoomAssign.cs" />
-    <Compile Include="Models\PreExistingViews\RoomChangeHistory.cs" />
-    <Compile Include="Models\PreExistingViews\Session.cs" />
-    <Compile Include="Models\ResidentAccount.cs" />
-    <Compile Include="Models\ResidentAdvisorAccount.cs" />
     <Compile Include="Models\ResidentRCI.cs" />
     <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\RoomAssign.cs" />
+    <Compile Include="Models\RoomChangeHistory.cs" />
+    <Compile Include="Models\RoomMaster.cs" />
     <Compile Include="Models\RoomRCI.cs" />
+    <Compile Include="Models\Session.cs" />
     <Compile Include="Models\ViewModels\RCIForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\phoenix.png" />
+    <Content Include="Content\login.css" />
+    <Content Include="Content\under_construction.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\RCIPublish.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -193,10 +190,11 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Placeholder\Index.cshtml" />
     <Content Include="Views\RCIInput\Index.cshtml" />
+    <Content Include="Views\Login\Index.cshtml">
+      <BrowseToURL>~/Login</BrowseToURL>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -210,12 +208,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201612040749208_Create_Tables.resx">
-      <DependentUpon>201612040749208_Create_Tables.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612040750523_Create_Views.resx">
-      <DependentUpon>201612040750523_Create_Views.cs</DependentUpon>
-    </EmbeddedResource>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

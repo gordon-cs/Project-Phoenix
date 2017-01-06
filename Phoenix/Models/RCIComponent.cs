@@ -1,39 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
-
 namespace Phoenix.Models
 {
-    /// <summary>
-    /// Represents a piece of the room whose state can be documented e.g. Table, chaire, wall, carpet... A component can have multiple damages listed
-    /// </summary>
-    public class RCIComponent
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Entity.Spatial;
+
+    [Table("RCIComponent")]
+    public partial class RCIComponent
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public RCIComponent()
         {
-            Damages = new List<Damage>();
+            Damage = new HashSet<Damage>();
         }
-        
-        // Primary Key
-        [Key]
+
         public int RCIComponentID { get; set; }
 
         public string RCIComponentName { get; set; }
 
-        /* Foreign Key To RoomRCI */
-        [ForeignKey("RoomRCI")]
         public int? RoomRCIID { get; set; }
-        public virtual RoomRCI RoomRCI { get; set; }
 
-        /* Foreign Key To ResidentRCI */
-        [ForeignKey("ResidentRCI")]
         public int? ResidentRCIID { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Damage> Damage { get; set; }
+
         public virtual ResidentRCI ResidentRCI { get; set; }
 
-        public virtual ICollection<Damage> Damages { get; set; } // Collection of Damages
-
+        public virtual RoomRCI RoomRCI { get; set; }
     }
 }
