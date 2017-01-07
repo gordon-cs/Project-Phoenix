@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Phoenix.Models.ResidentRCI>
+
+@{
+    ViewBag.Title = "MyRCIs";
+}
+
+@section Styles {
+    @Styles.Render("~/Content/my_rci.css")
+}
+
+<div class="rci-all container">
+    <h2>MyRCIs</h2>
+    @foreach (var rci in Model.ToList())
+    {
+        <div class="rci-tab row">
+            <div class="col-md-3 col-sm-6 col-xs-12">@rci.RoomRCIID</div>
+            <div class="col-md-3 col-sm-6 col-xs-12">...</div>
+            <div class="col-md-3 col-sm-6 col-xs-12">Due: 09/16/2016</div>
+            <div class="col-md-3 col-sm-6 col-xs-12">Saved</div>
+        </div>
+    }
+    
+</div>
+

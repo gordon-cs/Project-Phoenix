@@ -1,0 +1,15 @@
+﻿/* CSS File for the "My RCI" page */
+
+.rci-all {
+}
+
+.rci-tab {
+    margin: 2em;
+    padding: 1em;
+    background-color: #eaeaea;
+}
+
+h2 {
+    padding: 1em;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

@@ -130,6 +130,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RCIInputController.cs" />
@@ -157,6 +158,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\phoenix.png" />
     <Content Include="Content\login.css" />
+    <Content Include="Content\my_rci.css" />
     <Content Include="Content\under_construction.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -195,6 +197,7 @@
     <Content Include="Views\Login\Index.cshtml">
       <BrowseToURL>~/Login</BrowseToURL>
     </Content>
+    <Content Include="Views\Home\MyRCIs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
