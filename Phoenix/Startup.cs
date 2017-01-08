@@ -5,9 +5,10 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
-using System.Web.Http;
 using Microsoft.Owin;
 using Owin;
+using Microsoft.Owin.Security.OAuth;
+using Phoenix.Controllers.Authentication;
 
 [assembly: OwinStartup(typeof(Phoenix.Startup))]
 namespace Phoenix
@@ -26,6 +27,20 @@ namespace Phoenix
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            ConfigureOAuth(app);
+        }
+
+        public void ConfigureOAuth(IAppBuilder app)
+        {
+            OAuthAuthorizationServerOptions OAuthServerOptions = 
+                new OAuthAuthorizationServerOptions()
+                {
+                    AllowInsecureHttp = true,
+                    TokenEndpointPath = new PathString("/token"),
+                    AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
+                    Provider = new RCIAuthorizationServerProvider()
+                };
         }
     }
 }
