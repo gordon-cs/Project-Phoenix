@@ -10,6 +10,11 @@ using System.Diagnostics;
 
 namespace Phoenix.Controllers.Authentication
 {
+    /* Authentication mechanism
+     * Referenced Taiseer Joudeh's blog: http://bitoftech.net/2014/06/01/token-based-authentication-asp-net-web-api-2-owin-asp-net-identity/
+     * and Eze Anyanwu's work on Gordon360 https://github.com/gordon-cs/Project-Raymond/blob/master/Gordon360/AuthorizationServer/TokenIssuer.cs
+     */
+
     public class RCIAuthorizationServerProvider : OAuthAuthorizationServerProvider
     {
         // Global variables
