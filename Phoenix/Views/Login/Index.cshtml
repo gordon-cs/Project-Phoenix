@@ -1,4 +1,4 @@
-﻿
+﻿@model Phoenix.Models.ViewModels.LoginViewModel
 @{
     ViewBag.Title = "Login";
 }
@@ -8,8 +8,14 @@
 }
 
 <h2>@ViewBag.Title</h2>
-<form>
+@using (Html.BeginForm(actionName: "Authenticate",  controllerName: "Login"))
+{
+    @Html.TextBoxFor(m => m.username, new { placeholder = "Username" })
+    @Html.PasswordFor(m => m.password, new {placeholder="Password"})
+    <button type="submit" class="btn btn-lg btn-primary">Login</button>
+}
+@*<form>
  <input type="text" name="username" placeholder="Username" />
- <input type="text" name="password" placeholder="Password" />
+ <input type="password" name="password" placeholder="Password" />
  <button type="submit" class="btn btn-lg btn-primary">Login</button>
-</form>
+</form>*@
