@@ -6,9 +6,11 @@ using System.Web.Mvc;
 
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using Phoenix.Filters;
 
 namespace Phoenix.Controllers
 {
+    [CustomAuthentication]
     public class RCIInputController : Controller
     {
         // RCI context wrapper. It can be considered to be an object that represents the database.
@@ -74,7 +76,7 @@ namespace Phoenix.Controllers
 
             /* Since SaveRCI is called with javascript, it returns its value (the Index View) to the javascript that called it and not directly to the browser. */
             return RedirectToAction("Index");
-        }     
+        }
 
         // GET: RCIInput/Delete/5
         [HttpPost]

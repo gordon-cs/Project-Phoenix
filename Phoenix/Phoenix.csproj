@@ -183,7 +183,6 @@
     <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RCIInputController.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
-    <Compile Include="Filters\IAuthenticationFilter.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\CurrentRA.cs" />
     <Compile Include="Models\CurrentRD.cs" />
