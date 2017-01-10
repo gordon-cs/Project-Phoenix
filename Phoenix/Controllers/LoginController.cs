@@ -7,6 +7,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Security.Claims;
 using System.Diagnostics;
 using Phoenix.Models.ViewModels;
+using Jose;
 
 namespace Phoenix.Controllers
 {
@@ -72,6 +73,12 @@ namespace Phoenix.Controllers
                             identity.AddClaim(new Claim("name", userEntry.Name));
                             // I think we could add code here for authorization of admin, etc.
 
+                            // Generate token and attach to header
+                            var jwtToken = GenerateToken(username);
+                            HttpCookie tokenCookie = new HttpCookie("Authentication");
+                            tokenCookie.Value = jwtToken;
+                            Response.Cookies.Add(tokenCookie);
+
                             _ADContext.Dispose();
                             // Once dashboard is implemented, redirect there. For now, go to placeholder
                             return Redirect("/Placeholder");
@@ -93,7 +100,7 @@ namespace Phoenix.Controllers
             }
         }
 
-        //Helper methods; not sure if these should be moved to a service
+        // ******* Helper methods; not sure if these should be moved to a service **********
 
         /*
          * Connect to Gordon's LDAP server where Active Directory of users is stored
@@ -136,6 +143,29 @@ namespace Phoenix.Controllers
                 username,
                 password,
                 ContextOptions.SimpleBind | ContextOptions.SecureSocketLayer);
+        }
+
+        public string GenerateToken(string username)
+        {
+            var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
+
+            DateTime issued = DateTime.Now;
+            DateTime expire = DateTime.Now.AddHours(2);
+            var payload = new Dictionary<string, object>()
+            {
+                {"sub", username  },
+                {"iat", ToUnixTime(issued) },
+                {"exp", ToUnixTime(expire) }
+            };
+
+            string token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
+            return token;
+        }
+
+        // Geneerate unix timestamp
+        public long ToUnixTime(DateTime dateTime)
+        {
+            return (int)(dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
         }
     }
 }

@@ -10,6 +10,9 @@
 <h2>@ViewBag.Title</h2>
 @using (Html.BeginForm(actionName: "Authenticate",  controllerName: "Login"))
 {
+    <!-- Anti forgery token to prevent CSRF attacks, since authentication token is stored in a cookie-->
+    @Html.AntiForgeryToken()
+
     @Html.TextBoxFor(m => m.username, new { placeholder = "Username" })
     @Html.PasswordFor(m => m.password, new {placeholder="Password"})
     <button type="submit" class="btn btn-lg btn-primary">Login</button>
