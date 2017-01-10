@@ -71,6 +71,7 @@ namespace Phoenix.Controllers
                         {
                             var identity = new ClaimsIdentity();
                             identity.AddClaim(new Claim("name", userEntry.Name));
+                            
                             // I think we could add code here for authorization of admin, etc.
 
                             // Generate token and attach to header
@@ -147,6 +148,7 @@ namespace Phoenix.Controllers
 
         public string GenerateToken(string username)
         {
+            // ****** THIS NEEDS TO BE CHANGED I THINK. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
             DateTime issued = DateTime.Now;
@@ -154,6 +156,7 @@ namespace Phoenix.Controllers
             var payload = new Dictionary<string, object>()
             {
                 {"sub", username  },
+                {"iss", "rci.gordon.edu" },
                 {"iat", ToUnixTime(issued) },
                 {"exp", ToUnixTime(expire) }
             };
@@ -167,5 +170,7 @@ namespace Phoenix.Controllers
         {
             return (int)(dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
         }
+
+        // Set principal
     }
 }
