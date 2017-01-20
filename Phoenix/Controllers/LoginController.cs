@@ -149,7 +149,6 @@ namespace Phoenix.Controllers
         /*
          * Validate a user
          */
-         //Test
         public bool IsValidUser(string username, string password)
         {
             return _ADContext.ValidateCredentials(
