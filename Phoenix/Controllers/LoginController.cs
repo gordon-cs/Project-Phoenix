@@ -130,6 +130,10 @@ namespace Phoenix.Controllers
          */
         public UserPrincipal FindUser(string username)
         {
+            if (username.EndsWith("@gordon.edu"))
+            {
+                username = username.Remove(username.IndexOf('@'));
+            }
             // Create a UserPrincipal object, with the entered username, to be used as a filter with which to query the Active Directory 
             UserPrincipal userQueryFilter = new UserPrincipal(_ADContext);
             userQueryFilter.SamAccountName = username;
