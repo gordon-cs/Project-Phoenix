@@ -19,6 +19,10 @@ namespace Phoenix.Controllers
         // GET: Login
         public ActionResult Index()
         {
+            if (TempData["ErrorMsg"] != null)
+            {
+                ViewBag.LoginError = TempData["ErrorMsg"].ToString();
+            }
             return View();
         }
 
@@ -37,6 +41,7 @@ namespace Phoenix.Controllers
             if (!ModelState.IsValid)
             {
                 Debug.WriteLine("Invalid model state.");
+                // Not sure what kind of user response we should give here
                 return RedirectToAction("Index");
             }
             else
@@ -51,6 +56,8 @@ namespace Phoenix.Controllers
                     Debug.WriteLine("LDAP Connection Error","Error connecting to LDAP server");
                     //context.SetError("Connection_error",
                     //    "There was a problem connecting to the Active Directory LDAP server.");
+                    TempData["ErrorMsg"] = "This is awkward... We had a problem connecting to the server. We're so sorry,"+ 
+                        "but you may have to try again later or contact a system administrator.";
                     return RedirectToAction("Index");
                 }
                 if (_ADContext != null)
@@ -58,7 +65,7 @@ namespace Phoenix.Controllers
                     var userEntry = FindUser(username);
                     if (userEntry == null)
                     {
-                        //context.SetError("Unsuccessful_Login", "Username does not exist in database.");
+                        TempData["ErrorMsg"] = "Oh dear, it seems that username does not exist in the database.";
                         _ADContext.Dispose();
                         return RedirectToAction("Index");
                     }
@@ -69,8 +76,7 @@ namespace Phoenix.Controllers
                         ConnectToADServer();
                         if (IsValidUser(username, password))
                         {
-                            var identity = new ClaimsIdentity();
-                            identity.AddClaim(new Claim("name", userEntry.Name));
+                            TempData["Name"] = userEntry.Name;
                             
                             // I think we could add code here for authorization of admin, etc.
 
@@ -86,10 +92,11 @@ namespace Phoenix.Controllers
                         }
                         else
                         {
-                            Debug.WriteLine("The username or password is incorrect.");
+                            Debug.WriteLine("Oops, the username or password is incorrect.");
                             //context.SetError("Invalid_grant", "The username or password is incorrect.");
 
                             // If user is not valid, redirect to the Login Page
+                            TempData["ErrorMsg"] = "Oops, the username or password is incorrect.";
                             return RedirectToAction("Index");
                         }
                     }
