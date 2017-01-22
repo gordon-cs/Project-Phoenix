@@ -72,7 +72,6 @@ namespace Phoenix.Controllers
                             Response.Cookies.Add(tokenCookie);
 
                             _ADContext.Dispose();
-                            // Once dashboard is implemented, redirect there. For now, go to placeholder
                             return RedirectToAction("Index", "RCIInput");
                         }
                         else
