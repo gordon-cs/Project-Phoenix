@@ -73,7 +73,7 @@ namespace Phoenix.Controllers
 
                             _ADContext.Dispose();
                             // Once dashboard is implemented, redirect there. For now, go to placeholder
-                            return Redirect("/Placeholder");
+                            return RedirectToAction("Index", "RCIInput");
                         }
                         else
                         {
