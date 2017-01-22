@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
+using System.Diagnostics;
 
 namespace Phoenix.Controllers
 {
@@ -21,11 +22,17 @@ namespace Phoenix.Controllers
 
         public RCIInputController()
         {
+            Debug.WriteLine("Initialize RCIInput Controller");
             db = new Models.RCIContext();
         }
 
         public ActionResult Index()
         {
+            Debug.WriteLine("Reached Index Method for RCIInput Controller");
+
+            // This is how we access items set in the filter.
+            ViewBag.Name = HttpContext.Items["user"];
+
             var resRCI = db.ResidentRCI.FirstOrDefault();
 
             return View(resRCI);
