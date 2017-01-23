@@ -8,32 +8,28 @@ namespace Phoenix
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+            bundles.Add(new ScriptBundle("~/bundles/js/jquery").Include(
+                        "~/Scripts/third_party/jquery-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/jquery.validate*"));
+            bundles.Add(new ScriptBundle("~/bundles/js/jqueryval").Include(
+                        "~/Scripts/third_party/jquery.validate*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/rci-input").Include("~/Scripts/rci-input.js"));
+            bundles.Add(new ScriptBundle("~/bundles/js/bootstrap").Include(
+                      "~/Scripts/third_party/bootstrap.js",
+                      "~/Scripts/third_party/respond.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/countdown-timer").Include("~/Scripts/countdown_timer.js"));
+            bundles.Add(new ScriptBundle("~/bundles/js/rci").Include(
+                        "~/Scripts/rci-input.js",
+                        "~/Scripts/countdown_timer.js"));
 
-            // Use the development version of Modernizr to develop with and learn from. Then, when you're
-            // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
-            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
-                        "~/Scripts/modernizr-*"));
+            bundles.Add(new StyleBundle("~/bundles/css").Include(
+                      "~/css/third_party/bootstrap.css",
+                      "~/css/site.css",
+                      "~/css/under_construction.css",
+                      "~/css/login.css"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/respond.js"));
-
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
-
-            bundles.Add(new StyleBundle("~/Content/css/site_under_construction").Include(
-                    "~/Content/under_construction.css"
-                ));
+            //Uncomment the line below to start minifying and bundling.
+            //BundleTable.EnableOptimizations = true;
         }
     }
 }
