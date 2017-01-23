@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.DirectoryServices.AccountManagement;
-using System.Security.Claims;
-using System.Diagnostics;
 using Phoenix.Models.ViewModels;
 using Jose;
 
@@ -25,7 +22,7 @@ namespace Phoenix.Controllers
 
         // POST: Login
          [HttpPost]
-        public ActionResult Index(LoginViewModel loginViewModel)
+        public ActionResult Authenticate(LoginViewModel loginViewModel)
         {
 
             // Get the username and password from the view model
@@ -35,7 +32,7 @@ namespace Phoenix.Controllers
             if (!ModelState.IsValid)
             {
                 loginViewModel.errorMessage = "Invalid model state.";
-                return View(loginViewModel);
+                return RedirectToAction("Index", loginViewModel);
             }
             else
             {
@@ -46,7 +43,7 @@ namespace Phoenix.Controllers
                 catch (Exception e)
                 {
                     loginViewModel.errorMessage = "There was a problem connection to the server. We are sorry. Please try again later or contact a system administrator.";
-                    return View(loginViewModel);
+                    return RedirectToAction("Index", loginViewModel);
                 }
                 if (_ADContext != null)
                 {
@@ -54,8 +51,8 @@ namespace Phoenix.Controllers
                     if (userEntry == null)
                     {
                         _ADContext.Dispose();
-                        loginViewModel.errorMessage = "Invalid Username or password.";
-                        return View(loginViewModel);
+                        loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                        return RedirectToAction("Index", loginViewModel);
                     }
                     // If user does exist in Active Directory, try to validate him or her
                     else
@@ -76,15 +73,15 @@ namespace Phoenix.Controllers
                         }
                         else
                         {
-                            loginViewModel.errorMessage = "Invalid Username or password.";
-                            return View(loginViewModel);
+                            loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                            return RedirectToAction("Index", loginViewModel);
                         }
                     }
                 }
                 else
                 {
-                    loginViewModel.errorMessage = "Invalid Username or password.";
-                    return View(loginViewModel);
+                    loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                    return RedirectToAction("Index", loginViewModel);
                 }
             }
         }
