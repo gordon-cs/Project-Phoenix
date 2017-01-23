@@ -149,6 +149,7 @@
     <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RCIInputController.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
+    <Compile Include="Filters\AdminAuthorizationAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
