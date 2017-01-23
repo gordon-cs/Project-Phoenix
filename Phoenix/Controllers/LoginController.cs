@@ -138,6 +138,14 @@ namespace Phoenix.Controllers
 
         public string GenerateToken(string username)
         {
+            // Add some code here to check the db to see if user has admin permissions
+            // Right now just hardcode to true for test purposes
+            bool isAdmin = false;
+
+            // Add some code here to check the db to see if user is an RA or RD or just student.
+            // For now just hard code to RA for test purposes
+            var role = "RA";
+
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
@@ -148,7 +156,9 @@ namespace Phoenix.Controllers
                 {"sub", username  },
                 {"iss", "rci.gordon.edu" },
                 {"iat", ToUnixTime(issued) },
-                {"exp", ToUnixTime(expire) }
+                {"exp", ToUnixTime(expire) },
+                {"admin", isAdmin },
+                {"role", role }
             };
 
             string token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
