@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.DirectoryServices.AccountManagement;
-using System.Security.Claims;
-using System.Diagnostics;
 using Phoenix.Models.ViewModels;
 using Jose;
 
@@ -17,20 +14,14 @@ namespace Phoenix.Controllers
         PrincipalContext _ADContext;
 
         // GET: Login
+        [HttpGet]
         public ActionResult Index()
         {
-            if (TempData["ErrorMsg"] != null)
-            {
-                ViewBag.LoginError = TempData["ErrorMsg"].ToString();
-            }
             return View();
         }
 
-        /*
-         * Method for authenticating. If user is validated, redirect to the RCI Dashboard. 
-         * If user doesn't validate for any reason, redirect back to Login page
-         */ 
-         [HttpPost]
+        // POST: Login
+        [HttpPost]
         public ActionResult Authenticate(LoginViewModel loginViewModel)
         {
 
@@ -40,9 +31,8 @@ namespace Phoenix.Controllers
 
             if (!ModelState.IsValid)
             {
-                Debug.WriteLine("Invalid model state.");
-                // Not sure what kind of user response we should give here
-                return RedirectToAction("Index");
+                loginViewModel.errorMessage = "Invalid model state.";
+                return View("Index", loginViewModel);
             }
             else
             {
@@ -52,32 +42,24 @@ namespace Phoenix.Controllers
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Exception caught: ", e.ToString());
-                    Debug.WriteLine("LDAP Connection Error","Error connecting to LDAP server");
-                    //context.SetError("Connection_error",
-                    //    "There was a problem connecting to the Active Directory LDAP server.");
-                    TempData["ErrorMsg"] = "This is awkward... We had a problem connecting to the server. We're so sorry,"+ 
-                        "but you may have to try again later or contact a system administrator.";
-                    return RedirectToAction("Index");
+                    loginViewModel.errorMessage = "There was a problem connection to the server. We are sorry. Please try again later or contact a system administrator.";
+                    return View("Index", loginViewModel);
                 }
                 if (_ADContext != null)
                 {
                     var userEntry = FindUser(username);
                     if (userEntry == null)
                     {
-                        TempData["ErrorMsg"] = "Oh dear, it seems that username does not exist in the database.";
                         _ADContext.Dispose();
-                        return RedirectToAction("Index");
+                        loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                        return View("Index", loginViewModel);
                     }
                     // If user does exist in Active Directory, try to validate him or her
                     else
                     {
-                        // Establish a new connection to server, which will be needed to validate user. Not ENTIRELY sure why
-                        ConnectToADServer();
                         if (IsValidUser(username, password))
                         {
-                            TempData["Name"] = userEntry.Name;
-                            
+
                             // I think we could add code here for authorization of admin, etc.
 
                             // Generate token and attach to header
@@ -87,23 +69,19 @@ namespace Phoenix.Controllers
                             Response.Cookies.Add(tokenCookie);
 
                             _ADContext.Dispose();
-                            // Once dashboard is implemented, redirect there. For now, go to placeholder
-                            return Redirect("/Placeholder");
+                            return RedirectToAction("Index", "RCIInput");
                         }
                         else
                         {
-                            Debug.WriteLine("Oops, the username or password is incorrect.");
-                            //context.SetError("Invalid_grant", "The username or password is incorrect.");
-
-                            // If user is not valid, redirect to the Login Page
-                            TempData["ErrorMsg"] = "Oops, the username or password is incorrect.";
-                            return RedirectToAction("Index");
+                            loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                            return View("Index", loginViewModel);
                         }
                     }
                 }
                 else
                 {
-                    return RedirectToAction("Index");
+                    loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                    return View("Index", loginViewModel);
                 }
             }
         }
@@ -160,7 +138,7 @@ namespace Phoenix.Controllers
 
         public string GenerateToken(string username)
         {
-            // ****** THIS NEEDS TO BE CHANGED I THINK. NOT VERY SECURE **********
+            // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
             DateTime issued = DateTime.Now;
@@ -183,6 +161,5 @@ namespace Phoenix.Controllers
             return (int)(dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
         }
 
-        // Set principal
     }
 }

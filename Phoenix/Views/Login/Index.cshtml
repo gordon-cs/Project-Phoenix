@@ -3,28 +3,18 @@
     ViewBag.Title = "Login";
 }
 
-@section Styles {
-    @Styles.Render("~/Content/login.css")
-}
 
 <h2>@ViewBag.Title</h2>
-@{ 
-    if (ViewBag.LoginError != null)
-    {
-        <p class="error-msg">@ViewBag.LoginError</p>
-    }
-}
+
+
 @using (Html.BeginForm(actionName: "Authenticate",  controllerName: "Login"))
 {
     <!-- Anti forgery token to prevent CSRF attacks, since authentication token is stored in a cookie-->
     @Html.AntiForgeryToken()
 
+    <div class="error-msg">@Html.ValueFor(m => m.errorMessage)</div>
+   
     @Html.TextBoxFor(m => m.username, new { placeholder = "Username" })
-    @Html.PasswordFor(m => m.password, new {placeholder="Password"})
+    @Html.PasswordFor(m => m.password, new { placeholder="Password" })
     <button type="submit" class="btn btn-lg btn-primary">Login</button>
 }
-@*<form>
- <input type="text" name="username" placeholder="Username" />
- <input type="password" name="password" placeholder="Password" />
- <button type="submit" class="btn btn-lg btn-primary">Login</button>
-</form>*@

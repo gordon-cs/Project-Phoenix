@@ -4,15 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online RCI -@ViewBag.Title</title>
-    @Styles.Render("~/Content/css")
-
+    @Styles.Render("~/bundles/css")
     @RenderSection("Styles", required: false)
-
-    @Scripts.Render("~/bundles/modernizr")
 </head>
 <body class="rci-body">
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/js/jquery")
+    @Scripts.Render("~/bundles/js/bootstrap")
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -40,6 +37,7 @@
             <p>&copy; @DateTime.Now.Year Phoenix</p>
         </footer>
     </div>
+    @Scripts.Render("~/bundles/js/rci")
     @RenderSection("scripts", required: false)
 </body>
 </html>
