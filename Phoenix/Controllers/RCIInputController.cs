@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 using Phoenix.Models;
@@ -31,7 +29,7 @@ namespace Phoenix.Controllers
             Debug.WriteLine("Reached Index Method for RCIInput Controller");
 
             // This is how we access items set in the filter.
-            ViewBag.Name = HttpContext.Items["user"];
+            ViewBag.Name = TempData["user"];
 
             var resRCI = db.ResidentRCI.FirstOrDefault();
 

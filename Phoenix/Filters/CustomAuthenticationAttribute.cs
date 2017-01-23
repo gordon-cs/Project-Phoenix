@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
-using Jose;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
@@ -52,10 +49,9 @@ namespace Phoenix.Filters
             }
 
             JObject decodedJson = JObject.Parse(decodedString);
-            
-            // Add key/value pairs that we might want to access in the controller or 
-            // in other filters to the Items collection.
-            filterContext.HttpContext.Items["user"] = decodedJson["sub"];
+
+            // Add key/value pairs that we might want to access in the controller
+            filterContext.Controller.TempData["user"] = decodedJson["sub"];
 
            
             Debug.WriteLine(decodedJson.ToString());
