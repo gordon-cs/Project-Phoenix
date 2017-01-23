@@ -21,7 +21,7 @@ namespace Phoenix.Controllers
         }
 
         // POST: Login
-         [HttpPost]
+        [HttpPost]
         public ActionResult Authenticate(LoginViewModel loginViewModel)
         {
 
@@ -32,7 +32,7 @@ namespace Phoenix.Controllers
             if (!ModelState.IsValid)
             {
                 loginViewModel.errorMessage = "Invalid model state.";
-                return RedirectToAction("Index", loginViewModel);
+                return View("Index", loginViewModel);
             }
             else
             {
@@ -43,7 +43,7 @@ namespace Phoenix.Controllers
                 catch (Exception e)
                 {
                     loginViewModel.errorMessage = "There was a problem connection to the server. We are sorry. Please try again later or contact a system administrator.";
-                    return RedirectToAction("Index", loginViewModel);
+                    return View("Index", loginViewModel);
                 }
                 if (_ADContext != null)
                 {
@@ -52,7 +52,7 @@ namespace Phoenix.Controllers
                     {
                         _ADContext.Dispose();
                         loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
-                        return RedirectToAction("Index", loginViewModel);
+                        return View("Index", loginViewModel);
                     }
                     // If user does exist in Active Directory, try to validate him or her
                     else
@@ -74,14 +74,14 @@ namespace Phoenix.Controllers
                         else
                         {
                             loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
-                            return RedirectToAction("Index", loginViewModel);
+                            return View("Index", loginViewModel);
                         }
                     }
                 }
                 else
                 {
                     loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
-                    return RedirectToAction("Index", loginViewModel);
+                    return View("Index", loginViewModel);
                 }
             }
         }
