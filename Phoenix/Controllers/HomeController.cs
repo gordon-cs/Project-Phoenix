@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 
 using Phoenix.Models;
+using Phoenix.Models.ViewModels;
 
 namespace Phoenix.Controllers
 {
@@ -21,12 +22,47 @@ namespace Phoenix.Controllers
             return View();
         }
 
-        // GET: Home/MyRCIs
-        public ActionResult MyRCIs()
+        // GET: Home/Resident
+        public ActionResult Resident()
         {
-            var resRCI = db.ResidentRCI.Where(s => s.ResidentAccountID.Equals("50153295"));
+            var resRCIs =
+                from resRCI in db.ResidentRCI
+                join account in db.Account on resRCI.ResidentAccountID equals account.ID_NUM
+                where account.ID_NUM == "50153295"
+                select new HomeResidentViewModel{ RoomID = resRCI.RoomRCIID, FirstName = account.firstname, LastName = account.lastname};
+            // haven't find a correct way to access room id, 
+            // and the database might be changed to connect
+            // resRCI directly to room id. so just use roomrciid
+            // for now
+            return View(resRCIs);
+        }
 
-            return View(resRCI);
+        // GET: Home/RA
+        public ActionResult RA()
+        {
+            var resRCIs =
+                from resRCI in db.ResidentRCI
+                join account in db.Account on resRCI.ResidentAccountID equals account.ID_NUM
+                select new HomeResidentViewModel { RoomID = resRCI.RoomRCIID, FirstName = account.firstname, LastName = account.lastname };
+            // haven't find a correct way to access room id, 
+            // and the database might be changed to connect
+            // resRCI directly to room id. so just use roomrciid
+            // for now
+            return View(resRCIs);
+        }
+
+        // GET: Home/RD
+        public ActionResult RD()
+        {
+            var resRCIs =
+                from resRCI in db.ResidentRCI
+                join account in db.Account on resRCI.ResidentAccountID equals account.ID_NUM
+                select new HomeResidentViewModel { RoomID = resRCI.RoomRCIID, FirstName = account.firstname, LastName = account.lastname };
+            // haven't find a correct way to access room id, 
+            // and the database might be changed to connect
+            // resRCI directly to room id. so just use roomrciid
+            // for now
+            return View(resRCIs);
         }
     }
 }

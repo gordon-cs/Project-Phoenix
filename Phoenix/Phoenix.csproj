@@ -150,6 +150,7 @@
     <Compile Include="Models\RoomMaster.cs" />
     <Compile Include="Models\RoomRCI.cs" />
     <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\ViewModels\HomeResidentViewModel.cs" />
     <Compile Include="Models\ViewModels\RCIForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -197,7 +198,9 @@
     <Content Include="Views\Login\Index.cshtml">
       <BrowseToURL>~/Login</BrowseToURL>
     </Content>
-    <Content Include="Views\Home\MyRCIs.cshtml" />
+    <Content Include="Views\Home\Resident.cshtml" />
+    <Content Include="Views\Home\RA.cshtml" />
+    <Content Include="Views\Home\RD.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

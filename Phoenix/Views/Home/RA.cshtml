@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeResidentViewModel>
+
+@{
+    ViewBag.Title = "RA";
+}
+
+@section Styles {
+    @Styles.Render("~/Content/my_rci.css")
+}
+
+<h2>RA</h2>
+
+<div class="button-row">
+    <button class="btn btn-default btn-lg">Residents</button>
+    <button class="btn btn-default btn-lg">Rooms</button>
+</div>
+
+<div class="search">
+    <input type="text" placeholder="Last Name" />
+    <button class="btn btn-sm btn-primary">Search</button>
+</div>
+
+@foreach (var rci in Model.ToList())
+{
+    <div class="rci-tab row">
+        <div class="col-md-2 col-sm-6 col-xs-12">@rci.RoomID</div>
+        <div class="col-md-3 col-sm-6 col-xs-12">@rci.FirstName @rci.LastName</div>
+        <div class="col-md-2 col-sm-6 col-xs-12">Due: 09/16/2016</div>
+        <div class="col-md-2 col-sm-6 col-xs-12">Saved</div>
+        <div><span class="col-md-1 col-sm-6 col-xs-12 glyphicon glyphicon-pencil"></span></div>
+        <div><span class="col-md-1 col-sm-6 col-xs-12 glyphicon glyphicon-share-alt"></span></div>
+        <div><span class="col-md-1 col-sm-6 col-xs-12 glyphicon glyphicon-pencil"></span></div>
+    </div>
+}
