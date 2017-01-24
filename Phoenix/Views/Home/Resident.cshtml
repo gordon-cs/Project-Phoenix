@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeResidentViewModel>
+﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRCIViewModel>
 
 @{
     ViewBag.Title = "MyRCIs";
@@ -10,10 +10,10 @@
 
 <div class="rci-all container">
     <h2>MyRCIs</h2>
-    @foreach (var rci in Model.ToList())
+    @foreach (var rci in Model)
     {
         <div class="rci-tab row">
-            <div class="col-md-2 col-sm-6 col-xs-12">@rci.RoomID</div>
+            <div class="col-md-2 col-sm-6 col-xs-12">@rci.BuildingCode @rci.RoomNumber</div>
             <div class="col-md-3 col-sm-6 col-xs-12">@rci.FirstName @rci.LastName</div>
             <div class="col-md-3 col-sm-6 col-xs-12">Due: 09/16/2016</div>
             <div class="col-md-3 col-sm-6 col-xs-12">Saved</div>

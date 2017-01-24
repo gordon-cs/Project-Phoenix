@@ -9,25 +9,13 @@ namespace Phoenix.Models
     [Table("RCIComponent")]
     public partial class RCIComponent
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RCIComponent()
-        {
-            Damage = new HashSet<Damage>();
-        }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int RCIComponentID { get; set; }
 
+        [Required]
+        [StringLength(50)]
         public string RCIComponentName { get; set; }
 
-        public int? RoomRCIID { get; set; }
-
-        public int? ResidentRCIID { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Damage> Damage { get; set; }
-
-        public virtual ResidentRCI ResidentRCI { get; set; }
-
-        public virtual RoomRCI RoomRCI { get; set; }
+        public int RCIID { get; set; }
     }
 }

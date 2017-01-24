@@ -31,7 +31,7 @@ namespace Phoenix.Controllers
             // This is how we access items set in the filter.
             ViewBag.Name = TempData["user"];
 
-            var resRCI = db.ResidentRCI.FirstOrDefault();
+            var resRCI = db.RCI.FirstOrDefault();
 
             return View(resRCI);
         }

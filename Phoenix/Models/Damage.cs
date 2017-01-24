@@ -9,14 +9,17 @@ namespace Phoenix.Models
     [Table("Damage")]
     public partial class Damage
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int DamageID { get; set; }
 
         public string DamageDescription { get; set; }
 
-        public int? Fine { get; set; }
+        public string DamageImagePath { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string DamageType { get; set; }
 
         public int RCIComponentID { get; set; }
-
-        public virtual RCIComponent RCIComponent { get; set; }
     }
 }
