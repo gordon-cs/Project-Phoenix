@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
+using System.Diagnostics;
 
 namespace Phoenix.Controllers
 {
@@ -21,9 +22,11 @@ namespace Phoenix.Controllers
         // GET: Home
         public ActionResult Index()
         {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
 
-            var role = TempData["role"];
-            if(role.Equals("RD"))
+
+            if (role.Equals("RD"))
             {
                 return RedirectToAction("RD");
             }
@@ -45,10 +48,14 @@ namespace Phoenix.Controllers
             // Look through RCIS and find your RCI with your ID
             // For common area RCI, look through rci's without a gordon id, 
             // with the corresponding Building and Room number
+
+            // TempData stores object, so always cast to string.
+            var strID = (string)TempData["id"];
+
             var personalRCIs =
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                where account.ID_NUM.Equals(TempData["id"])
+                where account.ID_NUM == strID
                 select new HomeRCIViewModel{ BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname};
             return View(personalRCIs);
         }
@@ -58,9 +65,13 @@ namespace Phoenix.Controllers
         {
             // Display all RCI's for the corresponding building
 
+            // TempData stores object, so always cast to string.
+            var strBuilding = (string)TempData["building"];
+
             var personalRCIs =
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
+                where personalRCI.BuildingCode == strBuilding
                 select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
             return View(personalRCIs);
         }
@@ -70,9 +81,13 @@ namespace Phoenix.Controllers
         {
             // Display all RCI's for the corresponding building
 
+            // TempData stores object, so always cast to string.
+            var strBuilding = (string)TempData["building"];
+
             var personalRCIs =
                  from personalRCI in db.RCI
                  join account in db.Account on personalRCI.GordonID equals account.ID_NUM
+                 where personalRCI.BuildingCode == strBuilding
                  select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
             return View(personalRCIs);
         }
