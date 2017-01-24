@@ -63,7 +63,7 @@ namespace Phoenix.Controllers
                             // I think we could add code here for authorization of admin, etc.
 
                             // Generate token and attach to header
-                            var jwtToken = GenerateToken(username);
+                            var jwtToken = GenerateToken(username, userEntry.Name);
                             HttpCookie tokenCookie = new HttpCookie("Authentication");
                             tokenCookie.Value = jwtToken;
                             Response.Cookies.Add(tokenCookie);
@@ -136,7 +136,7 @@ namespace Phoenix.Controllers
                 ContextOptions.SimpleBind | ContextOptions.SecureSocketLayer);
         }
 
-        public string GenerateToken(string username)
+        public string GenerateToken(string username, string name)
         {
             // Add some code here to check the db to see if user has admin permissions
             // Right now just hardcode to true for test purposes
@@ -154,6 +154,7 @@ namespace Phoenix.Controllers
             var payload = new Dictionary<string, object>()
             {
                 {"sub", username  },
+                {"name", name },
                 {"iss", "rci.gordon.edu" },
                 {"iat", ToUnixTime(issued) },
                 {"exp", ToUnixTime(expire) },

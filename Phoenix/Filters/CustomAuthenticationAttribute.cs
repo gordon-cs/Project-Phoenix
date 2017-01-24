@@ -51,7 +51,7 @@ namespace Phoenix.Filters
             JObject decodedJson = JObject.Parse(decodedString);
 
             // Add key/value pairs that we might want to access in the controller
-            filterContext.Controller.TempData["user"] = decodedJson["sub"];
+            filterContext.Controller.TempData["user"] = decodedJson["name"];
             filterContext.Controller.TempData["admin"] = decodedJson["admin"].ToString();
             filterContext.Controller.TempData["role"] = decodedJson["role"];
 

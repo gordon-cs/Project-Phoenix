@@ -10,7 +10,6 @@ using System.Diagnostics;
 namespace Phoenix.Controllers
 {
     [CustomAuthentication]
-    [AdminAuthorization]
     public class RCIInputController : Controller
     {
         // RCI context wrapper. It can be considered to be an object that represents the database.
