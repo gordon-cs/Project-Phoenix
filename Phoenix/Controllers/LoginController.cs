@@ -151,9 +151,9 @@ namespace Phoenix.Controllers
             // Right now just hardcode to true for test purposes
             bool isAdmin = false;
 
-            // Add some code here to check the db to see if user is an RA or RD or just student.
-            // For now just hard code to RA for test purposes
+            
             var role = getRole(id);
+            var building = getBuilding(id);
 
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
@@ -169,7 +169,8 @@ namespace Phoenix.Controllers
                 {"iat", ToUnixTime(issued) },
                 {"exp", ToUnixTime(expire) },
                 {"admin", isAdmin },
-                {"role", role }
+                {"role", role },
+                {"building", building }
             };
 
             string token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
@@ -183,7 +184,7 @@ namespace Phoenix.Controllers
         }
 
         /*
-         * Check if a user is an RD 
+         * Get the role of a user
          */
          public string getRole(string id)
         {
@@ -199,6 +200,30 @@ namespace Phoenix.Controllers
             }
             return "Resident";
          
+        }
+
+        /*
+         * Get the building a user lives in.
+         */
+        public string getBuilding(string id)
+        {
+            var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
+            if (RDentry != null)
+            {
+                return RDentry.Job_Title_Hall;
+            }
+            var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
+            if (RAentry != null)
+            {
+                return RAentry.Dorm;
+            }
+            var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
+            if (ResidentEntry != null)
+            {
+                return ResidentEntry.BLDG_CDE;
+            }
+            return "Non-Resident";
+
         }
 
     }
