@@ -36,6 +36,11 @@ namespace Phoenix.Controllers
             // Get the username and password from the view model
             string username = loginViewModel.username;
             string password = loginViewModel.password;
+            if (password == null)
+            {
+                // if user did not enter a password, set it to empty string, since this value must be non-null
+                password = "";
+            }
 
             if (!ModelState.IsValid)
             {
