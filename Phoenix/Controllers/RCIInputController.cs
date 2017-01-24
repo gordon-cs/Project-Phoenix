@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using Phoenix.Filters;
+using System.Diagnostics;
 
 namespace Phoenix.Controllers
 {
+    [CustomAuthentication]
     public class RCIInputController : Controller
     {
         // RCI context wrapper. It can be considered to be an object that represents the database.
@@ -19,11 +20,17 @@ namespace Phoenix.Controllers
 
         public RCIInputController()
         {
+            Debug.WriteLine("Initialize RCIInput Controller");
             db = new Models.RCIContext();
         }
 
         public ActionResult Index()
         {
+            Debug.WriteLine("Reached Index Method for RCIInput Controller");
+
+            // This is how we access items set in the filter.
+            ViewBag.Name = TempData["user"];
+
             var resRCI = db.ResidentRCI.FirstOrDefault();
 
             return View(resRCI);
@@ -74,7 +81,7 @@ namespace Phoenix.Controllers
 
             /* Since SaveRCI is called with javascript, it returns its value (the Index View) to the javascript that called it and not directly to the browser. */
             return RedirectToAction("Index");
-        }     
+        }
 
         // GET: RCIInput/Delete/5
         [HttpPost]

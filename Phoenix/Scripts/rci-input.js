@@ -45,7 +45,7 @@ $(".adding-damages").on("keypress", function (e) {
 
 
 // Handler to specify the behavior of the submit button
-$("form").submit(function (event) {
+$(".rci-form").submit(function (event) {
     event.preventDefault(); // Stop the form from submitting normally
     // Make an ajax call instead
     $.ajax({

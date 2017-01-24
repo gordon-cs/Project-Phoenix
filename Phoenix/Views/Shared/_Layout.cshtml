@@ -19,6 +19,12 @@
                     <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("Online RCI", "Index", "Placeholder", new { area = "" }, new { @class = "navbar-brand" })
+                @{ 
+                    if (ViewBag.Name != null)
+                    {
+                        <p class="navbar-brand"> Welcome, @ViewBag.Name</p>
+                    }
+                }
             </div>
             <div class="navbar-collapse collapse">
             </div>

@@ -33,6 +33,9 @@ textarea {
 
 /* Site-wide color schemes*/
 
+.error-msg {
+    color: darkorange;
+}
 /*Customized Bootstrap component colors*/
 .well {
     background-color: #ebeaea;
