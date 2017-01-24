@@ -5,6 +5,8 @@ using System.Web.Mvc;
 using System.DirectoryServices.AccountManagement;
 using Phoenix.Models.ViewModels;
 using Jose;
+using Phoenix.Models;
+using System.Linq;
 
 namespace Phoenix.Controllers
 {
@@ -12,6 +14,12 @@ namespace Phoenix.Controllers
     {
         // Global Variables
         PrincipalContext _ADContext;
+        private RCIContext db;
+
+        public LoginController()
+        {
+            db = new Models.RCIContext();
+        }
 
         // GET: Login
         [HttpGet]
@@ -169,6 +177,16 @@ namespace Phoenix.Controllers
         public long ToUnixTime(DateTime dateTime)
         {
             return (int)(dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+        }
+
+        /*
+         * Check if a user is an RD 
+         */
+         public bool IsRD(string username)
+        {
+            var RDentry = db.CurrentRD.Find(username);
+
+            return false;
         }
 
     }
