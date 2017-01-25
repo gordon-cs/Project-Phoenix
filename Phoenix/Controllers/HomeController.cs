@@ -55,7 +55,7 @@ namespace Phoenix.Controllers
             var personalRCIs =
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                where account.ID_NUM == strID
+                where account.ID_NUM == strID && personalRCI.Current == true 
                 select new HomeRCIViewModel{ BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname};
             return View(personalRCIs);
         }
@@ -71,7 +71,7 @@ namespace Phoenix.Controllers
             var personalRCIs =
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                where personalRCI.BuildingCode == strBuilding
+                where personalRCI.BuildingCode == strBuilding && personalRCI.Current == true
                 select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
             return View(personalRCIs);
         }
@@ -87,7 +87,7 @@ namespace Phoenix.Controllers
             var personalRCIs =
                  from personalRCI in db.RCI
                  join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                 where personalRCI.BuildingCode == strBuilding
+                 where personalRCI.BuildingCode == strBuilding && personalRCI.Current == true
                  select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
             return View(personalRCIs);
         }
