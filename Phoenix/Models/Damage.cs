@@ -9,7 +9,6 @@ namespace Phoenix.Models
     [Table("Damage")]
     public partial class Damage
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int DamageID { get; set; }
 
         public string DamageDescription { get; set; }

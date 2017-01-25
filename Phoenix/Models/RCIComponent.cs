@@ -9,7 +9,6 @@ namespace Phoenix.Models
     [Table("RCIComponent")]
     public partial class RCIComponent
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int RCIComponentID { get; set; }
 
         [Required]

@@ -9,7 +9,6 @@ namespace Phoenix.Models
     [Table("RCI")]
     public partial class RCI
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int RCIID { get; set; }
 
         public bool? Current { get; set; }
