@@ -66,6 +66,7 @@ namespace Phoenix.Controllers
                 var commonAreaRCIs =
                     from tempCommonAreaRCI in db.RCI
                     where tempCommonAreaRCI.RoomNumber == roomNumber && tempCommonAreaRCI.BuildingCode == buildingCode
+                    && tempCommonAreaRCI.GordonID == null
                     select new HomeRCIViewModel
                     {
                         BuildingCode = tempCommonAreaRCI.BuildingCode,
