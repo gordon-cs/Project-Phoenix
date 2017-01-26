@@ -222,7 +222,7 @@ namespace Phoenix.Controllers
             {
                 return RAentry.Dorm;
             }
-            var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
+            var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
             if (ResidentEntry != null)
             {
                 return ResidentEntry.BLDG_CDE;
