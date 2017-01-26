@@ -5,6 +5,8 @@ using System.Web.Mvc;
 using System.DirectoryServices.AccountManagement;
 using Phoenix.Models.ViewModels;
 using Jose;
+using Phoenix.Models;
+using System.Linq;
 
 namespace Phoenix.Controllers
 {
@@ -12,6 +14,12 @@ namespace Phoenix.Controllers
     {
         // Global Variables
         PrincipalContext _ADContext;
+        private RCIContext db;
+
+        public LoginController()
+        {
+            db = new Models.RCIContext();
+        }
 
         // GET: Login
         [HttpGet]
@@ -28,6 +36,11 @@ namespace Phoenix.Controllers
             // Get the username and password from the view model
             string username = loginViewModel.username;
             string password = loginViewModel.password;
+            if (password == null)
+            {
+                // if user did not enter a password, set it to empty string, since this value must be non-null
+                password = "";
+            }
 
             if (!ModelState.IsValid)
             {
@@ -63,13 +76,13 @@ namespace Phoenix.Controllers
                             // I think we could add code here for authorization of admin, etc.
 
                             // Generate token and attach to header
-                            var jwtToken = GenerateToken(username, userEntry.Name);
+                            var jwtToken = GenerateToken(username, userEntry.Name, userEntry.EmployeeId);
                             HttpCookie tokenCookie = new HttpCookie("Authentication");
                             tokenCookie.Value = jwtToken;
                             Response.Cookies.Add(tokenCookie);
 
                             _ADContext.Dispose();
-                            return RedirectToAction("Index", "RCIInput");
+                            return RedirectToAction("Index", "Home");
                         }
                         else
                         {
@@ -101,6 +114,7 @@ namespace Phoenix.Controllers
                 ContextOptions.Negotiate | ContextOptions.ServerBind | ContextOptions.SecureSocketLayer,
                 "CS-LDAP-CCT",
                 "QUl59QpdpL**sTwZ");
+            // This password should probs be stored elsewhere
         }
 
         /*
@@ -136,15 +150,15 @@ namespace Phoenix.Controllers
                 ContextOptions.SimpleBind | ContextOptions.SecureSocketLayer);
         }
 
-        public string GenerateToken(string username, string name)
+        public string GenerateToken(string username, string name, string id)
         {
             // Add some code here to check the db to see if user has admin permissions
             // Right now just hardcode to true for test purposes
             bool isAdmin = false;
 
-            // Add some code here to check the db to see if user is an RA or RD or just student.
-            // For now just hard code to RA for test purposes
-            var role = "RA";
+            
+            var role = getRole(id);
+            var building = getBuilding(id);
 
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
@@ -155,11 +169,13 @@ namespace Phoenix.Controllers
             {
                 {"sub", username  },
                 {"name", name },
+                {"gordonId", id },
                 {"iss", "rci.gordon.edu" },
                 {"iat", ToUnixTime(issued) },
                 {"exp", ToUnixTime(expire) },
                 {"admin", isAdmin },
-                {"role", role }
+                {"role", role },
+                {"building", building }
             };
 
             string token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
@@ -170,6 +186,49 @@ namespace Phoenix.Controllers
         public long ToUnixTime(DateTime dateTime)
         {
             return (int)(dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+        }
+
+        /*
+         * Get the role of a user
+         */
+         public string getRole(string id)
+        {
+            var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
+            if (RDentry != null)
+            {
+                return "RD";
+            }
+            var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
+            if (RAentry != null)
+            {
+                return "RA";
+            }
+            return "Resident";
+         
+        }
+
+        /*
+         * Get the building a user lives in.
+         */
+        public string getBuilding(string id)
+        {
+            var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
+            if (RDentry != null)
+            {
+                return RDentry.Job_Title_Hall;
+            }
+            var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
+            if (RAentry != null)
+            {
+                return RAentry.Dorm;
+            }
+            var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
+            if (ResidentEntry != null)
+            {
+                return ResidentEntry.BLDG_CDE;
+            }
+            return "Non-Resident";
+
         }
 
     }

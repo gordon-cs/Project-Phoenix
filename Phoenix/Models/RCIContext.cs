@@ -13,9 +13,8 @@ namespace Phoenix.Models
         }
 
         public virtual DbSet<Damage> Damage { get; set; }
+        public virtual DbSet<RCI> RCI { get; set; }
         public virtual DbSet<RCIComponent> RCIComponent { get; set; }
-        public virtual DbSet<ResidentRCI> ResidentRCI { get; set; }
-        public virtual DbSet<RoomRCI> RoomRCI { get; set; }
         public virtual DbSet<Account> Account { get; set; }
         public virtual DbSet<CurrentRA> CurrentRA { get; set; }
         public virtual DbSet<CurrentRD> CurrentRD { get; set; }
@@ -27,11 +26,6 @@ namespace Phoenix.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RoomRCI>()
-                .HasMany(e => e.ResidentRCI)
-                .WithOptional(e => e.RoomRCI)
-                .WillCascadeOnDelete();
-
             modelBuilder.Entity<Account>()
                 .Property(e => e.ID_NUM)
                 .IsUnicode(false);
@@ -89,17 +83,17 @@ namespace Phoenix.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.LOC_CDE)
+                .Property(e => e.LocationCode)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.BLDG_CDE)
+                .Property(e => e.BuildingCode)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.ROOM_CDE)
+                .Property(e => e.RoomCode)
                 .IsFixedLength()
                 .IsUnicode(false);
 

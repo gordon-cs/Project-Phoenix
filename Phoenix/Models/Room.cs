@@ -11,23 +11,18 @@ namespace Phoenix.Models
     {
         [Key]
         [Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int APPID { get; set; }
+        [StringLength(5)]
+        public string LocationCode { get; set; }
 
         [Key]
         [Column(Order = 1)]
         [StringLength(5)]
-        public string LOC_CDE { get; set; }
+        public string BuildingCode { get; set; }
 
         [Key]
         [Column(Order = 2)]
         [StringLength(5)]
-        public string BLDG_CDE { get; set; }
-
-        [Key]
-        [Column(Order = 3)]
-        [StringLength(5)]
-        public string ROOM_CDE { get; set; }
+        public string RoomCode { get; set; }
 
         [StringLength(45)]
         public string ROOM_DESC { get; set; }
@@ -36,7 +31,7 @@ namespace Phoenix.Models
         public string ROOM_TYPE { get; set; }
 
         [Key]
-        [Column(Order = 4)]
+        [Column(Order = 3)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int MAX_CAPACITY { get; set; }
 
