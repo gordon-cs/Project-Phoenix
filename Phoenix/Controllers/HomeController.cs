@@ -133,11 +133,7 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var strBuilding = (string)TempData["building"];
 
-            string [] strBuildings = strBuilding.ToUpper().Split(' ');
-            for (int i = 0; i < strBuildings.Length; i ++)
-            {
-                strBuildings[i] = strBuildings[i].ToString().Substring(0, 3);
-            }
+            string[] strBuildings = (string [])db.BuildingAssign.Where(b => b.Job_Title_Hall.Equals(strBuilding)).Select(b => b.BuildingCode).ToArray();
 
             var RCIs =
                 from personalRCI in db.RCI
