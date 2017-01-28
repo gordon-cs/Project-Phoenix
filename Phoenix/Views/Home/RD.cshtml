@@ -1,34 +1,51 @@
 ﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRCIViewModel>
 
 @{
-    ViewBag.Title = "RD";
+    ViewBag.Title = "RCI-Dashboard";
+    ViewBag.ViewTitle = "RCI Dashboard";
 }
 
 @section Styles {
-    @Styles.Render("~/Content/my_rci.css")
+    @Styles.Render("~/bundles/page_specific/dashboard")
 }
 
-<h2>RD</h2>
-
-<div class="search">
-    <input type="text" placeholder="Last Name"/>
-    <button class="btn btn-sm btn-primary">Search</button>
-</div>
-
-@foreach (var rci in Model.ToList())
-{
-    <div class="rci-tab row">
-        <div class="col-md-2 col-sm-6 col-xs-12">@rci.RoomID</div>
-        <div class="col-md-3 col-sm-6 col-xs-12">@rci.FirstName @rci.LastName</div>
-        <div class="col-md-2 col-sm-6 col-xs-12">Due: 09/16/2016</div>
-        <div class="col-md-2 col-sm-6 col-xs-12">Saved</div>
-        <div><span class="col-md-1 col-sm-6 col-xs-12 glyphicon glyphicon-pencil"></span></div>
-        <div><span class="col-md-1 col-sm-6 col-xs-12 glyphicon glyphicon-share-alt"></span></div>
-        <div><span class="col-md-1 col-sm-6 col-xs-12 glyphicon glyphicon-pencil"></span></div>
+<div class="view">
+    <div class="pane">
+        <div class="divAddOn">
+            <input class="divAddOn-field" type="text" placeholder="Search rcis..." />
+            <div class="divAddOn-item"><i class="fa fa-search" aria-hidden="true"></i></div>
+        </div>
+        <div class="button-group">
+            <div class="button-group-element">
+                Residents
+            </div>
+            <div class="button-group-element">
+                Rooms
+            </div>
+        </div>
     </div>
-}
-
-<div class="button-row">
-    <button class="btn btn-primary">Sign Off</button>
-    <button class="btn btn-primary">Export Fines</button>
+    
+    <div class="pane">
+        <div>
+            RCIs
+        </div>
+        @foreach (var rci in Model)
+        {
+            <div class="divAddOn">
+                <div class="divAddOn-field">
+                    <p>@rci.BuildingCode @rci.RoomNumber</p>
+                    <p>@rci.FirstName @rci.LastName</p>
+                </div>
+                <div class="divAddOn-item">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                </div>
+                <div class="divAddOn-item">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                </div>
+                <div class="divAddOn-item">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </div>
+            </div>
+        }
+    </div>
 </div>
