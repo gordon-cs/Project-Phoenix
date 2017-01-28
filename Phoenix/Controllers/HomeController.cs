@@ -91,27 +91,11 @@ namespace Phoenix.Controllers
 
             var RCIs =
                 from personalRCI in db.RCI
-                join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                where personalRCI.BuildingCode == strBuilding && personalRCI.Current == true
-                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
-
-            var buildingCode = RCIs.FirstOrDefault().BuildingCode.ToString();
-            var roomNumber = RCIs.FirstOrDefault().RoomNumber.ToString();
-
-            var commonAreaRCIs =
-                    from tempCommonAreaRCI in db.RCI
-                    where tempCommonAreaRCI.BuildingCode == buildingCode
-                    && tempCommonAreaRCI.Current == true
-                    && tempCommonAreaRCI.GordonID == null
-                    select new HomeRCIViewModel
-                    {
-                        BuildingCode = tempCommonAreaRCI.BuildingCode,
-                        RoomNumber = tempCommonAreaRCI.RoomNumber,
-                        FirstName = "Common",
-                        LastName = "RCI"
-                    };
-
-            RCIs = RCIs.Concat(commonAreaRCIs);
+                join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
+                from account in rci.DefaultIfEmpty()
+                where personalRCI.BuildingCode == strBuilding
+                && personalRCI.Current == true
+                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname };
 
             return View(RCIs);
         }
@@ -128,25 +112,11 @@ namespace Phoenix.Controllers
 
             var RCIs =
                 from personalRCI in db.RCI
-                join account in db.Account on personalRCI.GordonID equals account.ID_NUM
+                join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
+                from account in rci.DefaultIfEmpty()
                 where strBuildings.Contains(personalRCI.BuildingCode) 
                 && personalRCI.Current == true
-                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
-
-            var commonAreaRCIs =
-                        from tempCommonAreaRCI in db.RCI
-                        where strBuildings.Contains(tempCommonAreaRCI.BuildingCode) 
-                        && tempCommonAreaRCI.Current == true 
-                        && tempCommonAreaRCI.GordonID == null
-                        select new HomeRCIViewModel
-                        {
-                            BuildingCode = tempCommonAreaRCI.BuildingCode,
-                            RoomNumber = tempCommonAreaRCI.RoomNumber,
-                            FirstName = "Common",
-                            LastName = "RCI"
-                        };
-
-            RCIs = RCIs.Concat(commonAreaRCIs);
+                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname};
             
             return View(RCIs);
         }
