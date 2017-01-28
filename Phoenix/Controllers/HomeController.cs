@@ -91,36 +91,11 @@ namespace Phoenix.Controllers
 
             var RCIs =
                 from personalRCI in db.RCI
-                join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                where personalRCI.BuildingCode == strBuilding && personalRCI.Current == true
-                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
-
-            var buildingCode = RCIs.FirstOrDefault().BuildingCode.ToString();
-            var roomNumber = RCIs.FirstOrDefault().RoomNumber.ToString();
-
-            if (buildingCode.Equals("BRO") || buildingCode.Equals("TAV")) // We have not yet accounted for FERRIN!
-            {
-                var commonAreaRCIs =
-                    from tempCommonAreaRCI in db.RCI
-                    where tempCommonAreaRCI.RoomNumber == roomNumber 
-                    && tempCommonAreaRCI.BuildingCode == buildingCode
-                    && tempCommonAreaRCI.Current == true
-                    select new HomeRCIViewModel
-                    {
-                        BuildingCode = tempCommonAreaRCI.BuildingCode,
-                        RoomNumber = tempCommonAreaRCI.RoomNumber,
-                        FirstName = "Common",
-                        LastName = "RCI"
-                    };
-
-                RCIs = RCIs.Concat(commonAreaRCIs);
-            }
-
-            //var commonAreaRCIs =
-            //    from tempCommonAreaRCI in db.RCI
-            //    join room in db.RoomAssign on tempCommonAreaRCI.BuildingCode equals room.BLDG_CDE
-            //    where tempCommonAreaRCI.GordonID = null;
-
+                join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
+                from account in rci.DefaultIfEmpty()
+                where personalRCI.BuildingCode == strBuilding
+                && personalRCI.Current == true
+                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname };
 
             return View(RCIs);
         }
@@ -133,12 +108,17 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var strBuilding = (string)TempData["building"];
 
-            var personalRCIs =
-                 from personalRCI in db.RCI
-                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                 where personalRCI.BuildingCode == strBuilding && personalRCI.Current == true
-                 select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
-            return View(personalRCIs);
+            string[] strBuildings = (string [])db.BuildingAssign.Where(b => b.Job_Title_Hall.Equals(strBuilding)).Select(b => b.BuildingCode).ToArray();
+
+            var RCIs =
+                from personalRCI in db.RCI
+                join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
+                from account in rci.DefaultIfEmpty()
+                where strBuildings.Contains(personalRCI.BuildingCode) 
+                && personalRCI.Current == true
+                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname};
+            
+            return View(RCIs);
         }
 
         // Potentially later: admin option that can view all RCI's for all buildings

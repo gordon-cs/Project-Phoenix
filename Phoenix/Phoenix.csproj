@@ -155,6 +155,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\BuildingAssign.cs" />
     <Compile Include="Models\CurrentRA.cs" />
     <Compile Include="Models\CurrentRD.cs" />
     <Compile Include="Models\Damage.cs" />

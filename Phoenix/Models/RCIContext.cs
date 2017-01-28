@@ -15,6 +15,7 @@ namespace Phoenix.Models
         public virtual DbSet<Damage> Damage { get; set; }
         public virtual DbSet<RCI> RCI { get; set; }
         public virtual DbSet<RCIComponent> RCIComponent { get; set; }
+        public virtual DbSet<BuildingAssign> BuildingAssign { get; set; }
         public virtual DbSet<Account> Account { get; set; }
         public virtual DbSet<CurrentRA> CurrentRA { get; set; }
         public virtual DbSet<CurrentRD> CurrentRD { get; set; }
