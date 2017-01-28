@@ -1,0 +1,12 @@
+﻿/* CSS File specific to the "Resident", "RA" and "RD" views */
+
+
+.divAddOn {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.divAddOn-item {
+    min-width: 40px;
+}
+

@@ -1,0 +1,23 @@
+﻿/**
+ * PURPOSE
+ * Establish a base-line of styles to be applied
+ * to any responsive website.
+ *
+ */
+ 
+*{
+    box-sizing: border-box;
+    line-height: 1.5em;
+    margin: 0;
+}
+
+html, body {
+    font-size: 18px;
+    height: 100%;
+}
+
+img {
+    display: block;
+    height: auto;
+    max-width: 100%;
+}

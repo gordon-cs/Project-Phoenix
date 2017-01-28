@@ -14,20 +14,24 @@ namespace Phoenix
             bundles.Add(new ScriptBundle("~/bundles/js/jqueryval").Include(
                         "~/Scripts/third_party/jquery.validate*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/js/bootstrap").Include(
-                      "~/Scripts/third_party/bootstrap.js",
-                      "~/Scripts/third_party/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/js/rci").Include(
                         "~/Scripts/rci-input.js",
                         "~/Scripts/countdown_timer.js"));
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
-                      "~/css/third_party/bootstrap.css",
-                      "~/css/site.css",
-                      "~/css/under_construction.css",
-                      "~/css/login.css"));
+                      "~/css/default-styles.css",
+                      "~/css/site-layout.css",
+                      "~/css/site-colors.css",
+                      "~/css/site-typography.css",
+                      "~/css/under_construction.css"));
+            
+            // Page specific css
+            bundles.Add(new StyleBundle("~/bundles/page_specific/login").Include(
+                        "~/css/login.css"));
 
+            bundles.Add(new StyleBundle("~/bundles/page_specific/dashboard").Include(
+                        "~/css/dashboard.css"));
             //Uncomment the line below to start minifying and bundling.
             //BundleTable.EnableOptimizations = true;
         }
