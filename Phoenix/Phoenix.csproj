@@ -172,23 +172,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="css\third_party\bootstrap.css" />
-    <Content Include="css\third_party\bootstrap.min.css" />
+    <Content Include="css\dashboard.css" />
+    <Content Include="css\default-styles.css" />
+    <Content Include="css\site-colors.css" />
+    <Content Include="css\site-layout.css" />
+    <Content Include="css\site-typography.css" />
     <Content Include="Content\Images\phoenix.png" />
     <Content Include="css\login.css" />
-    <Content Include="css\Site.css" />
-    <Content Include="css\third_party\bootstrap.css" />
-    <Content Include="css\third_party\bootstrap.min.css" />
+    <Content Include="css\site.css" />
     <Content Include="css\under_construction.css" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\rci-input.js" />
-    <Content Include="Scripts\third_party\bootstrap.js" />
-    <Content Include="Scripts\third_party\bootstrap.min.js" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.min.js" />
@@ -226,11 +224,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="css\third_party\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
   </ItemGroup>
