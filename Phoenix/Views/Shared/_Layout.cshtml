@@ -19,13 +19,12 @@
         <div id="content">
             @RenderBody()
         </div>
-        <hr />
         <footer id="footer">
             <p>&copy; @DateTime.Now.Year Phoenix</p>
         </footer>
     </div>
     @Scripts.Render("~/bundles/js/rci")
-    @RenderSection("scripts", required: false)
+    @RenderSection("Scripts", required: false)
 
 </body>
 </html>
