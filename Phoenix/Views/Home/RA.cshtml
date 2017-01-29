@@ -6,14 +6,17 @@
 }
 
 @section Styles {
-    @Styles.Render("~/bundles/page_specific/dashboard")
+    @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
 
 
 <div class="view">
     <div class="pane">
+        <div>
+            RCIs
+        </div>
         <div class="divAddOn">
-            <input class="divAddOn-field" type="text" placeholder="Search rcis..." />
+            <input class="divAddOn-field" type="text" placeholder="Search..." />
             <div class="divAddOn-item"><i class="fa fa-search" aria-hidden="true"></i></div>
         </div>
         <div class="button-group">
@@ -23,12 +26,6 @@
             <div class="button-group-element">
                 Rooms
             </div>
-        </div>
-    </div>
-
-    <div class="pane">
-        <div>
-            RCIs
         </div>
         @foreach (var rci in Model)
         {
@@ -49,4 +46,12 @@
             </div>
         }
     </div> 
+
+    <div class="pane">
+        <div class="button-group logout-button">
+            <div class="button-group-element">
+                Logout
+            </div>
+        </div>
+    </div>
 </div>
