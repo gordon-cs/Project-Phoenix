@@ -8,13 +8,10 @@
 }
 
 @section Styles {
-    @Styles.Render("~/bundles/page_specific/login")
+    @Styles.Render("~/bundles/page_specific/css/login")
 }
 
 <div class="view center-content-col">
-    <h2>
-        Login
-    </h2>
     @using (Html.BeginForm(actionName: "Authenticate", controllerName: "Login", method: FormMethod.Post))
     {
 <!-- Anti forgery token to prevent CSRF attacks, since authentication token is stored in a cookie-->

@@ -147,6 +147,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\LogoutController.cs" />
     <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RCIInputController.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
@@ -188,6 +189,7 @@
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
+    <Content Include="Scripts\logout.js" />
     <Content Include="Scripts\rci-input.js" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />
@@ -227,6 +229,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="css\third_party\" />
+    <Folder Include="Views\Logout\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -253,7 +256,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>63344</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:63344/</IISUrl>
+          <IISUrl>http://localhost:63334/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
