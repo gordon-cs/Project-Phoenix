@@ -51,12 +51,23 @@ namespace Phoenix.Controllers
 
             // TempData stores object, so always cast to string.
             var strID = (string)TempData["id"];
+            var strBuilding = (string)TempData["building"];
+            // Get room number as well
 
             var RCIs =
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
                 where account.ID_NUM == strID && personalRCI.Current == true
                 select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
+
+            // Check if current RCI corresponds to user's current building, as defined in RoomAssign
+            var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == strBuilding);
+
+            if (!RCIsForCurrentBuilding.Any())
+            {
+                // create an RCI
+            }
+
 
             var buildingCode = RCIs.FirstOrDefault().BuildingCode.ToString();
             var roomNumber = RCIs.FirstOrDefault().RoomNumber.ToString();
@@ -66,7 +77,7 @@ namespace Phoenix.Controllers
                 var commonAreaRCIs =
                     from tempCommonAreaRCI in db.RCI
                     where tempCommonAreaRCI.RoomNumber == roomNumber && tempCommonAreaRCI.BuildingCode == buildingCode
-                    && tempCommonAreaRCI.GordonID == null
+                    && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.Current == true
                     select new HomeRCIViewModel
                     {
                         BuildingCode = tempCommonAreaRCI.BuildingCode,
@@ -74,6 +85,12 @@ namespace Phoenix.Controllers
                         FirstName = "Common",
                         LastName = "RCI"
                     };
+
+                if (!commonAreaRCIs.Any())
+                {
+                    // generate a common area RCI
+                    // cut off letter from room number
+                }
 
                 RCIs = RCIs.Concat(commonAreaRCIs);
             }
