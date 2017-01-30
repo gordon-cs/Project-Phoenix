@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 
 using Phoenix.Models;
@@ -52,7 +53,7 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var strID = (string)TempData["id"];
             var strBuilding = (string)TempData["building"];
-            // Get room number as well
+            var strRoomNumber = (string)TempData["room"];
 
             var RCIs =
                 from personalRCI in db.RCI
@@ -60,23 +61,20 @@ namespace Phoenix.Controllers
                 where account.ID_NUM == strID && personalRCI.Current == true
                 select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
 
-            // Check if current RCI corresponds to user's current building, as defined in RoomAssign
-            var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == strBuilding);
+            // Check if current RCI corresponds to user's current building and room, as defined in RoomAssign
+            var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == strBuilding && m.RoomNumber == strRoomNumber);
 
             if (!RCIsForCurrentBuilding.Any())
             {
-                // create an RCI
+                GenerateRCI(strBuilding, strRoomNumber, strID);
             }
 
-
-            var buildingCode = RCIs.FirstOrDefault().BuildingCode.ToString();
-            var roomNumber = RCIs.FirstOrDefault().RoomNumber.ToString();
-
-            if (buildingCode.Equals("BRO") || buildingCode.Equals("TAV")) // We have not yet accounted for FERRIN!
+            if (strBuilding.Equals("BRO") || strBuilding.Equals("TAV") || 
+                (strBuilding.Equals("FER") && (strRoomNumber.StartsWith("L"))))
             {
                 var commonAreaRCIs =
                     from tempCommonAreaRCI in db.RCI
-                    where tempCommonAreaRCI.RoomNumber == roomNumber && tempCommonAreaRCI.BuildingCode == buildingCode
+                    where tempCommonAreaRCI.RoomNumber == strRoomNumber && tempCommonAreaRCI.BuildingCode == strBuilding
                     && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.Current == true
                     select new HomeRCIViewModel
                     {
@@ -86,10 +84,18 @@ namespace Phoenix.Controllers
                         LastName = "RCI"
                     };
 
+                // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
                 if (!commonAreaRCIs.Any())
                 {
-                    // generate a common area RCI
-                    // cut off letter from room number
+                    if (strBuilding.Equals("FER")) // For Ferrin, and L precedes room number
+                    {
+                        strRoomNumber = strRoomNumber.TrimStart(new char[] { 'L' });
+                    }
+                    else // For Bromley and Tavilla, letter succeeds number
+                    {
+                        strRoomNumber = strRoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+                    }    
+                    GenerateRCI(strBuilding, strRoomNumber);
                 }
 
                 RCIs = RCIs.Concat(commonAreaRCIs);
@@ -139,5 +145,19 @@ namespace Phoenix.Controllers
         }
 
         // Potentially later: admin option that can view all RCI's for all buildings
+
+        public void GenerateRCI(string buildingCode, string roomNumber, string id = null )
+        {
+            var newRCI = new RCI();
+            newRCI.GordonID = id;
+            newRCI.BuildingCode = buildingCode;
+            newRCI.RoomNumber = roomNumber;
+            newRCI.Current = true;
+            newRCI.CreationDate = DateTime.Now;
+
+            db.RCI.Add(newRCI);
+            db.SaveChanges();
+
+        }
     }
 }
