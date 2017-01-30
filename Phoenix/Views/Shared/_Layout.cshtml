@@ -3,19 +3,26 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online RCI -@ViewBag.Title</title>
+    <title>Online RCI - @ViewBag.Title</title>
     @Styles.Render("~/bundles/css")
     @RenderSection("Styles", required: false)
-    <script src="https://use.fontawesome.com/d87ebd901b.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     @Scripts.Render("~/bundles/js/jquery")
     <div id="page-container">
         <header id="header">
+            @if (ViewBag.MenuExists != null)
+            {
+                <div class="view-drawer">
+                    <i class="material-icons">menu</i>
+                </div>
+            }
             <div class="view-title">
                 <h1>@ViewBag.ViewTitle</h1>
             </div>
         </header>
+        @RenderSection("Menu", false)
         <div id="content">
             @RenderBody()
         </div>
