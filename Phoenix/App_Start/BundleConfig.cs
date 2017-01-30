@@ -17,7 +17,7 @@ namespace Phoenix
 
             bundles.Add(new ScriptBundle("~/bundles/js/rci").Include(
                         "~/Scripts/logout.js",
-                        "~/Scripts/drawer-menu.js",
+                        "~/Scripts/dom-manipulation.js",
                         "~/Scripts/rci-input.js"));
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
