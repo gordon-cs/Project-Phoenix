@@ -4,7 +4,6 @@ using System.Web.Mvc;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
-using System.Diagnostics;
 
 namespace Phoenix.Controllers
 {
