@@ -7,6 +7,10 @@
  *
  * Header layout
  * ............. view-title
+ * ............. view-drawer
+ *
+ * Navigation layout 
+ * ............. Slide in menu
  *
  * Content layout
  * ............. view
@@ -35,6 +39,8 @@
  * .............. login-form
  *
  * MISC - Anything layout related, that doesn't fit above
+ * 
+ * MEDIA QUERIES
  */
 
 #page-container {
@@ -48,7 +54,7 @@
 /***************************/
 #header {
     align-items: center;
-    box-shadow: 0 0 3px;
+    box-shadow: 0 3px 4px 0 #ddd;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -58,9 +64,31 @@
 }
 
     .view-title {
-        width: 100%;
-        text-align:center;
+        flex: 1;
+        padding: 0 10px;
     }
+
+    .view-drawer {
+        padding: 0 10px;
+    }
+
+/***************************/
+/******Navigation Menu******/
+/***************************/
+
+.drawer-menu {
+    box-shadow: 0 0 5px 0 #ddd;
+    display:none;
+    margin: 0 auto;
+    width: 90%;
+    z-index: 200;
+}
+.drawer-menu-item {
+    list-style: none;
+    margin: 0;
+    padding: 0.5em;
+}
+
 
 /***************************/
 /******CONTENT ELEMENTS*****/
@@ -72,7 +100,7 @@
     .view { }
 
     .pane {
-        box-shadow: 0 0 3px;
+        box-shadow: 0 0 5px 0 #ddd;
         padding: 7px;
         margin: 14px 7px;
      }
@@ -137,6 +165,7 @@ button {
  * main element e.g. labels, icons etc..
  */
 .divAddOn {
+    box-shadow: 0 0 3px 0 #ddd;
     display: flex;
 }
 
@@ -315,3 +344,20 @@ div.icon-label {
 /***************************/
 /***********MISC************/
 /***************************/
+
+
+
+
+/****************************/
+/******MEDIA QUERIES*********/
+/****************************/
+
+
+@media screen and (min-width: 768px){
+
+    #page-container{
+        box-shadow: 0 0 3px #ccc;
+        margin: 0 auto;
+        width: 750px;
+    }
+}

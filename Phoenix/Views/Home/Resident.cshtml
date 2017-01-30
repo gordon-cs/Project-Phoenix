@@ -4,10 +4,17 @@
 @{
     ViewBag.Title = "RCI-Dashboard";
     ViewBag.ViewTitle = "RCI Dashboard";
+    ViewBag.MenuExists = "T";
 }
 
 @section Styles {
     @Styles.Render("~/bundles/page_specific/css/dashboard")
+}
+
+@section Menu {
+    <ul class="drawer-menu">
+        <li class="drawer-menu-item logout-button">Logout</li>
+    </ul>
 }
 
 <div class="view">
@@ -23,19 +30,11 @@
                     <p>@rci.FirstName @rci.LastName</p>
                 </div>
                 <div class="divAddOn-item">
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    <i class="material-icons">mode_edit</i>
                 </div>
             </div>
         }
     </div> 
-
-    <div class="pane">
-        <div class="button-group">
-            <div class="button-group-element logout-button">
-                Logout
-            </div>
-        </div>
-    </div>
 </div>
 
 

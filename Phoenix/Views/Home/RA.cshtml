@@ -3,10 +3,17 @@
 @{
     ViewBag.Title = "RCI-Dashboard";
     ViewBag.ViewTitle = "RCI Dashboard";
+    ViewBag.MenuExists = "T";
 }
 
 @section Styles {
     @Styles.Render("~/bundles/page_specific/css/dashboard")
+}
+
+@section Menu {
+<ul class="drawer-menu">
+    <li class="drawer-menu-item logout-button">Logout</li>
+</ul>
 }
 
 
@@ -17,7 +24,7 @@
         </div>
         <div class="divAddOn">
             <input class="divAddOn-field" type="text" placeholder="Search..." />
-            <div class="divAddOn-item"><i class="fa fa-search" aria-hidden="true"></i></div>
+            <div class="divAddOn-item"><i class="material-icons">search</i></div>
         </div>
         <div class="button-group">
             <div class="button-group-element">
@@ -35,23 +42,15 @@
                     <p>@rci.FirstName @rci.LastName</p>
                 </div>
                 <div class="divAddOn-item">
-                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    <i class="material-icons">mode_edit</i>
                 </div>
                 <div class="divAddOn-item">
-                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                    <i class="material-icons">rowing</i>
                 </div>
                 <div class="divAddOn-item">
-                    <i class="fa fa-times" aria-hidden="true"></i>
+                    <i class="material-icons">delete</i>
                 </div>
             </div>
         }
     </div> 
-
-    <div class="pane">
-        <div class="button-group logout-button">
-            <div class="button-group-element">
-                Logout
-            </div>
-        </div>
-    </div>
 </div>
