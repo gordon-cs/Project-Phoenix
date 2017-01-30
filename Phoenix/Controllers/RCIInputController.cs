@@ -24,16 +24,26 @@ namespace Phoenix.Controllers
             db = new Models.RCIContext();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
             Debug.WriteLine("Reached Index Method for RCIInput Controller");
 
             // This is how we access items set in the filter.
-            ViewBag.Name = TempData["user"];
+            var gordon_id = (string)TempData["id"];
 
-            var resRCI = db.RCI.FirstOrDefault();
-
-            return View(resRCI);
+            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            if (rci.GordonID == null) // A common area rci
+            {
+                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
+            }
+            else
+            {
+                var name = db.Account.Where(m => m.ID_NUM == rci.GordonID)
+                    .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
+                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
+            }
+            
+            return View(rci);
         }
 
         /// <summary>
