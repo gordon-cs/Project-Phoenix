@@ -20,5 +20,7 @@ namespace Phoenix.Models
         public string DamageType { get; set; }
 
         public int RCIComponentID { get; set; }
+
+        public virtual RCIComponent RCIComponent { get; set; }
     }
 }
