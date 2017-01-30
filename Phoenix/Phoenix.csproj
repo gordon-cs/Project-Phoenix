@@ -191,6 +191,7 @@
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
+    <Content Include="Scripts\drawer-menu.js" />
     <Content Include="Scripts\rci-input.js" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />
