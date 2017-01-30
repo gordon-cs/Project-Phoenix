@@ -2,6 +2,7 @@
 {
     public class HomeRCIViewModel
     {
+        public int RCIID { get; set; }
         public string BuildingCode { get; set; }
         public string RoomNumber { get; set; }
         public string FirstName { get; set; }
