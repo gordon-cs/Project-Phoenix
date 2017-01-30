@@ -22,9 +22,11 @@
                     <p>@rci.BuildingCode @rci.RoomNumber</p>
                     <p>@rci.FirstName @rci.LastName</p>
                 </div>
-                <div class="divAddOn-item">
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                </div>
+                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = rci.RCIID })">
+                    <div>
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </div>
+                </a>
             </div>
         }
     </div> 
