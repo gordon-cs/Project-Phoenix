@@ -6,6 +6,8 @@ using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
 using System.Diagnostics;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Phoenix.Controllers
 {
@@ -66,7 +68,8 @@ namespace Phoenix.Controllers
 
             if (!RCIsForCurrentBuilding.Any())
             {
-                GenerateRCI(strBuilding, strRoomNumber, strID);
+                var rciId = GenerateRCI(strBuilding, strRoomNumber, strID);
+                AddRCIComponents(rciId, "dorm room");
             }
 
             if (strBuilding.Equals("BRO") || strBuilding.Equals("TAV") || 
@@ -95,7 +98,8 @@ namespace Phoenix.Controllers
                     {
                         strRoomNumber = strRoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
                     }    
-                    GenerateRCI(strBuilding, strRoomNumber);
+                    var rciId = GenerateRCI(strBuilding, strRoomNumber);
+                    AddRCIComponents(rciId, "common area");
                 }
 
                 RCIs = RCIs.Concat(commonAreaRCIs);
@@ -146,7 +150,7 @@ namespace Phoenix.Controllers
 
         // Potentially later: admin option that can view all RCI's for all buildings
 
-        public void GenerateRCI(string buildingCode, string roomNumber, string id = null )
+        public int GenerateRCI(string buildingCode, string roomNumber, string id = null )
         {
             var newRCI = new RCI();
             newRCI.GordonID = id;
@@ -158,6 +162,32 @@ namespace Phoenix.Controllers
             db.RCI.Add(newRCI);
             db.SaveChanges();
 
+            return newRCI.RCIID;
+
+        }
+
+        public void AddRCIComponents(int rciId, string roomType)
+        {
+            var componentNames = new List<string>();
+            if (roomType.Equals("common area"))
+            {
+                componentNames.AddRange(new string[]{ "Carpet", "Couch", "Sink",
+                    "Living room table", "Kitchen table", "Kitchen Chairs"});
+            }
+            else // for now, just generic dorm; will add more checks once we've determined which components go where
+            {
+                componentNames.AddRange(new string[] { "Bed", "Carpet", "Desk", "Desk Chair",
+                    "Dresser", "Wall", "Wardrobe" });
+;           }
+            foreach(var name in componentNames)
+            {
+                var newComponent = new RCIComponent();
+                newComponent.RCIComponentName = name.ToString();
+                newComponent.RCIID = rciId;
+
+                db.RCIComponent.Add(newComponent);
+                db.SaveChanges();
+            }
         }
     }
 }
