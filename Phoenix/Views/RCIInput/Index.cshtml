@@ -2,8 +2,16 @@
 
 @{
     ViewBag.Title = "Damage Input";
+    ViewBag.MenuExists = "T";
 }
 
+@section Styles {
+    @Styles.Render("~/bundles/page_specific/css/rci-input")
+}
+
+@section Menu{
+    
+}
 <div class="view">
     @foreach(var component in Model.RCIComponent)
     {
@@ -30,7 +38,7 @@
                 </div>
                 <div class="div-list">
                     <div class="div-list-toggle icon-label">
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
                         <span>Hide/Show Entered Damages</span>
                     </div>
                     @foreach (var damage in component.Damage)

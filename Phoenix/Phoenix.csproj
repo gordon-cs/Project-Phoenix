@@ -177,6 +177,7 @@
   <ItemGroup>
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
+    <Content Include="css\rci-input.css" />
     <Content Include="css\site-colors.css" />
     <Content Include="css\site-layout.css" />
     <Content Include="css\site-typography.css" />
