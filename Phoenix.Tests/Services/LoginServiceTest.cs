@@ -11,7 +11,7 @@ namespace Phoenix.Tests.Services
         LoginService loginService = new LoginService();
 
         [TestMethod]
-        public void Given_ADContext_When_ValidUsername_Then_ReturnUserEntry()
+        public void FindUser_ValidUsername_ReturnUserEntry()
         {
             // Arrange
             var ADContext = loginService.ConnectToADServer();
@@ -25,7 +25,7 @@ namespace Phoenix.Tests.Services
         }
 
         [TestMethod]
-        public void Given_ADContext_When_InvalidUsername_Then_ReturnNull()
+        public void FindUser_InvalidUsername_ReturnNull()
         {
             // Arrange
             var ADContext = loginService.ConnectToADServer();
@@ -42,6 +42,7 @@ namespace Phoenix.Tests.Services
         // gets an invalid ADContext. But I think we can eliminate this test b/c in 
         // LoginController we check that ADContext is not null beforehand
         [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
         public void Given_InvalidADContext_When_ValidUsername_Then_ReturnNull()
         {
             // Arrange
@@ -52,11 +53,10 @@ namespace Phoenix.Tests.Services
             var result = loginService.FindUser(username, ADContext);
 
             // Assert
-            Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void Given_ADContext_and_ValidUserEntry_When_ValidPassword_Then_ReturnNull()
+        public void IsValidUser_ValidUserEntry_ValidPassword_ReturnTrue()
         {
             // Arrange
             var ADContext = loginService.ConnectToADServer();
@@ -72,7 +72,7 @@ namespace Phoenix.Tests.Services
         }
 
         [TestMethod]
-        public void Given_ADContext_and_ValidUserEntry_When_InValidPassword_Then_ReturnNull()
+        public void IsValidUser_InValidPassword_ReturnFalse()
         {
             // Arrange
             var ADContext = loginService.ConnectToADServer();
