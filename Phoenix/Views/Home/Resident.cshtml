@@ -1,25 +1,40 @@
 ﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRCIViewModel>
 
+
 @{
-    ViewBag.Title = "MyRCIs";
+    ViewBag.Title = "RCI-Dashboard";
+    ViewBag.ViewTitle = "RCI Dashboard";
+    ViewBag.MenuExists = "T";
 }
 
 @section Styles {
-    @Styles.Render("~/Content/my_rci.css")
+    @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
 
-<div class="rci-all container">
-    <h2>MyRCIs</h2>
-    @foreach (var rci in Model)
-    {
-        <div class="rci-tab row">
-            <div class="col-md-2 col-sm-6 col-xs-12">@rci.BuildingCode @rci.RoomNumber</div>
-            <div class="col-md-3 col-sm-6 col-xs-12">@rci.FirstName @rci.LastName</div>
-            <div class="col-md-3 col-sm-6 col-xs-12">Due: 09/16/2016</div>
-            <div class="col-md-3 col-sm-6 col-xs-12">Saved</div>
-            <div><span class="col-md-1 col-sm-6 col-xs-12 glyphicon glyphicon-pencil"></span></div>
+@section Menu {
+    <ul class="drawer-menu">
+        <li class="drawer-menu-item logout-button">Logout</li>
+    </ul>
+}
+
+<div class="view">
+    <div class="pane">
+        <div>
+            My RCIs
         </div>
-    }
-    
+        @foreach (var rci in Model)
+        {
+            <div class="divAddOn">
+                <div class="divAddOn-field">
+                    <p>@rci.BuildingCode @rci.RoomNumber</p>
+                    <p>@rci.FirstName @rci.LastName</p>
+                </div>
+                <div class="divAddOn-item">
+                    <i class="material-icons">mode_edit</i>
+                </div>
+            </div>
+        }
+    </div> 
 </div>
+
 
