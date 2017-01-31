@@ -23,6 +23,7 @@
  * ............. ul
  * ............. input 
  * ............. button
+ * ............. i 
  *
  * Altering initial state of elements
  * ............. hide
@@ -150,7 +151,9 @@ button {
      margin: 0;
  }
 
-
+i {
+    vertical-align: middle;
+}
 /***************************/
 /******CUSTOM ELEMENTS******/
 /***************************/
@@ -164,33 +167,38 @@ button {
  * main element e.g. labels, icons etc..
  */
 .divAddOn {
+    vertical-align: baseline;
     box-shadow: 0 0 3px 0 #ddd;
     display: flex;
 }
 
 .divAddOn-field {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     flex: 1 1 auto;
-}
-
-.divAddOn-field:not(:first-child) {
-    border-left: 0;
-}
-
-.divAddOn-field:not(:last-child) {
-    border-right: 0;
-}
-
-.divAddOn-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 40px;
 }
 
 .divAddOn-field,
 .divAddOn-item {
-    border: 1px solid #ccc;
     padding: 0.5em 0.5em;
+}
+
+.divAddOn-item {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.divAddOn-item:last-child {
+    border-right: 1px solid #ccc;
+}
+
+.divAddOn-field:last-child {
+    border-right: 1px solid #ccc;
 }
 
 .divAddOn-field:first-child,

@@ -55,7 +55,7 @@ namespace Phoenix.Controllers
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
                 where account.ID_NUM == strID && personalRCI.Current == true
-                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
+                select new HomeRCIViewModel { RCIID = personalRCI.RCIID, BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
 
             var buildingCode = RCIs.FirstOrDefault().BuildingCode.ToString();
             var roomNumber = RCIs.FirstOrDefault().RoomNumber.ToString();
@@ -68,6 +68,7 @@ namespace Phoenix.Controllers
                     && tempCommonAreaRCI.GordonID == null
                     select new HomeRCIViewModel
                     {
+                        RCIID = tempCommonAreaRCI.RCIID,
                         BuildingCode = tempCommonAreaRCI.BuildingCode,
                         RoomNumber = tempCommonAreaRCI.RoomNumber,
                         FirstName = "Common",
@@ -94,7 +95,7 @@ namespace Phoenix.Controllers
                 from account in rci.DefaultIfEmpty()
                 where personalRCI.BuildingCode == strBuilding
                 && personalRCI.Current == true
-                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname };
+                select new HomeRCIViewModel { RCIID = personalRCI.RCIID, BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname };
 
             return View(RCIs);
         }
@@ -115,7 +116,7 @@ namespace Phoenix.Controllers
                 from account in rci.DefaultIfEmpty()
                 where strBuildings.Contains(personalRCI.BuildingCode) 
                 && personalRCI.Current == true
-                select new HomeRCIViewModel { BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname};
+                select new HomeRCIViewModel { RCIID = personalRCI.RCIID, BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname};
             
             return View(RCIs);
         }

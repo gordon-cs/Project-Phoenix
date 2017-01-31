@@ -16,7 +16,7 @@ namespace Phoenix
 
             bundles.Add(new ScriptBundle("~/bundles/js/rci").Include(
                         "~/Scripts/logout.js",
-                        "~/Scripts/drawer-menu.js",
+                        "~/Scripts/dom-manipulation.js",
                         "~/Scripts/rci-input.js"));
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
@@ -34,6 +34,9 @@ namespace Phoenix
 
             bundles.Add(new StyleBundle("~/bundles/page_specific/css/dashboard").Include(
                         "~/css/dashboard.css"));
+
+            bundles.Add(new StyleBundle("~/bundles/page_specific/css/rci-input").Include(
+                        "~/css/rci-input.css"));
 
             // Page specific js
             bundles.Add(new ScriptBundle("~/bundles/page_specific/js/landing_page").Include(

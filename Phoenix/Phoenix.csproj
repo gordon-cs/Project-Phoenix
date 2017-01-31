@@ -177,6 +177,7 @@
   <ItemGroup>
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
+    <Content Include="css\rci-input.css" />
     <Content Include="css\site-colors.css" />
     <Content Include="css\site-layout.css" />
     <Content Include="css\site-typography.css" />
@@ -190,7 +191,7 @@
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
-    <Content Include="Scripts\drawer-menu.js" />
+    <Content Include="Scripts\dom-manipulation.js" />
     <Content Include="Scripts\rci-input.js" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />
@@ -257,7 +258,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>63344</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:63334/</IISUrl>
+          <IISUrl>http://localhost:63364/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

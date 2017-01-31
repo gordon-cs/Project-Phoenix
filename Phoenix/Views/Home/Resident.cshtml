@@ -29,9 +29,11 @@
                     <p>@rci.BuildingCode @rci.RoomNumber</p>
                     <p>@rci.FirstName @rci.LastName</p>
                 </div>
-                <div class="divAddOn-item">
-                    <i class="material-icons">mode_edit</i>
-                </div>
+                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = rci.RCIID })">
+                    <div>
+                        <i class="material-icons">mode_edit</i>
+                    </div>
+                </a>
             </div>
         }
     </div> 

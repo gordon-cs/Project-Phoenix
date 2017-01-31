@@ -24,6 +24,16 @@ namespace Phoenix.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<RCI>()
+                .HasMany(e => e.RCIComponent)
+                .WithRequired(e => e.RCI)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<RCIComponent>()
+                .HasMany(e => e.Damage)
+                .WithRequired(e => e.RCIComponent)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Account>()
                 .Property(e => e.ID_NUM)
                 .IsUnicode(false);
