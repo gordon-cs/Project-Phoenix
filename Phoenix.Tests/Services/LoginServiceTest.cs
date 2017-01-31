@@ -86,5 +86,45 @@ namespace Phoenix.Tests.Services
             // Assert
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void GetRole_ValidRACredentials_ReturnRAasRole()
+        {
+            // Arrange
+            var id = "999999097"; // ID of 360.StudentTest
+
+            // Act
+            var result = loginService.GetRole(id);
+
+            // Assert 
+            Assert.AreEqual("RA", result);
+        }
+
+        [TestMethod]
+        public void GetRole_ValidRDCredentials_ReturnRDasRole()
+        {
+            // Arrange
+            var id = "999999098";
+
+            // Act
+            var result = loginService.GetRole(id);
+
+            // Assert
+            Assert.AreEqual("RD", result);
+        }
+
+        [TestMethod]
+        public void GetRole_ResidentCredentials_ReturnResidentAsRole()
+        {            
+            // Arrange
+            var id = "50169203";
+
+            // Act
+            var result = loginService.GetRole(id);
+
+            // Assert
+            Assert.AreEqual("Resident", result);
+
+        }
     }
 }

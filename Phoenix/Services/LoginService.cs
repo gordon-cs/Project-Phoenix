@@ -74,8 +74,8 @@ namespace Phoenix.Services
             bool isAdmin = false;
 
 
-            var role = getRole(id);
-            var building = getBuilding(id);
+            var role = GetRole(id);
+            var building = GetBuilding(id);
 
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
@@ -108,7 +108,7 @@ namespace Phoenix.Services
         /*
          * Get the role of a user
          */
-        public string getRole(string id)
+        public string GetRole(string id)
         {
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
@@ -127,7 +127,7 @@ namespace Phoenix.Services
         /*
          * Get the building a user lives in.
          */
-        public string getBuilding(string id)
+        public string GetBuilding(string id)
         {
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
