@@ -186,6 +186,70 @@ namespace Phoenix.Tests.Services
 
         }
 
+        [TestMethod]
+        public void GetBuiling_ValidRAID_ReturnCorrectBuilding()
+        {
+            // Arrange 
+            var id = "999999097"; // ID of 360.StudentTest
+
+            // Act 
+            var result = loginService.GetBuilding(id);
+
+            // Assert
+            Assert.IsTrue(result == "BRO");
+        }
+
+        [TestMethod]
+        public void GetBuiling_ValidRDID_ReturnCorrectBuilding()
+        {
+            // Arrange 
+            var id = "999999098"; // ID of 360.StudentStaff
+
+            // Act 
+            var result = loginService.GetBuilding(id);
+
+            // Assert
+            Assert.IsTrue(result == "WIL,BRO");
+        }
+
+        [TestMethod]
+        public void GetBuiling_ValidStudentID_ReturnCorrectBuilding()
+        {
+            // Arrange 
+            var id = "50169203";
+
+            // Act 
+            var result = loginService.GetBuilding(id);
+
+            // Assert
+            Assert.IsTrue(result == "TAV");
+        }
+
+        [TestMethod]
+        public void GetBuiling_ValidNonResidentID_ReturnNonResident()
+        {
+            // Arrange 
+            var id = "50131985"; // ID of someone living off campus/ random person
+
+            // Act 
+            var result = loginService.GetBuilding(id);
+
+            // Assert
+            Assert.IsTrue(result == "Non-Resident");
+        }
+
+        [TestMethod]
+        public void GetBuiling_NullID_ReturnNull()
+        {
+            // Arrange 
+            string id = null; 
+
+            // Act 
+            var result = loginService.GetBuilding(id);
+
+            // Assert
+            Assert.IsNull(result);
+        }
 
     }
 }
