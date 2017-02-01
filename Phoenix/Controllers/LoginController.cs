@@ -80,6 +80,7 @@ namespace Phoenix.Controllers
                             var jwtToken = loginService.GenerateToken(username, userEntry.Name, userEntry.EmployeeId);
                             HttpCookie tokenCookie = new HttpCookie("Authentication");
                             tokenCookie.Value = jwtToken;
+                            tokenCookie.Expires = DateTime.Now.AddHours(2.0);
                             Response.Cookies.Add(tokenCookie);
 
                             _ADContext.Dispose();

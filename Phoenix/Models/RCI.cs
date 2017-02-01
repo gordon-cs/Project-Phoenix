@@ -9,6 +9,12 @@ namespace Phoenix.Models
     [Table("RCI")]
     public partial class RCI
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public RCI()
+        {
+            RCIComponent = new HashSet<RCIComponent>();
+        }
+
         public int RCIID { get; set; }
 
         public bool? Current { get; set; }
@@ -26,5 +32,8 @@ namespace Phoenix.Models
 
         [StringLength(50)]
         public string GordonID { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<RCIComponent> RCIComponent { get; set; }
     }
 }

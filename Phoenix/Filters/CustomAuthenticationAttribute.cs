@@ -56,6 +56,7 @@ namespace Phoenix.Filters
             filterContext.Controller.TempData["role"] = decodedJson["role"].ToString();
             filterContext.Controller.TempData["id"] = decodedJson["gordonId"].ToString();
             filterContext.Controller.TempData["building"] = decodedJson["building"].ToString();
+            filterContext.Controller.TempData["room"] = decodedJson["room"].ToString();
 
            
             Debug.WriteLine(decodedJson.ToString());

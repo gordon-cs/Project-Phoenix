@@ -1,50 +1,62 @@
-﻿@model Phoenix.Models.ResidentRCI
+﻿@model Phoenix.Models.RCI
 
 @{
     ViewBag.Title = "Damage Input";
+    ViewBag.MenuExists = "T";
 }
 
-<h3>@ViewBag.Title</h3>
-<form class=".rci-form">
-    @foreach (var component in Model.RCIComponent)
+@section Styles {
+    @Styles.Render("~/bundles/page_specific/css/rci-input")
+}
+
+@section Menu{
+    
+}
+<div class="view">
+    @foreach(var component in Model.RCIComponent)
     {
-        var componentID = component.RCIComponentID;
-        <div class="well">
-            <h3>@component.RCIComponentName</h3>
-            <div class="panel panel-default">
-                <div class="panel-heading"><h4>Damages</h4></div>
-                    <div class="panel-body">
-                    <div id="existing-damages-@componentID">
-                        @foreach (var existingDamage in component.Damage)
-                {
-                            <div>
-                                <p>@existingDamage.DamageDescription | <a onclick="deleteExistingDamages(event,this,@existingDamage.DamageID);">Delete</a></p>
-                                <input type="hidden" value="@existingDamage.DamageDescription" />
-                            </div>
-
-                        }
-                    </div>
-                    <div id="new-damages-@componentID">
-
-                    </div>
+        <div class="pane">
+            <h2 class="pane-title div-list-toggle">@component.RCIComponentName</h2>
+            <div class="pane-content">
+                <div class="divAddOn">
+                    <label class="file-input-label divAddOn-field" for="dmg-input-@component.RCIComponentID">
+                        <i class="material-icons">add_a_photo</i>
+                        <span>Take picture</span>
+                    </label>
+                    <span class="divAddOn-item">0 Picture(s)</span>
                 </div>
-            </div>
-
-            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapse-@component.RCIComponentName" aria-expanded="false" aria-controls="collapse-@component.RCIComponentName" onclick="setTimeout(function () { $('#text-input-@componentID').focus() }, 3000)">
-                +
-            </a>
-            <div class="collapse" id="collapse-@component.RCIComponentName">
-                <div class="sub-well well">
-                    <input type="text" class="form-control adding-damages" id="text-input-@componentID" placeholder="Add a damage description">
-                    <a class="btn btn-default" id="submit-text-input-@componentID" onclick="addDamage(@componentID);" data-toggle="collapse" href="#collapse-@component.RCIComponentName" aria-expanded="false" aria-controls="collapse-@component.RCIComponentName">OK</a>
+                <input id="dmg-input-@component.RCIComponentID" class="file-input" type="file" accept="image/*;capture=camera">
+                <div>
+                    <p>OR</p>
+                </div>
+                <div>
+                    <p>Describe the Damage:</p>
+                </div>
+                <div class="divAddOn">
+                    <input class="divAddOn-field" type="text" placeholder="Damage + Location" />
+                    <span class="divAddOn-item">Add</span>
+                </div>
+                <div class="div-list">
+                    <div class="div-list-toggle icon-label">
+                        <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
+                        <span>Hide/Show Entered Damages</span>
+                    </div>
+                    @foreach (var damage in component.Damage)
+                    {
+                        if (damage.DamageDescription != null)
+                        {
+                            <div class="divAddOn">
+                                <i class="fa fa-times divAddOn-item" aria-hidden="true"></i>
+                                <p class="divAddOn-field">@damage.DamageDescription</p>
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div>
-                      }
-    <div>
-        <input type="submit" value="Save" />
-        <button>Cancel</button>
+    }
+    <div class="distribute-evenly">
+        <button>Save</button>
+        <button>Next</button>
     </div>
-</form>
-
-@Scripts.Render("~/bundles/rci-input")
+ </div>

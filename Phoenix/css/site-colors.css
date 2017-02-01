@@ -1,0 +1,22 @@
+﻿/**
+ * Define website-wide colors.
+ * The goal is that all colors are specified
+ * in this file and nowhere else.
+ *
+ * That way, we can experiment with the look and feel
+ * by just changing one file.
+ */
+
+ body {
+     color: #31342b;
+ }
+
+ .file-input-label {
+     background-color: #31342b;
+     color: #fff;
+ }
+ 
+ button {
+     background-color: #fff;
+ }
+
