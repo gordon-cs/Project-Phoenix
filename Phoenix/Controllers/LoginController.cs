@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 using System.DirectoryServices.AccountManagement;
-using System.Linq;
-using Jose;
 using Phoenix.Models.ViewModels;
 using Phoenix.Services;
 using Phoenix.Models;
@@ -83,6 +80,7 @@ namespace Phoenix.Controllers
                             var jwtToken = loginService.GenerateToken(username, userEntry.Name, userEntry.EmployeeId);
                             HttpCookie tokenCookie = new HttpCookie("Authentication");
                             tokenCookie.Value = jwtToken;
+                            tokenCookie.Expires = DateTime.Now.AddHours(2.0);
                             Response.Cookies.Add(tokenCookie);
 
                             _ADContext.Dispose();

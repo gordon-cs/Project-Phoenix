@@ -1,0 +1,370 @@
+﻿/**
+ * PURPOSE
+ * Establish high-level layout that can
+ * be applied to the whole site.
+ *
+ * TABLE OF CONTENTS:
+ *
+ * Header layout
+ * ............. view-title
+ * ............. view-drawer
+ *
+ * Navigation layout 
+ * ............. Slide in menu
+ *
+ * Content layout
+ * ............. view
+ * ............. pane
+ *
+ * Footer layout
+ *
+ * Layout for Generic items:
+ * ............. paragraphs
+ * ............. ul
+ * ............. input 
+ * ............. button
+ * ............. i 
+ *
+ * Altering initial state of elements
+ * ............. hide
+ *
+ * Custom elements
+ * .............. divAddOn
+ * .............. buttonGroup
+ * .............. center contents
+ * .............. center contents column
+ * .............. div list
+ * .............. distribute evenly
+ * .............. icon-label
+ * .............. file input
+ * .............. login-form
+ *
+ * MISC - Anything layout related, that doesn't fit above
+ * 
+ * MEDIA QUERIES
+ */
+
+#page-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/***************************/
+/******HEADER ELEMENTS******/
+/***************************/
+#header {
+    align-items: center;
+    box-shadow: 0 3px 4px 0 #ddd;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    padding: 7px; 
+    width: 100%;
+}
+
+    .view-title {
+        flex: 1;
+        padding: 0 10px;
+    }
+
+    .view-drawer {
+        padding: 0 10px;
+    }
+
+/***************************/
+/******Navigation Menu******/
+/***************************/
+
+.drawer-menu {
+    box-shadow: 0 0 5px 0 #ddd;
+    display:none;
+    margin: 0 auto;
+    width: 90%;
+    z-index: 200;
+}
+.drawer-menu-item {
+    list-style: none;
+    margin: 0;
+    padding: 0.5em;
+}
+
+
+/***************************/
+/******CONTENT ELEMENTS*****/
+/***************************/
+#content {
+    width: 100%;
+}
+
+    .view { }
+
+    .pane {
+        padding: 7px;
+        margin: 14px 7px;
+     }
+
+        .pane-title {
+            padding: 7px;
+            text-align: center;
+        }
+        .pane-content {
+            padding: 7px;
+        }
+
+/***************************/
+/**********FOOTER***********/
+/***************************/
+#footer {
+    text-align: center;
+    min-height: 3em;
+}
+
+
+/****************************/
+/******GENERIC ELEMENTS******/
+/****************************/
+
+p {
+    padding: 3px 3px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 10px 10px;
+}
+
+input[type=text],
+input[type=password] {
+    display: block;
+    font-family: inherit;
+    font-size: 100%;
+}
+
+button {
+     display: block;
+     cursor: pointer;
+     font-size: 100%;
+     padding: 0.2em 1em;
+     text-align: center;
+     margin: 0;
+ }
+
+i {
+    vertical-align: middle;
+}
+/***************************/
+/******CUSTOM ELEMENTS******/
+/***************************/
+
+
+/* Div Add-on
+ * Helpful for placing icons on either side of a div.
+ * Place divAddOn class on container element.
+ * place divAddOn-field class on the main/important element within the container.
+ * place divAddOn-item class on supporting elements that you want to stay horizontal with the 
+ * main element e.g. labels, icons etc..
+ */
+.divAddOn {
+    vertical-align: baseline;
+    box-shadow: 0 0 3px 0 #ddd;
+    display: flex;
+}
+
+.divAddOn-field {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    flex: 1 1 auto;
+}
+
+.divAddOn-field,
+.divAddOn-item {
+    padding: 0.5em 0.5em;
+}
+
+.divAddOn-item {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.divAddOn-item:last-child {
+    border-right: 1px solid #ccc;
+}
+
+.divAddOn-field:last-child {
+    border-right: 1px solid #ccc;
+}
+
+.divAddOn-field:first-child,
+.divAddOn-item:first-child {
+  border-radius: 2px 0 0 2px;
+}
+
+.divAddOn-field:last-child,
+.divAddOn-item:last-child {
+  border-radius: 0 2px 2px 0;
+}
+
+/*
+ * Button Group
+ * A group of buttons. 
+ * Apply the class "button-group" to the parent element.
+ * Apply the class "button-group-element" to its children that will be part of the group of buttons.
+*/
+
+.button-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 0.5em;
+    
+}
+.button-group-element {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    flex: 1 1 auto;
+    padding: 0.3em;
+    text-align: center;
+}
+
+.button-group-element:last-child {
+    border-right: 1px solid #ccc;
+}
+/* 
+ * Center content in a div, both vertically and horizontally along a row 
+ */
+.center-content {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+/* 
+ * Center content in a div, both vertically and horizontally along a column 
+ */
+.center-content-col {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* A generic div-type wrapper to wrap divs in a list manner.
+ * Useful to mimic ul and li type things.
+ */
+.div-list {
+    margin: 5px 0;
+    padding: 0 0 0 10px;
+}
+
+.div-list > div {
+    margin: 10px 0;
+}
+
+
+/* Apply this to a element and all its children will be spaced out
+ * nicely
+ */
+.distribute-evenly {
+    align-items: center;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* A div that contains a label and its associated icon
+ */
+div.icon-label {
+    border: 0;
+    margin: 0;
+}
+
+
+/* Style file inputs
+ * It's almost impossible to style the actuall input box while retaining
+ * all functionality.
+ * The alternative is to make the input as small as possible and
+ * remove it from the flow.
+ * You then create a label element with a "for" attribute. The "for" attribute
+ * binds the label to the input. So now clicking on the label has the same functionality.
+ * as clicking on the input. You then style the label
+ */
+
+/* Removing input from flow */
+ .file-input {
+     width: 0.1px;
+     height: 0.1px;
+     opacity: 0;
+     overflow: hidden;
+     position: absolute;
+ }
+
+ /* Styling the label */
+ .file-input-label {
+     display: block;
+     padding: 7px 10px;
+ }
+
+
+ /* 
+  * Styling the login form
+  * Apply "login-container" to the parent form that holds the inputs and login button.
+  */
+
+ .login-container {
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     padding: 2em;
+     width: 100%;
+ }
+
+ .login-container  input[type=text],
+ .login-container  input[type=password] {
+     border: none;
+     padding: 0.5em 0.75em;
+
+ }
+
+.login-container > input[type=text] {
+     border: 1px solid #ccc;
+     border-radius: 4px 4px 0 0;
+}
+
+.login-container > input[type=password] {
+     border-right: 1px solid #ccc;
+     border-left: 1px solid #ccc; 
+}
+
+.login-container > button {
+     border: 1px solid #ccc;
+     border-radius: 0 0 3px 3px;
+     box-shadow: none;
+     width: 100%;  
+}
+/***************************/
+/***********MISC************/
+/***************************/
+
+
+
+
+/****************************/
+/******MEDIA QUERIES*********/
+/****************************/
+
+
+@media screen and (min-width: 768px){
+
+    #page-container{
+        box-shadow: 0 0 3px #ccc;
+        margin: 0 auto;
+        width: 750px;
+    }
+}
