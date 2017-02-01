@@ -38,6 +38,19 @@ namespace Phoenix.Tests.Services
             Assert.IsNull(result);
         }
 
+        [TestMethod]
+        public void FindUser_NullUsername_ReturnNull()
+        {
+            // Arrange
+            var ADContext = loginService.ConnectToADServer();
+            string username = null;
+            // Act
+            var result = loginService.FindUser(username, ADContext);
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
         // This test is currently failing, because an exception is thrown when FindUser
         // gets an invalid ADContext. But I think we can eliminate this test b/c in 
         // LoginController we check that ADContext is not null beforehand
@@ -88,6 +101,38 @@ namespace Phoenix.Tests.Services
         }
 
         [TestMethod]
+        public void IsValidUser_NullUsername_ReturnFalse()
+        {
+            // Arrange
+            var ADContext = loginService.ConnectToADServer();
+            string username = null;
+            var password = ""; // The password does not matter in this test case
+            var userEntry = loginService.FindUser(username, ADContext);
+
+            // Act
+            bool result = loginService.IsValidUser(username, password, ADContext);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void IsValidUser_NullPassword_ReturnFalse()
+        {
+            // Arrange
+            var ADContext = loginService.ConnectToADServer();
+            var username = ""; // The username does not matter in this test case
+            string password = null; 
+            var userEntry = loginService.FindUser(username, ADContext);
+
+            // Act
+            bool result = loginService.IsValidUser(username, password, ADContext);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
         public void GetRole_ValidRACredentials_ReturnRAasRole()
         {
             // Arrange
@@ -126,5 +171,21 @@ namespace Phoenix.Tests.Services
             Assert.AreEqual("Resident", result);
 
         }
+
+        [TestMethod]
+        public void GetRole_NullID_ReturnsNull()
+        {
+            // Arrange
+            string id = null ;
+
+            // Act
+            var result = loginService.GetRole(id);
+
+            // Assert
+            Assert.IsNull(result);
+
+        }
+
+
     }
 }
