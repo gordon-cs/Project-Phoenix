@@ -75,6 +75,8 @@ namespace Phoenix.Controllers
             if (strBuilding.Equals("BRO") || strBuilding.Equals("TAV") || 
                 (strBuilding.Equals("FER") && (strRoomNumber.StartsWith("L"))))
             {
+
+                strRoomNumber = strRoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
                 var commonAreaRCIs =
                     from tempCommonAreaRCI in db.RCI
                     where tempCommonAreaRCI.RoomNumber == strRoomNumber && tempCommonAreaRCI.BuildingCode == strBuilding
@@ -90,14 +92,7 @@ namespace Phoenix.Controllers
                 // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
                 if (!commonAreaRCIs.Any())
                 {
-                    if (strBuilding.Equals("FER")) // For Ferrin, and L precedes room number
-                    {
-                        strRoomNumber = strRoomNumber.TrimStart(new char[] { 'L' });
-                    }
-                    else // For Bromley and Tavilla, letter succeeds number
-                    {
-                        strRoomNumber = strRoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
-                    }    
+   
                     var rciId = GenerateRCI(strBuilding, strRoomNumber);
                     AddRCIComponents(rciId, "common area");
                 }
