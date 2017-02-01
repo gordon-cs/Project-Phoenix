@@ -5,9 +5,7 @@ using System.Web.Mvc;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
-using System.Diagnostics;
-using System.Collections;
-using System.Collections.Generic;
+using Phoenix.Services;
 
 namespace Phoenix.Controllers
 {
@@ -16,10 +14,12 @@ namespace Phoenix.Controllers
     {
         // RCI context wrapper. It can be considered to be an object that represents the database.
         private RCIContext db;
+        private DashboardService dashboardService;
 
         public HomeController()
         {
             db = new Models.RCIContext();
+            dashboardService = new DashboardService(db);
         }
 
         // GET: Home
@@ -61,64 +61,65 @@ namespace Phoenix.Controllers
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
                 where account.ID_NUM == strID && personalRCI.Current == true
-                select new HomeRCIViewModel { RCIID = personalRCI.RCIID, BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname, LastName = account.lastname };
+                select new HomeRCIViewModel
+                {
+                    RCIID = personalRCI.RCIID,
+                    BuildingCode = personalRCI.BuildingCode,
+                    RoomNumber = personalRCI.RoomNumber,
+                    FirstName = account.firstname,
+                    LastName = account.lastname
+                };
 
             // Check if current RCI corresponds to user's current building and room, as defined in RoomAssign
-            var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == strBuilding && m.RoomNumber == strRoomNumber);
+            //var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == strBuilding && m.RoomNumber == strRoomNumber);
 
-            if (!RCIsForCurrentBuilding.Any())
-            {
-                var rciId = GenerateRCI(strBuilding, strRoomNumber, strID);
-                AddRCIComponents(rciId, "dorm room");
-            }
 
-            if (strBuilding.Equals("BRO") || strBuilding.Equals("TAV") || 
-                (strBuilding.Equals("FER") && (strRoomNumber.StartsWith("L"))))
-            {
+            RCIs = (IQueryable<HomeRCIViewModel>)dashboardService.ValidateResidentsRCIsExistence(RCIs, strBuilding, strRoomNumber, strID);
 
-                strRoomNumber = strRoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
-                var commonAreaRCIs =
-                    from tempCommonAreaRCI in db.RCI
-                    where tempCommonAreaRCI.RoomNumber == strRoomNumber && tempCommonAreaRCI.BuildingCode == strBuilding
-                    && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.Current == true
-                    select new HomeRCIViewModel
-                    {
-                        RCIID = tempCommonAreaRCI.RCIID,
-                        BuildingCode = tempCommonAreaRCI.BuildingCode,
-                        RoomNumber = tempCommonAreaRCI.RoomNumber,
-                        FirstName = "Common",
-                        LastName = "RCI"
-                    };
-
-                // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
-                if (!commonAreaRCIs.Any())
-                {
-   
-                    var rciId = GenerateRCI(strBuilding, strRoomNumber);
-                    AddRCIComponents(rciId, "common area");
-                }
-
-                RCIs = RCIs.Concat(commonAreaRCIs);
-            }
-
-                return View(RCIs);
+            return View(RCIs);
         }
 
         // GET: Home/RA
         public ActionResult RA()
         {
-            // Display all RCI's for the corresponding building
-
             // TempData stores object, so always cast to string.
+            var strID = (string)TempData["id"];
             var strBuilding = (string)TempData["building"];
+            var strRoomNumber = (string)TempData["room"];
 
+            // Query just for the RA's own RCI
             var RCIs =
+                from personalRCI in db.RCI
+                join account in db.Account on personalRCI.GordonID equals account.ID_NUM
+                where account.ID_NUM == strID && personalRCI.Current == true
+                select new HomeRCIViewModel
+                {
+                    RCIID = personalRCI.RCIID,
+                    BuildingCode = personalRCI.BuildingCode,
+                    RoomNumber = personalRCI.RoomNumber,
+                    FirstName = account.firstname,
+                    LastName = account.lastname
+                };
+            // Verify that the RA actually has their own RCIs set up
+            dashboardService.ValidateResidentsRCIsExistence(RCIs, strBuilding, strRoomNumber, strID);
+
+            // Display all RCI's for the corresponding building
+            // Not sure if this will end up with duplicates for the RA's own RCI
+            var buildingRCIs =
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
                 from account in rci.DefaultIfEmpty()
-                where personalRCI.BuildingCode == strBuilding
-                && personalRCI.Current == true
-                select new HomeRCIViewModel { RCIID = personalRCI.RCIID, BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname };
+                where personalRCI.BuildingCode == strBuilding && personalRCI.Current == true
+                select new HomeRCIViewModel
+                {
+                    RCIID = personalRCI.RCIID,
+                    BuildingCode = personalRCI.BuildingCode,
+                    RoomNumber = personalRCI.RoomNumber,
+                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
+                    LastName = account.lastname == null ? "RCI" : account.lastname
+                };
+
+            RCIs = RCIs.Concat(buildingRCIs);
 
             return View(RCIs);
         }
@@ -139,51 +140,58 @@ namespace Phoenix.Controllers
                 from account in rci.DefaultIfEmpty()
                 where strBuildings.Contains(personalRCI.BuildingCode) 
                 && personalRCI.Current == true
-                select new HomeRCIViewModel { RCIID = personalRCI.RCIID, BuildingCode = personalRCI.BuildingCode, RoomNumber = personalRCI.RoomNumber, FirstName = account.firstname == null ? "Common Area" : account.firstname, LastName = account.lastname == null ? "RCI" : account.lastname};
+                select new HomeRCIViewModel
+                {
+                    RCIID = personalRCI.RCIID,
+                    BuildingCode = personalRCI.BuildingCode,
+                    RoomNumber = personalRCI.RoomNumber,
+                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
+                    LastName = account.lastname == null ? "RCI" : account.lastname
+                };
             
             return View(RCIs);
         }
 
         // Potentially later: admin option that can view all RCI's for all buildings
 
-        public int GenerateRCI(string buildingCode, string roomNumber, string id = null )
-        {
-            var newRCI = new RCI();
-            newRCI.GordonID = id;
-            newRCI.BuildingCode = buildingCode;
-            newRCI.RoomNumber = roomNumber;
-            newRCI.Current = true;
-            newRCI.CreationDate = DateTime.Now;
+        //public int GenerateRCI(string buildingCode, string roomNumber, string id = null )
+        //{
+        //    var newRCI = new RCI();
+        //    newRCI.GordonID = id;
+        //    newRCI.BuildingCode = buildingCode;
+        //    newRCI.RoomNumber = roomNumber;
+        //    newRCI.Current = true;
+        //    newRCI.CreationDate = DateTime.Now;
 
-            db.RCI.Add(newRCI);
-            db.SaveChanges();
+        //    db.RCI.Add(newRCI);
+        //    db.SaveChanges();
 
-            return newRCI.RCIID;
+        //    return newRCI.RCIID;
 
-        }
+        //}
 
-        public void AddRCIComponents(int rciId, string roomType)
-        {
-            var componentNames = new List<string>();
-            if (roomType.Equals("common area"))
-            {
-                componentNames.AddRange(new string[]{ "Carpet", "Couch", "Sink",
-                    "Living room table", "Kitchen table", "Kitchen Chairs"});
-            }
-            else // for now, just generic dorm; will add more checks once we've determined which components go where
-            {
-                componentNames.AddRange(new string[] { "Bed", "Carpet", "Desk", "Desk Chair",
-                    "Dresser", "Wall", "Wardrobe" });
-;           }
-            foreach(var name in componentNames)
-            {
-                var newComponent = new RCIComponent();
-                newComponent.RCIComponentName = name.ToString();
-                newComponent.RCIID = rciId;
+//        public void AddRCIComponents(int rciId, string roomType)
+//        {
+//            var componentNames = new List<string>();
+//            if (roomType.Equals("common area"))
+//            {
+//                componentNames.AddRange(new string[]{ "Carpet", "Couch", "Sink",
+//                    "Living room table", "Kitchen table", "Kitchen Chairs"});
+//            }
+//            else // for now, just generic dorm; will add more checks once we've determined which components go where
+//            {
+//                componentNames.AddRange(new string[] { "Bed", "Carpet", "Desk", "Desk Chair",
+//                    "Dresser", "Wall", "Wardrobe" });
+//;           }
+//            foreach(var name in componentNames)
+//            {
+//                var newComponent = new RCIComponent();
+//                newComponent.RCIComponentName = name.ToString();
+//                newComponent.RCIID = rciId;
 
-                db.RCIComponent.Add(newComponent);
-                db.SaveChanges();
-            }
-        }
+//                db.RCIComponent.Add(newComponent);
+//                db.SaveChanges();
+//            }
+//        }
     }
 }

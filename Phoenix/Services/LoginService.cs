@@ -12,9 +12,9 @@ namespace Phoenix.Services
     {
         private RCIContext db;
 
-        public LoginService()
+        public LoginService(RCIContext db)
         {
-            db = new Models.RCIContext();
+            this.db = db;
         }
 
         /*
@@ -40,6 +40,7 @@ namespace Phoenix.Services
          */
         public UserPrincipal FindUser(string username, PrincipalContext ADContext)
         {
+
             if (username.EndsWith("@gordon.edu"))
             {
                 username = username.Remove(username.IndexOf('@'));

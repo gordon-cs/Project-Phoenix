@@ -19,7 +19,7 @@ namespace Phoenix.Controllers
         public LoginController()
         {
             db = new Models.RCIContext();
-            loginService = new Services.LoginService();
+            loginService = new Services.LoginService(db);
         }
 
         // GET: Login
