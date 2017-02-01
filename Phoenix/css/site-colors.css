@@ -8,7 +8,17 @@
  */
 
  body {
+     background-color: #ebeaea;
      color: #31342b;
+ }
+
+ #header {
+     background-color: #B2BB1C; 
+     color: #014983;
+ }
+
+ #content {
+     background-color: #fff;
  }
 
  .file-input-label {
@@ -17,6 +27,28 @@
  }
  
  button {
-     background-color: #fff;
+     background-color: #014983;
+     color: #fff;
+ }
+
+ .dashboard-rci-list-header {
+     letter-spacing: .05em;
+    font-weight: normal;
+    color: #00AEEF;
+    font-style: italic;
+    background-color: white;
+ }
+
+ .pane-title {
+     color: #00AEEF;
+ }
+
+ .divAddOn-field {
+     background-color: #014983;
+     color: #fff;
+ }
+
+ a .material-icons {
+     color: #014983;
  }
 
