@@ -6,6 +6,8 @@ using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
 using System.Diagnostics;
+using System.Data.Entity.Validation;
+using System;
 
 namespace Phoenix.Controllers
 {
@@ -53,16 +55,16 @@ namespace Phoenix.Controllers
         /// <param name="rci">The data sent to the method.</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult SaveRCI(List<RCIForm> rci)
+        public ActionResult SaveRCI(RCIForm rci)
         {
             // Check if anything was submitted
             if (rci != null)
             {
                 var toAdd = new List<Damage>();
                 // Save of newly added components
-                foreach (var damage in rci)
+                foreach (var damage in rci.newDamages)
                 {
-                    var newDamage = new Damage { RCIComponentID = damage.name, DamageDescription = damage.value };
+                    var newDamage = new Damage { RCIComponentID = damage.componentId, DamageDescription = damage.damage, DamageType = "TEXT" };
                     toAdd.Add(newDamage);
                     //db.Damage.Add(newDamage);  
                 }
