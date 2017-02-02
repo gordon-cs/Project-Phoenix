@@ -10,9 +10,63 @@ namespace Phoenix.Services
     public class DashboardService
 {
         private RCIContext db; 
-        public DashboardService(RCIContext db)
+        public DashboardService()
         {
-            this.db = db;
+            db = new Models.RCIContext();
+        }
+
+        /*
+         * Get the RCI for an individual resident
+         * @params: id - resident's Gordon id
+         * @return: A collection of RCI View Models (which should contain only 1)
+         */ 
+        public IEnumerable<HomeRCIViewModel> GetRCIsForResident(string id)
+        {
+            var RCIs =
+                from personalRCI in db.RCI
+                join account in db.Account on personalRCI.GordonID equals account.ID_NUM
+                where account.ID_NUM == id && personalRCI.Current == true
+                select new HomeRCIViewModel
+                {
+                    RCIID = personalRCI.RCIID,
+                    BuildingCode = personalRCI.BuildingCode,
+                    RoomNumber = personalRCI.RoomNumber,
+                    FirstName = account.firstname,
+                    LastName = account.lastname
+                };
+            return RCIs;
+        }
+
+        /*
+         * Display all RCI's for the corresponding building 
+         */
+        public IEnumerable<HomeRCIViewModel> GetRCIsForBuilding(string[] buildingCode)
+        {
+            // Not sure if this will end up with duplicates for the RA's own RCI
+            var buildingRCIs =
+                from personalRCI in db.RCI
+                join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
+                from account in rci.DefaultIfEmpty()
+                where buildingCode.Contains(personalRCI.BuildingCode) && personalRCI.Current == true
+                select new HomeRCIViewModel
+                {
+                    RCIID = personalRCI.RCIID,
+                    BuildingCode = personalRCI.BuildingCode,
+                    RoomNumber = personalRCI.RoomNumber,
+                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
+                    LastName = account.lastname == null ? "RCI" : account.lastname
+                };
+            return buildingRCIs;
+        }
+
+        /*
+         * Resolve inconsistencies in RD building code naming conventions in the db
+         * @params: building code as it appears in CurrentRD table
+         * @return: building codes that correspond to RoomAssign and RCI tables
+         */ 
+        public string [] CollectRDBuildingCodes(string buildingCode)
+        {
+            return (string[])db.BuildingAssign.Where(b => b.Job_Title_Hall.Equals(buildingCode)).Select(b => b.BuildingCode).ToArray();
         }
 
         /*

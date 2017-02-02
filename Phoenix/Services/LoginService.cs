@@ -12,9 +12,9 @@ namespace Phoenix.Services
     {
         private RCIContext db;
 
-        public LoginService(RCIContext db)
+        public LoginService()
         {
-            this.db = db;
+            db = new Models.RCIContext();
         }
 
         /*
