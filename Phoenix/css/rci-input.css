@@ -3,3 +3,7 @@
 .pane {
     box-shadow: 0 0 5px 0 #ddd;
 }
+
+i {
+    cursor: pointer;
+}

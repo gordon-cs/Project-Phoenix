@@ -58,7 +58,7 @@ namespace Phoenix.Controllers
         public ActionResult SaveRCI(RCIForm rci)
         {
             // Check if anything was submitted
-            if (rci != null)
+            if (rci.newDamages != null)
             {
                 var toAdd = new List<Damage>();
                 // Save of newly added components
