@@ -1,5 +1,10 @@
 ﻿$("#save-button").click(save);
 
+window.onbeforeunload = function () {
+    save();
+    return null;
+}
+
 /* Save the damages in the RCI. Can be used in both regular save and auto save */
 function save() {
     let rci = {}
@@ -23,6 +28,8 @@ function save() {
             location.reload(); // if successfull, reload page.
         }
     });
+
+    location.reload();
 }
 
 /* Add a div to the right component. This div will contain a :
@@ -66,7 +73,7 @@ $(".adding-damages").on("keypress", function (e) {
     var key = e.keyCodd || e.which;
     if (key == 13) {
         e.preventDefault();
-        $("#submit-" + $(this).attr("id")).click();
+        $("#add-" + $(this).attr("id").substring(11)).click();
     }
 });
 
