@@ -1,7 +1,10 @@
-﻿$("#save-button").click(save);
-
-window.onbeforeunload = function () {
-    save();
+﻿$("#save-button").click(function () {
+    location.reload(); // No need to save, since save() is called in window.onbeforeunload
+});
+/* Save before the window unloads its resources e.g. reloading, closing browser etc... */
+window.onbeforeunload = function (event) {
+    save(); 
+    event.returnValue = null;
     return null;
 }
 
@@ -24,12 +27,12 @@ function save() {
         url: "/RCIInput/SaveRCI",
         data: { rci: rci },
         method: "POST",
-        success: function (result) {
-            location.reload(); // if successfull, reload page.
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            console.log(errorThrown);
         }
-    });
 
-    location.reload();
+    });
 }
 
 /* Add a div to the right component. This div will contain a :
@@ -75,21 +78,5 @@ $(".adding-damages").on("keypress", function (e) {
         e.preventDefault();
         $("#add-" + $(this).attr("id").substring(11)).click();
     }
-});
-
-
-// Handler to specify the behavior of the submit button
-$(".rci-form").submit(function (event) {
-    event.preventDefault(); // Stop the form from submitting normally
-    // Make an ajax call instead
-    $.ajax({
-        url: "/RCIInput/SaveRCI",
-        data: { rci: $(this).serializeArray() },
-        method: "POST",
-        success: function (result) {
-            location.reload(); // if successfull, reload page.
-        }
-    });
-    
 });
 
