@@ -40,6 +40,7 @@ namespace Phoenix.Services
          */
         public UserPrincipal FindUser(string username, PrincipalContext ADContext)
         {
+
             if (username.EndsWith("@gordon.edu"))
             {
                 username = username.Remove(username.IndexOf('@'));

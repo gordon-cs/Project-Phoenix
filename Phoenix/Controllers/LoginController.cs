@@ -13,12 +13,10 @@ namespace Phoenix.Controllers
     {
         // Global Variables
         private PrincipalContext _ADContext;
-        private RCIContext db;
         private LoginService loginService;
 
         public LoginController()
         {
-            db = new Models.RCIContext();
             loginService = new Services.LoginService();
         }
 
@@ -84,7 +82,7 @@ namespace Phoenix.Controllers
                             Response.Cookies.Add(tokenCookie);
 
                             _ADContext.Dispose();
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Dashboard");
                         }
                         else
                         {
