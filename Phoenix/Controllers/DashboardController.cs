@@ -58,7 +58,30 @@ namespace Phoenix.Controllers
 
             var RCIs = dashboardService.GetRCIsForResident(strID);
 
-            RCIs = (IQueryable<HomeRCIViewModel>)dashboardService.ValidateResidentsRCIsExistence(RCIs, strBuilding, strRoomNumber, strID);
+            //RCIs = (IQueryable<HomeRCIViewModel>)dashboardService.ValidateResidentsRCIsExistence(RCIs, strBuilding, strRoomNumber, strID);
+            if (!dashboardService.CurrentRCIisCorrect(RCIs, strBuilding, strRoomNumber))
+            {
+                var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, strRoomNumber, strID);
+                dashboardService.AddRCIComponents(rciId, "dorm room");
+            }
+
+            if (strBuilding.Equals("BRO") || strBuilding.Equals("TAV") ||
+                (strBuilding.Equals("FER") && (strRoomNumber.StartsWith("L"))))
+            {
+
+                var commonAreaRCIs = dashboardService.GetCommonAreaRCI(strRoomNumber, strBuilding);
+
+                // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
+                if (!commonAreaRCIs.Any())
+                {
+
+                    var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, strRoomNumber);
+                    dashboardService.AddRCIComponents(rciId, "common area");
+                }
+
+                RCIs = RCIs.Concat(commonAreaRCIs);
+            }
+
 
             return View(RCIs);
         }
@@ -75,10 +98,32 @@ namespace Phoenix.Controllers
             var RCIs = dashboardService.GetRCIsForResident(strID);
 
             // Verify that the RA actually has their own RCIs set up
-            dashboardService.ValidateResidentsRCIsExistence(RCIs, strBuilding, strRoomNumber, strID);
+            if (!dashboardService.CurrentRCIisCorrect(RCIs, strBuilding, strRoomNumber))
+            {
+                var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, strRoomNumber, strID);
+                dashboardService.AddRCIComponents(rciId, "dorm room");
+            }
 
-            // Display all RCI's for the corresponding building
+            if (strBuilding.Equals("BRO") || strBuilding.Equals("TAV") ||
+                (strBuilding.Equals("FER") && (strRoomNumber.StartsWith("L"))))
+            {
+
+                var commonAreaRCIs = dashboardService.GetCommonAreaRCI(strRoomNumber, strBuilding);
+
+                // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
+                if (!commonAreaRCIs.Any())
+                {
+
+                    var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, strRoomNumber);
+                    dashboardService.AddRCIComponents(rciId, "common area");
+                }
+
+                RCIs = RCIs.Concat(commonAreaRCIs);
+            }
+
+            // Also display all RCI's for the corresponding building
             string[] strBuildingAsArray = { strBuilding };
+
             var buildingRCIs = dashboardService.GetRCIsForBuilding(strBuildingAsArray);
             RCIs = RCIs.Concat(buildingRCIs);
 

@@ -64,9 +64,9 @@ namespace Phoenix.Services
          * @params: building code as it appears in CurrentRD table
          * @return: building codes that correspond to RoomAssign and RCI tables
          */ 
-        public string [] CollectRDBuildingCodes(string buildingCode)
+        public string [] CollectRDBuildingCodes(string jobTitle)
         {
-            return (string[])db.BuildingAssign.Where(b => b.Job_Title_Hall.Equals(buildingCode)).Select(b => b.BuildingCode).ToArray();
+            return (string[])db.BuildingAssign.Where(b => b.Job_Title_Hall.Equals(jobTitle)).Select(b => b.BuildingCode).ToArray();
         }
 
         /*
@@ -76,7 +76,7 @@ namespace Phoenix.Services
          *          id - indicates student's id (Note: a null id parameter indicates a common area RCI
          * @return: id for newly generated RCI
          */
-        public int GenerateOneRCI(string buildingCode, string roomNumber, string id = null)
+        public int GenerateOneRCIinDb(string buildingCode, string roomNumber, string id = null)
         {
             var newRCI = new RCI();
             newRCI.GordonID = id;
@@ -125,54 +125,35 @@ namespace Phoenix.Services
         /*
          * Check to see if an up-to-date RCI exists for a user
          */ 
-        public bool IndividualCorrectCurrentRCIExists(IEnumerable<HomeRCIViewModel> RCIs, string building, string roomNumber)
+        public bool CurrentRCIisCorrect(IEnumerable<HomeRCIViewModel> RCIs, string building, string roomNumber)
         {
             var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == building && m.RoomNumber == roomNumber);
             return RCIsForCurrentBuilding.Any();
         }
 
         /*
-         * Verifies that all individual and common area RCIs which SHOULD exists, do exist
-         * Return: updated collection of HomeRCIViewModels
-         */
-        public IEnumerable<HomeRCIViewModel> ValidateResidentsRCIsExistence(IEnumerable<HomeRCIViewModel> RCIs, string building, string roomNumber, string id)
+         * Get the current common area RCIs for an apartment
+         * @params: apartmentNumber - the apartment's number
+         *          building - the building where the apartment is located
+         * @return: the common area, if any, that was found in the db
+         */ 
+        public IEnumerable<HomeRCIViewModel> GetCommonAreaRCI(string apartmentNumber, string building)
         {
-            if (!IndividualCorrectCurrentRCIExists(RCIs, building, roomNumber))
-            {
-                var rciId = GenerateOneRCI(building, roomNumber, id);
-                AddRCIComponents(rciId, "dorm room");
-            }
-
-            if (building.Equals("BRO") || building.Equals("TAV") ||
-                (building.Equals("FER") && (roomNumber.StartsWith("L"))))
-            {
-
-                roomNumber = roomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
-                var commonAreaRCIs =
-                    from tempCommonAreaRCI in db.RCI
-                    where tempCommonAreaRCI.RoomNumber == roomNumber && tempCommonAreaRCI.BuildingCode == building
-                    && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.Current == true
-                    select new HomeRCIViewModel
-                    {
-                        RCIID = tempCommonAreaRCI.RCIID,
-                        BuildingCode = tempCommonAreaRCI.BuildingCode,
-                        RoomNumber = tempCommonAreaRCI.RoomNumber,
-                        FirstName = "Common",
-                        LastName = "RCI"
-                    };
-
-                // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
-                if (!commonAreaRCIs.Any())
+            apartmentNumber = apartmentNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+            var commonAreaRCIs =
+                from tempCommonAreaRCI in db.RCI
+                where tempCommonAreaRCI.RoomNumber == apartmentNumber && tempCommonAreaRCI.BuildingCode == building
+                && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.Current == true
+                select new HomeRCIViewModel
                 {
+                    RCIID = tempCommonAreaRCI.RCIID,
+                    BuildingCode = tempCommonAreaRCI.BuildingCode,
+                    RoomNumber = tempCommonAreaRCI.RoomNumber,
+                    FirstName = "Common",
+                    LastName = "RCI"
+                };
+            return commonAreaRCIs;
 
-                    var rciId = GenerateOneRCI(building, roomNumber);
-                    AddRCIComponents(rciId, "common area");
-                }
-
-                RCIs = RCIs.Concat(commonAreaRCIs);
-            }
-
-            return RCIs;
         }
 
     }
