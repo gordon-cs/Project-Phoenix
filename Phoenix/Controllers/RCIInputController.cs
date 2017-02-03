@@ -55,7 +55,7 @@ namespace Phoenix.Controllers
         /// <param name="rci">The data sent to the method.</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult SaveRCI(RCIForm rci)
+        public void SaveRCI(RCIForm rci)
         {
             // Check if anything was submitted
             if (rci.newDamages != null)
@@ -91,8 +91,7 @@ namespace Phoenix.Controllers
             // Save changes to database
             db.SaveChanges();
 
-            /* Since SaveRCI is called with javascript, it returns its value (the Index View) to the javascript that called it and not directly to the browser. */
-            return RedirectToAction("Index");
+            return;
         }
 
         // GET: RCIInput/Delete/5
