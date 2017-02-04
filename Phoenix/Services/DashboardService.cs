@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using System.Diagnostics;
 
 namespace Phoenix.Services
 {
@@ -155,6 +156,70 @@ namespace Phoenix.Services
             return commonAreaRCIs;
 
         }
+
+        /*
+         * Generate a csv file of fines for rci's from current, according to buildings of RD
+         * Right now this is just generating for all buildings. We could add specificity so that RD can choose 
+         * which building to pull from.
+         * CSV format: RoomNumber, BuildingCode, Name, id, DetailedReason, FineAmount 
+         * 
+         */
+         public string GenerateFinesSpreadsheet(string[] buildingCodes)
+        {
+            var currentSession = GetCurrentSession();
+            var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Fine Amount\n";
+
+            // ***** This does not handle common areas! *****
+            // We should talk to MC about how he wants common area fine assignment to be handled in the system
+            var fineQueries =
+                from rci in db.RCI
+                join component in db.RCIComponent on rci.RCIID equals component.RCIID
+                join damage in db.Damage on component.RCIComponentID equals damage.RCIComponentID
+                join account in db.Account on rci.GordonID equals account.ID_NUM
+                where buildingCodes.Contains(rci.BuildingCode) && rci.SessionCode.Equals(currentSession) && damage.FineAssessed != null
+                select new
+                {
+                    RoomNumber = rci.RoomNumber,
+                    BuildingCode = rci.BuildingCode,
+                    FirstName = account.firstname,
+                    LastName = account.lastname,
+                    Id = rci.GordonID,
+                    DetailedReason = damage.DamageDescription,
+                    FineAmount = damage.FineAssessed
+                };
+
+            foreach (var fine in fineQueries)
+            {
+                csvString += fine.RoomNumber + ",";
+                csvString += fine.BuildingCode + ",";
+                csvString += fine.FirstName + " " + fine.LastName + ",";
+                csvString += fine.Id + ",";
+                csvString += fine.DetailedReason + ",";
+                csvString += fine.FineAmount + "\n";
+            }
+
+
+            //foreach (var rci in RCIsForCurrentSession )
+            //{
+            //    var RCIComponents = db.RCIComponent.Where(m => m.RCIID == rci.RCIID);
+            //    foreach (var component in RCIComponents)
+            //    {
+
+            //    }
+            //}
+            Debug.Write(csvString);
+            return csvString;
+        } 
+
+        /*
+         * Query the db for the current session, which will be the session with the most recent SESS_BEGN_DTE
+         * @return: string that contains the code for the current session
+         */
+         public string GetCurrentSession()
+        {
+            var currentSessionCode = db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE;
+            return currentSessionCode;
+        } 
 
     }
 }

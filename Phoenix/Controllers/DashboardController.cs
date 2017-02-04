@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
+using System.Collections.Generic;
 
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
 using Phoenix.Services;
+using System.IO;
 
 namespace Phoenix.Controllers
 {
@@ -144,5 +146,29 @@ namespace Phoenix.Controllers
         }
 
         // Potentially later: admin option that can view all RCI's for all buildings
+
+        // Maybe use an authorization filter here to only allow an RD to access this method?
+        // It would be kind of filtered by default since the Export Fines button only appears in RD's view
+        // But I suppose if someone new the path, they could call this controller method just from the url
+        [HttpGet]
+        public FileContentResult ExportFines()
+        {
+            string[] buildingCodes = dashboardService.CollectRDBuildingCodes((string)TempData["building"]);
+
+            string finesString = dashboardService.GenerateFinesSpreadsheet(buildingCodes);
+            string filename = "fines.csv";
+            //FileInfo fileInfo = new FileInfo(filename);
+
+            //if (!fileInfo.Exists)
+            //{
+            //    using (StreamWriter writer = fileInfo.CreateText())
+            //    {
+            //        writer.Write(finesString);
+
+            //    }
+            //}
+
+            return File(new System.Text.UTF8Encoding().GetBytes(finesString), "text/csv", filename);
+        }
     }
 }

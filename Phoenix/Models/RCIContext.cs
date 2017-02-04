@@ -1,6 +1,9 @@
 namespace Phoenix.Models
 {
+    using System;
     using System.Data.Entity;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Linq;
 
     public partial class RCIContext : DbContext
     {
@@ -24,6 +27,10 @@ namespace Phoenix.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Damage>()
+                .Property(e => e.FineAssessed)
+                .HasPrecision(10, 4);
+
             modelBuilder.Entity<RCI>()
                 .HasMany(e => e.RCIComponent)
                 .WithRequired(e => e.RCI)
@@ -122,32 +129,26 @@ namespace Phoenix.Models
 
             modelBuilder.Entity<RoomAssign>()
                 .Property(e => e.SESS_CDE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoomAssign>()
                 .Property(e => e.BLDG_LOC_CDE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoomAssign>()
                 .Property(e => e.BLDG_CDE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoomAssign>()
                 .Property(e => e.ROOM_CDE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoomAssign>()
                 .Property(e => e.ROOM_TYPE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoomAssign>()
                 .Property(e => e.ROOM_ASSIGN_STS)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoomAssign>()
