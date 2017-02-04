@@ -1,5 +1,5 @@
 ﻿$("#save-button").click(function () {
-    location.reload(); // No need to save, since save() is called in window.onbeforeunload
+    location.reload(true); // No need to save, since save() is called in window.onbeforeunload
 });
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 window.onbeforeunload = function (event) {
@@ -42,7 +42,7 @@ function save() {
 function addDamage(componentID) {
     var pElement = "<p class='divAddOn-field new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='divAddOn-item material-icons' onclick='deleteNewDamages(event, this);'>delete</i>";
     //var inputHiddenElement = "<input type='hidden' name=" + componentID + " value='" + $("#text-input-" + componentID).val() + "'/>";
-    var divWrapper = "<div class='divAddOn'></i>" + pElement + "</div>";
+    var divWrapper = "<div class='divAddOn'>" + pElement + "</div>";
     $("#div-list-" + componentID).append(divWrapper);
     console.log(divWrapper);
     console.log($("#text-input-" + componentID).val());
