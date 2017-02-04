@@ -8,6 +8,7 @@ using Phoenix.Filters;
 using System.Diagnostics;
 using System.Data.Entity.Validation;
 using System;
+using Phoenix.Services;
 
 namespace Phoenix.Controllers
 {
@@ -16,6 +17,7 @@ namespace Phoenix.Controllers
     {
         // RCI context wrapper. It can be considered to be an object that represents the database.
         private RCIContext db;
+        private RCIInputService rciInputService;
 
         // This list is static so it will persist across actions.
         private static List<int> damagesToDelete = new List<int>();
@@ -24,6 +26,7 @@ namespace Phoenix.Controllers
         {
             Debug.WriteLine("Initialize RCIInput Controller");
             db = new Models.RCIContext();
+            rciInputService = new RCIInputService();
         }
 
         public ActionResult Index(int id)
@@ -33,7 +36,8 @@ namespace Phoenix.Controllers
             // This is how we access items set in the filter.
             var gordon_id = (string)TempData["id"];
 
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            //var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = rciInputService.GetRCI(id); 
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
@@ -45,6 +49,13 @@ namespace Phoenix.Controllers
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
             }
             
+            return View(rci);
+        }
+
+        public ActionResult CheckinSigRes(int id)
+        {
+            var rci = rciInputService.GetRCI(id);
+            ViewBag.Username = rciInputService.GetUsername(rci.GordonID);
             return View(rci);
         }
 
