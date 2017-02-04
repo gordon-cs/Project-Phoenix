@@ -232,6 +232,8 @@
     <Content Include="Views\Dashboard\RD.cshtml" />
     <Content Include="Scripts\third_party\jquery-1.10.2.min.map" />
     <Content Include="Views\RCIInput\CheckinSigRes.cshtml" />
+    <Content Include="Views\RCIInput\CheckinSigRA.cshtml" />
+    <Content Include="Views\RCIInput\CheckinSigRD.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
