@@ -184,6 +184,7 @@ namespace Phoenix.Services
                     FirstName = account.firstname,
                     LastName = account.lastname,
                     Id = rci.GordonID,
+                    ComponentName = component.RCIComponentName,
                     DetailedReason = damage.DamageDescription,
                     FineAmount = damage.FineAssessed
                 };
@@ -194,7 +195,7 @@ namespace Phoenix.Services
                 csvString += fine.BuildingCode + ",";
                 csvString += fine.FirstName + " " + fine.LastName + ",";
                 csvString += fine.Id + ",";
-                csvString += fine.DetailedReason + ",";
+                csvString += fine.ComponentName + ": " + fine.DetailedReason + ",";
                 csvString += fine.FineAmount + "\n";
             }
 
