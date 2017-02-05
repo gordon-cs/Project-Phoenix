@@ -12,7 +12,7 @@
 @section Scripts{
     @Scripts.Render("~/bundles/page_specific/js/rci-checkout");
 }
-<div class="view">
+<div class="view" data="@Model.GordonID">
     @foreach (var component in Model.RCIComponent)
     {
         <div class="pane component" id="@component.RCIComponentID">

@@ -14,6 +14,8 @@ window.onbeforeunload = function (event) {
 function save() {
     let rci = {}
     rci.newFines = [];
+    rci.gordonID = $(".view").attr("data"); // Will be null in case of a common area rci.
+    console.log(rci.GordonID);
     $(".component").each(function (index, element) {
         let componentId = $(element).attr("id");
         $(element).find(".new-fine").each(function (index, element) {
