@@ -40,6 +40,8 @@ namespace Phoenix.Services
 
         /*
          * Display all RCI's for the corresponding building 
+         * @params: buildingCode - code(s) for the building(s) of the RA or RD's sphere of authority
+         *          gordonId - gordon ID of the RA or RD so that his or her RCI (if applicable) is not included 
          */
         public IEnumerable<HomeRCIViewModel> GetRCIsForBuilding(string[] buildingCode, string gordonId)
         {
@@ -206,15 +208,6 @@ namespace Phoenix.Services
                 csvString += fine.FineAmount + "\n";
             }
 
-
-            //foreach (var rci in RCIsForCurrentSession )
-            //{
-            //    var RCIComponents = db.RCIComponent.Where(m => m.RCIID == rci.RCIID);
-            //    foreach (var component in RCIComponents)
-            //    {
-
-            //    }
-            //}
             Debug.Write(csvString);
             return csvString;
         } 

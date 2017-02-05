@@ -60,7 +60,6 @@ namespace Phoenix.Controllers
 
             var RCIs = dashboardService.GetRCIsForResident(strID);
 
-            //RCIs = (IQueryable<HomeRCIViewModel>)dashboardService.ValidateResidentsRCIsExistence(RCIs, strBuilding, strRoomNumber, strID);
             if (!dashboardService.CurrentRCIisCorrect(RCIs, strBuilding, strRoomNumber))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, strRoomNumber, strID);
@@ -122,7 +121,6 @@ namespace Phoenix.Controllers
                     dashboardService.AddRCIComponents(rciId, "common area");
                 }
 
-                //RCIs = RCIs.Concat(commonAreaRCIs);
             }
 
             // Also display all RCI's for the corresponding building
@@ -159,17 +157,8 @@ namespace Phoenix.Controllers
             string[] buildingCodes = dashboardService.CollectRDBuildingCodes((string)TempData["building"]);
 
             string finesString = dashboardService.GenerateFinesSpreadsheet(buildingCodes);
+
             string filename = "fines.csv";
-            //FileInfo fileInfo = new FileInfo(filename);
-
-            //if (!fileInfo.Exists)
-            //{
-            //    using (StreamWriter writer = fileInfo.CreateText())
-            //    {
-            //        writer.Write(finesString);
-
-            //    }
-            //}
 
             return File(new System.Text.UTF8Encoding().GetBytes(finesString), "text/csv", filename);
         }
