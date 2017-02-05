@@ -41,7 +41,7 @@ namespace Phoenix.Services
         /*
          * Display all RCI's for the corresponding building 
          */
-        public IEnumerable<HomeRCIViewModel> GetRCIsForBuilding(string[] buildingCode)
+        public IEnumerable<HomeRCIViewModel> GetRCIsForBuilding(string[] buildingCode, string gordonId)
         {
             // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
@@ -49,6 +49,7 @@ namespace Phoenix.Services
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
                 from account in rci.DefaultIfEmpty()
                 where buildingCode.Contains(personalRCI.BuildingCode) && personalRCI.Current == true
+                && personalRCI.GordonID != gordonId
                 select new HomeRCIViewModel
                 {
                     RCIID = personalRCI.RCIID,
@@ -140,7 +141,6 @@ namespace Phoenix.Services
          */ 
         public IEnumerable<HomeRCIViewModel> GetCommonAreaRCI(string apartmentNumber, string building)
         {
-            apartmentNumber = apartmentNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
             var commonAreaRCIs =
                 from tempCommonAreaRCI in db.RCI
                 where tempCommonAreaRCI.RoomNumber == apartmentNumber && tempCommonAreaRCI.BuildingCode == building
@@ -150,7 +150,7 @@ namespace Phoenix.Services
                     RCIID = tempCommonAreaRCI.RCIID,
                     BuildingCode = tempCommonAreaRCI.BuildingCode,
                     RoomNumber = tempCommonAreaRCI.RoomNumber,
-                    FirstName = "Common",
+                    FirstName = "Common Area",
                     LastName = "RCI"
                 };
             return commonAreaRCIs;
