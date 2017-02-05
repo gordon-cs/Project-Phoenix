@@ -160,6 +160,7 @@
     <Compile Include="Models\CurrentRA.cs" />
     <Compile Include="Models\CurrentRD.cs" />
     <Compile Include="Models\Damage.cs" />
+    <Compile Include="Models\Fine.cs" />
     <Compile Include="Models\RCI.cs" />
     <Compile Include="Models\RCIComponent.cs" />
     <Compile Include="Models\RCIContext.cs" />

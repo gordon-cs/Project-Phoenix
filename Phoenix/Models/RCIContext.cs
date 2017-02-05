@@ -13,6 +13,7 @@ namespace Phoenix.Models
         }
 
         public virtual DbSet<Damage> Damage { get; set; }
+        public virtual DbSet<Fine> Fine { get; set; }
         public virtual DbSet<RCI> RCI { get; set; }
         public virtual DbSet<RCIComponent> RCIComponent { get; set; }
         public virtual DbSet<BuildingAssign> BuildingAssign { get; set; }
@@ -31,15 +32,14 @@ namespace Phoenix.Models
                 .Property(e => e.FineAssessed)
                 .HasPrecision(10, 4);
 
-            modelBuilder.Entity<RCI>()
-                .HasMany(e => e.RCIComponent)
-                .WithRequired(e => e.RCI)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<Fine>()
+                .Property(e => e.FineAmount)
+                .HasPrecision(13, 2);
 
             modelBuilder.Entity<RCIComponent>()
-                .HasMany(e => e.Damage)
-                .WithRequired(e => e.RCIComponent)
-                .WillCascadeOnDelete(false);
+                .HasMany(e => e.Fine)
+                .WithOptional(e => e.RCIComponent)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<Account>()
                 .Property(e => e.ID_NUM)

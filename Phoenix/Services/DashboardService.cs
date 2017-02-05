@@ -174,9 +174,9 @@ namespace Phoenix.Services
             var fineQueries =
                 from rci in db.RCI
                 join component in db.RCIComponent on rci.RCIID equals component.RCIID
-                join damage in db.Damage on component.RCIComponentID equals damage.RCIComponentID
-                join account in db.Account on rci.GordonID equals account.ID_NUM
-                where buildingCodes.Contains(rci.BuildingCode) && rci.SessionCode.Equals(currentSession) && damage.FineAssessed != null
+                join fine in db.Fine on component.RCIComponentID equals fine.RCIComponentID
+                join account in db.Account on fine.GordonID equals account.ID_NUM
+                where buildingCodes.Contains(rci.BuildingCode) && rci.SessionCode.Equals(currentSession)
                 select new
                 {
                     RoomNumber = rci.RoomNumber,
@@ -185,8 +185,8 @@ namespace Phoenix.Services
                     LastName = account.lastname,
                     Id = rci.GordonID,
                     ComponentName = component.RCIComponentName,
-                    DetailedReason = damage.DamageDescription,
-                    FineAmount = damage.FineAssessed
+                    DetailedReason = fine.Reason,
+                    FineAmount = fine.FineAmount
                 };
 
             foreach (var fine in fineQueries)
@@ -195,7 +195,14 @@ namespace Phoenix.Services
                 csvString += fine.BuildingCode + ",";
                 csvString += fine.FirstName + " " + fine.LastName + ",";
                 csvString += fine.Id + ",";
-                csvString += fine.ComponentName + ": " + fine.DetailedReason + ",";
+                if (fine.ComponentName != null)
+                {
+                    csvString += fine.ComponentName + ": " + fine.DetailedReason + ",";
+                }
+                else
+                {
+                    csvString += "Improper checkout: " + fine.DetailedReason + ",";
+                }
                 csvString += fine.FineAmount + "\n";
             }
 

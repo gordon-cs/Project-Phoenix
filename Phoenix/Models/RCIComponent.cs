@@ -13,6 +13,7 @@ namespace Phoenix.Models
         public RCIComponent()
         {
             Damage = new HashSet<Damage>();
+            Fine = new HashSet<Fine>();
         }
 
         public int RCIComponentID { get; set; }
@@ -25,6 +26,9 @@ namespace Phoenix.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Damage> Damage { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Fine> Fine { get; set; }
 
         public virtual RCI RCI { get; set; }
     }
