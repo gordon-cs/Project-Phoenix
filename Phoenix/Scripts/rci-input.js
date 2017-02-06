@@ -1,4 +1,6 @@
-﻿$("#save-button").click(function () {
+﻿var damagesToDelete = [];
+
+$("#save-button").click(function () {
     location.reload(true); // No need to save, since save() is called in window.onbeforeunload
 });
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
@@ -12,6 +14,7 @@ window.onbeforeunload = function (event) {
 function save() {
     let rci = {}
     rci.newDamages = [];
+    rci.damagesToDelete = damagesToDelete;
     $(".component").each(function (index, element) {
         let componentId = $(element).attr("id");
         $(element).find(".new-damage").each(function (index, element) {
@@ -22,7 +25,8 @@ function save() {
             rci.newDamages.push(newDamageDescriptions);
         });
     });
-
+    // clear the array of delete elements
+    damagesToDelete = [];
     $.ajax({
         url: "/RCIInput/SaveRCI",
         data: { rci: rci },
@@ -58,11 +62,7 @@ function deleteNewDamages(event, element) {
 function deleteExistingDamages(event, element, id)
 {
     $(element).parent().remove();
-    $.ajax({
-        url: "/RCIInput/QueueDamageForDelete",
-        data: { id: id },
-        method: "POST"
-    });
+    damagesToDelete.push(id);
 }
 
 
