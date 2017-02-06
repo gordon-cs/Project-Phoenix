@@ -12,7 +12,12 @@
 <div>
     <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages.</p>
 
-    @if (Model.CheckinSigRA == null)
+    @if (Model.CheckinSigRes == null)
+    {
+        <p>Resident hasn't signed yet. Please make sure resident has signed before signing.</p>
+        <input type="text" id="rci-sig" disabled="disabled" />
+    }
+    else if (Model.CheckinSigRA == null)
     {
         <input type="text" id="rci-sig" />
     }
