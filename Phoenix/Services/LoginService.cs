@@ -40,6 +40,10 @@ namespace Phoenix.Services
          */
         public UserPrincipal FindUser(string username, PrincipalContext ADContext)
         {
+            if(username == null || ADContext == null)
+            {
+                return null;
+            }
 
             if (username.EndsWith("@gordon.edu"))
             {
@@ -62,6 +66,10 @@ namespace Phoenix.Services
          */
         public bool IsValidUser(string username, string password, PrincipalContext ADContext)
         {
+            if(username == null || password == null || ADContext == null)
+            {
+                return false;
+            }
             return ADContext.ValidateCredentials(
                 username,
                 password,
@@ -113,6 +121,11 @@ namespace Phoenix.Services
          */
         public string GetRole(string id)
         {
+            if(id == null)
+            {
+                return null;
+            }
+
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
             {
@@ -132,22 +145,26 @@ namespace Phoenix.Services
          */
         public string GetBuilding(string id)
         {
+            if (id == null)
+            {
+                return null;
+            }
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
             {
                 return RDentry.Job_Title_Hall;
             }
-            var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
+            var RAentry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
             if (RAentry != null)
             {
-                return RAentry.Dorm;
+                return RAentry.BLDG_CDE;
             }
             var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
             if (ResidentEntry != null)
             {
                 return ResidentEntry.BLDG_CDE;
             }
-            return "Non-Resident";
+            return null;
 
         }
 

@@ -1,5 +1,7 @@
-﻿$("#save-button").click(function () {
-    location.reload(); // No need to save, since save() is called in window.onbeforeunload
+﻿var damagesToDelete = [];
+
+$("#save-button").click(function () {
+    location.reload(true); // No need to save, since save() is called in window.onbeforeunload
 });
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 window.onbeforeunload = function (event) {
@@ -12,6 +14,7 @@ window.onbeforeunload = function (event) {
 function save() {
     let rci = {}
     rci.newDamages = [];
+    rci.damagesToDelete = damagesToDelete;
     $(".component").each(function (index, element) {
         let componentId = $(element).attr("id");
         $(element).find(".new-damage").each(function (index, element) {
@@ -22,7 +25,8 @@ function save() {
             rci.newDamages.push(newDamageDescriptions);
         });
     });
-
+    // clear the array of delete elements
+    damagesToDelete = [];
     $.ajax({
         url: "/RCIInput/SaveRCI",
         data: { rci: rci },
@@ -42,7 +46,7 @@ function save() {
 function addDamage(componentID) {
     var pElement = "<p class='divAddOn-field new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='divAddOn-item material-icons' onclick='deleteNewDamages(event, this);'>delete</i>";
     //var inputHiddenElement = "<input type='hidden' name=" + componentID + " value='" + $("#text-input-" + componentID).val() + "'/>";
-    var divWrapper = "<div class='divAddOn'></i>" + pElement + "</div>";
+    var divWrapper = "<div class='divAddOn'>" + pElement + "</div>";
     $("#div-list-" + componentID).append(divWrapper);
     console.log(divWrapper);
     console.log($("#text-input-" + componentID).val());
@@ -58,11 +62,7 @@ function deleteNewDamages(event, element) {
 function deleteExistingDamages(event, element, id)
 {
     $(element).parent().remove();
-    $.ajax({
-        url: "/RCIInput/QueueDamageForDelete",
-        data: { id: id },
-        method: "POST"
-    });
+    damagesToDelete.push(id);
 }
 
 
