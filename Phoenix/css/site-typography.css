@@ -7,5 +7,12 @@
 
 
 body {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-family: Verdana, Geneva, sans-serif;
+    font-family: "Gotham SSm 7r","Gotham SSm A","Gotham SSm B",sans-serif;
 }
+
+#header h2 {
+    font-weight: normal;
+    letter-spacing: .05em;
+}
+
