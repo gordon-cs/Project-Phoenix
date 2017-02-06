@@ -1,12 +1,42 @@
-﻿
+﻿@model Phoenix.Models.RCI
+
 @{
     ViewBag.Title = "CheckinSigRes";
 }
 
-<h2>Signature</h2>
+@section Scripts{
+    @Scripts.Render("~/Scripts/checkin-sig-res.js")
+}
 
-<p>Please sign with your Gordon username @ViewBag.Username</p>
+<h2 id="@Model.RCIID">Signature</h2>
 
-<input type="text"/>
+<div>
+    <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages.</p>
 
-<button>Submit</button>
+    @if (Model.CheckinSigRes == null)
+    {
+        <input type="text" id="rci-sig" />
+    }
+    else 
+    {
+    <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.Username"/>
+    }
+    
+</div>
+
+<div>
+    <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
+    <p>Please sign with your Gordon username @ViewBag.Username</p>
+
+    @if (Model.LifeAndConductSigRes == null)
+    {
+        <input type="text" id="lac-sig" />
+    }
+    else
+    {
+        <input type="text" id="lac-sig" disabled="disabled" value="@ViewBag.Username" />
+    }
+
+</div>
+
+<button id="submit-button">Submit</button>

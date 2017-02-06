@@ -52,11 +52,54 @@ namespace Phoenix.Controllers
             return View(rci);
         }
 
+        // Redirect to checkin signature page for certain roles.
+        public ActionResult CheckinSig(int id)
+        {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role.Equals("RD"))
+            {
+                return RedirectToAction("CheckinSigRD", new { id = id });
+            }
+            else if (role.Equals("RA"))
+            {
+                return RedirectToAction("CheckinSigRA", new { id = id });
+            }
+            else
+            {
+                return RedirectToAction("CheckinSigRes", new { id = id });
+            }
+        }
+
+        // GET: RCIInput/CheckinSigRes/1
         public ActionResult CheckinSigRes(int id)
         {
             var rci = rciInputService.GetRCI(id);
             ViewBag.Username = rciInputService.GetUsername(rci.GordonID);
             return View(rci);
+        }
+
+        // Save signatures
+        [HttpPost]
+        public void SaveSigRes(string rciSig, string lacSig, int id)
+        {
+            rciSig = rciSig.ToLower().Trim();
+            lacSig = lacSig.ToLower().Trim();
+            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var gordonID = (string)TempData["id"];
+            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
+            if (rciSig == username)
+            {
+                rci.CheckinSigRes = DateTime.Today;
+                db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
+            }
+            if (lacSig == username)
+            {
+                rci.LifeAndConductSigRes = DateTime.Today;
+                db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
+            }
+            db.SaveChanges();
         }
 
         /// <summary>
