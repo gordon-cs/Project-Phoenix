@@ -145,10 +145,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LogoutController.cs" />
     <Compile Include="Controllers\PlaceholderController.cs" />
+    <Compile Include="Controllers\RCICheckoutController.cs" />
     <Compile Include="Controllers\RCIInputController.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
     <Compile Include="Filters\AdminAuthorizationAttribute.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Models\CurrentRA.cs" />
     <Compile Include="Models\CurrentRD.cs" />
     <Compile Include="Models\Damage.cs" />
+    <Compile Include="Models\Fine.cs" />
     <Compile Include="Models\RCI.cs" />
     <Compile Include="Models\RCIComponent.cs" />
     <Compile Include="Models\RCIContext.cs" />
@@ -170,13 +172,18 @@
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\ViewModels\HomeRCIViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
+    <Compile Include="Models\ViewModels\RCIFinesForm.cs" />
     <Compile Include="Models\ViewModels\RCIForm.cs" />
+    <Compile Include="Models\ViewModels\RCINewDamageViewModel.cs" />
+    <Compile Include="Models\ViewModels\RCInewFineViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DashboardService.cs" />
     <Compile Include="Services\LoginService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
+    <Content Include="css\rci-checkout.css" />
     <Content Include="css\rci-input.css" />
     <Content Include="css\site-colors.css" />
     <Content Include="css\site-layout.css" />
@@ -192,6 +199,7 @@
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
     <Content Include="Scripts\dom-manipulation.js" />
+    <Content Include="Scripts\rci-checkout.js" />
     <Content Include="Scripts\rci-input.js" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />
@@ -223,10 +231,11 @@
     <Content Include="Views\Login\Index.cshtml">
       <BrowseToURL>~/Login</BrowseToURL>
     </Content>
-    <Content Include="Views\Home\Resident.cshtml" />
-    <Content Include="Views\Home\RA.cshtml" />
-    <Content Include="Views\Home\RD.cshtml" />
+    <Content Include="Views\Dashboard\Resident.cshtml" />
+    <Content Include="Views\Dashboard\RA.cshtml" />
+    <Content Include="Views\Dashboard\RD.cshtml" />
     <Content Include="Scripts\third_party\jquery-1.10.2.min.map" />
+    <Content Include="Views\RCICheckout\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
