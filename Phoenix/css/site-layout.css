@@ -38,6 +38,7 @@
  * .............. icon-label
  * .............. file input
  * .............. login-form
+ * .............. a.button
  *
  * MISC - Anything layout related, that doesn't fit above
  * 
@@ -348,6 +349,22 @@ div.icon-label {
      border-radius: 0 0 3px 3px;
      box-shadow: none;
      width: 100%;  
+}
+
+/* Usefule style for when we want to use an anchor tag, but make it appear as a button 
+
+*/
+a.button {
+    border-color: ButtonFace;
+    border-style: outset;
+    border-width: 2px;
+    color: inherit;
+    cursor: pointer;
+    display: block;
+    font-size: 100%;
+    margin: 0;
+    padding: 0.2em 1em;
+    text-decoration: none;
 }
 /***************************/
 /***********MISC************/
