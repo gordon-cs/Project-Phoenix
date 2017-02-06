@@ -1,5 +1,6 @@
 ﻿using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using Phoenix.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,11 @@ namespace Phoenix.Controllers
 {
     public class RCICheckoutController : Controller
     {
-        private RCIContext db;
-
-        private static List<int> finesToDelete = new List<int>();
+        private RCICheckoutService checkoutService;
 
         public RCICheckoutController()
         {
-            db = new Models.RCIContext();
+            checkoutService = new RCICheckoutService();
         }
 
         // GET: RCICheckout
@@ -27,67 +26,29 @@ namespace Phoenix.Controllers
         /// <returns></returns>
         public ActionResult Index(int id)
         {
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
-            if (rci.GordonID == null) // A common area rci
-            {
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
-            }
-            else
-            {
-                var name = db.Account.Where(m => m.ID_NUM == rci.GordonID)
-                    .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
-            }
+            var rci = checkoutService.GetRCIByID(id);
 
             return View(rci);
         }
 
         public void SaveRCI(RCIFinesForm rci)
         {
-            // Check if anything was submitted
-            if (rci.newFines != null)
-            {
-                var toAdd = new List<Fine>();
-
-                foreach (var fine in rci.newFines)
-                {
-                    var newFine = new Fine { RCIComponentID = fine.componentId, Reason = fine.fineReason, FineAmount = fine.fineAmount, GordonID = rci.gordonID };
-                    toAdd.Add(newFine);
-                }
-                db.Fine.AddRange(toAdd);
-            }
-
-            // Check if any existing fines were enqueued for deletion
-            if (finesToDelete.Any())
-            {
-                var toDelete = new List<Fine>();
-                // Delete all the fines that were enqueued for deletion.
-                foreach (var fineID in finesToDelete)
-                {
-                    var fine = db.Fine.Find(fineID);
-                    toDelete.Add(fine);
-                }
-                db.Fine.RemoveRange(toDelete);
-            }
-
-            // Clear the queue
-            finesToDelete.Clear();
-
-            // Save changes to database
-            db.SaveChanges();
+            checkoutService.AddFines(rci.newFines, rci.gordonID);
+            checkoutService.RemoveFines(rci.finesToDelete);
 
             return;
         }
 
-        // GET: RCICheckout/Delete/5
-        [HttpPost]
-        public void QueueFineForDelete(int id)
+        public ActionResult ResidentSignature(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                // indicate an error
-            }
-            finesToDelete.Add(id);
+            var rci = checkoutService.GetRCIByID(id);
+            return View(rci);
+        }
+
+        public ActionResult RASignature(int id)
+        {
+            var rci = checkoutService.GetRCIByID(id);
+            return View(rci);
         }
     }
 }

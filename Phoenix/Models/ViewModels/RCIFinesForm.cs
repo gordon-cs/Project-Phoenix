@@ -9,5 +9,6 @@ namespace Phoenix.Models.ViewModels
     {
         public string gordonID { get; set; }
         public List<RCInewFineViewModel> newFines { get; set; }
+        public List<int> finesToDelete { get; set; }
     }
 }

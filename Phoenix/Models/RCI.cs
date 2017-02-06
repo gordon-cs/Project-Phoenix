@@ -36,11 +36,26 @@ namespace Phoenix.Models
         [StringLength(50)]
         public string SessionCode { get; set; }
 
-        public bool? CheckinSigRes { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime? CheckinSigRes { get; set; }
 
-        public bool? CheckinSigRA { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime? CheckinSigRA { get; set; }
 
-        public bool? CheckinSigRD { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime? CheckinSigRD { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime? LifeAndConductSigRes { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime? CheckoutSigRes { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime? CheckoutSigRA { get; set; }
+
+        [Column(TypeName = "date")]
+        public DateTime? CheckoutSigRD { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RCIComponent> RCIComponent { get; set; }

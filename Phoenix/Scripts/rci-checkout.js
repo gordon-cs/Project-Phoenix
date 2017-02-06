@@ -1,4 +1,5 @@
-﻿$("#save-button").click(function () {
+﻿var finesToDelete = [];
+$("#save-button").click(function () {
     location.reload(true);
 });
 
@@ -14,6 +15,7 @@ window.onbeforeunload = function (event) {
 function save() {
     let rci = {}
     rci.newFines = [];
+    rci.finesToDelete = finesToDelete;
     rci.gordonID = $(".view").attr("data"); // Will be null in case of a common area rci.
     console.log(rci.GordonID);
     $(".component").each(function (index, element) {
@@ -29,6 +31,7 @@ function save() {
         });
     });
 
+    finesToDelete = [];
     $.ajax({
         url: "/RCICheckout/SaveRCI",
         data: { rci: rci },
@@ -45,7 +48,7 @@ function addFine(componentID) {
     let fineText = $("#text-input-" + componentID).val();
     let fineAmount = $("#fine-amount-input-" + componentID).val();
     let fineTextElement = "<p class='divAddOn-field new-fine'>" + fineText + "</p>";
-    let fineAmountElement = "<p class=\"divAddOn-item new-fine-amount\">" + fineAmount + "</p>";
+    let fineAmountElement = "<p class=\"divAddOn-item new-fine-amount\">$ " + fineAmount + "</p>";
     let fineIcon = "<i class='divAddOn-item material-icons' onclick='deleteNewFines(event, this);'>delete</i>";
     let divWrapper = "<div class='divAddOn'>" + fineTextElement + fineAmountElement + fineIcon + "</div>";
     $("#div-list-" + componentID).append(divWrapper);
@@ -61,11 +64,7 @@ function deleteNewFines(event, element) {
 /* Delete the div wrapper for a fine that has already been saved to the database */
 function deleteExistingFines(event, element, id) {
     $(element).parent().remove();
-    $.ajax({
-        url: "/RCICheckout/QueueFineForDelete",
-        data: { id: id },
-        method: "POST"
-    });
+    finesToDelete.push(id);
 }
 
 
