@@ -1,0 +1,24 @@
+﻿/* CSS Styles specific to the RCICheckout Page*/
+
+.pane {
+    box-shadow: 0 0 5px 0 #ddd;
+}
+
+i {
+    cursor: pointer;
+}
+
+/* Override the styles from the site-layout. Just gave the elements new class names */
+.existing-damage-wrapper {
+    box-shadow: none;
+}
+.existing-damage,
+.existing-damage:last-child {
+    border: none;
+    border-left: 2px solid #ccc;
+}
+
+/* Fixes a weird resizing bug where the flexbox doesn't fit in the screen. */
+.adding-fines {
+    min-width: 25%;
+}

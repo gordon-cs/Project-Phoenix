@@ -16,8 +16,7 @@ namespace Phoenix
 
             bundles.Add(new ScriptBundle("~/bundles/js/rci").Include(
                         "~/Scripts/logout.js",
-                        "~/Scripts/dom-manipulation.js",
-                        "~/Scripts/rci-input.js"));
+                        "~/Scripts/dom-manipulation.js"));
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
                       "~/css/default-styles.css",
@@ -38,9 +37,18 @@ namespace Phoenix
             bundles.Add(new StyleBundle("~/bundles/page_specific/css/rci-input").Include(
                         "~/css/rci-input.css"));
 
+            bundles.Add(new StyleBundle("~/bundles/page_specific/css/rci-checkout").Include(
+                        "~/css/rci-checkout.css"));
+
             // Page specific js
             bundles.Add(new ScriptBundle("~/bundles/page_specific/js/landing_page").Include(
                         "~/Scripts/countdown_timer.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/page_specific/js/rci-input").Include(
+                        "~/Scripts/rci-input.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/page_specific/js/rci-checkout").Include(
+                        "~/Scripts/rci-checkout.js")); 
 
             //Uncomment the line below to start minifying and bundling.
             //BundleTable.EnableOptimizations = true;
