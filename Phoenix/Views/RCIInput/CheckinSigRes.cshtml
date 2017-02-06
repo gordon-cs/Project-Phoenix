@@ -39,4 +39,7 @@
 
 </div>
 
-<button id="submit-button">Submit</button>
+<div class="distribute-evenly">
+    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = Model.RCIID })'">Back</button>
+    <button id="submit-button">Submit</button>
+</div>

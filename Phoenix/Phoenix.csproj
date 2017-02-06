@@ -192,6 +192,8 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml" />
+    <Content Include="Scripts\checkin-sig-ra.js" />
+    <Content Include="Scripts\checkin-sig-rd.js" />
     <Content Include="Scripts\checkin-sig-res.js" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />

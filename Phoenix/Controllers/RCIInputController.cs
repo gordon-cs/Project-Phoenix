@@ -80,7 +80,25 @@ namespace Phoenix.Controllers
             return View(rci);
         }
 
-        // Save signatures
+        // GET: RCIInput/CheckinSigRA/1
+        public ActionResult CheckinSigRA(int id)
+        {
+            var rci = rciInputService.GetRCI(id);
+            var gordonID = (string)TempData["id"];
+            ViewBag.Username = rciInputService.GetUsername(gordonID);
+            return View(rci);
+        }
+
+        // GET: RCIInput/CheckinSigRD/1
+        public ActionResult CheckinSigRD(int id)
+        {
+            var rci = rciInputService.GetRCI(id);
+            var gordonID = (string)TempData["id"];
+            ViewBag.Username = rciInputService.GetUsername(gordonID);
+            return View(rci);
+        }
+
+        // Save signatures for resident
         [HttpPost]
         public void SaveSigRes(string rciSig, string lacSig, int id)
         {
@@ -97,6 +115,38 @@ namespace Phoenix.Controllers
             if (lacSig == username)
             {
                 rci.LifeAndConductSigRes = DateTime.Today;
+                db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
+            }
+            db.SaveChanges();
+        }
+
+        // Save signatures for RA
+        [HttpPost]
+        public void SaveSigRA(string rciSig, int id)
+        {
+            rciSig = rciSig.ToLower().Trim();
+            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var gordonID = (string)TempData["id"];
+            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
+            if (rciSig == username)
+            {
+                rci.CheckinSigRA = DateTime.Today;
+                db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
+            }
+            db.SaveChanges();
+        }
+
+        // Save signatures for RD
+        [HttpPost]
+        public void SaveSigRD(string rciSig, int id)
+        {
+            rciSig = rciSig.ToLower().Trim();
+            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var gordonID = (string)TempData["id"];
+            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
+            if (rciSig == username)
+            {
+                rci.CheckinSigRD = DateTime.Today;
                 db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
             }
             db.SaveChanges();

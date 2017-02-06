@@ -3,10 +3,27 @@
     ViewBag.Title = "CheckinSigRA";
 }
 
-<h2>Signature</h2>
+@section Scripts{
+    @Scripts.Render("~/Scripts/checkin-sig-ra.js")
+}
 
-<p>Please sign with your Gordon username @ViewBag.Username</p>
+<h2 id="@Model.RCIID">Signature</h2>
 
-<input type="text" />
+<div>
+    <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages.</p>
 
-<button>Submit</button>
+    @if (Model.CheckinSigRA == null)
+    {
+        <input type="text" id="rci-sig" />
+    }
+    else
+    {
+        <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.Username" />
+    }
+
+</div>
+
+<div class="distribute-evenly">
+    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = Model.RCIID })'">Back</button>
+    <button id="submit-button">Submit</button>
+</div>
