@@ -36,10 +36,15 @@ namespace Phoenix.Models
                 .Property(e => e.FineAmount)
                 .HasPrecision(13, 2);
 
+            modelBuilder.Entity<RCI>()
+                .HasMany(e => e.RCIComponent)
+                .WithRequired(e => e.RCI)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<RCIComponent>()
-                .HasMany(e => e.Fine)
-                .WithOptional(e => e.RCIComponent)
-                .WillCascadeOnDelete();
+                .HasMany(e => e.Damage)
+                .WithRequired(e => e.RCIComponent)
+                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Account>()
                 .Property(e => e.ID_NUM)
