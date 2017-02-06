@@ -180,6 +180,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DashboardService.cs" />
     <Compile Include="Services\LoginService.cs" />
+    <Compile Include="Services\RCIInputService.cs" />
     <Compile Include="Services\RCICheckoutService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +198,9 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml" />
+    <Content Include="Scripts\checkin-sig-ra.js" />
+    <Content Include="Scripts\checkin-sig-rd.js" />
+    <Content Include="Scripts\checkin-sig-res.js" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
@@ -237,6 +241,9 @@
     <Content Include="Views\Dashboard\RA.cshtml" />
     <Content Include="Views\Dashboard\RD.cshtml" />
     <Content Include="Scripts\third_party\jquery-1.10.2.min.map" />
+    <Content Include="Views\RCIInput\CheckinSigRes.cshtml" />
+    <Content Include="Views\RCIInput\CheckinSigRA.cshtml" />
+    <Content Include="Views\RCIInput\CheckinSigRD.cshtml" />
     <Content Include="Views\RCICheckout\Index.cshtml" />
     <Content Include="Views\RCICheckout\ResidentSignature.cshtml" />
     <Content Include="Views\RCICheckout\RASignature.cshtml" />
