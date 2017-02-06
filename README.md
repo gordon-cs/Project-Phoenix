@@ -27,4 +27,6 @@ Our goal is to create a new RCI system that would be of benefit to students, Res
 As further ( but important ) enhancements, the system will also provide an administrative interface for RAs and RDs. The interface will assist Residence Life staff in doing manual tasks ( e.g. finding who hasn’t submitted RCI’s and compiling fines ).
 
 
+## Testing
 
+Unit tests are located within the Phoenix.Test project, specifically [here](https://github.com/gordon-cs/Project-Phoenix/tree/master/Phoenix.Tests/Services).
