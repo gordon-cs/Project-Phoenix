@@ -72,11 +72,11 @@ namespace Phoenix.Controllers
             }
 
             // Check if any existing damages were enqueued for deletion
-            if (damagesToDelete.Any())
+            if (rci.damagesToDelete != null)
             {
                 var toDelete = new List<Damage>();
                 // Delete all the damages that were enqueued for deletion.
-                foreach (var damageID in damagesToDelete)
+                foreach (var damageID in rci.damagesToDelete)
                 {
                     var damage = db.Damage.Find(damageID);
                     toDelete.Add(damage);
@@ -85,24 +85,10 @@ namespace Phoenix.Controllers
                 db.Damage.RemoveRange(toDelete);
             }
 
-            // Clear the queue
-            damagesToDelete.Clear();
-
             // Save changes to database
             db.SaveChanges();
 
             return;
-        }
-
-        // GET: RCIInput/Delete/5
-        [HttpPost]
-        public void QueueDamageForDelete(int id)
-        {
-            if(!ModelState.IsValid)
-            {
-                // indicate an error
-            }
-            damagesToDelete.Add(id);
         }
 
     }

@@ -1,0 +1,21 @@
+﻿@model Phoenix.Models.ViewModels.CheckoutRCIViewModel
+
+@{
+    ViewBag.Title = "Checkout";
+    ViewBag.ViewTitle = "Checkout: RA Signature";
+}
+<div class="view">
+    <div class="pane">
+        <div class="pane-content">
+            <p>I hereby agree that i have assessed preliminary fines to the best of my ability. I understand that these fines are subject to change at the discretion of the Resident Director</p>
+            <div class="divAddOn">
+                <input class="divAddOn-field" type="text"/>
+                <input class="divAddOn-item" type="text" readonly="readonly" value="@(DateTime.Today.Month)/@(DateTime.Today.Day)/@(DateTime.Today.Year)" />
+            </div>
+        </div>
+
+        <div class="distribute-evenly">
+            <a class="button" href="@Url.Action(actionName:"Index", controllerName:"Dashboard")">Finish</a>
+        </div>
+    </div>
+</div>

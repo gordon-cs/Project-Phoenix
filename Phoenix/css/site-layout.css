@@ -190,6 +190,7 @@ i {
     border-bottom: 1px solid #ccc;
     display: flex;
     justify-content: center;
+    min-width: 5%;
     align-items: center;
 }
 
