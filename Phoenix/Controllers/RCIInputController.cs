@@ -110,12 +110,10 @@ namespace Phoenix.Controllers
             if (rciSig == username)
             {
                 rci.CheckinSigRes = DateTime.Today;
-                db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
             }
             if (lacSig == username)
             {
                 rci.LifeAndConductSigRes = DateTime.Today;
-                db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
             }
             db.SaveChanges();
         }
@@ -131,7 +129,6 @@ namespace Phoenix.Controllers
             if (rciSig == username)
             {
                 rci.CheckinSigRA = DateTime.Today;
-                db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
             }
             db.SaveChanges();
         }
@@ -147,7 +144,6 @@ namespace Phoenix.Controllers
             if (rciSig == username)
             {
                 rci.CheckinSigRD = DateTime.Today;
-                db.Entry(rci).State = System.Data.Entity.EntityState.Modified;
             }
             db.SaveChanges();
         }

@@ -12,7 +12,7 @@
 <div>
     <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages.</p>
 
-    @if (Model.CheckinSigRes == null)
+    @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
     {
         <p>Resident hasn't signed yet. Please make sure resident and RA have signed before signing.</p>
         <input type="text" id="rci-sig" disabled="disabled" />
