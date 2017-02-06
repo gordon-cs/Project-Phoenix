@@ -51,11 +51,7 @@ namespace Phoenix.Tests.Services
             Assert.IsNull(result);
         }
 
-        // This test is currently failing, because an exception is thrown when FindUser
-        // gets an invalid ADContext. But I think we can eliminate this test b/c in 
-        // LoginController we check that ADContext is not null beforehand
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void Given_InvalidADContext_When_ValidUsername_Then_ReturnNull()
         {
             // Arrange
@@ -66,6 +62,7 @@ namespace Phoenix.Tests.Services
             var result = loginService.FindUser(username, ADContext);
 
             // Assert
+            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -75,7 +72,6 @@ namespace Phoenix.Tests.Services
             var ADContext = loginService.ConnectToADServer();
             var username = "360.StudentTest";
             var password = "Gordon16";
-            var userEntry = loginService.FindUser(username, ADContext);
 
             // Act
             bool result = loginService.IsValidUser(username, password, ADContext);
@@ -91,7 +87,6 @@ namespace Phoenix.Tests.Services
             var ADContext = loginService.ConnectToADServer();
             var username = "360.StudentTest";
             var password = "wrongGordon16";
-            var userEntry = loginService.FindUser(username, ADContext);
 
             // Act
             bool result = loginService.IsValidUser(username, password, ADContext);
@@ -107,7 +102,6 @@ namespace Phoenix.Tests.Services
             var ADContext = loginService.ConnectToADServer();
             string username = null;
             var password = ""; // The password does not matter in this test case
-            var userEntry = loginService.FindUser(username, ADContext);
 
             // Act
             bool result = loginService.IsValidUser(username, password, ADContext);
@@ -123,7 +117,6 @@ namespace Phoenix.Tests.Services
             var ADContext = loginService.ConnectToADServer();
             var username = ""; // The username does not matter in this test case
             string password = null; 
-            var userEntry = loginService.FindUser(username, ADContext);
 
             // Act
             bool result = loginService.IsValidUser(username, password, ADContext);
@@ -187,7 +180,7 @@ namespace Phoenix.Tests.Services
         }
 
         [TestMethod]
-        public void GetBuiling_ValidRAID_ReturnCorrectBuilding()
+        public void GetBuilding_ValidRAID_ReturnCorrectBuilding()
         {
             // Arrange 
             var id = "999999097"; // ID of 360.StudentTest
@@ -196,11 +189,11 @@ namespace Phoenix.Tests.Services
             var result = loginService.GetBuilding(id);
 
             // Assert
-            Assert.IsTrue(result == "BRO");
+            Assert.AreEqual("TAV", result);
         }
 
         [TestMethod]
-        public void GetBuiling_ValidRDID_ReturnCorrectBuilding()
+        public void GetBuilding_ValidRDID_ReturnCorrectBuilding()
         {
             // Arrange 
             var id = "999999098"; // ID of 360.StudentStaff
@@ -209,11 +202,11 @@ namespace Phoenix.Tests.Services
             var result = loginService.GetBuilding(id);
 
             // Assert
-            Assert.IsTrue(result == "WIL,BRO");
+            Assert.AreEqual("WIL,BRO", result);
         }
 
         [TestMethod]
-        public void GetBuiling_ValidStudentID_ReturnCorrectBuilding()
+        public void GetBuilding_ValidStudentID_ReturnCorrectBuilding()
         {
             // Arrange 
             var id = "50169203";
@@ -226,20 +219,7 @@ namespace Phoenix.Tests.Services
         }
 
         [TestMethod]
-        public void GetBuiling_ValidNonResidentID_ReturnNonResident()
-        {
-            // Arrange 
-            var id = "50131985"; // ID of someone living off campus/ random person
-
-            // Act 
-            var result = loginService.GetBuilding(id);
-
-            // Assert
-            Assert.IsTrue(result == "Non-Resident");
-        }
-
-        [TestMethod]
-        public void GetBuiling_NullID_ReturnNull()
+        public void GetBuilding_NullID_ReturnNull()
         {
             // Arrange 
             string id = null; 

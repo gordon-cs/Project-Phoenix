@@ -23,6 +23,10 @@ namespace Phoenix.Services
          */ 
         public IEnumerable<HomeRCIViewModel> GetRCIsForResident(string id)
         {
+            if(id == null)
+            {
+                return null;
+            }
             var RCIs =
                 from personalRCI in db.RCI
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM

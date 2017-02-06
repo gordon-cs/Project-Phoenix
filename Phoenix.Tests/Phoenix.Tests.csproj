@@ -98,7 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\DashboardControllerTest.cs" />
+    <Compile Include="Services\DashboardServiceTest.cs" />
     <Compile Include="Services\LoginServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +112,9 @@
       <Project>{7993FCAB-AC12-4702-BFB0-38CC63D5DA5A}</Project>
       <Name>Phoenix</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
