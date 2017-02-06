@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "RCI Checkout";
+    ViewBag.ViewTitle = "RCI Checkout";
     ViewBag.MenuExists = "T";
 }
 
@@ -38,7 +39,7 @@
                 </div>
                 <div class="divAddOn">
                     <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RCIComponentID" />
-                    <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RCIComponentID" />
+                    <input class="divAddOn-item adding-fines" type="number" placeholder="$ 2.00" id="fine-amount-input-@component.RCIComponentID" />
                     <button class="divAddOn-item" onclick="addFine(@component.RCIComponentID);" id="add-@component.RCIComponentID">Add</button>
                 </div>
                 <div class="div-list" id="div-list-@component.RCIComponentID">
@@ -50,7 +51,7 @@
                     {
                         <div class="divAddOn">
                             <p class="divAddOn-field">@fine.Reason</p>
-                            <p class="divAddOn-item">@fine.FineAmount</p>
+                            <p class="divAddOn-item">$ @fine.FineAmount</p>
                             <i class='divAddOn-item material-icons' onclick="deleteExistingFines(event, this, @fine.FineID)">delete</i>
                         </div>
                     }

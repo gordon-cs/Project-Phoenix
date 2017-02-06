@@ -48,7 +48,7 @@ function addFine(componentID) {
     let fineText = $("#text-input-" + componentID).val();
     let fineAmount = $("#fine-amount-input-" + componentID).val();
     let fineTextElement = "<p class='divAddOn-field new-fine'>" + fineText + "</p>";
-    let fineAmountElement = "<p class=\"divAddOn-item new-fine-amount\">" + fineAmount + "</p>";
+    let fineAmountElement = "<p class=\"divAddOn-item new-fine-amount\">$ " + fineAmount + "</p>";
     let fineIcon = "<i class='divAddOn-item material-icons' onclick='deleteNewFines(event, this);'>delete</i>";
     let divWrapper = "<div class='divAddOn'>" + fineTextElement + fineAmountElement + fineIcon + "</div>";
     $("#div-list-" + componentID).append(divWrapper);
