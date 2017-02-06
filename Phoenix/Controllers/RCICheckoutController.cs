@@ -51,7 +51,7 @@ namespace Phoenix.Controllers
 
                 foreach (var fine in rci.newFines)
                 {
-                    var newFine = new Fine { RCIComponentID = fine.componentId, Reason = fine.fineReason, FineAmount = fine.fineAmount };
+                    var newFine = new Fine { RCIComponentID = fine.componentId, Reason = fine.fineReason, FineAmount = fine.fineAmount, GordonID = rci.gordonID };
                     toAdd.Add(newFine);
                 }
                 db.Fine.AddRange(toAdd);

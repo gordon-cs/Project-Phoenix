@@ -137,10 +137,10 @@ namespace Phoenix.Services
             {
                 return RDentry.Job_Title_Hall;
             }
-            var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
+            var RAentry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
             if (RAentry != null)
             {
-                return RAentry.Dorm;
+                return RAentry.BLDG_CDE;
             }
             var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
             if (ResidentEntry != null)

@@ -7,6 +7,7 @@ namespace Phoenix.Models.ViewModels
 {
     public class RCIFinesForm
     {
+        public string gordonID { get; set; }
         public List<RCInewFineViewModel> newFines { get; set; }
     }
 }
