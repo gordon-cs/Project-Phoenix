@@ -42,9 +42,9 @@ namespace Phoenix.Models
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<RCIComponent>()
-                .HasMany(e => e.Damage)
-                .WithRequired(e => e.RCIComponent)
-                .WillCascadeOnDelete(false);
+                .HasMany(e => e.Fine)
+                .WithOptional(e => e.RCIComponent)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<Account>()
                 .Property(e => e.ID_NUM)
