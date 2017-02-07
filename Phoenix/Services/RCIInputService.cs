@@ -17,7 +17,7 @@ namespace Phoenix.Services
 
         public RCI GetRCI(int id)
         {
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = db.RCI.Where(m => m.rciID == id).FirstOrDefault();
             return rci;
         }
 

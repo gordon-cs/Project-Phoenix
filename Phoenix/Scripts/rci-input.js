@@ -16,11 +16,11 @@ function save() {
     rci.newDamages = [];
     rci.damagesToDelete = damagesToDelete;
     $(".component").each(function (index, element) {
-        let componentId = $(element).attr("id");
+        let componentID = $(element).attr("id");
         $(element).find(".new-damage").each(function (index, element) {
             let damageText = $(element).text();
             let newDamageDescriptions = {};
-            newDamageDescriptions["componentId"] = componentId;
+            newDamageDescriptions["componentID"] = componentID;
             newDamageDescriptions["damage"] = damageText;
             rci.newDamages.push(newDamageDescriptions);
         });

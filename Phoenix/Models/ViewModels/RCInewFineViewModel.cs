@@ -7,7 +7,7 @@ namespace Phoenix.Models.ViewModels
 {
     public class RCInewFineViewModel
     {
-        public int componentId { get; set; }
+        public int componentID { get; set; }
         public string fineReason { get; set; }
         public decimal fineAmount { get; set; }
     }
