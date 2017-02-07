@@ -1,13 +1,11 @@
 ﻿var damagesToDelete = [];
 
 $("#save-button").click(function () {
-    location.reload(); // No need to save, since save() is called in window.onbeforeunload
+    location.reload(true); // No need to save, since save() is called in window.onbeforeunload
 });
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 window.onbeforeunload = function (event) {
     save(); 
-    event.returnValue = null;
-    return null;
 }
 
 /* Save the damages in the RCI. Can be used in both regular save and auto save */
