@@ -6,8 +6,6 @@ $("#save-button").click(function () {
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 window.onbeforeunload = function (event) {
     save(); 
-    event.returnValue = null;
-    return null;
 }
 
 /* Save the damages in the RCI. Can be used in both regular save and auto save */
@@ -16,11 +14,11 @@ function save() {
     rci.newDamages = [];
     rci.damagesToDelete = damagesToDelete;
     $(".component").each(function (index, element) {
-        let componentId = $(element).attr("id");
+        let componentID = $(element).attr("id");
         $(element).find(".new-damage").each(function (index, element) {
             let damageText = $(element).text();
             let newDamageDescriptions = {};
-            newDamageDescriptions["componentId"] = componentId;
+            newDamageDescriptions["componentID"] = componentID;
             newDamageDescriptions["damage"] = damageText;
             rci.newDamages.push(newDamageDescriptions);
         });
@@ -34,8 +32,6 @@ function save() {
         error: function (jqXHR, textStatus, errorThrown) {
             console.log(textStatus);
             console.log(errorThrown);
-        }
-
     });
 }
 

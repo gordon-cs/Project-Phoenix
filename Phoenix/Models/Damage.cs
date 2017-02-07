@@ -9,19 +9,19 @@ namespace Phoenix.Models
     [Table("Damage")]
     public partial class Damage
     {
-        public int DamageID { get; set; }
+        public int damageID { get; set; }
 
-        public string DamageDescription { get; set; }
+        public string damageDescription { get; set; }
 
-        public string DamageImagePath { get; set; }
+        public string damageImagePath { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string DamageType { get; set; }
+        public string damageType { get; set; }
 
-        public int RCIComponentID { get; set; }
+        public int rciComponentID { get; set; }
 
-        public decimal? FineAssessed { get; set; }
+        public decimal? fineAssessed { get; set; }
 
         public virtual RCIComponent RCIComponent { get; set; }
     }

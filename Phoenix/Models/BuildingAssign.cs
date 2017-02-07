@@ -12,11 +12,11 @@ namespace Phoenix.Models
         [Key]
         [Column(Order = 0)]
         [StringLength(50)]
-        public string Job_Title_Hall { get; set; }
+        public string jobTitleHall { get; set; }
 
         [Key]
         [Column(Order = 1)]
         [StringLength(50)]
-        public string BuildingCode { get; set; }
+        public string buildingCode { get; set; }
     }
 }

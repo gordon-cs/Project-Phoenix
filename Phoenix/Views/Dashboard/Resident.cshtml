@@ -26,10 +26,10 @@
         {
             <div class="divAddOn">
                 <div class="divAddOn-field">
-                    <p>@rci.BuildingCode @rci.RoomNumber</p>
-                    <p>@rci.FirstName @rci.LastName</p>
+                    <p>@rci.buildingCode @rci.roomNumber</p>
+                    <p>@rci.firstName @rci.lastName</p>
                 </div>
-                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = rci.RCIID })">
+                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = rci.rciID })">
                     <div>
                         <i class="material-icons">mode_edit</i>
                     </div>

@@ -7,7 +7,7 @@ namespace Phoenix.Models.ViewModels
 {
     public class RCINewDamageViewModel
     {
-        public int componentId { get; set; }
+        public int componentID { get; set; }
         public string damage { get; set; }
     }
 }

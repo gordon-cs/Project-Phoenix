@@ -9,17 +9,17 @@ namespace Phoenix.Models
     [Table("Fine")]
     public partial class Fine
     {
-        public int FineID { get; set; }
+        public int fineID { get; set; }
 
-        public decimal FineAmount { get; set; }
+        public decimal fineAmount { get; set; }
 
         [StringLength(50)]
-        public string GordonID { get; set; }
+        public string gordonID { get; set; }
 
         [Required]
-        public string Reason { get; set; }
+        public string reason { get; set; }
 
-        public int? RCIComponentID { get; set; }
+        public int? rciComponentID { get; set; }
 
         public virtual RCIComponent RCIComponent { get; set; }
     }

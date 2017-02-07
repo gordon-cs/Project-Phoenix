@@ -16,13 +16,13 @@ namespace Phoenix.Models
             Fine = new HashSet<Fine>();
         }
 
-        public int RCIComponentID { get; set; }
+        public int rciComponentID { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string RCIComponentName { get; set; }
+        public string rciComponentName { get; set; }
 
-        public int RCIID { get; set; }
+        public int rciID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Damage> Damage { get; set; }

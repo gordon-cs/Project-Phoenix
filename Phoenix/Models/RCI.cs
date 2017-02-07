@@ -15,47 +15,47 @@ namespace Phoenix.Models
             RCIComponent = new HashSet<RCIComponent>();
         }
 
-        public int RCIID { get; set; }
+        public int rciID { get; set; }
 
-        public bool? Current { get; set; }
+        public bool? isCurrent { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime CreationDate { get; set; }
+        public DateTime creationDate { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string BuildingCode { get; set; }
+        public string buildingCode { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string RoomNumber { get; set; }
+        public string roomNumber { get; set; }
 
         [StringLength(50)]
-        public string GordonID { get; set; }
+        public string gordonID { get; set; }
 
         [StringLength(50)]
-        public string SessionCode { get; set; }
+        public string sessionCode { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime? CheckinSigRes { get; set; }
+        public DateTime? checkinSigRes { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime? CheckinSigRA { get; set; }
+        public DateTime? checkinSigRA { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime? CheckinSigRD { get; set; }
+        public DateTime? checkinSigRD { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime? LifeAndConductSigRes { get; set; }
+        public DateTime? lifeAndConductSigRes { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime? CheckoutSigRes { get; set; }
+        public DateTime? checkoutSigRes { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime? CheckoutSigRA { get; set; }
+        public DateTime? checkoutSigRA { get; set; }
 
         [Column(TypeName = "date")]
-        public DateTime? CheckoutSigRD { get; set; }
+        public DateTime? checkoutSigRD { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RCIComponent> RCIComponent { get; set; }

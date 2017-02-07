@@ -202,19 +202,21 @@
     <Content Include="Scripts\checkin-sig-rd.js" />
     <Content Include="Scripts\checkin-sig-res.js" />
     <Content Include="Scripts\countdown_timer.js" />
+    <None Include="Scripts\third_party\jquery-3.1.1.intellisense.js" />
+    <Content Include="Scripts\third_party\jquery-3.1.1.js" />
+    <Content Include="Scripts\third_party\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\third_party\jquery-3.1.1.slim.js" />
+    <Content Include="Scripts\third_party\jquery-3.1.1.slim.min.js" />
+    <None Include="Scripts\third_party\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\third_party\jquery.validate.js" />
+    <Content Include="Scripts\third_party\jquery.validate.min.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
     <Content Include="Scripts\dom-manipulation.js" />
     <Content Include="Scripts\rci-checkout.js" />
     <Content Include="Scripts\rci-input.js" />
-    <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\third_party\jquery-1.10.2.js" />
-    <Content Include="Scripts\third_party\jquery-1.10.2.min.js" />
-    <None Include="Scripts\third_party\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\third_party\jquery.validate.js" />
-    <Content Include="Scripts\third_party\jquery.validate.min.js" />
-    <Content Include="Scripts\third_party\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\third_party\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\third_party\jquery-3.1.1.slim.min.map" />
+    <Content Include="Scripts\third_party\jquery-3.1.1.min.map" />
     <Content Include="Scripts\third_party\modernizr-2.6.2.js" />
     <Content Include="Scripts\third_party\respond.js" />
     <Content Include="Scripts\third_party\respond.min.js" />
@@ -240,7 +242,6 @@
     <Content Include="Views\Dashboard\Resident.cshtml" />
     <Content Include="Views\Dashboard\RA.cshtml" />
     <Content Include="Views\Dashboard\RD.cshtml" />
-    <Content Include="Scripts\third_party\jquery-1.10.2.min.map" />
     <Content Include="Views\RCIInput\CheckinSigRes.cshtml" />
     <Content Include="Views\RCIInput\CheckinSigRA.cshtml" />
     <Content Include="Views\RCIInput\CheckinSigRD.cshtml" />
@@ -254,7 +255,9 @@
     <Folder Include="Views\Logout\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>

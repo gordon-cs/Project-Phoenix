@@ -29,15 +29,15 @@ namespace Phoenix.Services
             }
             var RCIs =
                 from personalRCI in db.RCI
-                join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                where account.ID_NUM == id && personalRCI.Current == true
+                join account in db.Account on personalRCI.gordonID equals account.ID_NUM
+                where account.ID_NUM == id && personalRCI.isCurrent == true
                 select new HomeRCIViewModel
                 {
-                    RCIID = personalRCI.RCIID,
-                    BuildingCode = personalRCI.BuildingCode,
-                    RoomNumber = personalRCI.RoomNumber,
-                    FirstName = account.firstname,
-                    LastName = account.lastname
+                    rciID = personalRCI.rciID,
+                    buildingCode = personalRCI.buildingCode,
+                    roomNumber = personalRCI.roomNumber,
+                    firstName = account.firstname,
+                    lastName = account.lastname
                 };
             return RCIs;
         }
@@ -52,17 +52,17 @@ namespace Phoenix.Services
             // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
                 from personalRCI in db.RCI
-                join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
+                join account in db.Account on personalRCI.gordonID equals account.ID_NUM into rci
                 from account in rci.DefaultIfEmpty()
-                where buildingCode.Contains(personalRCI.BuildingCode) && personalRCI.Current == true
-                && personalRCI.GordonID != gordonId
+                where buildingCode.Contains(personalRCI.buildingCode) && personalRCI.isCurrent == true
+                && personalRCI.gordonID != gordonId
                 select new HomeRCIViewModel
                 {
-                    RCIID = personalRCI.RCIID,
-                    BuildingCode = personalRCI.BuildingCode,
-                    RoomNumber = personalRCI.RoomNumber,
-                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                    LastName = account.lastname == null ? "RCI" : account.lastname
+                    rciID = personalRCI.rciID,
+                    buildingCode = personalRCI.buildingCode,
+                    roomNumber = personalRCI.roomNumber,
+                    firstName = account.firstname == null ? "Common Area" : account.firstname,
+                    lastName = account.lastname == null ? "RCI" : account.lastname
                 };
             return buildingRCIs;
         }
@@ -74,7 +74,7 @@ namespace Phoenix.Services
          */ 
         public string [] CollectRDBuildingCodes(string jobTitle)
         {
-            return (string[])db.BuildingAssign.Where(b => b.Job_Title_Hall.Equals(jobTitle)).Select(b => b.BuildingCode).ToArray();
+            return (string[])db.BuildingAssign.Where(b => b.jobTitleHall.Equals(jobTitle)).Select(b => b.buildingCode).ToArray();
         }
 
         /*
@@ -87,16 +87,16 @@ namespace Phoenix.Services
         public int GenerateOneRCIinDb(string buildingCode, string roomNumber, string id = null)
         {
             var newRCI = new RCI();
-            newRCI.GordonID = id;
-            newRCI.BuildingCode = buildingCode;
-            newRCI.RoomNumber = roomNumber;
-            newRCI.Current = true;
-            newRCI.CreationDate = DateTime.Now;
+            newRCI.gordonID = id;
+            newRCI.buildingCode = buildingCode;
+            newRCI.roomNumber = roomNumber;
+            newRCI.isCurrent = true;
+            newRCI.creationDate = DateTime.Now;
 
             db.RCI.Add(newRCI);
             db.SaveChanges();
 
-            return newRCI.RCIID;
+            return newRCI.rciID;
 
         }
 
@@ -122,8 +122,8 @@ namespace Phoenix.Services
             foreach (var name in componentNames)
             {
                 var newComponent = new RCIComponent();
-                newComponent.RCIComponentName = name.ToString();
-                newComponent.RCIID = rciId;
+                newComponent.rciComponentName = name.ToString();
+                newComponent.rciID = rciId;
 
                 db.RCIComponent.Add(newComponent);
                 db.SaveChanges();
@@ -135,7 +135,7 @@ namespace Phoenix.Services
          */ 
         public bool CurrentRCIisCorrect(IEnumerable<HomeRCIViewModel> RCIs, string building, string roomNumber)
         {
-            var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == building && m.RoomNumber == roomNumber);
+            var RCIsForCurrentBuilding = RCIs.Where(m => m.buildingCode == building && m.roomNumber == roomNumber);
             return RCIsForCurrentBuilding.Any();
         }
 
@@ -149,15 +149,15 @@ namespace Phoenix.Services
         {
             var commonAreaRCIs =
                 from tempCommonAreaRCI in db.RCI
-                where tempCommonAreaRCI.RoomNumber == apartmentNumber && tempCommonAreaRCI.BuildingCode == building
-                && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.Current == true
+                where tempCommonAreaRCI.roomNumber == apartmentNumber && tempCommonAreaRCI.buildingCode == building
+                && tempCommonAreaRCI.gordonID == null && tempCommonAreaRCI.isCurrent == true
                 select new HomeRCIViewModel
                 {
-                    RCIID = tempCommonAreaRCI.RCIID,
-                    BuildingCode = tempCommonAreaRCI.BuildingCode,
-                    RoomNumber = tempCommonAreaRCI.RoomNumber,
-                    FirstName = "Common Area",
-                    LastName = "RCI"
+                    rciID = tempCommonAreaRCI.rciID,
+                    buildingCode = tempCommonAreaRCI.buildingCode,
+                    roomNumber = tempCommonAreaRCI.roomNumber,
+                    firstName = "Common Area",
+                    lastName = "RCI"
                 };
             return commonAreaRCIs;
 
@@ -179,20 +179,20 @@ namespace Phoenix.Services
             // We should talk to MC about how he wants common area fine assignment to be handled in the system
             var fineQueries =
                 from rci in db.RCI
-                join component in db.RCIComponent on rci.RCIID equals component.RCIID
-                join fine in db.Fine on component.RCIComponentID equals fine.RCIComponentID
-                join account in db.Account on fine.GordonID equals account.ID_NUM
-                where buildingCodes.Contains(rci.BuildingCode) && rci.SessionCode.Equals(currentSession)
+                join component in db.RCIComponent on rci.rciID equals component.rciID
+                join fine in db.Fine on component.rciComponentID equals fine.rciComponentID
+                join account in db.Account on fine.gordonID equals account.ID_NUM
+                where buildingCodes.Contains(rci.buildingCode) && rci.sessionCode.Equals(currentSession)
                 select new
                 {
-                    RoomNumber = rci.RoomNumber,
-                    BuildingCode = rci.BuildingCode,
+                    RoomNumber = rci.roomNumber,
+                    BuildingCode = rci.buildingCode,
                     FirstName = account.firstname,
                     LastName = account.lastname,
-                    Id = rci.GordonID,
-                    ComponentName = component.RCIComponentName,
-                    DetailedReason = fine.Reason,
-                    FineAmount = fine.FineAmount
+                    Id = rci.gordonID,
+                    ComponentName = component.rciComponentName,
+                    DetailedReason = fine.reason,
+                    FineAmount = fine.fineAmount
                 };
 
             foreach (var fine in fineQueries)
