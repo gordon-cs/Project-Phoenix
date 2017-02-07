@@ -19,10 +19,10 @@ namespace Phoenix.Models
         [StringLength(50)]
         public string DamageType { get; set; }
 
-        public int RCIComponentID { get; set; }
+        public int RciComponentID { get; set; }
 
         public decimal? FineAssessed { get; set; }
 
-        public virtual RCIComponent RCIComponent { get; set; }
+        public virtual RciComponent RciComponent { get; set; }
     }
 }

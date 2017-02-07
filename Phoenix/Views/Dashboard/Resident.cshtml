@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRCIViewModel>
+﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRciViewModel>
 
 
 @{
@@ -29,7 +29,7 @@
                     <p>@rci.BuildingCode @rci.RoomNumber</p>
                     <p>@rci.FirstName @rci.LastName</p>
                 </div>
-                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = rci.RCIID })">
+                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
                     <div>
                         <i class="material-icons">mode_edit</i>
                     </div>

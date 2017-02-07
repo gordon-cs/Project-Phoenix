@@ -28,7 +28,7 @@ function save() {
     // clear the array of delete elements
     damagesToDelete = [];
     $.ajax({
-        url: "/RCIInput/SaveRCI",
+        url: "/RciInput/SaveRci",
         data: { rci: rci },
         method: "POST",
         error: function (jqXHR, textStatus, errorThrown) {

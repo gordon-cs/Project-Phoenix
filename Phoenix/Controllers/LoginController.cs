@@ -33,8 +33,8 @@ namespace Phoenix.Controllers
         {
 
             // Get the username and password from the view model
-            string username = loginViewModel.username;
-            string password = loginViewModel.password;
+            string username = loginViewModel.Username;
+            string password = loginViewModel.Password;
             if (password == null)
             {
                 // if user did not enter a password, set it to empty string, since this value must be non-null
@@ -43,7 +43,7 @@ namespace Phoenix.Controllers
 
             if (!ModelState.IsValid)
             {
-                loginViewModel.errorMessage = "Invalid model state.";
+                loginViewModel.ErrorMessage = "Invalid model state.";
                 return View("Index", loginViewModel);
             }
             else
@@ -54,7 +54,7 @@ namespace Phoenix.Controllers
                 }
                 catch (Exception e)
                 {
-                    loginViewModel.errorMessage = "There was a problem connection to the server. We are sorry. Please try again later or contact a system administrator.";
+                    loginViewModel.ErrorMessage = "There was a problem connection to the server. We are sorry. Please try again later or contact a system administrator.";
                     return View("Index", loginViewModel);
                 }
                 if (_ADContext != null)
@@ -63,7 +63,7 @@ namespace Phoenix.Controllers
                     if (userEntry == null)
                     {
                         _ADContext.Dispose();
-                        loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                        loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
                         return View("Index", loginViewModel);
                     }
                     // If user does exist in Active Directory, try to validate him or her
@@ -86,14 +86,14 @@ namespace Phoenix.Controllers
                         }
                         else
                         {
-                            loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                            loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
                             return View("Index", loginViewModel);
                         }
                     }
                 }
                 else
                 {
-                    loginViewModel.errorMessage = "Oh dear, it seems that username or password is invalid.";
+                    loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
                     return View("Index", loginViewModel);
                 }
             }

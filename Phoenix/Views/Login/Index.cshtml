@@ -17,11 +17,11 @@
 <!-- Anti forgery token to prevent CSRF attacks, since authentication token is stored in a cookie-->
         @Html.AntiForgeryToken()
 
-        <div class="error-msg">@Html.ValueFor(m => m.errorMessage)</div>
+        <div class="error-msg">@Html.ValueFor(m => m.ErrorMessage)</div>
 
         <div class="login-container">
-            @Html.TextBoxFor(m => m.username, new { placeholder = "Username" })
-            @Html.PasswordFor(m => m.password, new { placeholder = "Password" })
+            @Html.TextBoxFor(m => m.Username, new { placeholder = "Username" })
+            @Html.PasswordFor(m => m.Password, new { placeholder = "Password" })
             <button type="submit">Enter</button>
         </div>
         
