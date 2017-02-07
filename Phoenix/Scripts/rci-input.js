@@ -28,12 +28,10 @@ function save() {
     $.ajax({
         url: "/RCIInput/SaveRCI",
         data: { rci: rci },
-        method: "POST"
-    })
-    .fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(textStatus);
-        console.log(errorThrown);
-        console.log(jqXHR);
+        method: "POST",
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            console.log(errorThrown);
     });
 }
 
