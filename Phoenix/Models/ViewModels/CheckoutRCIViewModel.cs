@@ -7,7 +7,7 @@ namespace Phoenix.Models.ViewModels
 {
     public class CheckoutRCIViewModel
     {
-        public int RCIID { get; set; }
+        public int rciID { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string buildingCode { get; set; }

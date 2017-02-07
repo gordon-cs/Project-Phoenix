@@ -1,4 +1,5 @@
-﻿
+﻿@model Phoenix.Models.RCI
+
 @{
     ViewBag.Title = "CheckinSigRD";
 }
@@ -7,22 +8,22 @@
     @Scripts.Render("~/Scripts/checkin-sig-rd.js")
 }
 
-<h2 id="@Model.RCIID">Signature</h2>
+<h2 id="@Model.rciID">Signature</h2>
 
 <div>
     <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages.</p>
 
-    @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
+    @if (Model.checkinSigRes == null || Model.lifeAndConductSigRes == null)
     {
         <p>Resident hasn't signed yet. Please make sure resident and RA have signed before signing.</p>
         <input type="text" id="rci-sig" disabled="disabled" />
     }
-    else if (Model.CheckinSigRA == null)
+    else if (Model.checkinSigRA == null)
     {
         <p>RA hasn't signed yet. Please make sure RA has signed before signing.</p>
         <input type="text" id="rci-sig" disabled="disabled" />
     }
-    else if (Model.CheckinSigRD == null)
+    else if (Model.checkinSigRD == null)
     {
         <input type="text" id="rci-sig" />
     }
@@ -34,6 +35,6 @@
 </div>
 
 <div class="distribute-evenly">
-    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = Model.RCIID })'">Back</button>
+    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = Model.rciID })'">Back</button>
     <button id="submit-button">Submit</button>
 </div>

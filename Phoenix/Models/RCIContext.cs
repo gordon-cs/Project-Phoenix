@@ -29,11 +29,11 @@ namespace Phoenix.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Damage>()
-                .Property(e => e.FineAssessed)
+                .Property(e => e.fineAssessed)
                 .HasPrecision(10, 4);
 
             modelBuilder.Entity<Fine>()
-                .Property(e => e.FineAmount)
+                .Property(e => e.fineAmount)
                 .HasPrecision(13, 2);
 
             modelBuilder.Entity<RCIComponent>()
@@ -98,17 +98,17 @@ namespace Phoenix.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.LocationCode)
+                .Property(e => e.ID_NUM)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.BuildingCode)
+                .Property(e => e.buildingCode)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.RoomCode)
+                .Property(e => e.roomNumber)
                 .IsFixedLength()
                 .IsUnicode(false);
 

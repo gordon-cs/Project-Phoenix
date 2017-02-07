@@ -17,7 +17,7 @@ namespace Phoenix.Services
         public CheckoutRCIViewModel GetRCIByID(int id)
         {
             var temp = db.RCI.Find(id);
-            var gordonID = temp.GordonID;
+            var gordonID = temp.gordonID;
             string firstName, lastName;
 
             if(gordonID != null)
@@ -34,12 +34,12 @@ namespace Phoenix.Services
 
             var rci = new CheckoutRCIViewModel()
             {
-                RCIID = temp.RCIID,
+                rciID = temp.rciID,
                 gordonID = gordonID,
                 firstName = firstName,
                 lastName = lastName,
-                buildingCode = temp.BuildingCode,
-                roomNumber = temp.RoomNumber,
+                buildingCode = temp.buildingCode,
+                roomNumber = temp.roomNumber,
                 rciComponents = temp.RCIComponent
             };
 
@@ -54,7 +54,7 @@ namespace Phoenix.Services
 
                 foreach (var fine in newFines)
                 {
-                    var newFine = new Fine { RCIComponentID = fine.componentId, Reason = fine.fineReason, FineAmount = fine.fineAmount, GordonID = gordonID };
+                    var newFine = new Fine { rciComponentID = fine.componentID, reason = fine.fineReason, fineAmount = fine.fineAmount, gordonID = gordonID };
                     toAdd.Add(newFine);
                 }
                 db.Fine.AddRange(toAdd);

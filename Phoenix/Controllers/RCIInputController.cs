@@ -38,15 +38,15 @@ namespace Phoenix.Controllers
 
             //var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
             var rci = rciInputService.GetRCI(id); 
-            if (rci.GordonID == null) // A common area rci
+            if (rci.gordonID == null) // A common area rci
             {
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
+                ViewBag.ViewTitle = rci.buildingCode + rci.roomNumber + " Common Area";
             }
             else
             {
-                var name = db.Account.Where(m => m.ID_NUM == rci.GordonID)
+                var name = db.Account.Where(m => m.ID_NUM == rci.gordonID)
                     .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
+                ViewBag.ViewTitle = rci.buildingCode + rci.roomNumber + " " + name;
             }
             
             return View(rci);
@@ -76,7 +76,7 @@ namespace Phoenix.Controllers
         public ActionResult CheckinSigRes(int id)
         {
             var rci = rciInputService.GetRCI(id);
-            ViewBag.Username = rciInputService.GetUsername(rci.GordonID);
+            ViewBag.Username = rciInputService.GetUsername(rci.gordonID);
             return View(rci);
         }
 
@@ -104,16 +104,16 @@ namespace Phoenix.Controllers
         {
             rciSig = rciSig.ToLower().Trim();
             lacSig = lacSig.ToLower().Trim();
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = db.RCI.Where(m => m.rciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
             if (rciSig == username)
             {
-                rci.CheckinSigRes = DateTime.Today;
+                rci.checkinSigRes = DateTime.Today;
             }
             if (lacSig == username)
             {
-                rci.LifeAndConductSigRes = DateTime.Today;
+                rci.lifeAndConductSigRes = DateTime.Today;
             }
             db.SaveChanges();
         }
@@ -123,12 +123,12 @@ namespace Phoenix.Controllers
         public void SaveSigRA(string rciSig, int id)
         {
             rciSig = rciSig.ToLower().Trim();
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = db.RCI.Where(m => m.rciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
             if (rciSig == username)
             {
-                rci.CheckinSigRA = DateTime.Today;
+                rci.checkinSigRA = DateTime.Today;
             }
             db.SaveChanges();
         }
@@ -138,12 +138,12 @@ namespace Phoenix.Controllers
         public void SaveSigRD(string rciSig, int id)
         {
             rciSig = rciSig.ToLower().Trim();
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = db.RCI.Where(m => m.rciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
             if (rciSig == username)
             {
-                rci.CheckinSigRD = DateTime.Today;
+                rci.checkinSigRD = DateTime.Today;
             }
             db.SaveChanges();
         }
@@ -164,7 +164,7 @@ namespace Phoenix.Controllers
                 // Save of newly added components
                 foreach (var damage in rci.newDamages)
                 {
-                    var newDamage = new Damage { RCIComponentID = damage.componentId, DamageDescription = damage.damage, DamageType = "TEXT" };
+                    var newDamage = new Damage { rciComponentID = damage.componentID, damageDescription = damage.damage, damageType = "TEXT" };
                     toAdd.Add(newDamage);
                     //db.Damage.Add(newDamage);  
                 }
