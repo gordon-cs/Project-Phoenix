@@ -12,17 +12,17 @@ namespace Phoenix.Models
         [Key]
         [Column(Order = 0)]
         [StringLength(5)]
-        public string LocationCode { get; set; }
+        public string ID_NUM { get; set; }
 
         [Key]
         [Column(Order = 1)]
         [StringLength(5)]
-        public string BuildingCode { get; set; }
+        public string buildingCode { get; set; }
 
         [Key]
         [Column(Order = 2)]
         [StringLength(5)]
-        public string RoomCode { get; set; }
+        public string roomNumber { get; set; }
 
         [StringLength(45)]
         public string ROOM_DESC { get; set; }
