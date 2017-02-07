@@ -1,7 +1,7 @@
 ﻿var damagesToDelete = [];
 
 $("#save-button").click(function () {
-    location.reload(true); // No need to save, since save() is called in window.onbeforeunload
+    location.reload(); // No need to save, since save() is called in window.onbeforeunload
 });
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 window.onbeforeunload = function (event) {
@@ -30,12 +30,12 @@ function save() {
     $.ajax({
         url: "/RCIInput/SaveRCI",
         data: { rci: rci },
-        method: "POST",
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
-        }
-
+        method: "POST"
+    })
+    .fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+        console.log(errorThrown);
+        console.log(jqXHR);
     });
 }
 
