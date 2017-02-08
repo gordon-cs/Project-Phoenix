@@ -98,17 +98,17 @@ namespace Phoenix.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.ID_NUM)
+                .Property(e => e.LOC_CDE)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.buildingCode)
+                .Property(e => e.BLDG_CDE)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.roomNumber)
+                .Property(e => e.ROOM_CDE)
                 .IsFixedLength()
                 .IsUnicode(false);
 
