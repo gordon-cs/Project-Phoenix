@@ -10,7 +10,7 @@ namespace Phoenix.Services
 {
     public class DashboardService
 {
-        private RCIContext db; 
+        private RCIContext db;
         public DashboardService()
         {
             db = new Models.RCIContext();
@@ -92,6 +92,7 @@ namespace Phoenix.Services
             newRCI.RoomNumber = roomNumber;
             newRCI.IsCurrent = true;
             newRCI.CreationDate = DateTime.Now;
+            newRCI.SessionCode = GetCurrentSession();
 
             db.Rci.Add(newRCI);
             db.SaveChanges();
