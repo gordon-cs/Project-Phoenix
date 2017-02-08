@@ -12,7 +12,7 @@ namespace Phoenix.Models
         [Key]
         [Column(Order = 0)]
         [StringLength(50)]
-        public string Job_Title_Hall { get; set; }
+        public string JobTitleHall { get; set; }
 
         [Key]
         [Column(Order = 1)]

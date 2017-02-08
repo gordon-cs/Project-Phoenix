@@ -1,4 +1,5 @@
-﻿
+﻿@model Phoenix.Models.Rci
+
 @{
     ViewBag.Title = "CheckinSigRD";
 }
@@ -7,7 +8,7 @@
     @Scripts.Render("~/Scripts/checkin-sig-rd.js")
 }
 
-<h2 id="@Model.RCIID">Signature</h2>
+<h2 id="@Model.RciID">Signature</h2>
 
 <div>
     <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages.</p>
@@ -34,6 +35,6 @@
 </div>
 
 <div class="distribute-evenly">
-    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RCIInput", routeValues: new { id = Model.RCIID })'">Back</button>
+    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     <button id="submit-button">Submit</button>
 </div>

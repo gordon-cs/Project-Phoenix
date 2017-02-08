@@ -17,7 +17,7 @@ function save() {
     rci.newFines = [];
     rci.finesToDelete = finesToDelete;
     rci.gordonID = $(".view").attr("data"); // Will be null in case of a common area rci.
-    console.log(rci.GordonID);
+    console.log(rci.gordonID);
     $(".component").each(function (index, element) {
         let componentId = $(element).attr("id");
         $(element).find(".new-fine").each(function (index, element) {
@@ -33,7 +33,7 @@ function save() {
 
     finesToDelete = [];
     $.ajax({
-        url: "/RCICheckout/SaveRCI",
+        url: "/RciCheckout/SaveRci",
         data: { rci: rci },
         method: "POST",
         error: function (jqXHR, textStatus, errorThrown) {
@@ -48,7 +48,7 @@ function addFine(componentID) {
     let fineText = $("#text-input-" + componentID).val();
     let fineAmount = $("#fine-amount-input-" + componentID).val();
     let fineTextElement = "<p class='divAddOn-field new-fine'>" + fineText + "</p>";
-    let fineAmountElement = "<p class=\"divAddOn-item new-fine-amount\">$ " + fineAmount + "</p>";
+    let fineAmountElement = "<p class=\"divAddOn-item new-fine-amount\">" + fineAmount + "</p>";
     let fineIcon = "<i class='divAddOn-item material-icons' onclick='deleteNewFines(event, this);'>delete</i>";
     let divWrapper = "<div class='divAddOn'>" + fineTextElement + fineAmountElement + fineIcon + "</div>";
     $("#div-list-" + componentID).append(divWrapper);

@@ -58,12 +58,12 @@ namespace Phoenix.Controllers
             var strBuilding = (string)TempData["building"];
             var strRoomNumber = (string)TempData["room"];
 
-            var RCIs = dashboardService.GetRCIsForResident(strID);
+            var RCIs = dashboardService.GetRcisForResident(strID);
 
-            if (!dashboardService.CurrentRCIisCorrect(RCIs, strBuilding, strRoomNumber))
+            if (!dashboardService.CurrentRciIsCorrect(RCIs, strBuilding, strRoomNumber))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, strRoomNumber, strID);
-                dashboardService.AddRCIComponents(rciId, "dorm room");
+                dashboardService.AddRciComponents(rciId, "dorm room");
             }
 
             if (strBuilding.Equals("BRO") || strBuilding.Equals("TAV") ||
@@ -71,7 +71,7 @@ namespace Phoenix.Controllers
             {
                 var apartmentNumber = strRoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
 
-                var commonAreaRCIs = dashboardService.GetCommonAreaRCI(apartmentNumber, strBuilding);
+                var commonAreaRCIs = dashboardService.GetCommonAreaRci(apartmentNumber, strBuilding);
 
                 // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
                 if (!commonAreaRCIs.Any())
@@ -79,7 +79,7 @@ namespace Phoenix.Controllers
                     
 
                     var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, apartmentNumber);
-                    dashboardService.AddRCIComponents(rciId, "common area");
+                    dashboardService.AddRciComponents(rciId, "common area");
                 }
 
                 RCIs = RCIs.Concat(commonAreaRCIs);
@@ -98,27 +98,27 @@ namespace Phoenix.Controllers
             var strRoomNumber = (string)TempData["room"];
 
             // Query just for the RA's own RCI
-            var RCIs = dashboardService.GetRCIsForResident(strID);
+            var RCIs = dashboardService.GetRcisForResident(strID);
 
             // Verify that the RA actually has their own RCIs set up
-            if (!dashboardService.CurrentRCIisCorrect(RCIs, strBuilding, strRoomNumber))
+            if (!dashboardService.CurrentRciIsCorrect(RCIs, strBuilding, strRoomNumber))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, strRoomNumber, strID);
-                dashboardService.AddRCIComponents(rciId, "dorm room");
+                dashboardService.AddRciComponents(rciId, "dorm room");
             }
 
             if (strBuilding.Equals("BRO") || strBuilding.Equals("TAV") ||
                 (strBuilding.Equals("FER") && (strRoomNumber.StartsWith("L"))))
             {
                 var apartmentNumber = strRoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
-                var commonAreaRCIs = dashboardService.GetCommonAreaRCI(apartmentNumber, strBuilding);
+                var commonAreaRCIs = dashboardService.GetCommonAreaRci(apartmentNumber, strBuilding);
 
                 // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
                 if (!commonAreaRCIs.Any())
                 {
 
                     var rciId = dashboardService.GenerateOneRCIinDb(strBuilding, apartmentNumber);
-                    dashboardService.AddRCIComponents(rciId, "common area");
+                    dashboardService.AddRciComponents(rciId, "common area");
                 }
 
             }
@@ -126,7 +126,7 @@ namespace Phoenix.Controllers
             // Also display all RCI's for the corresponding building
             string[] strBuildingAsArray = { strBuilding };
 
-            var buildingRCIs = dashboardService.GetRCIsForBuilding(strBuildingAsArray, strID);
+            var buildingRCIs = dashboardService.GetRcisForBuilding(strBuildingAsArray, strID);
             RCIs = RCIs.Concat(buildingRCIs);
 
             return View(RCIs);
@@ -141,7 +141,7 @@ namespace Phoenix.Controllers
             var strBuilding = (string)TempData["building"];
             var strID = (string)TempData["id"];
 
-            var buildingRCIs = dashboardService.GetRCIsForBuilding(dashboardService.CollectRDBuildingCodes(strBuilding), strID);
+            var buildingRCIs = dashboardService.GetRcisForBuilding(dashboardService.CollectRDBuildingCodes(strBuilding), strID);
             
             return View(buildingRCIs);
         }

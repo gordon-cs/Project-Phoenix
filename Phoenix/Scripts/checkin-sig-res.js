@@ -10,7 +10,7 @@ function submit() {
     var id = $("h2").first().attr("id");
 
     $.ajax({
-        url: "/RCIInput/SaveSigRes",
+        url: "/RciInput/SaveSigRes",
         data: { rciSig: rciSig, lacSig: lacSig, id: id },
         method: "POST",
         error: function (jqXHR, textStatus, errorThrown) {

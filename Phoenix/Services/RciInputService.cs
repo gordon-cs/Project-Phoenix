@@ -7,17 +7,17 @@ using Phoenix.Models.ViewModels;
 
 namespace Phoenix.Services
 {
-    public class RCIInputService
+    public class RciInputService
     {
         private RCIContext db;
-        public RCIInputService()
+        public RciInputService()
         {
             db = new Models.RCIContext();
         }
 
-        public RCI GetRCI(int id)
+        public Rci GetRci(int id)
         {
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             return rci;
         }
 

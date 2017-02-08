@@ -6,17 +6,17 @@ using System.Linq;
 
 namespace Phoenix.Services
 {
-    public class RCICheckoutService
+    public class RciCheckoutService
     {
         private RCIContext db;
-        public RCICheckoutService()
+        public RciCheckoutService()
         {
             db = new Models.RCIContext();
         }
 
-        public CheckoutRCIViewModel GetRCIByID(int id)
+        public CheckoutRciViewModel GetRciByID(int id)
         {
-            var temp = db.RCI.Find(id);
+            var temp = db.Rci.Find(id);
             var gordonID = temp.GordonID;
             string firstName, lastName;
 
@@ -32,21 +32,21 @@ namespace Phoenix.Services
                 lastName = "RCI";
             }
 
-            var rci = new CheckoutRCIViewModel()
+            var rci = new CheckoutRciViewModel()
             {
-                RCIID = temp.RCIID,
-                gordonID = gordonID,
-                firstName = firstName,
-                lastName = lastName,
-                buildingCode = temp.BuildingCode,
-                roomNumber = temp.RoomNumber,
-                rciComponents = temp.RCIComponent
+                RciID = temp.RciID,
+                GordonID = gordonID,
+                FirstName = firstName,
+                LastName = lastName,
+                BuildingCode = temp.BuildingCode,
+                RoomNumber = temp.RoomNumber,
+                RciComponent = temp.RciComponent
             };
 
             return rci;
         }
 
-        public void AddFines(List<RCInewFineViewModel> newFines, string gordonID)
+        public void AddFines(List<RciNewFineViewModel> newFines, string gordonID)
         {
             if (newFines != null)
             {
@@ -54,7 +54,7 @@ namespace Phoenix.Services
 
                 foreach (var fine in newFines)
                 {
-                    var newFine = new Fine { RCIComponentID = fine.componentId, Reason = fine.fineReason, FineAmount = fine.fineAmount, GordonID = gordonID };
+                    var newFine = new Fine { RciComponentID = fine.ComponentID, Reason = fine.FineReason, FineAmount = fine.FineAmount, GordonID = gordonID };
                     toAdd.Add(newFine);
                 }
                 db.Fine.AddRange(toAdd);

@@ -6,18 +6,18 @@ namespace Phoenix.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("RCI")]
-    public partial class RCI
+    [Table("Rci")]
+    public partial class Rci
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RCI()
+        public Rci()
         {
-            RCIComponent = new HashSet<RCIComponent>();
+            RciComponent = new HashSet<RciComponent>();
         }
 
-        public int RCIID { get; set; }
+        public int RciID { get; set; }
 
-        public bool? Current { get; set; }
+        public bool? IsCurrent { get; set; }
 
         [Column(TypeName = "date")]
         public DateTime CreationDate { get; set; }
@@ -58,6 +58,6 @@ namespace Phoenix.Models
         public DateTime? CheckoutSigRD { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RCIComponent> RCIComponent { get; set; }
+        public virtual ICollection<RciComponent> RciComponent { get; set; }
     }
 }
