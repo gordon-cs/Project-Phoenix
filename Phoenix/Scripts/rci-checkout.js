@@ -6,8 +6,6 @@ $("#save-button").click(function () {
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 window.onbeforeunload = function (event) {
     save();
-    event.returnValue = null; // Don't open a popup window. On some browsers, this might be the default behavior
-    return null;
 }
 
 

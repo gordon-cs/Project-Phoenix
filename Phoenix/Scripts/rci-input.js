@@ -6,8 +6,6 @@ $("#save-button").click(function () {
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 window.onbeforeunload = function (event) {
     save(); 
-    event.returnValue = null;
-    return null;
 }
 
 /* Save the damages in the RCI. Can be used in both regular save and auto save */
