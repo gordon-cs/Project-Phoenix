@@ -6,23 +6,23 @@ namespace Phoenix.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("RCIComponent")]
-    public partial class RCIComponent
+    [Table("RciComponent")]
+    public partial class RciComponent
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public RCIComponent()
+        public RciComponent()
         {
             Damage = new HashSet<Damage>();
             Fine = new HashSet<Fine>();
         }
 
-        public int RCIComponentID { get; set; }
+        public int RciComponentID { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string RCIComponentName { get; set; }
+        public string RciComponentName { get; set; }
 
-        public int RCIID { get; set; }
+        public int RciID { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Damage> Damage { get; set; }
@@ -30,6 +30,6 @@ namespace Phoenix.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Fine> Fine { get; set; }
 
-        public virtual RCI RCI { get; set; }
+        public virtual Rci Rci { get; set; }
     }
 }

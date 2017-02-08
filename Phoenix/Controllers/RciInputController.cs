@@ -13,20 +13,20 @@ using Phoenix.Services;
 namespace Phoenix.Controllers
 {
     [CustomAuthentication]
-    public class RCIInputController : Controller
+    public class RciInputController : Controller
     {
         // RCI context wrapper. It can be considered to be an object that represents the database.
         private RCIContext db;
-        private RCIInputService rciInputService;
+        private RciInputService rciInputService;
 
         // This list is static so it will persist across actions.
         private static List<int> damagesToDelete = new List<int>();
 
-        public RCIInputController()
+        public RciInputController()
         {
             Debug.WriteLine("Initialize RCIInput Controller");
             db = new Models.RCIContext();
-            rciInputService = new RCIInputService();
+            rciInputService = new RciInputService();
         }
 
         public ActionResult Index(int id)
@@ -37,7 +37,7 @@ namespace Phoenix.Controllers
             var gordon_id = (string)TempData["id"];
 
             //var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
-            var rci = rciInputService.GetRCI(id); 
+            var rci = rciInputService.GetRci(id); 
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
@@ -75,7 +75,7 @@ namespace Phoenix.Controllers
         // GET: RCIInput/CheckinSigRes/1
         public ActionResult CheckinSigRes(int id)
         {
-            var rci = rciInputService.GetRCI(id);
+            var rci = rciInputService.GetRci(id);
             ViewBag.Username = rciInputService.GetUsername(rci.GordonID);
             return View(rci);
         }
@@ -83,7 +83,7 @@ namespace Phoenix.Controllers
         // GET: RCIInput/CheckinSigRA/1
         public ActionResult CheckinSigRA(int id)
         {
-            var rci = rciInputService.GetRCI(id);
+            var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
             ViewBag.Username = rciInputService.GetUsername(gordonID);
             return View(rci);
@@ -92,7 +92,7 @@ namespace Phoenix.Controllers
         // GET: RCIInput/CheckinSigRD/1
         public ActionResult CheckinSigRD(int id)
         {
-            var rci = rciInputService.GetRCI(id);
+            var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
             ViewBag.Username = rciInputService.GetUsername(gordonID);
             return View(rci);
@@ -104,7 +104,7 @@ namespace Phoenix.Controllers
         {
             rciSig = rciSig.ToLower().Trim();
             lacSig = lacSig.ToLower().Trim();
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
             if (rciSig == username)
@@ -123,7 +123,7 @@ namespace Phoenix.Controllers
         public void SaveSigRA(string rciSig, int id)
         {
             rciSig = rciSig.ToLower().Trim();
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
             if (rciSig == username)
@@ -138,7 +138,7 @@ namespace Phoenix.Controllers
         public void SaveSigRD(string rciSig, int id)
         {
             rciSig = rciSig.ToLower().Trim();
-            var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
             if (rciSig == username)
@@ -155,16 +155,16 @@ namespace Phoenix.Controllers
         /// <param name="rci">The data sent to the method.</param>
         /// <returns></returns>
         [HttpPost]
-        public void SaveRCI(RCIForm rci)
+        public void SaveRci(RciForm rci)
         {
             // Check if anything was submitted
-            if (rci.newDamages != null)
+            if (rci.NewDamages != null)
             {
                 var toAdd = new List<Damage>();
                 // Save of newly added components
-                foreach (var damage in rci.newDamages)
+                foreach (var damage in rci.NewDamages)
                 {
-                    var newDamage = new Damage { RCIComponentID = damage.componentId, DamageDescription = damage.damage, DamageType = "TEXT" };
+                    var newDamage = new Damage { RciComponentID = damage.ComponentID, DamageDescription = damage.Damage, DamageType = "TEXT" };
                     toAdd.Add(newDamage);
                     //db.Damage.Add(newDamage);  
                 }
@@ -172,11 +172,11 @@ namespace Phoenix.Controllers
             }
 
             // Check if any existing damages were enqueued for deletion
-            if (rci.damagesToDelete != null)
+            if (rci.DamagesToDelete != null)
             {
                 var toDelete = new List<Damage>();
                 // Delete all the damages that were enqueued for deletion.
-                foreach (var damageID in rci.damagesToDelete)
+                foreach (var damageID in rci.DamagesToDelete)
                 {
                     var damage = db.Damage.Find(damageID);
                     toDelete.Add(damage);

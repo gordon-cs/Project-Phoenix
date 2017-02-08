@@ -19,8 +19,8 @@ namespace Phoenix.Models
         [Required]
         public string Reason { get; set; }
 
-        public int? RCIComponentID { get; set; }
+        public int? RciComponentID { get; set; }
 
-        public virtual RCIComponent RCIComponent { get; set; }
+        public virtual RciComponent RciComponent { get; set; }
     }
 }

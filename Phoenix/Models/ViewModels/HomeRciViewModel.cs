@@ -1,8 +1,8 @@
 ﻿namespace Phoenix.Models.ViewModels
 {
-    public class HomeRCIViewModel
+    public class HomeRciViewModel
     {
-        public int RCIID { get; set; }
+        public int RciID { get; set; }
         public string BuildingCode { get; set; }
         public string RoomNumber { get; set; }
         public string FirstName { get; set; }

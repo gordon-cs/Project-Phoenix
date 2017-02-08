@@ -21,19 +21,19 @@ namespace Phoenix.Services
          * @params: id - resident's Gordon id
          * @return: A collection of RCI View Models (which should contain only 1)
          */ 
-        public IEnumerable<HomeRCIViewModel> GetRCIsForResident(string id)
+        public IEnumerable<HomeRciViewModel> GetRcisForResident(string id)
         {
             if(id == null)
             {
                 return null;
             }
             var RCIs =
-                from personalRCI in db.RCI
+                from personalRCI in db.Rci
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                where account.ID_NUM == id && personalRCI.Current == true
-                select new HomeRCIViewModel
+                where account.ID_NUM == id && personalRCI.IsCurrent == true
+                select new HomeRciViewModel
                 {
-                    RCIID = personalRCI.RCIID,
+                    RciID = personalRCI.RciID,
                     BuildingCode = personalRCI.BuildingCode,
                     RoomNumber = personalRCI.RoomNumber,
                     FirstName = account.firstname,
@@ -47,18 +47,18 @@ namespace Phoenix.Services
          * @params: buildingCode - code(s) for the building(s) of the RA or RD's sphere of authority
          *          gordonId - gordon ID of the RA or RD so that his or her RCI (if applicable) is not included 
          */
-        public IEnumerable<HomeRCIViewModel> GetRCIsForBuilding(string[] buildingCode, string gordonId)
+        public IEnumerable<HomeRciViewModel> GetRcisForBuilding(string[] buildingCode, string gordonId)
         {
             // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
-                from personalRCI in db.RCI
+                from personalRCI in db.Rci
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
                 from account in rci.DefaultIfEmpty()
-                where buildingCode.Contains(personalRCI.BuildingCode) && personalRCI.Current == true
+                where buildingCode.Contains(personalRCI.BuildingCode) && personalRCI.IsCurrent == true
                 && personalRCI.GordonID != gordonId
-                select new HomeRCIViewModel
+                select new HomeRciViewModel
                 {
-                    RCIID = personalRCI.RCIID,
+                    RciID = personalRCI.RciID,
                     BuildingCode = personalRCI.BuildingCode,
                     RoomNumber = personalRCI.RoomNumber,
                     FirstName = account.firstname == null ? "Common Area" : account.firstname,
@@ -74,7 +74,7 @@ namespace Phoenix.Services
          */ 
         public string [] CollectRDBuildingCodes(string jobTitle)
         {
-            return (string[])db.BuildingAssign.Where(b => b.Job_Title_Hall.Equals(jobTitle)).Select(b => b.BuildingCode).ToArray();
+            return (string[])db.BuildingAssign.Where(b => b.JobTitleHall.Equals(jobTitle)).Select(b => b.BuildingCode).ToArray();
         }
 
         /*
@@ -86,18 +86,18 @@ namespace Phoenix.Services
          */
         public int GenerateOneRCIinDb(string buildingCode, string roomNumber, string id = null)
         {
-            var newRCI = new RCI();
+            var newRCI = new Rci();
             newRCI.GordonID = id;
             newRCI.BuildingCode = buildingCode;
             newRCI.RoomNumber = roomNumber;
-            newRCI.Current = true;
+            newRCI.IsCurrent = true;
             newRCI.CreationDate = DateTime.Now;
             newRCI.SessionCode = GetCurrentSession();
 
-            db.RCI.Add(newRCI);
+            db.Rci.Add(newRCI);
             db.SaveChanges();
 
-            return newRCI.RCIID;
+            return newRCI.RciID;
 
         }
 
@@ -106,7 +106,7 @@ namespace Phoenix.Services
          * @params: rciId - the id of the RCI to associate with 
          *          roomType - string to indicate type of room, either "common area" or "dorm room" currently
          */ 
-        public void AddRCIComponents(int rciId, string roomType)
+        public void AddRciComponents(int rciId, string roomType)
         {
             var componentNames = new List<string>();
             if (roomType.Equals("common area"))
@@ -122,11 +122,11 @@ namespace Phoenix.Services
             }
             foreach (var name in componentNames)
             {
-                var newComponent = new RCIComponent();
-                newComponent.RCIComponentName = name.ToString();
-                newComponent.RCIID = rciId;
+                var newComponent = new RciComponent();
+                newComponent.RciComponentName = name.ToString();
+                newComponent.RciID = rciId;
 
-                db.RCIComponent.Add(newComponent);
+                db.RciComponent.Add(newComponent);
                 db.SaveChanges();
             }
         }
@@ -134,7 +134,7 @@ namespace Phoenix.Services
         /*
          * Check to see if an up-to-date RCI exists for a user
          */ 
-        public bool CurrentRCIisCorrect(IEnumerable<HomeRCIViewModel> RCIs, string building, string roomNumber)
+        public bool CurrentRciIsCorrect(IEnumerable<HomeRciViewModel> RCIs, string building, string roomNumber)
         {
             var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == building && m.RoomNumber == roomNumber);
             return RCIsForCurrentBuilding.Any();
@@ -146,15 +146,15 @@ namespace Phoenix.Services
          *          building - the building where the apartment is located
          * @return: the common area, if any, that was found in the db
          */ 
-        public IEnumerable<HomeRCIViewModel> GetCommonAreaRCI(string apartmentNumber, string building)
+        public IEnumerable<HomeRciViewModel> GetCommonAreaRci(string apartmentNumber, string building)
         {
             var commonAreaRCIs =
-                from tempCommonAreaRCI in db.RCI
+                from tempCommonAreaRCI in db.Rci
                 where tempCommonAreaRCI.RoomNumber == apartmentNumber && tempCommonAreaRCI.BuildingCode == building
-                && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.Current == true
-                select new HomeRCIViewModel
+                && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.IsCurrent == true
+                select new HomeRciViewModel
                 {
-                    RCIID = tempCommonAreaRCI.RCIID,
+                    RciID = tempCommonAreaRCI.RciID,
                     BuildingCode = tempCommonAreaRCI.BuildingCode,
                     RoomNumber = tempCommonAreaRCI.RoomNumber,
                     FirstName = "Common Area",
@@ -179,9 +179,9 @@ namespace Phoenix.Services
             // ***** This does not handle common areas! *****
             // We should talk to MC about how he wants common area fine assignment to be handled in the system
             var fineQueries =
-                from rci in db.RCI
-                join component in db.RCIComponent on rci.RCIID equals component.RCIID
-                join fine in db.Fine on component.RCIComponentID equals fine.RCIComponentID
+                from rci in db.Rci
+                join component in db.RciComponent on rci.RciID equals component.RciID
+                join fine in db.Fine on component.RciComponentID equals fine.RciComponentID
                 join account in db.Account on fine.GordonID equals account.ID_NUM
                 where buildingCodes.Contains(rci.BuildingCode) && rci.SessionCode.Equals(currentSession)
                 select new
@@ -191,7 +191,7 @@ namespace Phoenix.Services
                     FirstName = account.firstname,
                     LastName = account.lastname,
                     Id = rci.GordonID,
-                    ComponentName = component.RCIComponentName,
+                    ComponentName = component.RciComponentName,
                     DetailedReason = fine.Reason,
                     FineAmount = fine.FineAmount
                 };

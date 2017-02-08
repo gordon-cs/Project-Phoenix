@@ -6,8 +6,6 @@ $("#save-button").click(function () {
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 window.onbeforeunload = function (event) {
     save(); 
-    event.returnValue = null;
-    return null;
 }
 
 /* Save the damages in the RCI. Can be used in both regular save and auto save */
@@ -28,7 +26,7 @@ function save() {
     // clear the array of delete elements
     damagesToDelete = [];
     $.ajax({
-        url: "/RCIInput/SaveRCI",
+        url: "/RciInput/SaveRci",
         data: { rci: rci },
         method: "POST",
         error: function (jqXHR, textStatus, errorThrown) {

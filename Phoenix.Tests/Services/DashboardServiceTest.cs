@@ -17,60 +17,60 @@ namespace Phoenix.Tests.Services
         DashboardService dashboardService = new DashboardService();
 
         [TestMethod]
-        public void GetRCIsForResident_ValidResidentIDWithRCI_ReturnRCIEntry()
+        public void GetRcisForResident_ValidResidentIDWithRci_ReturnRciEntry()
         {
             // Arrange 
             var id = "999999097"; // ID of 360.StudentTest
 
             // Act 
-            var result = dashboardService.GetRCIsForResident(id);
+            var result = dashboardService.GetRcisForResident(id);
 
             // Assert
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void GetRCIsForResident_ValidResidentIDWithoutRCI_ReturnEmptyList()
+        public void GetRcisForResident_ValidResidentIDWithoutRci_ReturnEmptyList()
         {
             // Arrange 
-            var id = "50103344"; // ID of a student who doesn't have an RCI in system
+            var id = "50103344"; // ID of a student who doesn't have an Rci in system
 
             // Act 
-            var result = dashboardService.GetRCIsForResident(id);
+            var result = dashboardService.GetRcisForResident(id);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(IEnumerable<HomeRCIViewModel>));
+            Assert.IsInstanceOfType(result, typeof(IEnumerable<HomeRciViewModel>));
             Assert.AreEqual(result.Any(), false);
         }
 
         [TestMethod]
-        public void GetRCIsForBuilding_ValidBuildingCode_ReturnEntries()
+        public void GetRcisForBuilding_ValidBuildingCode_ReturnEntries()
         {
             // Arrange 
             var buildingCode = new string[1] { "WIL" };
             var gordonID = "50153295";
 
             // Act 
-            var result = dashboardService.GetRCIsForBuilding(buildingCode, gordonID);
+            var result = dashboardService.GetRcisForBuilding(buildingCode, gordonID);
 
             // Assert
             Assert.IsNotNull(result);
         }
 
         [TestMethod]
-        public void GetRCIsForBuilding_InvalidBuildingCode_ReturnEmptyList()
+        public void GetRcisForBuilding_InvalidBuildingCode_ReturnEmptyList()
         {
             // Arrange 
             var buildingCode = new string[1] { "HELLO" };
             var gordonID = "50153295";
 
             // Act 
-            var result = dashboardService.GetRCIsForBuilding(buildingCode, gordonID);
+            var result = dashboardService.GetRcisForBuilding(buildingCode, gordonID);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(IEnumerable<HomeRCIViewModel>));
+            Assert.IsInstanceOfType(result, typeof(IEnumerable<HomeRciViewModel>));
             Assert.AreEqual(result.Any(), false);
         }
 
@@ -103,14 +103,14 @@ namespace Phoenix.Tests.Services
         }
 
         [TestMethod]
-        public void GetCommonAreaRCI_ValidApartmentNumberAndBuilding_ReturnEntry()
+        public void GetCommonAreaRci_ValidApartmentNumberAndBuilding_ReturnEntry()
         {
             // Arrange 
             var apartmentNumber = "109";
             var building = "TAV";
 
             // Act 
-            var result = dashboardService.GetCommonAreaRCI(apartmentNumber, building);
+            var result = dashboardService.GetCommonAreaRci(apartmentNumber, building);
 
             // Assert
             Assert.IsNotNull(result);

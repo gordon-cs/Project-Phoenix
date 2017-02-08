@@ -9,13 +9,13 @@ using System.Web.Mvc;
 
 namespace Phoenix.Controllers
 {
-    public class RCICheckoutController : Controller
+    public class RciCheckoutController : Controller
     {
-        private RCICheckoutService checkoutService;
+        private RciCheckoutService checkoutService;
 
-        public RCICheckoutController()
+        public RciCheckoutController()
         {
-            checkoutService = new RCICheckoutService();
+            checkoutService = new RciCheckoutService();
         }
 
         // GET: RCICheckout
@@ -26,28 +26,28 @@ namespace Phoenix.Controllers
         /// <returns></returns>
         public ActionResult Index(int id)
         {
-            var rci = checkoutService.GetRCIByID(id);
+            var rci = checkoutService.GetRciByID(id);
 
             return View(rci);
         }
 
-        public void SaveRCI(RCIFinesForm rci)
+        public void SaveRci(RciFinesForm rci)
         {
-            checkoutService.AddFines(rci.newFines, rci.gordonID);
-            checkoutService.RemoveFines(rci.finesToDelete);
+            checkoutService.AddFines(rci.NewFines, rci.GordonID);
+            checkoutService.RemoveFines(rci.FinesToDelete);
 
             return;
         }
 
         public ActionResult ResidentSignature(int id)
         {
-            var rci = checkoutService.GetRCIByID(id);
+            var rci = checkoutService.GetRciByID(id);
             return View(rci);
         }
 
         public ActionResult RASignature(int id)
         {
-            var rci = checkoutService.GetRCIByID(id);
+            var rci = checkoutService.GetRciByID(id);
             return View(rci);
         }
     }

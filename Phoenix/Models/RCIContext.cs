@@ -14,8 +14,8 @@ namespace Phoenix.Models
 
         public virtual DbSet<Damage> Damage { get; set; }
         public virtual DbSet<Fine> Fine { get; set; }
-        public virtual DbSet<RCI> RCI { get; set; }
-        public virtual DbSet<RCIComponent> RCIComponent { get; set; }
+        public virtual DbSet<Rci> Rci { get; set; }
+        public virtual DbSet<RciComponent> RciComponent { get; set; }
         public virtual DbSet<BuildingAssign> BuildingAssign { get; set; }
         public virtual DbSet<Account> Account { get; set; }
         public virtual DbSet<CurrentRA> CurrentRA { get; set; }
@@ -36,9 +36,9 @@ namespace Phoenix.Models
                 .Property(e => e.FineAmount)
                 .HasPrecision(13, 2);
 
-            modelBuilder.Entity<RCIComponent>()
+            modelBuilder.Entity<RciComponent>()
                 .HasMany(e => e.Fine)
-                .WithOptional(e => e.RCIComponent)
+                .WithOptional(e => e.RciComponent)
                 .WillCascadeOnDelete();
 
             modelBuilder.Entity<Account>()
@@ -98,17 +98,17 @@ namespace Phoenix.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.LocationCode)
+                .Property(e => e.LOC_CDE)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.BuildingCode)
+                .Property(e => e.BLDG_CDE)
                 .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
-                .Property(e => e.RoomCode)
+                .Property(e => e.ROOM_CDE)
                 .IsFixedLength()
                 .IsUnicode(false);
 

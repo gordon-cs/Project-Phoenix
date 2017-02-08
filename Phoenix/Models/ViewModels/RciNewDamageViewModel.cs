@@ -5,9 +5,9 @@ using System.Web;
 
 namespace Phoenix.Models.ViewModels
 {
-    public class RCINewDamageViewModel
+    public class RciNewDamageViewModel
     {
-        public int componentId { get; set; }
-        public string damage { get; set; }
+        public int ComponentID { get; set; }
+        public string Damage { get; set; }
     }
 }
