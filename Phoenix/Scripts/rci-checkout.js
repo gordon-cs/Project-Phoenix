@@ -1,12 +1,14 @@
 ﻿var finesToDelete = [];
+
 $("#save-button").click(function () {
+    save();
     location.reload(true);
 });
 
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
-window.onbeforeunload = function (event) {
-    save();
-}
+//window.onbeforeunload = function (event) {
+//    save();
+//}
 
 
 /* Save the fines */
