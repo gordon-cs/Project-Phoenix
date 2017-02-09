@@ -1,21 +1,38 @@
 ﻿@model Phoenix.Models.ViewModels.CheckoutRciViewModel
 
-@{ 
+@{
     ViewBag.Title = "Checkout";
     ViewBag.ViewTitle = "Checkout: Resident Signature";
 }
 <div class="view">
     <div class="pane">
         <div class="pane-content">
-            <p>I hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
-            <div class="divAddOn">
-                <input class="divAddOn-field" type="text" placeholder="@Model.FirstName @Model.LastName"/>
-                <input class="divAddOn-item" type="text" readonly="readonly" value="@(DateTime.Today.Month)/@(DateTime.Today.Day)/@(DateTime.Today.Year)" />
-            </div>
-        </div>
-
-        <div class="distribute-evenly">
-            <a class="button" href="@Url.Action(actionName:"RASignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</a>
+            @using (Html.BeginForm(actionName: "ResidentSignature", controllerName: "RciCheckout", method: FormMethod.Post))
+            {
+                <div>
+                    @if (Model.CheckoutSigRes == null)
+                    {
+                        <p>I hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
+                        <div class="divAddOn">
+                            <input class="divAddOn-field" name="signature" type="text" placeholder="@Model.FirstName @Model.LastName" />
+                            <input class="divAddOn-item" name="date" type="text" readonly="readonly" value="@(DateTime.Today.Month)/@(DateTime.Today.Day)/@(DateTime.Today.Year)" />
+                        </div>
+                        <div>@ViewBag.ErrorMessage</div>
+                    }
+                    else
+                    {
+                        <p>This RCI has already been signed.</p>
+                        <div class="divAddOn">
+                            <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.FirstName @Model.LastName" />
+                            <input class="divAddOn-item" name="date" type="text" readonly="readonly" value="@Model.CheckoutSigRes" />
+                        </div>
+                        <div>@ViewBag.ErrorMessage</div>
+                    }
+                </div>
+                <div class="distribute-evenly">
+                    <input type="submit" value="Next" />
+                </div>
+            }
         </div>
     </div>
 </div>
