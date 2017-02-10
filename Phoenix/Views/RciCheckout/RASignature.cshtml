@@ -12,6 +12,11 @@
                 <div>
                     @if (Model.CheckoutSigRA == null)
                     {
+                        <div class="divAddOn">
+                            <div class="divAddOn-item"><input type="checkbox" name="improperCheckout" value="true" /></div>
+                            <div class="divAddOn-field">Improper Checkout</div>
+                        </div>
+                        
                         <p>I hereby agree that i have assessed preliminary fines to the best of my ability. I understand that these fines are subject to change at the discretion of the Resident Director.</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />

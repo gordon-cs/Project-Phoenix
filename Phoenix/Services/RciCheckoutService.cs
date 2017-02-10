@@ -50,6 +50,37 @@ namespace Phoenix.Services
             return rci;
         }
 
+        /// <summary>
+        /// Creates an RCI Component called Improper checkout and adds a fine
+        /// </summary>
+        public void SetImproperCheckout(int rciID)
+        {
+
+            // Create a new component
+            var comp = new RciComponent
+            {
+                RciComponentName = "Improper Checkout",
+                RciID = rciID
+            };
+
+            var newComponent = db.RciComponent.Add(comp);
+
+            db.SaveChanges();
+
+            var fine = new Fine
+            {
+                FineAmount = 30.00M,
+                GordonID = db.Rci.Find(rciID).GordonID,
+                RciComponentID = newComponent.RciComponentID,
+                Reason = "Improper Checkout"
+            };
+
+            db.Fine.Add(fine);
+
+            db.SaveChanges();
+
+        }
+
         public void AddFines(List<RciNewFineViewModel> newFines, string gordonID)
         {
             if (newFines != null)
