@@ -41,12 +41,36 @@ namespace Phoenix.Controllers
 
         public ActionResult ResidentSignature(int id)
         {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role.Equals("RA"))
+            {
+                return RedirectToAction("RASignature", new { id = id });
+            }
+            else if (role.Equals("RD"))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
             var rci = checkoutService.GetRciByID(id);
             return View(rci);
         }
 
         public ActionResult RASignature(int id)
         {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role.Equals("Resident"))
+            {
+                return RedirectToAction("ResidentSignature", new { id = id });
+            }
+            else if (role.Equals("RD"))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
             var rci = checkoutService.GetRciByID(id);
             return View(rci);
         }

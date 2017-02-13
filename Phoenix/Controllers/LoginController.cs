@@ -24,6 +24,23 @@ namespace Phoenix.Controllers
         [HttpGet]
         public ActionResult Index()
         {
+            var role = (string)TempData["role"];
+            if (role != null)
+            {
+                if (role.Equals("RD"))
+                {
+                    return RedirectToAction("RD", "Dashboard");
+                }
+                else if (role.Equals("RA"))
+                {
+                    return RedirectToAction("RA", "Dashboard");
+                }
+                else
+                {
+
+                    return RedirectToAction("Resident", "Dashboard");
+                }
+            }
             return View();
         }
 
