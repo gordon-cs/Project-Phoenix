@@ -11,19 +11,34 @@
 <h2 id="@Model.RciID">Signature</h2>
 
 <div>
-    <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages.</p>
 
-    @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
+    @if (Model.GordonID == ViewBag.GordonID)
+    {
+        <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages as a resident.</p>
+
+        if (Model.CheckinSigRes == null)
+        {
+            <input type="text" id="rci-sig-res" />
+        }
+        else
+        {
+            <input type="text" id="rci-sig-res" disabled="disabled" value="@ViewBag.Username" />
+        }
+    }
+
+    @if ((Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null) && Model.GordonID != ViewBag.GordonID)
     {
         <p>Resident hasn't signed yet. Please make sure resident has signed before signing.</p>
         <input type="text" id="rci-sig" disabled="disabled" />
     }
     else if (Model.CheckinSigRA == null)
     {
+        <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages as an RA.</p>
         <input type="text" id="rci-sig" />
     }
     else
     {
+        <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages as an RA.</p>
         <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.Username" />
     }
 

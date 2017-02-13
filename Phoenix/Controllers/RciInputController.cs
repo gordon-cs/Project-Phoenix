@@ -86,6 +86,7 @@ namespace Phoenix.Controllers
             var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
             ViewBag.Username = rciInputService.GetUsername(gordonID);
+            ViewBag.GordonID = gordonID;
             return View(rci);
         }
 
@@ -120,15 +121,20 @@ namespace Phoenix.Controllers
 
         // Save signatures for RA
         [HttpPost]
-        public void SaveSigRA(string rciSig, int id)
+        public void SaveSigRA(string rciSig, string rciSigRes, int id)
         {
             rciSig = rciSig.ToLower().Trim();
+            rciSigRes = rciSigRes.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
             if (rciSig == username)
             {
                 rci.CheckinSigRA = DateTime.Today;
+            }
+            if (rciSigRes == username)
+            {
+                rci.CheckinSigRes = DateTime.Today;
             }
             db.SaveChanges();
         }
