@@ -31,6 +31,14 @@ namespace Phoenix.Controllers
 
         public ActionResult Index(int id)
         {
+            // Redirect to other dashboards if role not correct
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
             Debug.WriteLine("Reached Index Method for RCIInput Controller");
 
             // This is how we access items set in the filter.
@@ -58,6 +66,11 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
 
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
             if (role.Equals("RD"))
             {
                 return RedirectToAction("CheckinSigRD", new { id = id });
@@ -77,6 +90,11 @@ namespace Phoenix.Controllers
         {
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
 
             if (role.Equals("RD"))
             {
@@ -98,6 +116,11 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
 
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
             if (role.Equals("RD"))
             {
                 return RedirectToAction("CheckinSigRD", new { id = id });
@@ -118,6 +141,11 @@ namespace Phoenix.Controllers
         {
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
 
             if (role.Equals("Resident"))
             {

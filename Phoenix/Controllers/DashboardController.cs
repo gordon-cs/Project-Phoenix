@@ -29,6 +29,10 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
 
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
 
             if (role.Equals("RD"))
             {
@@ -51,6 +55,11 @@ namespace Phoenix.Controllers
         {
             // Redirect to other dashboards if role not correct
             var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
 
             if (role.Equals("RD"))
             {
@@ -108,6 +117,11 @@ namespace Phoenix.Controllers
             // Redirect to other dashboards if role not correct
             var role = (string)TempData["role"];
 
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
             if (role.Equals("RD"))
             {
                 return RedirectToAction("RD");
@@ -162,6 +176,11 @@ namespace Phoenix.Controllers
         {
             // Redirect to other dashboards if role not correct
             var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
 
             if (role.Equals("Resident"))
             {
