@@ -12,6 +12,13 @@
 @section Scripts{
     @Scripts.Render("~/bundles/page_specific/js/rci-input")
 }
+
+@section Menu {
+    <ul class="drawer-menu">
+        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
+        <li class="drawer-menu-item logout-button">Logout</li>
+    </ul>
+}
 <div class="view">
     @foreach(var component in Model.RciComponent)
     {
