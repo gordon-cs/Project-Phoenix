@@ -37,6 +37,43 @@ function save() {
     });
 }
 
+// Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications
+function uploadPhoto() {
+    console.log("reached uploadPhoto");
+    console.log(this.files);
+    window.URL = window.URL || window.webkitURL;
+    let photoList = this.files;
+    let fileQuantity = photoList.length;
+    let fileType = /^image\//;
+    let previewArea = $(".img-preview");
+    if (!fileQuantity) {
+        previewArea.innerHTML = "<p>No pictures uploaded</p>";
+    }
+    else {
+        for (let i = 0; i < fileQuantity; i++) {
+            let file = photoList[i];
+            if (!fileType.test(file.type)) {
+                console.log(file.type);
+                alert("Oops! Please select an image file of type .jpg or .png.")
+            }
+            else {
+                console.log("Photo" + i + "size: " + file.size);
+                let img = document.createElement("img");
+                img.classList.add("uploaded-img");
+                img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
+                img.width = 60; // Make photo small for thumbnail
+                img.onload = function () {
+                    window.URL.revokeObjectURL(this.src);
+                }
+                img.alt = file.name;
+                previewArea.append(img);
+
+            }
+        }
+    }
+
+}
+
 /* Add a div to the right component. This div will contain a :
     <p> element displaying a damage
     <input> hidden element that will be used when submitting the form
@@ -65,7 +102,6 @@ function deleteExistingDamages(event, element, id)
 
 
 
-
 /* Register Handers */
 
 
@@ -77,4 +113,15 @@ $(".adding-damages").on("keypress", function (e) {
         $("#add-" + $(this).attr("id").substring(11)).click();
     }
 });
+
+$("input[id^='dmg-input'").change(uploadPhoto
+    //function () {
+//    console.log(this);
+//    console.log(this.files);
+//    console.log(this.files[0].size);
+//    //let photoFile = this.file[0];
+//    console.log(photoFile.size);
+//    uploadPhoto(photoFile);
+//}
+);
 

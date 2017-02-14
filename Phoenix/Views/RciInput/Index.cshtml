@@ -24,17 +24,19 @@
                         <i class="material-icons">add_a_photo</i>
                         <span>Take picture</span>
                     </label>
-                    <span class="divAddOn-item">0 Picture(s)</span>
+                    @*<span class="divAddOn-item">0 Picture(s)</span>*@
+                    <div class="img-preview"></div>
                 </div>
-                <input id="dmg-input-@component.RciComponentID" class="file-input" type="file" accept="image/*;capture=camera">
+                <input id="dmg-input-@component.RciComponentID" class="file-input" multiple type="file" accept="image/*;capture=camera">
                 <div>
                     <p>OR</p>
                 </div>
                 <div>
-                    <p>Describe the Damage:</p>
+                    <p>Describe the damage and its location:</p>
                 </div>
                 <div class="divAddOn">
-                    <input class="divAddOn-field adding-damages" type="text" placeholder="Damage + Location" id="text-input-@component.RciComponentID"/>
+                    <input class="divAddOn-field adding-damages" type="text" placeholder="Damage + Location" 
+                           id="text-input-@component.RciComponentID" onchange="uploadPhoto();"/>
                     <button class="divAddOn-item" onclick="addDamage(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
                 </div>
                 <div class="div-list" id="div-list-@component.RciComponentID">

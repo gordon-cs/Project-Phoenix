@@ -26,5 +26,10 @@ namespace Phoenix.Services
             var username = db.Account.Where(u => u.ID_NUM == gordon_id).FirstOrDefault().AD_Username;
             return username;
         }
+
+        public void SaveImgPath(string filePath)
+        {
+
+        }
     }
 }

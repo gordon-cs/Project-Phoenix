@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
 using Phoenix.Models;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Data.Entity.Validation;
 using System;
 using Phoenix.Services;
+using System.Web.UI;
 
 namespace Phoenix.Controllers
 {
@@ -190,6 +192,18 @@ namespace Phoenix.Controllers
 
             return;
         }
+
+        public void UploadPhoto(HttpPostedFileBase file)
+        {
+            if (file != null)
+            {
+                // Do we want the path to be just whatever the automatic description is?
+                // Or better to have an established naming system for images? Like /studentID/rciComponentId
+                string path = "";
+                rciInputService.SaveImgPath(path);
+            }
+        }
+
 
     }
 }
