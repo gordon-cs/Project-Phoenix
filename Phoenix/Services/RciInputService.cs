@@ -27,9 +27,5 @@ namespace Phoenix.Services
             return username;
         }
 
-        public void SaveImgPath(string filePath)
-        {
-
-        }
     }
 }

@@ -193,6 +193,10 @@ namespace Phoenix.Controllers
             return;
         }
 
+        /// <summary>
+        /// If a photo(s) of a damage was uploaded, this method first creates a new Damage entry in db, then saves the image to the server
+        /// For reference, see: http://codepedia.info/upload-image-using-jquery-ajax-asp-net-c-sharp/#jQuery_ajax_call
+        /// </summary>
         [HttpPost]
         public void SavePhoto()
         {
@@ -223,7 +227,6 @@ namespace Phoenix.Controllers
 
                     Response.Write(imagePath);
                 }
-
             }
             catch(Exception e)
             {
@@ -232,7 +235,6 @@ namespace Phoenix.Controllers
             }
             return;
         }
-
 
     }
 }
