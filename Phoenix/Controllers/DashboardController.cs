@@ -29,6 +29,10 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
 
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
 
             if (role.Equals("RD"))
             {
@@ -49,11 +53,29 @@ namespace Phoenix.Controllers
         // GET: Home/Resident
         public ActionResult Resident()
         {
+            // Redirect to other dashboards if role not correct
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("RD"))
+            {
+                return RedirectToAction("RD");
+            }
+            else if (role.Equals("RA"))
+            {
+                return RedirectToAction("RA");
+            }
+
             // Look through RCIS and find your RCI with your ID
             // For common area RCI, look through rci's without a gordon id, 
             // with the corresponding Building and Room number
 
             // TempData stores object, so always cast to string.
+
             var strID = (string)TempData["id"];
             var strBuilding = (string)TempData["building"];
             var strRoomNumber = (string)TempData["room"];
@@ -92,6 +114,23 @@ namespace Phoenix.Controllers
         // GET: Home/RA
         public ActionResult RA()
         {
+            // Redirect to other dashboards if role not correct
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("RD"))
+            {
+                return RedirectToAction("RD");
+            }
+            else if (role.Equals("Resident"))
+            {
+                return RedirectToAction("Resident");
+            }
+
             // TempData stores object, so always cast to string.
             var strID = (string)TempData["id"];
             string strBuilding = (string)TempData["building"];
@@ -135,6 +174,23 @@ namespace Phoenix.Controllers
         // GET: Home/RD
         public ActionResult RD()
         {
+            // Redirect to other dashboards if role not correct
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("Resident"))
+            {
+                return RedirectToAction("Resident");
+            }
+            else if (role.Equals("RA"))
+            {
+                return RedirectToAction("RA");
+            }
+
             // Display all RCI's for the corresponding building
 
             // TempData stores object, so always cast to string.
