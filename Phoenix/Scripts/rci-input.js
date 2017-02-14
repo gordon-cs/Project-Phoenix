@@ -35,6 +35,9 @@ function save() {
         }
 
     });
+
+    // Now handle the saving of images
+
 }
 
 // Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications
@@ -43,6 +46,7 @@ function uploadPhoto() {
     console.log(this.files);
     window.URL = window.URL || window.webkitURL;
     let photoList = this.files;
+    let rciComponentId = this.id.slice(10);
     let fileQuantity = photoList.length;
     let fileType = /^image\//;
     let previewArea = $(".img-preview");
@@ -52,6 +56,7 @@ function uploadPhoto() {
     else {
         for (let i = 0; i < fileQuantity; i++) {
             let file = photoList[i];
+    // Make sure the file is a picture
             if (!fileType.test(file.type)) {
                 console.log(file.type);
                 alert("Oops! Please select an image file of type .jpg or .png.")
@@ -67,6 +72,7 @@ function uploadPhoto() {
                 }
                 img.alt = file.name;
                 previewArea.append(img);
+                savePhoto(file, rciComponentId);
 
             }
         }
@@ -74,6 +80,24 @@ function uploadPhoto() {
 
 }
 
+function savePhoto(photoFile, fileName) {
+    let formData = new FormData();
+    formData.append('file', photoFile, fileName);
+
+    $.ajax({
+        url: '/RciInput/SavePhoto',
+        data: formData,
+        method: "POST",
+        processData: false,
+        contentType: false,
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Status: " + jqXHR.status);
+            console.log("Response Text: " + jqXHR.responseText);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
+}
 /* Add a div to the right component. This div will contain a :
     <p> element displaying a damage
     <input> hidden element that will be used when submitting the form
@@ -114,14 +138,6 @@ $(".adding-damages").on("keypress", function (e) {
     }
 });
 
-$("input[id^='dmg-input'").change(uploadPhoto
-    //function () {
-//    console.log(this);
-//    console.log(this.files);
-//    console.log(this.files[0].size);
-//    //let photoFile = this.file[0];
-//    console.log(photoFile.size);
-//    uploadPhoto(photoFile);
-//}
-);
+$("input[id^='dmg-input'").change(uploadPhoto);
+
 

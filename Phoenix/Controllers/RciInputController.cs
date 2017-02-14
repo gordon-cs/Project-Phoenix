@@ -193,15 +193,44 @@ namespace Phoenix.Controllers
             return;
         }
 
-        public void UploadPhoto(HttpPostedFileBase file)
+        [HttpPost]
+        public void SavePhoto()
         {
-            if (file != null)
+            try
             {
-                // Do we want the path to be just whatever the automatic description is?
-                // Or better to have an established naming system for images? Like /studentID/rciComponentId
-                string path = "";
-                rciInputService.SaveImgPath(path);
+                foreach (string s in Request.Files)
+                {
+                    HttpPostedFileBase photoFile = Request.Files[s];
+                    string rciComponent = photoFile.FileName;
+                    Debug.Write("Filename identified on client: " + rciComponent);
+                    //string fileExtension = photoFile.ContentType;
+                    string fileExtension = ".jpg";
+
+                    Damage newDamage = new Damage();
+                    newDamage.DamageType = "IMAGE";
+                    newDamage.RciComponentID = Convert.ToInt32(rciComponent);
+
+                    db.Damage.Add(newDamage);
+                    db.SaveChanges();
+
+                    var damageId = newDamage.DamageID;
+                    string imageName = "RciComponentId" + rciComponent + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
+                    string imagePath = "F:\\Sites\\RCI\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
+                    photoFile.SaveAs(imagePath);
+
+                    newDamage.DamageImagePath = imagePath;
+                    db.SaveChanges();
+
+                    Response.Write(imagePath);
+                }
+
             }
+            catch(Exception e)
+            {
+                Response.Status = "Error saving photo";
+                Debug.Write("Error saving photo to database: " + e.Message);
+            }
+            return;
         }
 
 
