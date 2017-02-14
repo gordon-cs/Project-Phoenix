@@ -95,6 +95,9 @@
     text-decoration: none;
     color: inherit;
 }
+.drawer-menu-item :hover {
+    font-weight:bold;
+}
 
 
 /***************************/
