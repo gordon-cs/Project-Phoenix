@@ -24,6 +24,13 @@ namespace Phoenix.Controllers
         /// <returns></returns>
         public ActionResult Index(int id)
         {
+            // Redirect to other dashboards if role not correct
+            var role = (string)TempData["role"];
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
             var rci = checkoutService.GetRciByID(id);
 
             return View(rci);
@@ -46,6 +53,23 @@ namespace Phoenix.Controllers
         [HttpGet]
         public ActionResult ResidentSignature(int id)
         {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("RA"))
+            {
+                return RedirectToAction("RASignature", new { id = id });
+            }
+            else if (role.Equals("RD"))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
             var rci = checkoutService.GetRciByID(id);
             return View(rci);
         }
@@ -79,6 +103,23 @@ namespace Phoenix.Controllers
         [HttpGet]
         public ActionResult RASignature(int id)
         {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("Resident"))
+            {
+                return RedirectToAction("ResidentSignature", new { id = id });
+            }
+            else if (role.Equals("RD"))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
             var raName = (string)TempData["user"];
             ViewBag.ExpectedSignature = raName;
             var rci = checkoutService.GetRciByID(id);
