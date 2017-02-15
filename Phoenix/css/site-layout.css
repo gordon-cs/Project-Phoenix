@@ -95,7 +95,7 @@
     text-decoration: none;
     color: inherit;
 }
-.drawer-menu-item :hover {
+.drawer-menu :hover {
     font-weight:bold;
 }
 
