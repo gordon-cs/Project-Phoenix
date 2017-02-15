@@ -28,7 +28,7 @@ namespace Phoenix.Controllers
             var role = (string)TempData["role"];
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             }
 
             var rci = checkoutService.GetRciByID(id);
@@ -99,7 +99,7 @@ namespace Phoenix.Controllers
 
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             }
 
             if (role.Equals("Resident"))
