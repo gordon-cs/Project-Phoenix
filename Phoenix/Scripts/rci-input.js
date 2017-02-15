@@ -49,7 +49,7 @@ function uploadPhoto() {
     let rciComponentId = this.id.slice(10);
     let fileQuantity = photoList.length;
     let fileType = /^image\//;
-    let previewArea = $(".img-preview");
+    let previewArea = $("#img-preview-" + rciComponentId);
     if (!fileQuantity) {
         previewArea.innerHTML = "<p>No pictures uploaded</p>";
     }
