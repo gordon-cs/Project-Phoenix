@@ -73,6 +73,13 @@
     .view-drawer {
         padding: 0 10px;
     }
+    button.view-drawer {
+        border: none;
+        background: none;
+    }
+    button.view-drawer:focus{
+        outline: none;
+    }
 
 /***************************/
 /******Navigation Menu******/
