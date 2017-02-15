@@ -21,17 +21,9 @@ namespace Phoenix.Services
             var gordonID = temp.GordonID;
             string firstName, lastName;
 
-            if (gordonID != null)
-            {
-                var account = db.Account.Where(m => m.ID_NUM == gordonID).FirstOrDefault();
-                firstName = account.firstname;
-                lastName = account.lastname;
-            }
-            else
-            {
-                firstName = "Common Area";
-                lastName = "RCI";
-            }
+            var account = db.Account.Where(m => m.ID_NUM == gordonID).FirstOrDefault();
+            firstName = account.firstname;
+            lastName = account.lastname;
 
             var rci = new RciReassignViewModel()
             {
