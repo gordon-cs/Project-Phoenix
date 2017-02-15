@@ -51,7 +51,8 @@
                     {
                         <div class="divAddOn">
                             <p class="divAddOn-field">@fine.Reason</p>
-                            <p class="divAddOn-item">$ @fine.FineAmount</p>
+                            <span class="divAddOn-item">$</span>
+                            <p class="divAddOn-item">@fine.FineAmount</p>
                             <i class='divAddOn-item material-icons' onclick="deleteExistingFines(event, this, @fine.FineID)">delete</i>
                         </div>
                     }

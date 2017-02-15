@@ -14,6 +14,7 @@ namespace Phoenix.Services
             db = new Models.RCIContext();
         }
 
+        // 
         public CheckoutRciViewModel GetRciByID(int id)
         {
             var temp = db.Rci.Find(id);
@@ -40,10 +41,44 @@ namespace Phoenix.Services
                 LastName = lastName,
                 BuildingCode = temp.BuildingCode,
                 RoomNumber = temp.RoomNumber,
-                RciComponent = temp.RciComponent
+                RciComponent = temp.RciComponent,
+                CheckoutSigRes = temp.CheckoutSigRes,
+                CheckoutSigRA = temp.CheckoutSigRA,
+                CheckoutSigRD = temp.CheckoutSigRD
             };
 
             return rci;
+        }
+
+        /// <summary>
+        /// Creates an RCI Component called Improper checkout and adds a fine
+        /// </summary>
+        public void SetImproperCheckout(int rciID)
+        {
+
+            // Create a new component
+            var comp = new RciComponent
+            {
+                RciComponentName = "Improper Checkout",
+                RciID = rciID
+            };
+
+            var newComponent = db.RciComponent.Add(comp);
+
+            db.SaveChanges();
+
+            var fine = new Fine
+            {
+                FineAmount = 30.00M,
+                GordonID = db.Rci.Find(rciID).GordonID,
+                RciComponentID = newComponent.RciComponentID,
+                Reason = "Improper Checkout"
+            };
+
+            db.Fine.Add(fine);
+
+            db.SaveChanges();
+
         }
 
         public void AddFines(List<RciNewFineViewModel> newFines, string gordonID)
@@ -77,6 +112,36 @@ namespace Phoenix.Services
             }
 
             db.SaveChanges();
+        }
+
+        public void CheckoutResidentSignRci(CheckoutRciViewModel rciViewModel)
+        {
+            var rci = db.Rci.Find(rciViewModel.RciID);
+
+            rci.CheckoutSigRes = System.DateTime.Today;
+
+            db.SaveChanges();
+
+        }
+
+        public void CheckoutRASignRci(CheckoutRciViewModel rciViewModel)
+        {
+            var rci = db.Rci.Find(rciViewModel.RciID);
+
+            rci.CheckoutSigRA = System.DateTime.Today;
+
+            db.SaveChanges();
+
+        }
+
+        public void CheckoutRDSignRci(CheckoutRciViewModel rciViewModel)
+        {
+            var rci = db.Rci.Find(rciViewModel.RciID);
+
+            rci.CheckoutSigRD = System.DateTime.Today;
+
+            db.SaveChanges();
+
         }
 
     }
