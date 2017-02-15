@@ -56,12 +56,31 @@ namespace Phoenix.Services
         }
 
         // Set the RciID column for a list components.
-        public void AssignComponentsToRci(int[] rciComponents, int rciID)
+        public void SwapRciComponents(int[] rciComponents, int destinationRciID, int sourceRciID)
         {
-            var query = db.RciComponent.Where(m => rciComponents.Contains(m.RciComponentID));
+            if(rciComponents == null)
+            {
+                return;
+            }
+
+            // The rci components to move from the source to the destination
+            var query = db.RciComponent.Where(m => rciComponents.Contains(m.RciComponentID)).ToList();
+
+            // THe names of the rci components to swap
+            var temp = query.Select(m => m.RciComponentName);
+
+            // The rci components to move from the destination back to the source
+            var mirrorQuery = db.RciComponent.Where(m => m.RciID == destinationRciID && temp.Contains(m.RciComponentName)).ToList();
+
             foreach(var record in query)
             {
-                record.RciID = rciID;
+                
+                record.RciID = destinationRciID;
+            }
+
+            foreach (var record in mirrorQuery)
+            {
+                record.RciID = sourceRciID;
             }
 
             db.SaveChanges();

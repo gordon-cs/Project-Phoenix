@@ -30,7 +30,7 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult Index(int id, int[] rciComponent, int assignTo )
         {
-            reassignService.AssignComponentsToRci(rciComponent, assignTo);
+            reassignService.SwapRciComponents(rciComponent, assignTo, id);
             return RedirectToAction(actionName:"Index", controllerName:"Dashboard");
         }
     }
