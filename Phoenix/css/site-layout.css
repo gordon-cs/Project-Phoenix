@@ -73,6 +73,13 @@
     .view-drawer {
         padding: 0 10px;
     }
+    button.view-drawer {
+        border: none;
+        background: none;
+    }
+    button.view-drawer:focus{
+        outline: none;
+    }
 
 /***************************/
 /******Navigation Menu******/
@@ -89,6 +96,14 @@
     list-style: none;
     margin: 0;
     padding: 0.5em;
+    cursor: pointer;
+}
+.drawer-menu a {
+    text-decoration: none;
+    color: inherit;
+}
+.drawer-menu :hover {
+    font-weight:bold;
 }
 
 
