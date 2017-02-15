@@ -52,11 +52,14 @@
                             <i class="material-icons">attach_money</i>
                         </div>
                     </a>
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciComponentReassign", routeValues: new { id = rci.RciID })">
-                        <div>
-                            <i class="material-icons">settings</i>
-                        </div>
-                    </a>
+                    @if (rci.FirstName != "Common Area")
+                    {
+                        <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
+                            <div>
+                                <i class="material-icons">settings</i>
+                            </div>
+                        </a>
+                    }
                     <a >
                         <div>
                             <i class="material-icons">delete</i>
