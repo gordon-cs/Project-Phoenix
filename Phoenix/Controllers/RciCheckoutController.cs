@@ -1,14 +1,11 @@
-﻿using Phoenix.Models;
+﻿using Phoenix.Filters;
 using Phoenix.Models.ViewModels;
 using Phoenix.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Phoenix.Controllers
 {
+    [CustomAuthentication]
     public class RciCheckoutController : Controller
     {
         private RciCheckoutService checkoutService;
@@ -30,7 +27,7 @@ namespace Phoenix.Controllers
             var role = (string)TempData["role"];
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             }
 
             var rci = checkoutService.GetRciByID(id);
@@ -53,16 +50,7 @@ namespace Phoenix.Controllers
 
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RA"))
-            {
-                return RedirectToAction("RASignature", new { id = id });
-            }
-            else if (role.Equals("RD"))
-            {
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("Index", "Login");
             }
 
             var rci = checkoutService.GetRciByID(id);
@@ -76,16 +64,12 @@ namespace Phoenix.Controllers
 
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
+                return RedirectToAction("Index", "Login");
             }
 
             if (role.Equals("Resident"))
             {
                 return RedirectToAction("ResidentSignature", new { id = id });
-            }
-            else if (role.Equals("RD"))
-            {
-                return RedirectToAction("Index", "Dashboard");
             }
 
             var rci = checkoutService.GetRciByID(id);
