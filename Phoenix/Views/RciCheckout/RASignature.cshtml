@@ -4,6 +4,7 @@
     ViewBag.Title = "Checkout";
     ViewBag.ViewTitle = "Checkout: RA Signature";
 }
+
 <div class="view">
     <div class="pane">
         <div class="pane-content">
@@ -16,7 +17,13 @@
                             <div class="divAddOn-item"><input type="checkbox" name="improperCheckout" value="true" /></div>
                             <div class="divAddOn-field">Improper Checkout</div>
                         </div>
-                        
+                        <div class="divAddOn">
+                            <div class="divAddOn-item"><input type="checkbox" name="lostKey" value="true" /></div>
+                            <div class="divAddOn-field">Lost Keys</div>
+                            <div class="divAddOn-item">$</div>
+                            <input class="lost-key-fine divAddOn-item" name="lostKeyFine" type="number" placeholder="2.00" />
+                        </div>
+
                         <p>I hereby agree that i have assessed preliminary fines to the best of my ability. I understand that these fines are subject to change at the discretion of the Resident Director.</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />

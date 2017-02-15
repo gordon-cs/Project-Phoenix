@@ -117,7 +117,7 @@ namespace Phoenix.Controllers
         /// Verify the RA's signature
         /// </summary>
         [HttpPost]
-        public ActionResult RASignature(int id, string signature, DateTime date, bool improperCheckout = false)
+        public ActionResult RASignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
         {
             var rci = checkoutService.GetRciByID(id);
             if(rci.CheckoutSigRA != null) // Already signed
@@ -136,6 +136,10 @@ namespace Phoenix.Controllers
             if(improperCheckout)
             {
                 checkoutService.SetImproperCheckout(id);
+            }
+            if(lostKey)
+            {
+                checkoutService.SetLostKeyFine(id, lostKeyFine);
             }
             checkoutService.CheckoutRASignRci(rci);
             return RedirectToAction(actionName:"Index", controllerName:"Dashboard");

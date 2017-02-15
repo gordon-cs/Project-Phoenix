@@ -81,6 +81,34 @@ namespace Phoenix.Services
 
         }
 
+        /// <summary>
+        /// Creates an RCI component called Lost Keys and adds a fine to it
+        /// </summary>
+        public void SetLostKeyFine(int rciID, decimal fineAmount)
+        {
+            var comp = new RciComponent
+            {
+                RciComponentName = "Lost Keys",
+                RciID = rciID
+            };
+
+            var newComponent = db.RciComponent.Add(comp);
+
+            db.SaveChanges();
+
+            var fine = new Fine
+            {
+                FineAmount = fineAmount,
+                GordonID = db.Rci.Find(rciID).GordonID,
+                RciComponentID = newComponent.RciComponentID,
+                Reason = "Lost Keys"
+            };
+
+            db.Fine.Add(fine);
+
+            db.SaveChanges();
+        }
+
         public void AddFines(List<RciNewFineViewModel> newFines, string gordonID)
         {
             if (newFines != null)
