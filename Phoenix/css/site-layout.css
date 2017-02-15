@@ -113,6 +113,7 @@
             text-align: center;
         }
         .pane-content {
+            display: none;
             padding: 7px;
         }
 
