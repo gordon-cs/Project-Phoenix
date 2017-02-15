@@ -22,13 +22,14 @@
                 </div>
             }
             <div class="divAddOn">
-                <input class="divAddOn-item" type="submit" value="Assign To" />
+                <label class="divAddOn-item" >Assign To</label>
                 <select class="divAddOn-field" name="assignTo">
                     @foreach (var rci in Model.RciTarget)
                     {
                         <option value="@rci.RciID">@rci.RciOwner</option>
                     }
                 </select>
+                <input class="divAddOn-item" type="submit" value="OK" />
             </div>
         }
     </div>   
