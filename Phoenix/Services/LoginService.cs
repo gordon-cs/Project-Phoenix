@@ -84,8 +84,9 @@ namespace Phoenix.Services
 
 
             var role = GetRole(id);
-            var building = GetBuilding(id);
-            var roomNumber = GetRoom(id);
+            var currentBuildingCode = GetCurrentBuilding(id);
+            var currentRoomNumber = GetCurrentRoom(id);
+            var kingdom = GetKingdom(id); // The buildings for which you are responsible
 
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
@@ -102,8 +103,9 @@ namespace Phoenix.Services
                 {"exp", ToUnixTime(expire) },
                 {"admin", isAdmin },
                 {"role", role },
-                {"building", building },
-                {"room", roomNumber}
+                {"kingdom", kingdom },
+                {"currentRoom", currentRoomNumber},
+                {"currentBuilding",  currentBuildingCode }
             };
 
             string token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
@@ -141,41 +143,79 @@ namespace Phoenix.Services
         }
 
         /*
-         * Get the building a user lives in.
+         * Get a list of building codes that this user is responsible for.
          */
-        public string GetBuilding(string id)
+        public List<string> GetKingdom (string id)
         {
             if (id == null)
             {
                 return null;
             }
+
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
             {
-                return RDentry.Job_Title_Hall;
+                // Get the building codes associated with the RD's Job Title
+                var query = db.BuildingAssign.Where(m => m.JobTitleHall.Equals(RDentry.Job_Title_Hall));
+                var buildingCodes = new List<string>();
+
+                foreach(var record in query)
+                {
+                    buildingCodes.Add(record.BuildingCode);
+                }
+
+                return buildingCodes;
             }
-            var RAentry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
+
+            var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
+
             if (RAentry != null)
             {
-                return RAentry.BLDG_CDE;
+                // Since CurrentRA has building codes, we need to a do a little kung fu to make sure cases like
+                // the road halls work.
+
+                // Step 1: For a given buildingCode, get what JobTitle it is associated with.
+                var temp = db.BuildingAssign.Where(m => m.BuildingCode.Equals(RAentry.Dorm)).FirstOrDefault();
+                var raJobTitleHall = temp.JobTitleHall;
+
+                // Step 2: Now that we have the job title, get what building codes it is associated with.
+                var query = db.BuildingAssign.Where(m => m.JobTitleHall.Equals(raJobTitleHall));
+                 
+                var buildingCodes = new List<string>();
+
+                foreach(var record in query)
+                {
+                    buildingCodes.Add(record.BuildingCode.Trim());
+                }
+
+                return buildingCodes;
             }
-            var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
-            if (ResidentEntry != null)
-            {
-                return ResidentEntry.BLDG_CDE;
-            }
+
+            // If you are not an RA or RD, you don't have a kingdom  :p
             return null;
 
         }
 
-        public string GetRoom(string id)
+        /* Get the building where the person is currently living */
+        public string GetCurrentBuilding(string id)
+        {
+            var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
+            if(ResidentEntry != null)
+            {
+                return ResidentEntry.BLDG_CDE.Trim();
+            }
+            return null;
+        }
+
+        /* Get the room number where the person is currently living */
+        public string GetCurrentRoom(string id)
         {
             var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
             if (ResidentEntry != null)
             {
-                return ResidentEntry.ROOM_CDE;
+                return ResidentEntry.ROOM_CDE.Trim();
             }
-            return "Non-Resident";
+            return null;
         }
     }
 }
