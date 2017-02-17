@@ -55,6 +55,7 @@ namespace Phoenix.Services
         /// </summary>
         public void SetImproperCheckout(int rciID)
         {
+            var rci = db.Rci.Find(rciID);
 
             // Create a new component
             var comp = new RciComponent
@@ -63,21 +64,24 @@ namespace Phoenix.Services
                 RciID = rciID
             };
 
-            var newComponent = db.RciComponent.Add(comp);
-
-            db.SaveChanges();
-
-            var fine = new Fine
+            if (!rci.RciComponent.Where(m => m.RciComponentName.Equals(comp.RciComponentName)).Any())
             {
-                FineAmount = 30.00M,
-                GordonID = db.Rci.Find(rciID).GordonID,
-                RciComponentID = newComponent.RciComponentID,
-                Reason = "Improper Checkout"
-            };
+                var newComponent = db.RciComponent.Add(comp);
 
-            db.Fine.Add(fine);
+                db.SaveChanges();
 
-            db.SaveChanges();
+                var fine = new Fine
+                {
+                    FineAmount = 30.00M,
+                    GordonID = db.Rci.Find(rciID).GordonID,
+                    RciComponentID = newComponent.RciComponentID,
+                    Reason = "Improper Checkout"
+                };
+
+                db.Fine.Add(fine);
+
+                db.SaveChanges();
+            }
 
         }
 
@@ -86,27 +90,32 @@ namespace Phoenix.Services
         /// </summary>
         public void SetLostKeyFine(int rciID, decimal fineAmount)
         {
+            var rci = db.Rci.Find(rciID);
+
             var comp = new RciComponent
             {
                 RciComponentName = "Lost Keys",
                 RciID = rciID
             };
 
-            var newComponent = db.RciComponent.Add(comp);
-
-            db.SaveChanges();
-
-            var fine = new Fine
+            if (!rci.RciComponent.Where(m => m.RciComponentName.Equals(comp.RciComponentName)).Any())
             {
-                FineAmount = fineAmount,
-                GordonID = db.Rci.Find(rciID).GordonID,
-                RciComponentID = newComponent.RciComponentID,
-                Reason = "Lost Keys"
-            };
+                var newComponent = db.RciComponent.Add(comp);
 
-            db.Fine.Add(fine);
+                db.SaveChanges();
 
-            db.SaveChanges();
+                var fine = new Fine
+                {
+                    FineAmount = fineAmount,
+                    GordonID = db.Rci.Find(rciID).GordonID,
+                    RciComponentID = newComponent.RciComponentID,
+                    Reason = "Lost Keys"
+                };
+
+                db.Fine.Add(fine);
+
+                db.SaveChanges();
+            }
         }
 
         public void AddFines(List<RciNewFineViewModel> newFines, string gordonID)
@@ -167,6 +176,7 @@ namespace Phoenix.Services
             var rci = db.Rci.Find(rciViewModel.RciID);
 
             rci.CheckoutSigRD = System.DateTime.Today;
+            rci.IsCurrent = false;
 
             db.SaveChanges();
 
