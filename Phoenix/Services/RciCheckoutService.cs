@@ -122,6 +122,9 @@ namespace Phoenix.Services
             }
         }
 
+        /// <summary>
+        /// Insert fines into the database
+        /// </summary>
         public void AddFines(List<RciNewFineViewModel> newFines, string gordonID)
         {
             if (newFines != null)
@@ -139,6 +142,9 @@ namespace Phoenix.Services
             db.SaveChanges();
         }
 
+        /// <summary>
+        /// Delete a list of fines from the database
+        /// </summary>
         public void RemoveFines(List<int> fineIDs)
         {
             if(fineIDs != null)
@@ -155,6 +161,9 @@ namespace Phoenix.Services
             db.SaveChanges();
         }
 
+        /// <summary>
+        /// Sign the resident portion of the rci during the checkout process
+        /// </summary>
         public void CheckoutResidentSignRci(CheckoutRciViewModel rciViewModel)
         {
             var rci = db.Rci.Find(rciViewModel.RciID);
@@ -165,6 +174,9 @@ namespace Phoenix.Services
 
         }
 
+        /// <summary>
+        /// Sign the RA portion of the rci during the checkout process
+        /// </summary>
         public void CheckoutRASignRci(CheckoutRciViewModel rciViewModel, string raName, string raGordonID)
         {
             var rci = db.Rci.Find(rciViewModel.RciID);
@@ -177,6 +189,9 @@ namespace Phoenix.Services
 
         }
 
+        /// <summary>
+        /// Sign the RD portion of the rci during the checkout process and make the rci non-current.
+        /// </summary>
         public void CheckoutRDSignRci(CheckoutRciViewModel rciViewModel, string rdName, string rdGordonID)
         {
             var rci = db.Rci.Find(rciViewModel.RciID);
