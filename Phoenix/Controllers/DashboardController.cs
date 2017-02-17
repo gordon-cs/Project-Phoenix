@@ -83,7 +83,7 @@ namespace Phoenix.Controllers
 
             var RCIs = dashboardService.GetRcisForResident(strID);
 
-            if (!dashboardService.RcisAreUpToDate(RCIs, currentBuilding, currentRoom))
+            if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
                 dashboardService.AddRciComponents(rciId, "dorm room");
@@ -144,7 +144,7 @@ namespace Phoenix.Controllers
             var RCIs = dashboardService.GetRcisForResident(strID);
 
             // Verify that the RA actually has their own RCIs set up
-            if (!dashboardService.RcisAreUpToDate(RCIs, currentBuilding, currentRoom))
+            if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
                 dashboardService.AddRciComponents(rciId, "dorm room");

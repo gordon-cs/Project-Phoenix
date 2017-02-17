@@ -134,7 +134,7 @@ namespace Phoenix.Services
         /*
          * Check to see if an up-to-date RCI exists for a user
          */ 
-        public bool RcisAreUpToDate(IEnumerable<HomeRciViewModel> RCIs, string currentBuildingCode, string roomNumber)
+        public bool CurrentRciExists(IEnumerable<HomeRciViewModel> RCIs, string currentBuildingCode, string roomNumber)
         {
             var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == currentBuildingCode && m.RoomNumber == roomNumber);
             return RCIsForCurrentBuilding.Any();
