@@ -122,7 +122,7 @@ namespace Phoenix.Controllers
             var rci = checkoutService.GetRciByID(id);
             if(rci.CheckoutSigRA != null) // Already signed
             {
-                return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+                return RedirectToAction("RDSignature", new { id = id });
             }
 
             var signatureMatch = ((string)TempData["user"]).Equals(signature);
@@ -142,7 +142,70 @@ namespace Phoenix.Controllers
                 checkoutService.SetLostKeyFine(id, lostKeyFine);
             }
             checkoutService.CheckoutRASignRci(rci);
-            return RedirectToAction(actionName:"Index", controllerName:"Dashboard");
+
+            return RedirectToAction("RDSignature", new { id = id });
+        }
+
+        /// <summary>
+        /// Return the html view where an RD can sign to checkout a resident.
+        /// </summary>
+        [HttpGet]
+        public ActionResult RDSignature(int id)
+        {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            if (role.Equals("Resident"))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            if (role.Equals("RA"))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            var rdName = (string)TempData["user"];
+            ViewBag.ExpectedSignature = rdName;
+            var rci = checkoutService.GetRciByID(id);
+            return View(rci);
+        }
+
+        /// <summary>
+        /// Verify the RD's signature
+        /// </summary>
+        [HttpPost]
+        public ActionResult RDSignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
+        {
+            var rci = checkoutService.GetRciByID(id);
+            if (rci.CheckoutSigRD != null) // Already signed
+            {
+                return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+            }
+
+            var signatureMatch = ((string)TempData["user"]).Equals(signature);
+            if (!signatureMatch) // Signature provided doesn't match
+            {
+                ViewBag.ExpectedSignature = (string)TempData["user"];
+                ViewBag.ErrorMessage = "The Signatures did not match! The signature should match the name indicated.";
+                return View(rci);
+            }
+
+            if (improperCheckout)
+            {
+                checkoutService.SetImproperCheckout(id);
+            }
+            if (lostKey)
+            {
+                checkoutService.SetLostKeyFine(id, lostKeyFine);
+            }
+            checkoutService.CheckoutRDSignRci(rci);
+            return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
     }
 }

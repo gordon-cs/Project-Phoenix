@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Checkout";
-    ViewBag.ViewTitle = "Checkout: RA Signature";
+    ViewBag.ViewTitle = "Checkout: RD Signature";
     ViewBag.MenuExists = "T";
 }
 
@@ -16,10 +16,10 @@
 <div class="view">
     <div class="pane">
         <div class="pane-content">
-            @using (Html.BeginForm(actionName: "RASignature", controllerName: "RciCheckout", method: FormMethod.Post))
+            @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
-                    @if (Model.CheckoutSigRA == null)
+                    @if (Model.CheckoutSigRD == null)
                     {
                         <div class="divAddOn">
                             <div class="divAddOn-item"><input type="checkbox" name="improperCheckout" value="true" /></div>
@@ -32,7 +32,7 @@
                             <input class="lost-key-fine divAddOn-item" name="lostKeyFine" type="number" placeholder="2.00" />
                         </div>
 
-                        <p>I hereby agree that i have assessed preliminary fines to the best of my ability. I understand that these fines are subject to change at the discretion of the Resident Director.</p>
+                        <p>I hereby agree to the fines assessed by the RA.</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />
                             <input class="divAddOn-item" name="date" type="text" readonly="readonly" value="@(DateTime.Today.Month)/@(DateTime.Today.Day)/@(DateTime.Today.Year)" />
@@ -41,19 +41,19 @@
                     }
                     else
                     {
-                        <p>This RCI has been signed by the Resident Advisor for @Model.FirstName @Model.LastName</p>
+                        <p>This RCI has been signed by the Resident Director for @Model.FirstName @Model.LastName</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.ExpectedSignature" />
-                            <input class="divAddOn-item" name="date" type="text" readonly="readonly" value="@Model.CheckoutSigRA" />
+                            <input class="divAddOn-item" name="date" type="text" readonly="readonly" value="@Model.CheckoutSigRD" />
                         </div>
                         <div>@ViewBag.ErrorMessage</div>
                     }
                 </div>
                 <div class="distribute-evenly">
-                    <input type="submit" value="Next" />
+                    <input type="submit" value="Finish" />
                 </div>
             }
         </div>
-        
+
     </div>
 </div>
