@@ -44,7 +44,11 @@ namespace Phoenix.Services
                 RciComponent = temp.RciComponent,
                 CheckoutSigRes = temp.CheckoutSigRes,
                 CheckoutSigRA = temp.CheckoutSigRA,
-                CheckoutSigRD = temp.CheckoutSigRD
+                CheckoutSigRD = temp.CheckoutSigRD,
+                CheckoutSigRAGordonID = temp.CheckoutSigRAGordonID,
+                CheckoutSigRAName = temp.CheckoutSigRAName,
+                CheckoutSigRDGordonID = temp.CheckoutSigRDGordonID,
+                CheckoutSigRDName = temp.CheckoutSigRDName
             };
 
             return rci;
@@ -161,21 +165,25 @@ namespace Phoenix.Services
 
         }
 
-        public void CheckoutRASignRci(CheckoutRciViewModel rciViewModel)
+        public void CheckoutRASignRci(CheckoutRciViewModel rciViewModel, string raName, string raGordonID)
         {
             var rci = db.Rci.Find(rciViewModel.RciID);
 
             rci.CheckoutSigRA = System.DateTime.Today;
+            rci.CheckoutSigRAGordonID = raGordonID;
+            rci.CheckoutSigRAName = raName;
 
             db.SaveChanges();
 
         }
 
-        public void CheckoutRDSignRci(CheckoutRciViewModel rciViewModel)
+        public void CheckoutRDSignRci(CheckoutRciViewModel rciViewModel, string rdName, string rdGordonID)
         {
             var rci = db.Rci.Find(rciViewModel.RciID);
 
             rci.CheckoutSigRD = System.DateTime.Today;
+            rci.CheckoutSigRDGordonID = rdGordonID;
+            rci.CheckoutSigRDName = rdName;
             rci.IsCurrent = false;
 
             db.SaveChanges();

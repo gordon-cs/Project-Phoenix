@@ -141,7 +141,7 @@ namespace Phoenix.Controllers
             {
                 checkoutService.SetLostKeyFine(id, lostKeyFine);
             }
-            checkoutService.CheckoutRASignRci(rci);
+            checkoutService.CheckoutRASignRci(rci,(string)TempData["user"], (string)TempData["id"]);
 
             return RedirectToAction("RDSignature", new { id = id });
         }
@@ -204,7 +204,7 @@ namespace Phoenix.Controllers
             {
                 checkoutService.SetLostKeyFine(id, lostKeyFine);
             }
-            checkoutService.CheckoutRDSignRci(rci);
+            checkoutService.CheckoutRDSignRci(rci,(string)TempData["user"],(string)TempData["id"]);
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
     }
