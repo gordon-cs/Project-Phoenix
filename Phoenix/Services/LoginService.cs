@@ -78,11 +78,6 @@ namespace Phoenix.Services
 
         public string GenerateToken(string username, string name, string id)
         {
-            // Add some code here to check the db to see if user has admin permissions
-            // Right now just hardcode to true for test purposes
-            bool isAdmin = false;
-
-
             var role = GetRole(id);
             var currentBuildingCode = GetCurrentBuilding(id);
             var currentRoomNumber = GetCurrentRoom(id);
@@ -101,7 +96,6 @@ namespace Phoenix.Services
                 {"iss", "rci.gordon.edu" },
                 {"iat", ToUnixTime(issued) },
                 {"exp", ToUnixTime(expire) },
-                {"admin", isAdmin },
                 {"role", role },
                 {"kingdom", kingdom },
                 {"currentRoom", currentRoomNumber},
@@ -127,7 +121,11 @@ namespace Phoenix.Services
             {
                 return null;
             }
-
+            var AdminEntry = db.Admin.Where(m => m.GordonID == id);
+            if (AdminEntry != null)
+            {
+                return "ADMIN";
+            }
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
             {
@@ -151,24 +149,23 @@ namespace Phoenix.Services
             {
                 return null;
             }
+            var AdminEntry = db.Admin.Find(id);
+            if(AdminEntry != null)
+            {
+                var buildingCodes = db.BuildingAssign.Select(x => x.BuildingCode).ToList();
+                return buildingCodes;
+            }
+
 
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
             {
                 // Get the building codes associated with the RD's Job Title
-                var query = db.BuildingAssign.Where(m => m.JobTitleHall.Equals(RDentry.Job_Title_Hall));
-                var buildingCodes = new List<string>();
-
-                foreach(var record in query)
-                {
-                    buildingCodes.Add(record.BuildingCode);
-                }
-
+                var buildingCodes = db.BuildingAssign.Where(m => m.JobTitleHall.Equals(RDentry.Job_Title_Hall)).Select(m => m.BuildingCode).ToList();
                 return buildingCodes;
             }
 
             var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
-
             if (RAentry != null)
             {
                 // Since CurrentRA has building codes, we need to a do a little kung fu to make sure cases like
@@ -179,15 +176,7 @@ namespace Phoenix.Services
                 var raJobTitleHall = temp.JobTitleHall;
 
                 // Step 2: Now that we have the job title, get what building codes it is associated with.
-                var query = db.BuildingAssign.Where(m => m.JobTitleHall.Equals(raJobTitleHall));
-                 
-                var buildingCodes = new List<string>();
-
-                foreach(var record in query)
-                {
-                    buildingCodes.Add(record.BuildingCode.Trim());
-                }
-
+                var buildingCodes = db.BuildingAssign.Where(m => m.JobTitleHall.Equals(raJobTitleHall)).Select(m => m.BuildingCode).ToList();
                 return buildingCodes;
             }
 

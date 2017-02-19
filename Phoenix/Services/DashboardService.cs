@@ -43,13 +43,12 @@ namespace Phoenix.Services
         }
 
         /*
-         * Display all RCI's for the corresponding building 
+         * Display all current RCI's for the corresponding building 
          * @params: buildingCode - code(s) for the building(s) of the RA or RD's sphere of authority
          *          gordonId - gordon ID of the RA or RD so that his or her RCI (if applicable) is not included 
          */
-        public IEnumerable<HomeRciViewModel> GetRcisForBuilding(List<string> buildingCode, string gordonId)
+        public IEnumerable<HomeRciViewModel> GetCurrentRcisForBuilding(List<string> buildingCode, string gordonId)
         {
-            // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
                 from personalRCI in db.Rci
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
@@ -67,11 +66,31 @@ namespace Phoenix.Services
             return buildingRCIs;
         }
 
+        /// <summary>
+        /// Return all the rcis (including non current ones) for the list of buildings given.
+        /// </summary>
+        public IEnumerable<HomeRciViewModel> GetAllRcisForBuilding(List<string> buildingCode)
+        {
+            var buildingRCIs =
+                from personalRCI in db.Rci
+                join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
+                from account in rci.DefaultIfEmpty()
+                where buildingCode.Contains(personalRCI.BuildingCode)
+                select new HomeRciViewModel
+                {
+                    RciID = personalRCI.RciID,
+                    BuildingCode = personalRCI.BuildingCode.Trim(),
+                    RoomNumber = personalRCI.RoomNumber.Trim(),
+                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
+                    LastName = account.lastname == null ? "RCI" : account.lastname
+                };
+            return buildingRCIs;
+        }
         /*
          * Resolve inconsistencies in RD building code naming conventions in the db
          * @params: building code as it appears in CurrentRD table
          * @return: building codes that correspond to RoomAssign and RCI tables
-         */ 
+         */
         public string [] CollectRDBuildingCodes(string jobTitle)
         {
             return (string[])db.BuildingAssign.Where(b => b.JobTitleHall.Equals(jobTitle)).Select(b => b.BuildingCode).ToArray();

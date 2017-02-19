@@ -34,7 +34,10 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-
+            if(role.Equals("ADMIN"))
+            {
+                return RedirectToAction("Admin");
+            }
             if (role.Equals("RD"))
             {
                 return RedirectToAction("RD");
@@ -169,7 +172,7 @@ namespace Phoenix.Controllers
             // Also display all RCI's for the corresponding building
             //string[] strBuildingAsArray = { strBuilding };
 
-            var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom, strID);
+            var buildingRCIs = dashboardService.GetCurrentRcisForBuilding(kingdom, strID);
             RCIs = RCIs.Concat(buildingRCIs);
 
             return View(RCIs);
@@ -203,8 +206,19 @@ namespace Phoenix.Controllers
 
             var strID = (string)TempData["id"];
 
-            var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom, strID);
+            var buildingRCIs = dashboardService.GetCurrentRcisForBuilding(kingdom, strID);
             
+            return View(buildingRCIs);
+        }
+
+        public ActionResult Admin()
+        {
+            // Display all RCI's 
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
+
+            var buildingRCIs = dashboardService.GetAllRcisForBuilding(kingdom);
+
             return View(buildingRCIs);
         }
 

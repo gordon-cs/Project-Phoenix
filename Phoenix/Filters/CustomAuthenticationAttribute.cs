@@ -52,7 +52,6 @@ namespace Phoenix.Filters
 
             // Add key/value pairs that we might want to access in the controller
             filterContext.Controller.TempData["user"] = decodedJson["name"].ToString();
-            filterContext.Controller.TempData["admin"] = decodedJson["admin"].ToString();
             filterContext.Controller.TempData["role"] = decodedJson["role"].ToString();
             filterContext.Controller.TempData["id"] = decodedJson["gordonId"].ToString();
             filterContext.Controller.TempData["currentBuilding"] = decodedJson["currentBuilding"].ToString();
