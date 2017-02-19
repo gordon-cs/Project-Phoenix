@@ -156,6 +156,7 @@
     <Compile Include="Filters\AdminAuthorizationAttribute.cs" />
     <Compile Include="Filters\RAViewOnlyAttribute.cs" />
     <Compile Include="Filters\RDViewOnlyAttribute.cs" />
+    <Compile Include="Filters\ResLifeStaffViewOnlyAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -76,7 +76,7 @@ namespace Phoenix.Controllers
         /// Return the html view where an RA can sign to checkout a resident.
         /// </summary>
         [HttpGet]
-        [RAViewOnly]
+        [ResLifeStaffViewOnly]
         public ActionResult RASignature(int id)
         {
             var raName = (string)TempData["user"];
@@ -89,7 +89,7 @@ namespace Phoenix.Controllers
         /// Verify the RA's signature
         /// </summary>
         [HttpPost]
-        [RAViewOnly]
+        [ResLifeStaffViewOnly]
         public ActionResult RASignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
         {
             var rci = checkoutService.GetRciByID(id);
