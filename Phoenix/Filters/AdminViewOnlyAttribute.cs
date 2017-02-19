@@ -6,15 +6,14 @@ using System.Web.Mvc;
 
 namespace Phoenix.Filters
 {
-    public class RAViewOnlyAttribute : ActionFilterAttribute, IAuthorizationFilter
+    public class AdminViewOnlyAttribute : ActionFilterAttribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             var role = (string)filterContext.Controller.TempData["role"];
-            var isRA = (role == "RA");
             var isAdmin = (role == "ADMIN");
 
-            if (!(isRA || isAdmin))
+            if (!isAdmin)
             {
                 filterContext.Result = new RedirectToRouteResult(
                     new System.Web.Routing.RouteValueDictionary(

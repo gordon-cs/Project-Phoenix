@@ -123,26 +123,9 @@ namespace Phoenix.Controllers
         /// Return the html view where an RD can sign to checkout a resident.
         /// </summary>
         [HttpGet]
+        [RDViewOnly]
         public ActionResult RDSignature(int id)
         {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
-            if (role.Equals("RA"))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
             var rdName = (string)TempData["user"];
             ViewBag.ExpectedSignature = rdName;
             var rci = checkoutService.GetRciByID(id);
@@ -153,6 +136,7 @@ namespace Phoenix.Controllers
         /// Verify the RD's signature
         /// </summary>
         [HttpPost]
+        [RDViewOnly]
         public ActionResult RDSignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
         {
             var rci = checkoutService.GetRciByID(id);

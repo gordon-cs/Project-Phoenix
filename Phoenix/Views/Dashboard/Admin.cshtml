@@ -27,12 +27,22 @@
             <div class="divAddOn-item"><i class="material-icons">search</i></div>
         </div>
 
+        <div class="divAddOn sort-bar">
+            <label class="divAddOn-item">Order by:</label>
+            <select name="orderBy" class="divAddOn-field">
+                <option></option>
+                <option value="building">Building</option>
+                <option value="date">Date</option>
+                <option value="name">Name</option>
+            </select>
+        </div>
+
         @foreach (var rci in Model)
         {
             <div class="divAddOn-vert">
-                <div class="divAddOn-vert-field search-field">
-                    <p>@rci.BuildingCode @rci.RoomNumber</p>
-                    <p>@rci.FirstName @rci.LastName</p>
+                <div class="divAddOn-vert-field search-field sort-field">
+                    <p class="building">@rci.BuildingCode @rci.RoomNumber</p>
+                    <p class="name">@rci.FirstName @rci.LastName</p>
                 </div>
                 <div class="divAddOn-vert-row">
                     <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">

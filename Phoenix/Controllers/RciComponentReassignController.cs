@@ -21,6 +21,7 @@ namespace Phoenix.Controllers
 
         // GET: RciComponentReassign
         [HttpGet]
+        [ResLifeStaffViewOnly]
         public ActionResult Index(int id)
         {
             var rci = reassignService.GetRciByID(id);
@@ -28,6 +29,7 @@ namespace Phoenix.Controllers
         }
 
         [HttpPost]
+        [ResLifeStaffViewOnly]
         public ActionResult Index(int id, int[] rciComponent, int assignTo )
         {
             reassignService.SwapRciComponents(rciComponent, assignTo, id);

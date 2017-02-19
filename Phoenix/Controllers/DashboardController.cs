@@ -180,6 +180,7 @@ namespace Phoenix.Controllers
             return View(buildingRCIs);
         }
 
+        [AdminViewOnly]
         public ActionResult Admin()
         {
             // Display all RCI's 

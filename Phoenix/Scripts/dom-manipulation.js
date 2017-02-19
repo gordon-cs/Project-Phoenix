@@ -83,3 +83,13 @@ $(".search-bar").keyup(function () {
         }
     }).parent().hide()
 });
+
+
+$(".sort-bar > select").change(function () {
+    $this = $(this);
+    console.log($this.val());
+    
+    $(".sort-field").parent().sort(function (a, b) {
+        
+    });
+});
