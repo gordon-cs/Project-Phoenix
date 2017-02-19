@@ -24,15 +24,7 @@ namespace Phoenix.Controllers
         /// <returns></returns>
         public ActionResult Index(int id)
         {
-            // Redirect to other dashboards if role not correct
-            var role = (string)TempData["role"];
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
             var rci = checkoutService.GetRciByID(id);
-
             return View(rci);
         }
 
@@ -53,14 +45,6 @@ namespace Phoenix.Controllers
         [HttpGet]
         public ActionResult ResidentSignature(int id)
         {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
             var rci = checkoutService.GetRciByID(id);
             return View(rci);
         }
@@ -92,21 +76,9 @@ namespace Phoenix.Controllers
         /// Return the html view where an RA can sign to checkout a resident.
         /// </summary>
         [HttpGet]
+        [ResLifeStaffViewOnly]
         public ActionResult RASignature(int id)
         {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("ResidentSignature", new { id = id });
-            }
-
             var raName = (string)TempData["user"];
             ViewBag.ExpectedSignature = raName;
             var rci = checkoutService.GetRciByID(id);
@@ -117,6 +89,7 @@ namespace Phoenix.Controllers
         /// Verify the RA's signature
         /// </summary>
         [HttpPost]
+        [ResLifeStaffViewOnly]
         public ActionResult RASignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
         {
             var rci = checkoutService.GetRciByID(id);
