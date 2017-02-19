@@ -26,31 +26,34 @@
             <input class="divAddOn-field" type="text" placeholder="Search..." />
             <div class="divAddOn-item"><i class="material-icons">search</i></div>
         </div>
-        <div class="button-group">
-            <div class="button-group-element">
-                Residents
-            </div>
-            <div class="button-group-element">
-                Rooms
-            </div>
-        </div>
+       
         @foreach (var rci in Model)
         {
-            <div class="divAddOn">
-                <div class="divAddOn-field search-field">
+            <div class="divAddOn-vert">
+                <div class="divAddOn-vert-field search-field">
                     <p>@rci.BuildingCode @rci.RoomNumber</p>
                     <p>@rci.FirstName @rci.LastName</p>
                 </div>
-                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                    <div>
-                        <i class="material-icons">mode_edit</i>
-                    </div>
-                </a>
-                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                    <div>
-                        <i class="material-icons">rowing</i>
-                    </div>
-                </a>
+                <div class="divAddOn-vert-row">
+                    <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                        <div>
+                            <i class="material-icons">mode_edit</i>
+                        </div>
+                    </a>
+                    <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
+                        <div>
+                            <i class="material-icons">attach_money</i>
+                        </div>
+                    </a>
+                    @if (rci.FirstName != "Common Area")
+                    {
+                        <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
+                            <div>
+                                <i class="material-icons">swap_horiz</i>
+                            </div>
+                        </a>
+                    }
+                </div>
             </div>
         }
     </div>

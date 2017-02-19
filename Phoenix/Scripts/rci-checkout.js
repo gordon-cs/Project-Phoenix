@@ -1,12 +1,14 @@
 ﻿var finesToDelete = [];
+
 $("#save-button").click(function () {
+    save();
     location.reload(true);
 });
 
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
-window.onbeforeunload = function (event) {
-    save();
-}
+//window.onbeforeunload = function (event) {
+//    save();
+//}
 
 
 /* Save the fines */
@@ -44,11 +46,12 @@ function save() {
 
 function addFine(componentID) {
     let fineText = $("#text-input-" + componentID).val();
-    let fineAmount = $("#fine-amount-input-" + componentID).val();
+    let fineAmount = Number($("#fine-amount-input-" + componentID).val());
     let fineTextElement = "<p class='divAddOn-field new-fine'>" + fineText + "</p>";
-    let fineAmountElement = "<p class=\"divAddOn-item new-fine-amount\">" + fineAmount + "</p>";
+    let fineDollarSign = "<span class='divAddOn-item'>$</span>";
+    let fineAmountElement = "<p class=\"divAddOn-item new-fine-amount\">" + fineAmount.toFixed(2) + "</p>";
     let fineIcon = "<i class='divAddOn-item material-icons' onclick='deleteNewFines(event, this);'>delete</i>";
-    let divWrapper = "<div class='divAddOn'>" + fineTextElement + fineAmountElement + fineIcon + "</div>";
+    let divWrapper = "<div class='divAddOn'>" + fineTextElement + fineDollarSign + fineAmountElement + fineIcon + "</div>";
     $("#div-list-" + componentID).append(divWrapper);
     $("#text-input-" + componentID).val(""); // Empty the textfield of adding fines
     $("#fine-amount-input-" + componentID).val("");

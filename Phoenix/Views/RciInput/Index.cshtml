@@ -12,11 +12,19 @@
 @section Scripts{
     @Scripts.Render("~/bundles/page_specific/js/rci-input")
 }
+
+@section Menu {
+    <ul class="drawer-menu">
+        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
+        <li class="drawer-menu-item logout-button">Logout</li>
+    </ul>
+}
 <div class="view">
     @foreach(var component in Model.RciComponent)
     {
         <div class="pane component" id="@component.RciComponentID">
-            <h2 class="pane-title div-list-toggle">@component.RciComponentName</h2>
+            <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2> 
+            
             <div class="pane-content">
                 <div class="divAddOn">
                     <label class="file-input-label divAddOn-field" for="dmg-input-@component.RciComponentID">

@@ -13,11 +13,19 @@
 @section Scripts{
     @Scripts.Render("~/bundles/page_specific/js/rci-checkout");
 }
+
+@section Menu {
+    <ul class="drawer-menu">
+        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
+        <li class="drawer-menu-item logout-button">Logout</li>
+    </ul>
+}
+
 <div class="view" data="@Model.GordonID">
     @foreach (var component in Model.RciComponent)
     {
         <div class="pane component" id="@component.RciComponentID">
-            <h2 class="pane-title div-list-toggle">@component.RciComponentName</h2>
+            <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
             <div class="pane-content">
                 <div class="div-list">
                     <div class="div-list-toggle icon-label">
@@ -39,7 +47,7 @@
                 </div>
                 <div class="divAddOn">
                     <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
-                    <input class="divAddOn-item adding-fines" type="number" placeholder="$ 2.00" id="fine-amount-input-@component.RciComponentID" />
+                    <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RciComponentID" />
                     <button class="divAddOn-item" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
                 </div>
                 <div class="div-list" id="div-list-@component.RciComponentID">
@@ -51,7 +59,8 @@
                     {
                         <div class="divAddOn">
                             <p class="divAddOn-field">@fine.Reason</p>
-                            <p class="divAddOn-item">$ @fine.FineAmount</p>
+                            <span class="divAddOn-item">$</span>
+                            <p class="divAddOn-item">@fine.FineAmount</p>
                             <i class='divAddOn-item material-icons' onclick="deleteExistingFines(event, this, @fine.FineID)">delete</i>
                         </div>
                     }

@@ -2,10 +2,18 @@
 
 @{
     ViewBag.Title = "CheckinSigRes";
+    ViewBag.MenuExists = "T";
 }
 
 @section Scripts{
     @Scripts.Render("~/Scripts/checkin-sig-res.js")
+}
+
+@section Menu {
+    <ul class="drawer-menu">
+        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
+        <li class="drawer-menu-item logout-button">Logout</li>
+    </ul>
 }
 
 <h2 id="@Model.RciID">Signature</h2>
