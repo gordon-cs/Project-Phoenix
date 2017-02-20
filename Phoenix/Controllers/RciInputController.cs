@@ -33,6 +33,14 @@ namespace Phoenix.Controllers
 
         public ActionResult Index(int id)
         {
+            // Redirect to other dashboards if role not correct
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
             Debug.WriteLine("Reached Index Method for RCIInput Controller");
 
             // This is how we access items set in the filter.
@@ -60,6 +68,11 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
 
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
             if (role.Equals("RD"))
             {
                 return RedirectToAction("CheckinSigRD", new { id = id });
@@ -77,6 +90,23 @@ namespace Phoenix.Controllers
         // GET: RCIInput/CheckinSigRes/1
         public ActionResult CheckinSigRes(int id)
         {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("RD"))
+            {
+                return RedirectToAction("CheckinSigRD", new { id = id });
+            }
+            else if (role.Equals("RA"))
+            {
+                return RedirectToAction("CheckinSigRA", new { id = id });
+            }
+
             var rci = rciInputService.GetRci(id);
             ViewBag.Username = rciInputService.GetUsername(rci.GordonID);
             return View(rci);
@@ -85,6 +115,23 @@ namespace Phoenix.Controllers
         // GET: RCIInput/CheckinSigRA/1
         public ActionResult CheckinSigRA(int id)
         {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("RD"))
+            {
+                return RedirectToAction("CheckinSigRD", new { id = id });
+            }
+            else if (role.Equals("Resident"))
+            {
+                return RedirectToAction("CheckinSigRes", new { id = id });
+            }
+
             var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
             ViewBag.Username = rciInputService.GetUsername(gordonID);
@@ -94,6 +141,23 @@ namespace Phoenix.Controllers
         // GET: RCIInput/CheckinSigRD/1
         public ActionResult CheckinSigRD(int id)
         {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("Resident"))
+            {
+                return RedirectToAction("CheckinSigRes", new { id = id });
+            }
+            else if (role.Equals("RA"))
+            {
+                return RedirectToAction("CheckinSigRA", new { id = id });
+            }
+
             var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
             ViewBag.Username = rciInputService.GetUsername(gordonID);
