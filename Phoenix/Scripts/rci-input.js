@@ -120,12 +120,11 @@ function closeModal(modalID) {
  * Show the slides in the modal
  */
 var slideIndex = 0;
-
+// This function increments the slide index (a global variable) by a given value
 function plusSlides(n, modalId) {
     showSlides(slideIndex += n, modalId);
 }
-
-
+// Display the slide, based on the selected image
 function showSlides(slideNumber, modalId) {
     let slides = $("#" + modalId).find(".img-slide");
     if (slideNumber >= slides.length)
@@ -187,10 +186,7 @@ $(".adding-damages").on("keypress", function (e) {
 // Attach upload photo handler
 $("input[id^='dmg-input'").change(uploadPhoto);
 
-// Attach modal handlers
-//$('img[class^] = "thumbnail"').click(function (e) {
-//    let componentID = $(this).parent().attr("id").substring(12);
-//    openModal(componentID, slideNum);
+// Attach modal handlers (reference: https://www.w3schools.com/howto/howto_js_lightbox.asp)
 
 // For all the thumbnail areas, attach the modal opener to each of its thumbnail images
 $(".img-thumbnails").each(function (index, element) {
