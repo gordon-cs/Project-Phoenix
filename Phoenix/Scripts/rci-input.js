@@ -190,7 +190,7 @@ $(".adding-damages").on("keypress", function (e) {
     }
 });
 // Attach upload photo handler
-$("input[id^='dmg-input'").change(uploadPhoto);
+$("input[id^='dmg-input']").change(uploadPhoto);
 
 // Attach modal handlers (reference: https://www.w3schools.com/howto/howto_js_lightbox.asp)
 
