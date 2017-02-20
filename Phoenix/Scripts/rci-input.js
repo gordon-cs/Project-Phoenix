@@ -98,6 +98,53 @@ function savePhoto(photoFile, fileName) {
         }
     });
 }
+
+/****** Modal functions ******/
+
+/*
+ * Open the picture modal
+ */
+function openModal(componentID, slideNum) {
+    $("#modal-" + componentID).show();
+    showSlides(slideNum, "modal-" + componentID);
+}
+
+/*
+ * Close the picture modal
+ */
+function closeModal(modalID) {
+    $("#" + modalID).hide();
+}
+
+/*
+ * Show the slides in the modal
+ */
+var slideIndex = 0;
+
+function plusSlides(n, modalId) {
+    showSlides(slideIndex += n, modalId);
+}
+
+
+function showSlides(slideNumber, modalId) {
+    let slides = $("#" + modalId).find(".img-slide");
+    if (slideNumber >= slides.length)
+    {
+        slideIndex = 0;
+    }
+    else if (slideNumber < 0) {
+        slideIndex = slides.length - 1;
+    }
+    else {
+        slideIndex = slideNumber;
+    }
+    for (var i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+    slides[slideIndex].style.display = "block";
+}
+
+
 /* Add a div to the right component. This div will contain a :
     <p> element displaying a damage
     <input> hidden element that will be used when submitting the form
@@ -137,7 +184,37 @@ $(".adding-damages").on("keypress", function (e) {
         $("#add-" + $(this).attr("id").substring(11)).click();
     }
 });
-
+// Attach upload photo handler
 $("input[id^='dmg-input'").change(uploadPhoto);
+
+// Attach modal handlers
+//$('img[class^] = "thumbnail"').click(function (e) {
+//    let componentID = $(this).parent().attr("id").substring(12);
+//    openModal(componentID, slideNum);
+
+// For all the thumbnail areas, attach the modal opener to each of its thumbnail images
+$(".img-thumbnails").each(function (index, element) {
+    let componentID = $(this).attr("id").substring(12);
+    $(this).children(".thumbnail").each(function (index, element) {
+        $(this).click(function () {
+            openModal(componentID, index)
+        });
+    });
+});
+
+$(".material-icons.clear").click(function () {
+    let modalID = $(this).closest(".img-modal").attr("id");
+    console.log(modalID);
+    closeModal(modalID);
+});
+
+$(".forward").click(function () {
+    let modalID = $(this).closest(".img-modal").attr("id");
+    plusSlides(1, modalID);
+});
+$(".backward").click(function () {
+    let modalID = $(this).closest(".img-modal").attr("id");
+    plusSlides(-1, modalID);
+});
 
 

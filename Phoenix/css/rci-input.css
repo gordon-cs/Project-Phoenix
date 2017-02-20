@@ -3,7 +3,53 @@
 .pane {
     box-shadow: 0 0 9px 0 #ddd;
 }
-
 i {
     cursor: pointer;
+}
+.img-thumbnails img {
+    float: left;
+    width: 7em;
+    padding: 0 8px;
+}
+.img-modal {
+    background-color: rgba(235,234, 234, 0.9);
+    display: none;
+    left: 0;
+    margin: auto;
+    margin-top: -40px;
+    overflow: auto;
+    position: absolute;
+    right: 0;
+    width: 70%;
+    z-index: 1;
+}
+.modal-content {
+    margin: auto;
+    padding: 0;
+    position: relative;
+    width: 80%;
+}
+.material-icons.clear {
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  font-size: 35px;
+  font-weight: bold;
+  z-index: 2;
+}
+material-icons.clear:hover,
+material-icons.clear:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+} 
+.uploaded-img {
+    margin: 12px 3px;
+}
+.img-slide img {
+    height: 250px;
+    margin-top: 15px;
+}
+.backward, .forward {
+    margin-bottom: 10px;
 }

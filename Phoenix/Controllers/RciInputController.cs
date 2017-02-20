@@ -219,8 +219,8 @@ namespace Phoenix.Controllers
 
                     var damageId = newDamage.DamageID;
                     string imageName = "RciComponentId" + rciComponent + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
-                    string imagePath = "F:\\Sites\\RCI\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
-                    photoFile.SaveAs(imagePath);
+                    string imagePath = "\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
+                    photoFile.SaveAs(Server.MapPath(imagePath));
 
                     newDamage.DamageImagePath = imagePath;
                     db.SaveChanges();
