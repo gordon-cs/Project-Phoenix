@@ -86,7 +86,7 @@ namespace Phoenix.Controllers
             if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "dorm room");
+                dashboardService.AddRciComponents(rciId, "dorm room", currentBuilding);
             }
 
             if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
@@ -102,7 +102,7 @@ namespace Phoenix.Controllers
                     
 
                     var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common area");
+                    dashboardService.AddRciComponents(rciId, "common area", currentBuilding);
                 }
 
                 RCIs = RCIs.Concat(commonAreaRCIs);
@@ -147,7 +147,7 @@ namespace Phoenix.Controllers
             if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "dorm room");
+                dashboardService.AddRciComponents(rciId, "dorm room", currentBuilding);
             }
 
             if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
@@ -161,7 +161,7 @@ namespace Phoenix.Controllers
                 {
 
                     var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common area");
+                    dashboardService.AddRciComponents(rciId, "common area", currentBuilding);
                 }
 
             }
