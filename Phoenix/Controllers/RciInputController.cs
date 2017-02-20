@@ -182,9 +182,7 @@ namespace Phoenix.Controllers
             }
             db.SaveChanges();
 
-            var rciNew = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
-
-            if (rciNew.CheckinSigRes != null && rciNew.LifeAndConductSigRes != null)
+            if (rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null)
             {
                 return Json(Url.Action("Index", "Dashboard"));
             }
@@ -213,9 +211,7 @@ namespace Phoenix.Controllers
             }
             db.SaveChanges();
 
-            var rciNew = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
-
-            if (rciNew.CheckinSigRes != null && rciNew.CheckinSigRA != null)
+            if (rci.CheckinSigRes != null && rci.CheckinSigRA != null)
             {
                 return Json(Url.Action("Index", "Dashboard"));
             }
@@ -239,9 +235,7 @@ namespace Phoenix.Controllers
             }
             db.SaveChanges();
 
-            var rciNew = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
-
-            if (rciNew.CheckinSigRes != null && rciNew.CheckinSigRA != null)
+            if (rci.CheckinSigRes != null && rci.CheckinSigRA != null)
             {
                 return Json(Url.Action("Index", "Dashboard"));
             }
