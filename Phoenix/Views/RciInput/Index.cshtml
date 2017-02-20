@@ -28,46 +28,72 @@
             {
                 <p><b>Possible places:</b> @component.RciComponentDescription</p>
             }
-            <div class="pane-content">
+            <div class="input pane-content">
                 <div class="divAddOn">
                     <label class="file-input-label divAddOn-field" for="dmg-input-@component.RciComponentID">
                         <i class="material-icons">add_a_photo</i>
                         <span>Take picture</span>
                     </label>
-                    <span class="divAddOn-item">0 Picture(s)</span>
+                    @*<span class="divAddOn-item">0 Picture(s)</span>*@
                 </div>
-                <input id="dmg-input-@component.RciComponentID" class="file-input" type="file" accept="image/*;capture=camera">
-                <div>
-                    <p>OR</p>
-                </div>
-                <div>
-                    <p>Describe the Damage:</p>
-                </div>
-                <div class="divAddOn">
-                    <input class="divAddOn-field adding-damages" type="text" placeholder="Damage + Location" id="text-input-@component.RciComponentID"/>
-                    <button class="divAddOn-item" onclick="addDamage(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
-                </div>
-                <div class="div-list" id="div-list-@component.RciComponentID">
-                    <div class="div-list-toggle icon-label">
-                        <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
-                        <span>Hide/Show Entered Damages</span>
-                    </div>
+                <input id="dmg-input-@component.RciComponentID" class="file-input" multiple type="file" accept="image/*;capture=camera">
+                <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
                     @foreach (var damage in component.Damage)
                     {
-                        if (damage.DamageDescription != null)
+                        if (damage.DamageType.Equals("IMAGE"))
                         {
-                            <div class="divAddOn">
-                                <p class="divAddOn-field">@damage.DamageDescription</p>
-                                <i class='divAddOn-item material-icons' onclick="deleteExistingDamages(event, this, @damage.DamageID)">delete</i>
-                            </div>
+                           <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div> 
                         }
                     }
                 </div>
-            </div>
+                <div id="modal-@component.RciComponentID" class="img-modal">
+                    <div class="modal-header"><i class="material-icons clear">clear</i></div>
+                    <div class="modal-content">
+                        @foreach (var damage in component.Damage)
+                        {
+                            if (damage.DamageType.Equals("IMAGE"))
+                            {
+                                <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
+                            }
+                        }
+                        <i class="material-icons backward">navigate_before</i>
+                        <i class="material-icons forward">navigate_next</i>
+                    </div>
+                </div>
+                <br/>
+                    <div>
+                        <p>OR</p>
+                    </div>
+                <br/>
+                    <div>
+                        <p>Describe the damage and its location:</p>
+                    </div>
+                    <div class="divAddOn">
+                        <input class="divAddOn-field adding-damages" type="text" placeholder="Damage + Location"
+                               id="text-input-@component.RciComponentID" />
+                        <button class="divAddOn-item" onclick="addDamage(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
+                    </div>
+                    <div class="div-list" id="div-list-@component.RciComponentID">
+                        <div class="div-list-toggle icon-label">
+                            <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
+                            <span>Hide/Show Entered Damages</span>
+                        </div>
+                        @foreach (var damage in component.Damage)
+                        {
+                            if (damage.DamageDescription != null)
+                            {
+                                <div class="divAddOn">
+                                    <p class="divAddOn-field">@damage.DamageDescription</p>
+                                    <i class='divAddOn-item material-icons' onclick="deleteExistingDamages(event, this, @damage.DamageID)">delete</i>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
         </div>
     }
     <div class="button-group">
         <button id="save-button" class="button-group-element">Save</button>
-        <button class="button-group-element" onclick="window.location.href = '@Url.Action(actionName:"CheckinSig", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Next</button>
+        <button id="next-button" class="button-group-element" onclick="window.location.href = '@Url.Action(actionName:"CheckinSig", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Next</button>
     </div>
  </div>

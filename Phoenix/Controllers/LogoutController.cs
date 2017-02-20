@@ -20,8 +20,9 @@ namespace Phoenix.Controllers
             TempData.Remove("admin");
             TempData.Remove("role");
             TempData.Remove("id");
-            TempData.Remove("building");
-            TempData.Remove("room");
+            TempData.Remove("currentBuilding");
+            TempData.Remove("currentRoom");
+            TempData.Remove("kingdom");
             var oldCookie = Response.Cookies.Get("Authentication");
             // Set Expires to "1999/1/1 00:00:00", a random past date.
             oldCookie.Expires = new DateTime(1999, 1, 1, 0, 0, 0);

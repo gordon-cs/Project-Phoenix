@@ -256,6 +256,7 @@
     <Content Include="Views\RciCheckout\ResidentSignature.cshtml" />
     <Content Include="Views\RciCheckout\RASignature.cshtml" />
     <Content Include="Views\RciComponentReassign\Index.cshtml" />
+    <Content Include="Views\RciCheckout\RDSignature.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
 using Phoenix.Models;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Data.Entity.Validation;
 using System;
 using Phoenix.Services;
+using System.Web.UI;
 
 namespace Phoenix.Controllers
 {
@@ -106,7 +108,7 @@ namespace Phoenix.Controllers
             }
 
             var rci = rciInputService.GetRci(id);
-            ViewBag.Username = rciInputService.GetUsername(rci.GordonID);
+            ViewBag.User = TempData["user"];
             return View(rci);
         }
 
@@ -132,7 +134,8 @@ namespace Phoenix.Controllers
 
             var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
-            ViewBag.Username = rciInputService.GetUsername(gordonID);
+            ViewBag.User = TempData["user"];
+            ViewBag.GordonID = gordonID;
             return View(rci);
         }
 
@@ -158,58 +161,95 @@ namespace Phoenix.Controllers
 
             var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
-            ViewBag.Username = rciInputService.GetUsername(gordonID);
+            ViewBag.User = TempData["user"];
             return View(rci);
         }
 
         // Save signatures for resident
         [HttpPost]
-        public void SaveSigRes(string rciSig, string lacSig, int id)
+        public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
         {
-            rciSig = rciSig.ToLower().Trim();
-            lacSig = lacSig.ToLower().Trim();
+            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
+            if (lacSig != null) lacSig = lacSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
-            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
-            if (rciSig == username)
+            var user = ((string)TempData["user"]).ToLower().Trim();
+            if (rciSig == user)
             {
                 rci.CheckinSigRes = DateTime.Today;
             }
-            if (lacSig == username)
+            if (lacSig == user)
             {
                 rci.LifeAndConductSigRes = DateTime.Today;
             }
             db.SaveChanges();
+
+            if (rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null)
+            {
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            else
+            {
+                return Json(Url.Action("CheckinSigRes", new { id = id }));
+            }
         }
 
         // Save signatures for RA
         [HttpPost]
-        public void SaveSigRA(string rciSig, int id)
+        public ActionResult SaveSigRA(string rciSig, string rciSigRes, string lacSig, int id)
         {
-            rciSig = rciSig.ToLower().Trim();
+            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
+            if (rciSigRes != null) rciSigRes = rciSigRes.ToLower().Trim();
+            if (lacSig != null) lacSig = lacSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
-            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
-            if (rciSig == username)
+            var user = ((string)TempData["user"]).ToLower().Trim();
+            if (rciSig == user)
             {
                 rci.CheckinSigRA = DateTime.Today;
             }
+            if (rciSigRes == user)
+            {
+                rci.CheckinSigRes = DateTime.Today;
+            }
+            if (lacSig == user)
+            {
+                rci.LifeAndConductSigRes = DateTime.Today;
+            }
             db.SaveChanges();
+
+            if (rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null)
+            {
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            else
+            {
+                return Json(Url.Action("CheckinSigRA", new { id = id }));
+            }
         }
 
         // Save signatures for RD
         [HttpPost]
-        public void SaveSigRD(string rciSig, int id)
+        public ActionResult SaveSigRD(string rciSig, int id)
         {
-            rciSig = rciSig.ToLower().Trim();
+            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
-            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
-            if (rciSig == username)
+            var user = ((string)TempData["user"]).ToLower().Trim();
+            if (rciSig == user)
             {
                 rci.CheckinSigRD = DateTime.Today;
             }
             db.SaveChanges();
+
+            if (rci.CheckinSigRes != null && rci.CheckinSigRA != null)
+            {
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            else
+            {
+                return Json(Url.Action("CheckinSigRD", new { id = id }));
+            }
         }
 
         /// <summary>
@@ -252,6 +292,49 @@ namespace Phoenix.Controllers
             // Save changes to database
             db.SaveChanges();
 
+            return;
+        }
+
+        /// <summary>
+        /// If a photo(s) of a damage was uploaded, this method first creates a new Damage entry in db, then saves the image to the server
+        /// For reference, see: http://codepedia.info/upload-image-using-jquery-ajax-asp-net-c-sharp/#jQuery_ajax_call
+        /// </summary>
+        [HttpPost]
+        public void SavePhoto()
+        {
+            try
+            {
+                foreach (string s in Request.Files)
+                {
+                    HttpPostedFileBase photoFile = Request.Files[s];
+                    string rciComponent = photoFile.FileName;
+                    Debug.Write("Filename identified on client: " + rciComponent);
+                    //string fileExtension = photoFile.ContentType;
+                    string fileExtension = ".jpg";
+
+                    Damage newDamage = new Damage();
+                    newDamage.DamageType = "IMAGE";
+                    newDamage.RciComponentID = Convert.ToInt32(rciComponent);
+
+                    db.Damage.Add(newDamage);
+                    db.SaveChanges();
+
+                    var damageId = newDamage.DamageID;
+                    string imageName = "RciComponentId" + rciComponent + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
+                    string imagePath = "\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
+                    photoFile.SaveAs(Server.MapPath(imagePath));
+
+                    newDamage.DamageImagePath = imagePath;
+                    db.SaveChanges();
+
+                    Response.Write(imagePath);
+                }
+            }
+            catch(Exception e)
+            {
+                Response.Status = "Error saving photo";
+                Debug.Write("Error saving photo to database: " + e.Message);
+            }
             return;
         }
 
