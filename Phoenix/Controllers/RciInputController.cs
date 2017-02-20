@@ -106,7 +106,7 @@ namespace Phoenix.Controllers
             }
 
             var rci = rciInputService.GetRci(id);
-            ViewBag.Username = rciInputService.GetUsername(rci.GordonID);
+            ViewBag.User = TempData["user"];
             return View(rci);
         }
 
@@ -132,7 +132,7 @@ namespace Phoenix.Controllers
 
             var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
-            ViewBag.Username = rciInputService.GetUsername(gordonID);
+            ViewBag.User = TempData["user"];
             ViewBag.GordonID = gordonID;
             return View(rci);
         }
@@ -159,7 +159,7 @@ namespace Phoenix.Controllers
 
             var rci = rciInputService.GetRci(id);
             var gordonID = (string)TempData["id"];
-            ViewBag.Username = rciInputService.GetUsername(gordonID);
+            ViewBag.User = TempData["user"];
             return View(rci);
         }
 
@@ -171,12 +171,12 @@ namespace Phoenix.Controllers
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
-            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
-            if (rciSig == username)
+            var user = ((string)TempData["user"]).ToLower().Trim();
+            if (rciSig == user)
             {
                 rci.CheckinSigRes = DateTime.Today;
             }
-            if (lacSig == username)
+            if (lacSig == user)
             {
                 rci.LifeAndConductSigRes = DateTime.Today;
             }
@@ -201,16 +201,16 @@ namespace Phoenix.Controllers
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
-            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
-            if (rciSig == username)
+            var user = ((string)TempData["user"]).ToLower().Trim();
+            if (rciSig == user)
             {
                 rci.CheckinSigRA = DateTime.Today;
             }
-            if (rciSigRes == username)
+            if (rciSigRes == user)
             {
                 rci.CheckinSigRes = DateTime.Today;
             }
-            if (lacSig == username)
+            if (lacSig == user)
             {
                 rci.LifeAndConductSigRes = DateTime.Today;
             }
@@ -233,8 +233,8 @@ namespace Phoenix.Controllers
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
-            var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
-            if (rciSig == username)
+            var user = ((string)TempData["user"]).ToLower().Trim();
+            if (rciSig == user)
             {
                 rci.CheckinSigRD = DateTime.Today;
             }

@@ -19,7 +19,7 @@
 <h2 id="rci-@Model.RciID">Signature</h2>
 
 <div>
-    <p>Please sign with your Gordon username @ViewBag.Username to confirm the entered existing damages.</p>
+    <p>Please sign with your name @ViewBag.User to confirm the entered existing damages.</p>
 
     @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
     {
@@ -37,7 +37,7 @@
     }
     else
     {
-        <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.Username" />
+        <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User" />
     }
 
 </div>
