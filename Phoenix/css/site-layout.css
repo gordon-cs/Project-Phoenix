@@ -126,8 +126,10 @@
             text-align: center;
         }
         .pane-content {
-            display: none;
             padding: 7px;
+        }
+        .input.pane-content, .checkout.pane-content {
+            display: none;
         }
 
 /***************************/
