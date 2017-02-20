@@ -39,12 +39,12 @@
                     {
                         if (damage.DamageType.Equals("IMAGE"))
                         {
-                            <img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail">
+                           <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div> 
                         }
                     }
                 </div>
                 <div id="modal-@component.RciComponentID" class="img-modal">
-                    <i class="material-icons clear">clear</i>
+                    <div class="modal-header"><i class="material-icons clear">clear</i></div>
                     <div class="modal-content">
                         @foreach (var damage in component.Damage)
                         {

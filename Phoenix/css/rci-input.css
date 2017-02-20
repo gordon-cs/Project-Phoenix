@@ -6,36 +6,38 @@
 i {
     cursor: pointer;
 }
-.img-thumbnails img {
-    float: left;
-    width: 7em;
-    padding: 0 8px;
+.img-thumbnails {
+    display: flex; /* Flexbox !*/
+    flex-wrap: wrap; /* Cause elements to wrap */
+    align-items: center; /* Vertical align elements to the center */
 }
+.img-thumbnails div {
+    padding: 0.1em;
+    max-width: 33%;
+}
+/* Always Place the modal in the middle of the viewport.*/
 .img-modal {
     background-color: rgba(235,234, 234, 0.9);
+    position: fixed;
     display: none;
-    left: 0;
-    margin: auto;
-    margin-top: -40px;
-    overflow: auto;
-    position: absolute;
-    right: 0;
-    width: 70%;
-    z-index: 1;
+    width:90%;
+    height:70%;
+    top:0; left:0; right:0; bottom:0;
+    margin:auto;
+    text-align: center;
+}
+/* Get rid of random position:relative */
+.modal-header{
+    text-align: right;
 }
 .modal-content {
     margin: auto;
-    padding: 0;
-    position: relative;
-    width: 80%;
+    padding: 0.5em;
 }
 .material-icons.clear {
-  position: absolute;
-  top: 10px;
-  right: 25px;
-  font-size: 35px;
-  font-weight: bold;
-  z-index: 2;
+    display: block;
+    font-size: 35px;
+    font-weight: bold;
 }
 material-icons.clear:hover,
 material-icons.clear:focus {
@@ -44,11 +46,10 @@ material-icons.clear:focus {
   cursor: pointer;
 } 
 .uploaded-img {
-    margin: 12px 3px;
+    padding: 0.2em;
 }
 .img-slide img {
-    height: 250px;
-    margin-top: 15px;
+    max-width: 100%;
 }
 .backward, .forward {
     margin-bottom: 10px;
