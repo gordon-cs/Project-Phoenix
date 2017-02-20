@@ -55,6 +55,7 @@ function uploadPhoto() {
     let fileQuantity = photoList.length;
     let fileType = /^image\//;
     let previewArea = $("#img-preview-" + rciComponentId);
+    let modalArea = $("#modal-" + rciComponentId).find(".modal-content");
     if (!fileQuantity) {
         previewArea.innerHTML = "<p>No pictures uploaded</p>";
     }
@@ -71,14 +72,32 @@ function uploadPhoto() {
                 let img = document.createElement("img");
                 img.classList.add("uploaded-img");
                 img.classList.add("thumbnail");
+                img.setAttribute("id", "new-thumbnail-" + rciComponentId + "-" + i);
                 img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
                 img.onload = function () {
                     window.URL.revokeObjectURL(this.src);
                 }
-                img.alt = file.name;
+                img.alt = "Damage Image Thumbnail";
                 let $wrapperDiv = $("<div></div>");
                 $wrapperDiv.append(img)
                 previewArea.append($wrapperDiv);
+
+                // Now create and add the image for the modal
+                let slideImg = document.createElement("img");
+                slideImg.classList.add("uploaded-img");
+                slideImg.src = window.URL.createObjectURL(file);
+                slideImg.onload = function () {
+                    window.URL.revokeObjectURL(this.src);
+                }
+                let newIndex = $("#modal-" + rciComponentId).find(".img-slide").length;
+                $("#new-thumbnail-" + rciComponentId + "-" + i).click(function () {
+                    openModal(rciComponentId, newIndex)
+                });
+                let $newWrapperDiv = $("<div class='img-slide'></div>");
+                $newWrapperDiv.append(slideImg);
+                //$newWrapperDiv.classList.add("img-slide");
+                modalArea.append($newWrapperDiv);
+
                 savePhoto(file, rciComponentId);
 
             }
