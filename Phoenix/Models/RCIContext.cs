@@ -12,6 +12,7 @@ namespace Phoenix.Models
         {
         }
 
+        public virtual DbSet<Admin> Admin { get; set; }
         public virtual DbSet<Damage> Damage { get; set; }
         public virtual DbSet<Fine> Fine { get; set; }
         public virtual DbSet<Rci> Rci { get; set; }
@@ -35,6 +36,10 @@ namespace Phoenix.Models
             modelBuilder.Entity<Fine>()
                 .Property(e => e.FineAmount)
                 .HasPrecision(13, 2);
+
+            modelBuilder.Entity<RciComponent>()
+                .Property(e => e.RciComponentDescription)
+                .IsFixedLength();
 
             modelBuilder.Entity<RciComponent>()
                 .HasMany(e => e.Fine)

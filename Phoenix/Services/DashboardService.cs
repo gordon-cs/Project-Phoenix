@@ -106,19 +106,54 @@ namespace Phoenix.Services
          * @params: rciId - the id of the RCI to associate with 
          *          roomType - string to indicate type of room, either "common area" or "dorm room" currently
          */ 
-        public void AddRciComponents(int rciId, string roomType)
+        public void AddRciComponents(int rciId, string roomType, string buildingCode)
         {
             var componentNames = new List<string>();
             if (roomType.Equals("common area"))
             {
-                componentNames.AddRange(new string[]{ "Carpet", "Couch", "Sink",
-                    "Living room table", "Kitchen table", "Kitchen Chairs"});
+                if (buildingCode.Equals("BRO") || buildingCode.Equals("TAV"))
+                {
+                    componentNames.AddRange(new string[]{ "Sofa", "Chair", "Coffee table", "Carpet", "Repaint walls",
+                        "Wireless router", "Closet", "Table", "Chairs", "Refrigerator", "Cabinets / countertops",
+                        "Outlets", "Stove", "Floor", "Walls", "Lights", "Recycling basket", "Shower",
+                        "Floor", "Cabinets", "Mirror", "Repaint walls", "Light", "Toilet", "Towel bar"});
+                }
+                else // Ferrin
+                {
+                    componentNames.AddRange(new string[]{ "Sofa", "Chair", "Coffee table", "Carpet", "Repaint walls",
+                        "Closet", "Table", "Chairs", "Refrigerator", "Cabinets", "Outlets", "Stove", "Floor", "Walls",
+                        "Lights", "Recycling basket", "Shower", "Floor", "Cabinets", "Mirror", "Repaint walls", "Light",
+                        "Toilet", "Towel bar"});
+                }
+                
             }
             else // for now, just generic dorm; will add more checks once we've determined which components go where
             {
-                componentNames.AddRange(new string[] { "Bed", "Carpet", "Desk", "Desk Chair",
-                    "Dresser", "Wall", "Wardrobe" });
-                ;
+                if (buildingCode.Equals("FER") || buildingCode.Equals("DRE"))
+                {
+                    componentNames.AddRange(new string[] { "Beds", "Carpet", "Dresser", "Desks", "Door", "Electrical", "Mirror",
+                        "Wall/ceiling", "Closets", "Wardrobe", "Recycling basket", "Outlets", "Window", "Room cleaning"});
+                }
+                else if (buildingCode.Equals("EVA") || buildingCode.Equals("WIL") || buildingCode.Equals("LEW"))
+                {
+                    componentNames.AddRange(new string[] { "Black divider", "Beds", "Book shelf", "Carpet", "Closets", "Desks", "Door",
+                        "Electrical", "Mirror", "Recycling basket", "Wall/ceiling", "Outlets", "Window", "Room cleaning"});
+                }
+                else if (buildingCode.Equals("NYL"))
+                {
+                    componentNames.AddRange(new string[] { "Beds", "Carpet", "Dresser", "Desks", "Door", "Electrical", "Mirror",
+                        "Wall/ceiling", "Wardrobe", "Recycling basket", "Outlets", "Window", "Room cleaning"});
+                }
+                else if (buildingCode.Equals("TAV") || buildingCode.Equals("BRO")) // this is not really for bromley but we don't have the one for bromley for now.
+                {
+                    componentNames.AddRange(new string[] { "Beds", "Carpet", "Closets", "Desks", "Door", "Dresser", "Electrical",
+                        "Mirror", "Wall/ceiling", "Outlets", "Window", "Baseboard heat cover", "Room cleaning"});
+                }
+                else // road halls
+                {
+                    componentNames.AddRange(new string[] { "Beds", "Bookshelf", "Carpet", "Closets", "Desks", "Door", "Dresser",
+                        "Electrical", "Mirror", "Wall/ceiling", "Outlets", "Window", "Room cleaning"});
+                }
             }
             foreach (var name in componentNames)
             {

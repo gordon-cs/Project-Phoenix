@@ -24,6 +24,9 @@ namespace Phoenix.Models
 
         public int RciID { get; set; }
 
+        [StringLength(50)]
+        public string RciComponentDescription { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Damage> Damage { get; set; }
 
