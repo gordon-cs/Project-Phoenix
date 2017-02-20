@@ -66,6 +66,7 @@ function uploadPhoto() {
                 console.log("Photo" + i + "size: " + file.size);
                 let img = document.createElement("img");
                 img.classList.add("uploaded-img");
+                img.classList.add("thumbnail");
                 img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
                 img.width = 60; // Make photo small for thumbnail
                 img.onload = function () {
