@@ -4,6 +4,10 @@ $("#save-button").click(function () {
     save();
     location.reload(true); 
 });
+
+$("#next-button").click(function () {
+    save();
+});
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 //window.onbeforeunload = function (event) {
 //    save(); 
@@ -68,12 +72,13 @@ function uploadPhoto() {
                 img.classList.add("uploaded-img");
                 img.classList.add("thumbnail");
                 img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
-                img.width = 60; // Make photo small for thumbnail
                 img.onload = function () {
                     window.URL.revokeObjectURL(this.src);
                 }
                 img.alt = file.name;
-                previewArea.append(img);
+                let $wrapperDiv = $("<div></div>");
+                $wrapperDiv.append(img)
+                previewArea.append($wrapperDiv);
                 savePhoto(file, rciComponentId);
 
             }
@@ -186,14 +191,14 @@ $(".adding-damages").on("keypress", function (e) {
     }
 });
 // Attach upload photo handler
-$("input[id^='dmg-input'").change(uploadPhoto);
+$("input[id^='dmg-input']").change(uploadPhoto);
 
 // Attach modal handlers (reference: https://www.w3schools.com/howto/howto_js_lightbox.asp)
 
 // For all the thumbnail areas, attach the modal opener to each of its thumbnail images
 $(".img-thumbnails").each(function (index, element) {
     let componentID = $(this).attr("id").substring(12);
-    $(this).children(".thumbnail").each(function (index, element) {
+    $(this).find(".thumbnail").each(function (index, element) {
         $(this).click(function () {
             openModal(componentID, index)
         });
