@@ -130,6 +130,9 @@
         .pane-content {
             padding: 7px;
         }
+        .input.pane-content, .checkout.pane-content {
+            display: none;
+        }
 
 /***************************/
 /**********FOOTER***********/
