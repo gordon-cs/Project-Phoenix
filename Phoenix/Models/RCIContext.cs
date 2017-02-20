@@ -38,10 +38,6 @@ namespace Phoenix.Models
                 .HasPrecision(13, 2);
 
             modelBuilder.Entity<RciComponent>()
-                .Property(e => e.RciComponentDescription)
-                .IsFixedLength();
-
-            modelBuilder.Entity<RciComponent>()
                 .HasMany(e => e.Fine)
                 .WithOptional(e => e.RciComponent)
                 .WillCascadeOnDelete();
