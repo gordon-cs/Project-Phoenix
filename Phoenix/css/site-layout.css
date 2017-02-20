@@ -30,6 +30,7 @@
  *
  * Custom elements
  * .............. divAddOn
+ * .............. divAddOn-vert
  * .............. buttonGroup
  * .............. center contents
  * .............. center contents column
@@ -39,6 +40,7 @@
  * .............. file input
  * .............. login-form
  * .............. a.button
+ * .............. lift
  *
  * MISC - Anything layout related, that doesn't fit above
  * 
@@ -232,6 +234,57 @@ i {
 }
 
 /*
+ * Div Add ON (vertical version)
+ */
+.divAddOn-vert {
+    box-shadow: 0 0 3px 0 #ddd;
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    vertical-align: baseline;
+}
+
+.divAddOn-vert-field {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    flex: 1 1 auto;
+}
+
+.divAddOn-vert-field,
+.divAddOn-vert-row {
+    padding: 0.5em 0.5em;
+}
+
+.divAddOn-vert-row, .bottom-button {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around;
+}
+
+.divAddOn-vert-row:last-child {
+    border-bottom: 1px solid #ccc;
+}
+
+.divAddOn-vert-field:last-child {
+    border-bottom: 1px solid #ccc;
+}
+
+.divAddOn-vert-field:first-child,
+.divAddOn-vert-row:first-child {
+  border-radius: 2px 2px 0 0;
+}
+
+.divAddOn-vert-field:last-child,
+.divAddOn-vert-row:last-child {
+  border-radius: 0  0 2px 2px;
+}
+
+
+
+/*
  * Button Group
  * A group of buttons. 
  * Apply the class "button-group" to the parent element.
@@ -384,6 +437,15 @@ a.button {
     padding: 0.2em 1em;
     text-decoration: none;
 }
+
+/* Lift
+ * Fancy way to say make a box shadow.
+ */
+.lift {
+    box-shadow: 0 0 9px 0 #ddd;
+}
+
+
 /***************************/
 /***********MISC************/
 /***************************/

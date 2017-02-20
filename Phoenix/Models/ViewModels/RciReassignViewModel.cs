@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Phoenix.Models.ViewModels
 {
-    public class CheckoutRciViewModel
+    public class RciReassignViewModel
     {
         public int RciID { get; set; }
         public string FirstName { get; set; }
@@ -14,8 +14,6 @@ namespace Phoenix.Models.ViewModels
         public string RoomNumber { get; set; }
         public string GordonID { get; set; }
         public ICollection<RciComponent> RciComponent { get; set; }
-        public DateTime? CheckoutSigRes { get; set; }
-        public DateTime? CheckoutSigRA { get; set; }
-        public DateTime? CheckoutSigRD { get; set; }
+        public ICollection<PotentialRciReassignTarget> RciTarget { get; set; }
     }
 }
