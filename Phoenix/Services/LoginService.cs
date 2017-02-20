@@ -86,7 +86,12 @@ namespace Phoenix.Services
             var role = GetRole(id);
             var currentBuildingCode = GetCurrentBuilding(id);
             var currentRoomNumber = GetCurrentRoom(id);
-            var kingdom = GetKingdom(id); // The buildings for which you are responsible
+            List<string> kingdom = null;
+            if(role == "RA" || role == "RD")
+            {
+                kingdom = GetKingdom(id); // The buildings for which you are responsible
+            }
+            
 
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
