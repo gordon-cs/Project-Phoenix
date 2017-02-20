@@ -194,10 +194,11 @@ namespace Phoenix.Controllers
 
         // Save signatures for RA
         [HttpPost]
-        public ActionResult SaveSigRA(string rciSig, string rciSigRes, int id)
+        public ActionResult SaveSigRA(string rciSig, string rciSigRes, string lacSig, int id)
         {
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             if (rciSigRes != null) rciSigRes = rciSigRes.ToLower().Trim();
+            if (lacSig != null) lacSig = lacSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
@@ -209,9 +210,13 @@ namespace Phoenix.Controllers
             {
                 rci.CheckinSigRes = DateTime.Today;
             }
+            if (lacSig == username)
+            {
+                rci.LifeAndConductSigRes = DateTime.Today;
+            }
             db.SaveChanges();
 
-            if (rci.CheckinSigRes != null && rci.CheckinSigRA != null)
+            if (rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null)
             {
                 return Json(Url.Action("Index", "Dashboard"));
             }

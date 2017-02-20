@@ -32,6 +32,18 @@
         {
             <input type="text" id="rci-sig-res" disabled="disabled" value="@ViewBag.Username" />
         }
+
+        <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
+        <p>Please sign with your Gordon username @ViewBag.Username</p>
+
+        if (Model.LifeAndConductSigRes == null)
+        {
+            <input type="text" id="lac-sig" />
+        }
+        else
+        {
+            <input type="text" id="lac-sig" disabled="disabled" value="@ViewBag.Username" />
+        }
     }
 
     @if ((Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null) && Model.GordonID != ViewBag.GordonID)
