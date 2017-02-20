@@ -28,44 +28,45 @@
         </div>
 
         <div class="divAddOn sort-bar">
-            <label class="divAddOn-item">Order by:</label>
-            <select name="orderBy" class="divAddOn-field">
+            <label class="divAddOn-item">Order by</label>
+            <select class="divAddOn-field">
                 <option></option>
                 <option value="building">Building</option>
-                <option value="date">Date</option>
                 <option value="name">Name</option>
             </select>
         </div>
-
-        @foreach (var rci in Model)
-        {
-            <div class="divAddOn-vert">
-                <div class="divAddOn-vert-field search-field sort-field">
-                    <p class="building">@rci.BuildingCode @rci.RoomNumber</p>
-                    <p class="name">@rci.FirstName @rci.LastName</p>
-                </div>
-                <div class="divAddOn-vert-row">
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                        <div>
-                            <i class="material-icons">mode_edit</i>
-                        </div>
-                    </a>
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                        <div>
-                            <i class="material-icons">attach_money</i>
-                        </div>
-                    </a>
-                    @if (rci.FirstName != "Common Area")
-                    {
-                        <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
+        <div id="sort-container">
+            @foreach (var rci in Model)
+            {
+                <div class="divAddOn-vert">
+                    <div class="divAddOn-vert-field search-field sort-field">
+                        <p class="building">@rci.BuildingCode @rci.RoomNumber</p>
+                        <p class="name">@rci.FirstName @rci.LastName</p>
+                    </div>
+                    <div class="divAddOn-vert-row">
+                        <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
                             <div>
-                                <i class="material-icons">swap_horiz</i>
+                                <i class="material-icons">mode_edit</i>
                             </div>
                         </a>
-                    }
+                        <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
+                            <div>
+                                <i class="material-icons">attach_money</i>
+                            </div>
+                        </a>
+                        @if (rci.FirstName != "Common Area")
+                        {
+                            <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
+                                <div>
+                                    <i class="material-icons">swap_horiz</i>
+                                </div>
+                            </a>
+                        }
+                    </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
+       
     </div>
 
 </div>

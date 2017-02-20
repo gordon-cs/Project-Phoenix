@@ -3,6 +3,8 @@
  *
  * 1.................. DivListDropDown
  * 2.................. Drawer Menu
+ * 3.................. Search Bar
+ * 4.................. Sort
  *
 /***********************************************/
 
@@ -85,11 +87,29 @@ $(".search-bar").keyup(function () {
 });
 
 
+/* Sort Bar
+ * The class ".sort-bar" helps locate the select input that will tell us what we are sorting by.
+ * The class ".sort-field" helps locate the elements we want to sort
+ * The id "#sort-container" helps us where to place the elements once they are sorted
+ */
 $(".sort-bar > select").change(function () {
     $this = $(this);
-    console.log($this.val());
-    
-    $(".sort-field").parent().sort(function (a, b) {
-        
-    });
+    let sortBy = $this.val();
+    if(sortBy) // If sortBy is the empty string, do nothing.
+    {
+        let $rciElements = $(".sort-field").parent().sort(function (a, b) {
+            let x = $(a).find("." + sortBy).first().text().toLowerCase();
+            let y = $(b).find("." + sortBy).first().text().toLowerCase();
+            if (x < y) {
+                return -1;
+            }
+            if (x > y) {
+                return 1;
+            }
+            return 0;
+        });
+
+        $rciElements.detach();
+        $("#sort-container").append($rciElements);
+    }
 });
