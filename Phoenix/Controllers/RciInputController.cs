@@ -165,10 +165,10 @@ namespace Phoenix.Controllers
 
         // Save signatures for resident
         [HttpPost]
-        public void SaveSigRes(string rciSig, string lacSig, int id)
+        public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
         {
-            rciSig = rciSig.ToLower().Trim();
-            lacSig = lacSig.ToLower().Trim();
+            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
+            if (lacSig != null) lacSig = lacSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
@@ -181,14 +181,25 @@ namespace Phoenix.Controllers
                 rci.LifeAndConductSigRes = DateTime.Today;
             }
             db.SaveChanges();
+
+            var rciNew = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+
+            if (rciNew.CheckinSigRes != null && rciNew.LifeAndConductSigRes != null)
+            {
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            else
+            {
+                return Json(Url.Action("CheckinSigRes", new { id = id }));
+            }
         }
 
         // Save signatures for RA
         [HttpPost]
-        public void SaveSigRA(string rciSig, string rciSigRes, int id)
+        public ActionResult SaveSigRA(string rciSig, string rciSigRes, int id)
         {
-            rciSig = rciSig.ToLower().Trim();
-            rciSigRes = rciSigRes.ToLower().Trim();
+            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
+            if (rciSigRes != null) rciSigRes = rciSigRes.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
@@ -201,13 +212,24 @@ namespace Phoenix.Controllers
                 rci.CheckinSigRes = DateTime.Today;
             }
             db.SaveChanges();
+
+            var rciNew = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+
+            if (rciNew.CheckinSigRes != null && rciNew.CheckinSigRA != null)
+            {
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            else
+            {
+                return Json(Url.Action("CheckinSigRA", new { id = id }));
+            }
         }
 
         // Save signatures for RD
         [HttpPost]
-        public void SaveSigRD(string rciSig, int id)
+        public ActionResult SaveSigRD(string rciSig, int id)
         {
-            rciSig = rciSig.ToLower().Trim();
+            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var username = rciInputService.GetUsername(gordonID).ToLower().Trim();
@@ -216,6 +238,17 @@ namespace Phoenix.Controllers
                 rci.CheckinSigRD = DateTime.Today;
             }
             db.SaveChanges();
+
+            var rciNew = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+
+            if (rciNew.CheckinSigRes != null && rciNew.CheckinSigRA != null)
+            {
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            else
+            {
+                return Json(Url.Action("CheckinSigRD", new { id = id }));
+            }
         }
 
         /// <summary>
