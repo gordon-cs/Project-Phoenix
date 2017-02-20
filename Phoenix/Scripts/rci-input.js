@@ -4,6 +4,10 @@ $("#save-button").click(function () {
     save();
     location.reload(true); 
 });
+
+$("#next-button").click(function () {
+    save();
+});
 /* Save before the window unloads its resources e.g. reloading, closing browser etc... */
 //window.onbeforeunload = function (event) {
 //    save(); 

@@ -12,6 +12,7 @@ namespace Phoenix.Models
         {
         }
 
+        public virtual DbSet<Admin> Admin { get; set; }
         public virtual DbSet<Damage> Damage { get; set; }
         public virtual DbSet<Fine> Fine { get; set; }
         public virtual DbSet<Rci> Rci { get; set; }
