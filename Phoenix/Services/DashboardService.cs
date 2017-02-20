@@ -34,8 +34,8 @@ namespace Phoenix.Services
                 select new HomeRciViewModel
                 {
                     RciID = personalRCI.RciID,
-                    BuildingCode = personalRCI.BuildingCode,
-                    RoomNumber = personalRCI.RoomNumber,
+                    BuildingCode = personalRCI.BuildingCode.Trim(),
+                    RoomNumber = personalRCI.RoomNumber.Trim(),
                     FirstName = account.firstname,
                     LastName = account.lastname
                 };
@@ -47,7 +47,7 @@ namespace Phoenix.Services
          * @params: buildingCode - code(s) for the building(s) of the RA or RD's sphere of authority
          *          gordonId - gordon ID of the RA or RD so that his or her RCI (if applicable) is not included 
          */
-        public IEnumerable<HomeRciViewModel> GetRcisForBuilding(string[] buildingCode, string gordonId)
+        public IEnumerable<HomeRciViewModel> GetRcisForBuilding(List<string> buildingCode, string gordonId)
         {
             // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
@@ -59,8 +59,8 @@ namespace Phoenix.Services
                 select new HomeRciViewModel
                 {
                     RciID = personalRCI.RciID,
-                    BuildingCode = personalRCI.BuildingCode,
-                    RoomNumber = personalRCI.RoomNumber,
+                    BuildingCode = personalRCI.BuildingCode.Trim(),
+                    RoomNumber = personalRCI.RoomNumber.Trim(),
                     FirstName = account.firstname == null ? "Common Area" : account.firstname,
                     LastName = account.lastname == null ? "RCI" : account.lastname
                 };
@@ -134,9 +134,9 @@ namespace Phoenix.Services
         /*
          * Check to see if an up-to-date RCI exists for a user
          */ 
-        public bool CurrentRciIsCorrect(IEnumerable<HomeRciViewModel> RCIs, string building, string roomNumber)
+        public bool CurrentRciExists(IEnumerable<HomeRciViewModel> RCIs, string currentBuildingCode, string roomNumber)
         {
-            var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == building && m.RoomNumber == roomNumber);
+            var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == currentBuildingCode && m.RoomNumber == roomNumber);
             return RCIsForCurrentBuilding.Any();
         }
 
@@ -171,7 +171,7 @@ namespace Phoenix.Services
          * CSV format: RoomNumber, BuildingCode, Name, id, DetailedReason, FineAmount 
          * 
          */
-         public string GenerateFinesSpreadsheet(string[] buildingCodes)
+         public string GenerateFinesSpreadsheet(List<string> buildingCodes)
         {
             var currentSession = GetCurrentSession();
             var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Fine Amount\n";
