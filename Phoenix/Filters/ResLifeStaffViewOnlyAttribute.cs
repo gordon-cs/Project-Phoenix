@@ -12,7 +12,7 @@ namespace Phoenix.Filters
         {
             var role = (string)filterContext.Controller.TempData["role"];
             var isRD = role == "RD";
-            var isRA = role == "RD";
+            var isRA = role == "RA";
             var isAdmin = role == "ADMIN";
 
             if (!(isRD || isRA || isAdmin)) // Anythin other than a member of the residence life staff
