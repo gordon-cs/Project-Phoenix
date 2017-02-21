@@ -70,7 +70,7 @@ function deleteExistingDamages(event, element, id)
 /* Register Handers */
 
 
-// Handler to allow users to add damages by simply pressing the enter key
+// Handler to allow users to add damages by  simply pressing the enter key
 $(".adding-damages").on("keypress", function (e) {
     var key = e.keyCodd || e.which;
     if (key == 13) {
