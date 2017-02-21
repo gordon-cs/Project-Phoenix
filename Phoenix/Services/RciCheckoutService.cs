@@ -17,41 +17,36 @@ namespace Phoenix.Services
         // 
         public CheckoutRciViewModel GetRciByID(int id)
         {
-            var temp = db.Rci.Find(id);
-            var gordonID = temp.GordonID;
-            string firstName, lastName;
+            var query =
+                from r in db.Rci
+                join a in db.Account on r.GordonID equals a.ID_NUM into account
+                from temp in account.DefaultIfEmpty()
+                select new CheckoutRciViewModel()
+                {
+                    RciID = r.RciID,
+                    GordonID = r.GordonID,
+                    FirstName = temp.firstname ?? "Common Area",
+                    LastName = temp.lastname ?? "Rci",
+                    BuildingCode = r.BuildingCode,
+                    RoomNumber = r.RoomNumber,
+                    RciComponent = r.RciComponent,
+                    CheckoutSigRes = r.CheckoutSigRes,
+                    CheckoutSigRA = r.CheckoutSigRA,
+                    CheckoutSigRD = r.CheckoutSigRD,
+                    CheckoutSigRAGordonID = r.CheckoutSigRAGordonID,
+                    CheckoutSigRDGordonID = r.CheckoutSigRDGordonID,
+                    CheckoutSigRAName = 
+                                        (from acct in db.Account
+                                        where acct.ID_NUM.Equals(r.CheckoutSigRAGordonID)
+                                        select acct.firstname + " " + acct.lastname ).FirstOrDefault(),
+                    CheckoutSigRDName =
+                                         (from acct in db.Account
+                                          where acct.ID_NUM.Equals(r.CheckoutSigRDGordonID)
+                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
 
-            if(gordonID != null)
-            {
-                var account = db.Account.Where(m => m.ID_NUM == gordonID).FirstOrDefault();
-                firstName = account.firstname;
-                lastName = account.lastname;
-            }
-            else
-            {
-                firstName = "Common Area";
-                lastName = "RCI";
-            }
+                };
 
-            var rci = new CheckoutRciViewModel()
-            {
-                RciID = temp.RciID,
-                GordonID = gordonID,
-                FirstName = firstName,
-                LastName = lastName,
-                BuildingCode = temp.BuildingCode,
-                RoomNumber = temp.RoomNumber,
-                RciComponent = temp.RciComponent,
-                CheckoutSigRes = temp.CheckoutSigRes,
-                CheckoutSigRA = temp.CheckoutSigRA,
-                CheckoutSigRD = temp.CheckoutSigRD,
-                CheckoutSigRAGordonID = temp.CheckoutSigRAGordonID,
-                CheckoutSigRAName = temp.CheckoutSigRAName,
-                CheckoutSigRDGordonID = temp.CheckoutSigRDGordonID,
-                CheckoutSigRDName = temp.CheckoutSigRDName
-            };
-
-            return rci;
+            return query.FirstOrDefault();
         }
 
         /// <summary>
@@ -183,7 +178,6 @@ namespace Phoenix.Services
 
             rci.CheckoutSigRA = System.DateTime.Today;
             rci.CheckoutSigRAGordonID = raGordonID;
-            rci.CheckoutSigRAName = raName;
 
             db.SaveChanges();
 
@@ -198,7 +192,6 @@ namespace Phoenix.Services
 
             rci.CheckoutSigRD = System.DateTime.Today;
             rci.CheckoutSigRDGordonID = rdGordonID;
-            rci.CheckoutSigRDName = rdName;
             rci.IsCurrent = false;
 
             db.SaveChanges();
