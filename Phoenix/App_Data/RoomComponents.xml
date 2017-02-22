@@ -1,12 +1,89 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <rciTypes>
-  <rci roomType="commonArea">
+  <rci rciType="commonArea">
     <buildingCodes>
       <buildingCode>BRO</buildingCode>
       <buildingCode>TAV</buildingCode>
     </buildingCodes>
     <components>
-      <component />
+      <component name="Sofa" description="Living Room" />
+      <component name="Chair" description="Living Room" />
+      <component name="Coffee table" description="Living Room" />
+      <component name="Carpet" description="Living Room" />
+      <component name="Repaint walls" description="Living Room" />
+      <component name="Wireless router" description="Living Room" />
+      <component name="Closet" description="Kitchen" />
+      <component name="Table" description="Kitchen" />
+      <component name="Chairs" description="Kitchen" />
+      <component name="Refrigerator" description="Kitchen" />
+      <component name="Cabinets/countertops" description="Kitchen" />
+      <component name="Outlets" description="Kitchen" />
+      <component name="Stove" description="Kitchen" />
+      <component name="Floor" description="Kitchen" />
+      <component name="Walls" description="Kitchen" />
+      <component name="Lights" description="Kitchen" />
+      <component name="Recycling basket" description="Kitchen" />
+      <component name="Shower" description="Bathroom" />
+      <component name="Floor" description="Bathroom" />
+      <component name="Cabinets" description="Bathroom" />
+      <component name="Mirror" description="Bathroom" />
+      <component name="Repaint walls" description="Bathroom" />
+      <component name="Light" description="Bathroom" />
+      <component name="Toilet" description="Bathroom" />
+      <component name="Tower bar" description="Bathroom" />
+    </components>
+  </rci>
+  <rci rciType="commonArea">
+    <buildingCodes>
+      <buildingCode>FER</buildingCode>
+    </buildingCodes>
+    <components>
+      <component name="Sofa" description="Living Room" />
+      <component name="Chair" description="Living Room" />
+      <component name="Coffee table" description="Living Room" />
+      <component name="Carpet" description="Living Room" />
+      <component name="Repaint walls" description="Living Room" />
+      <component name="Closet" description="Kitchen" />
+      <component name="Table" description="Kitchen" />
+      <component name="Chairs" description="Kitchen" />
+      <component name="Refrigerator" description="Kitchen" />
+      <component name="Cabinets" description="Kitchen" />
+      <component name="Outlets" description="Kitchen" />
+      <component name="Stove" description="Kitchen" />
+      <component name="Floor" description="Kitchen" />
+      <component name="Walls" description="Kitchen" />
+      <component name="Lights" description="Kitchen" />
+      <component name="Recycling basket" description="Kitchen" />
+      <component name="Shower" description="Bathroom" />
+      <component name="Floor" description="Bathroom" />
+      <component name="Cabinets" description="Bathroom" />
+      <component name="Mirror" description="Bathroom" />
+      <component name="Repaint walls" description="Bathroom" />
+      <component name="Light" description="Bathroom" />
+      <component name="Toilet" description="Bathroom" />
+      <component name="Tower bar" description="Bathroom" />
+    </components>
+  </rci>
+  <rci rciType="individual">
+    <buildingCodes>
+      <buildingCode>FER</buildingCode>
+      <buildingCode>DRE</buildingCode>
+    </buildingCodes>
+    <components>
+      , , "", "", "", "", "",
+      "", "", "", "", "", "", ""
+      <component name="Beds" description="Living Room" />
+      <component name="Carpet" description="Living Room" />
+      <component name="Dresser" description="Living Room" />
+      <component name="Desks" description="Living Room" />
+      <component name="Door" description="Living Room" />
+      <component name="Electrical" description="Living Room" />
+      <component name="Mirror" description="Kitchen" />
+      <component name="Wall/ceiling" description="Kitchen" />
+      <component name="Closets" description="Kitchen" />
+      <component name="Wardrobe" description="Kitchen" />
+      <component name="Recycling basket" description="Kitchen" />
+      <component name="Outlets" description="Kitchen" />
     </components>
   </rci>
 </rciTypes>
