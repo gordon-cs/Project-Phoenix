@@ -279,7 +279,20 @@ namespace Phoenix.Services
         {
             var currentSessionCode = db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE;
             return currentSessionCode;
-        } 
+        }
 
+        public void SyncRoomRcis()
+        {
+            var query =
+                from rm in db.RoomAssign
+                join rc in db.Rci
+                    on new { A = rm.BLDG_CDE.Trim(), B = rm.ROOM_CDE.Trim() } equals  new { A = rc.BuildingCode, B = rc.RoomNumber, C =  } 
+
+        }
+
+        public void SyncCommonAreaRcis()
+        {
+
+        }
     }
 }

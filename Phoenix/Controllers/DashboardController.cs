@@ -208,6 +208,13 @@ namespace Phoenix.Controllers
             return View(buildingRCIs);
         }
 
+        [HttpGet]
+        public ActionResult SyncRcis()
+        {
+            dashboardService.SyncRoomRcis();
+            dashboardService.SyncCommonAreaRcis();
+            return RedirectToAction("Index");
+        }
         // Potentially later: admin option that can view all RCI's for all buildings
 
         // Maybe use an authorization filter here to only allow an RD to access this method?
