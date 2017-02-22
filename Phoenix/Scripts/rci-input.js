@@ -72,7 +72,7 @@ function uploadPhoto() {
                 let img = document.createElement("img");
                 img.classList.add("uploaded-img");
                 img.classList.add("thumbnail");
-                img.setAttribute("id", "new-thumbnail-" + rciComponentId + "-" + i);
+                //img.setAttribute("id", "new-thumbnail-" + rciComponentId + "-" + i);
                 img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
                 img.onload = function () {
                     window.URL.revokeObjectURL(this.src);
@@ -89,10 +89,10 @@ function uploadPhoto() {
                 slideImg.onload = function () {
                     window.URL.revokeObjectURL(this.src);
                 }
-                let newIndex = $("#modal-" + rciComponentId).find(".img-slide").length;
+                /*let newIndex = $("#modal-" + rciComponentId).find(".img-slide").length;
                 $("#new-thumbnail-" + rciComponentId + "-" + i).click(function () {
                     openModal(rciComponentId, newIndex)
-                });
+                }); */
                 let $newWrapperDiv = $("<div class='img-slide'></div>");
                 $newWrapperDiv.append(slideImg);
                 //$newWrapperDiv.classList.add("img-slide");
@@ -215,14 +215,20 @@ $("input[id^='dmg-input']").change(uploadPhoto);
 // Attach modal handlers (reference: https://www.w3schools.com/howto/howto_js_lightbox.asp)
 
 // For all the thumbnail areas, attach the modal opener to each of its thumbnail images
-$(".img-thumbnails").each(function (index, element) {
+/*$(".img-thumbnails").each(function (index, element) {
     let componentID = $(this).attr("id").substring(12);
     $(this).find(".thumbnail").each(function (index, element) {
-        $(this).click(function () {
+        $(".thumbnail").on("click",function () {
             openModal(componentID, index)
         });
     });
-});
+});*/
+
+$(".img-thumbnails").on("click", ".thumbnail", function (index, element) {
+    let componentID = $(this).closest(".img-thumbnails").attr("id").substring(12);
+            openModal(componentID, index)
+ });
+
 
 $(".material-icons.clear").click(function () {
     let modalID = $(this).closest(".img-modal").attr("id");
