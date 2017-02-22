@@ -57,14 +57,8 @@ namespace Phoenix.Models
         [Column(TypeName = "date")]
         public DateTime? CheckoutSigRD { get; set; }
 
-        [StringLength(100)]
-        public string CheckoutSigRAName { get; set; }
-
         [StringLength(50)]
         public string CheckoutSigRAGordonID { get; set; }
-
-        [StringLength(100)]
-        public string CheckoutSigRDName { get; set; }
 
         [StringLength(50)]
         public string CheckoutSigRDGordonID { get; set; }
