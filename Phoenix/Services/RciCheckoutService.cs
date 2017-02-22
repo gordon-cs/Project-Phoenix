@@ -20,6 +20,7 @@ namespace Phoenix.Services
             var query =
                 from r in db.Rci
                 join a in db.Account on r.GordonID equals a.ID_NUM into account
+                where r.RciID == id
                 from temp in account.DefaultIfEmpty()
                 select new CheckoutRciViewModel()
                 {
@@ -35,10 +36,10 @@ namespace Phoenix.Services
                     CheckoutSigRD = r.CheckoutSigRD,
                     CheckoutSigRAGordonID = r.CheckoutSigRAGordonID,
                     CheckoutSigRDGordonID = r.CheckoutSigRDGordonID,
-                    CheckoutSigRAName = 
+                    CheckoutSigRAName =
                                         (from acct in db.Account
-                                        where acct.ID_NUM.Equals(r.CheckoutSigRAGordonID)
-                                        select acct.firstname + " " + acct.lastname ).FirstOrDefault(),
+                                         where acct.ID_NUM.Equals(r.CheckoutSigRAGordonID)
+                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
                     CheckoutSigRDName =
                                          (from acct in db.Account
                                           where acct.ID_NUM.Equals(r.CheckoutSigRDGordonID)
