@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<rciTypes>
+  <rci roomType="commonArea">
+    <buildingCodes>
+      <buildingCode>BRO</buildingCode>
+      <buildingCode>TAV</buildingCode>
+    </buildingCodes>
+    <components>
+      <component />
+    </components>
+  </rci>
+</rciTypes>

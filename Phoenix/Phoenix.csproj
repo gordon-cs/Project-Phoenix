@@ -189,6 +189,7 @@
     <Compile Include="Services\RciCheckoutService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\RoomComponents.xml" />
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
     <Content Include="css\rci-checkout.css" />
@@ -259,7 +260,6 @@
     <Content Include="Views\RciCheckout\RDSignature.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="css\third_party\" />
     <Folder Include="Views\Logout\" />
   </ItemGroup>
