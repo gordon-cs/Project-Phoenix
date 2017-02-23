@@ -40,12 +40,10 @@ function save() {
         }
 
     });
-
-    // Now handle the saving of images
-
 }
 
-// Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications
+/* Receive a photo from the <input> element, add it to the DOM, and save it to the db
+/* Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications */
 function uploadPhoto() {
     console.log("reached uploadPhoto");
     console.log(this.files);
@@ -72,7 +70,6 @@ function uploadPhoto() {
                 let img = document.createElement("img");
                 img.classList.add("uploaded-img");
                 img.classList.add("thumbnail");
-                //img.setAttribute("id", "new-thumbnail-" + rciComponentId + "-" + i);
                 img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
                 img.onload = function () {
                     window.URL.revokeObjectURL(this.src);
@@ -89,13 +86,8 @@ function uploadPhoto() {
                 slideImg.onload = function () {
                     window.URL.revokeObjectURL(this.src);
                 }
-                /*let newIndex = $("#modal-" + rciComponentId).find(".img-slide").length;
-                $("#new-thumbnail-" + rciComponentId + "-" + i).click(function () {
-                    openModal(rciComponentId, newIndex)
-                }); */
                 let $newWrapperDiv = $("<div class='img-slide'></div>");
                 $newWrapperDiv.append(slideImg);
-                //$newWrapperDiv.classList.add("img-slide");
                 modalArea.append($newWrapperDiv);
 
                 savePhoto(file, rciComponentId);
@@ -106,6 +98,7 @@ function uploadPhoto() {
 
 }
 
+// Send the uploaded photo to the server via AJAX
 function savePhoto(photoFile, fileName) {
     let formData = new FormData();
     formData.append('file', photoFile, fileName);
@@ -215,18 +208,12 @@ $("input[id^='dmg-input']").change(uploadPhoto);
 // Attach modal handlers (reference: https://www.w3schools.com/howto/howto_js_lightbox.asp)
 
 // For all the thumbnail areas, attach the modal opener to each of its thumbnail images
-/*$(".img-thumbnails").each(function (index, element) {
-    let componentID = $(this).attr("id").substring(12);
-    $(this).find(".thumbnail").each(function (index, element) {
-        $(".thumbnail").on("click",function () {
-            openModal(componentID, index)
-        });
-    });
-});*/
 
-$(".img-thumbnails").on("click", ".thumbnail", function (index, element) {
+$(".img-thumbnails").on("click", ".thumbnail", function () {
     let componentID = $(this).closest(".img-thumbnails").attr("id").substring(12);
-            openModal(componentID, index)
+    // Count up all the previous thumbnail images to know what to set the slide index to for the modal
+    let newIndex = $(this).parent().prevAll().length;
+    openModal(componentID, newIndex);
  });
 
 
