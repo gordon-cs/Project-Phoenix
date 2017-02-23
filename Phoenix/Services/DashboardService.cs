@@ -282,33 +282,78 @@ namespace Phoenix.Services
         }
 
         /// <summary>
-        /// Create rci records that correspond with roomassign records.
+        /// Create rci records that correspond with roomassign records for the list of buildings we are given
         /// </summary>
         public void SyncRoomRcis(List<string> kingdom)
         {
-            var currentSession = GetCurrentSession(); 
-            // Create an sql parameter that we will pass to the stored procedure
-            var currentSessionParameter = new SqlParameter("@currentSession", currentSession);
             var result = Enumerable.Empty<RoomAssign>();
+            var currentSession = GetCurrentSession();
 
-            foreach(var building in kingdom)
+            foreach (var building in kingdom)
             {
+                // Create sql parameters that we will pass to the stored procedure
                 var buildingParameter = new SqlParameter("@building", building);
+                var currentSessionParameter = new SqlParameter("@currentSession", currentSession);
+                
                 // call the stored procedure.
+                // We are using a stored procedure here because linq only supports equality joins. This operation uses a greater than join, so we execute it directly.
                 var query = db.Database.SqlQuery<RoomAssign>("FindMissingRcis @building, @currentSession", buildingParameter, currentSessionParameter).AsEnumerable();
                 result = result.Concat(query);
-              
+
             }
 
-            foreach(var roomAssignment in result)
+            var newRcis = new List<Rci>();
+
+            foreach (var roomAssignment in result)
             {
-                GenerateOneRCIinDb(roomAssignment.BLDG_CDE.Trim(), roomAssignment.ROOM_CDE.Trim(), roomAssignment.ID_NUM.ToString());
+                var newRci = new Rci
+                {
+                    IsCurrent = true,
+                    BuildingCode = roomAssignment.BLDG_CDE.Trim(),
+                    RoomNumber = roomAssignment.ROOM_CDE.Trim(),
+                    CreationDate = DateTime.Now,
+                    GordonID = roomAssignment.ID_NUM.ToString()
+                };
+                newRcis.Add(newRci);
             }
+
+            db.Rci.AddRange(newRcis);
+
+            db.SaveChanges();
         }
 
-        public void SyncCommonAreaRcis()
+        /// <summary>
+        /// Create rci records that correspond to common areas in the Room table for the list of buildings we are given.
+        /// </summary>
+        public void SyncCommonAreaRcis(List<string> kingdom)
         {
+            var query =
+                from rm in db.Room
+                join rci in db.Rci
+                on new { buildingCode = rm.BLDG_CDE.Trim(), roomNumber = rm.ROOM_CDE.Trim() } equals new { buildingCode = rci.BuildingCode, roomNumber = rci.RoomNumber } into matchedRcis
+                from temp in matchedRcis.DefaultIfEmpty()
+                where rm.MAX_CAPACITY == 0
+                    && rm.ROOM_GENDER == null
+                    && temp == null
+                    && kingdom.Contains(rm.BLDG_CDE.Trim())
+                select rm;
+            var newCommonAreaRcis = new List<Rci>();
 
+            foreach(var room in query)
+            {
+                var newCommonAreaRci = new Rci
+                {
+                    IsCurrent = true,
+                    BuildingCode = room.BLDG_CDE.Trim(),
+                    RoomNumber = room.ROOM_CDE.Trim(),
+                    CreationDate = DateTime.Now,
+                };
+                newCommonAreaRcis.Add(newCommonAreaRci);
+            }
+
+            db.Rci.AddRange(newCommonAreaRcis);
+
+            db.SaveChanges();
         }
     }
 }

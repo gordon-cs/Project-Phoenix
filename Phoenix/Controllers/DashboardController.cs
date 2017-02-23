@@ -210,7 +210,7 @@ namespace Phoenix.Controllers
             List<string> kingdom = temp.ToObject<List<string>>();
 
             dashboardService.SyncRoomRcis(kingdom);
-            dashboardService.SyncCommonAreaRcis();
+            dashboardService.SyncCommonAreaRcis(kingdom);
             return RedirectToAction("Index");
         }
         // Potentially later: admin option that can view all RCI's for all buildings
