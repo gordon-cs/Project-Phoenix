@@ -282,37 +282,29 @@ namespace Phoenix.Services
             return currentSessionCode;
         }
 
+        /// <summary>
+        /// Create rci records that correspond with roomassign records.
+        /// </summary>
         public void SyncRoomRcis(List<string> kingdom)
         {
-            var currentSession = GetCurrentSession();
+            var currentSession = GetCurrentSession(); 
+            // Create an sql parameter that we will pass to the stored procedure
             var currentSessionParameter = new SqlParameter("@currentSession", currentSession);
             var result = Enumerable.Empty<RoomAssign>();
 
             foreach(var building in kingdom)
             {
                 var buildingParameter = new SqlParameter("@building", building);
+                // call the stored procedure.
                 var query = db.Database.SqlQuery<RoomAssign>("FindMissingRcis @building, @currentSession", buildingParameter, currentSessionParameter).AsEnumerable();
                 result = result.Concat(query);
               
             }
 
-            var newRcis = new List<Rci>();
             foreach(var roomAssignment in result)
             {
-                var newRci = new Rci
-                {
-                    IsCurrent = true,
-                    BuildingCode = roomAssignment.BLDG_CDE.Trim(),
-                    RoomNumber = roomAssignment.ROOM_CDE.Trim(),
-                    GordonID = roomAssignment.ID_NUM.ToString(),
-                    SessionCode = roomAssignment.SESS_CDE.Trim(),
-                    CreationDate = DateTime.Now
-                };
-                newRcis.Add(newRci);
+                GenerateOneRCIinDb(roomAssignment.BLDG_CDE.Trim(), roomAssignment.ROOM_CDE.Trim(), roomAssignment.ID_NUM.ToString());
             }
-
-            db.Rci.AddRange(newRcis);
-            db.SaveChanges();
         }
 
         public void SyncCommonAreaRcis()
