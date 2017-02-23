@@ -1,13 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using System.Collections.Generic;
-
-using Phoenix.Models;
-using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
 using Phoenix.Services;
-using System.IO;
 using Newtonsoft.Json.Linq;
 
 namespace Phoenix.Controllers
