@@ -65,7 +65,7 @@ namespace Phoenix.Services
                     FirstName = account.firstname == null ? "Common Area" : account.firstname,
                     LastName = account.lastname == null ? "RCI" : account.lastname
                 };
-            return buildingRCIs;
+            return buildingRCIs.OrderBy(m => m.RoomNumber);
         }
 
         /*
