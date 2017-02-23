@@ -5,6 +5,7 @@ using System.Web;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System.Diagnostics;
+using System.Data.SqlClient;
 
 namespace Phoenix.Services
 {
@@ -277,17 +278,41 @@ namespace Phoenix.Services
          */
          public string GetCurrentSession()
         {
-            var currentSessionCode = db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE;
+            var currentSessionCode = db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE.Trim();
             return currentSessionCode;
         }
 
-        public void SyncRoomRcis()
+        public void SyncRoomRcis(List<string> kingdom)
         {
-            var query =
-                from rm in db.RoomAssign
-                join rc in db.Rci
-                    on new { A = rm.BLDG_CDE.Trim(), B = rm.ROOM_CDE.Trim() } equals  new { A = rc.BuildingCode, B = rc.RoomNumber, C =  } 
+            var currentSession = GetCurrentSession();
+            var currentSessionParameter = new SqlParameter("@currentSession", currentSession);
+            var result = Enumerable.Empty<RoomAssign>();
 
+            foreach(var building in kingdom)
+            {
+                var buildingParameter = new SqlParameter("@building", building);
+                var query = db.Database.SqlQuery<RoomAssign>("FindMissingRcis @building, @currentSession", buildingParameter, currentSessionParameter).AsEnumerable();
+                result = result.Concat(query);
+              
+            }
+
+            var newRcis = new List<Rci>();
+            foreach(var roomAssignment in result)
+            {
+                var newRci = new Rci
+                {
+                    IsCurrent = true,
+                    BuildingCode = roomAssignment.BLDG_CDE.Trim(),
+                    RoomNumber = roomAssignment.ROOM_CDE.Trim(),
+                    GordonID = roomAssignment.ID_NUM.ToString(),
+                    SessionCode = roomAssignment.SESS_CDE.Trim(),
+                    CreationDate = DateTime.Now
+                };
+                newRcis.Add(newRci);
+            }
+
+            db.Rci.AddRange(newRcis);
+            db.SaveChanges();
         }
 
         public void SyncCommonAreaRcis()

@@ -211,7 +211,10 @@ namespace Phoenix.Controllers
         [HttpGet]
         public ActionResult SyncRcis()
         {
-            dashboardService.SyncRoomRcis();
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
+
+            dashboardService.SyncRoomRcis(kingdom);
             dashboardService.SyncCommonAreaRcis();
             return RedirectToAction("Index");
         }
