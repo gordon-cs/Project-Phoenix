@@ -66,43 +66,15 @@ namespace Phoenix.Controllers
                 return RedirectToAction("RA");
             }
 
-            // Look through RCIS and find your RCI with your ID
-            // For common area RCI, look through rci's without a gordon id, 
-            // with the corresponding Building and Room number
-
             // TempData stores object, so always cast to string.
-
             var strID = (string)TempData["id"];
             var currentBuilding = (string)TempData["currentBuilding"];
             var currentRoom = (string)TempData["currentRoom"];
 
+            dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID);
+            dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom);
+
             var RCIs = dashboardService.GetRcisForResident(strID);
-
-            if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
-            {
-                var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "dorm room", currentBuilding);
-            }
-
-            if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
-                (currentBuilding.Equals("FER") && (currentRoom.StartsWith("L"))))
-            {
-                var apartmentNumber = currentRoom.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
-
-                var commonAreaRCIs = dashboardService.GetCommonAreaRci(apartmentNumber, currentBuilding);
-
-                // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
-                if (!commonAreaRCIs.Any())
-                {
-                    
-
-                    var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common area", currentBuilding);
-                }
-
-                RCIs = RCIs.Concat(commonAreaRCIs);
-            }
-
 
             return View(RCIs);
         }
@@ -127,47 +99,12 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Resident");
             }
 
-            // TempData stores object, so always cast to string.
-            var strID = (string)TempData["id"];
-            var currentBuilding = (string)TempData["currentBuilding"];
-            var currentRoom = (string)TempData["currentRoom"];
-
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
 
-            // Query just for the RA's own RCI
-            var RCIs = dashboardService.GetRcisForResident(strID);
+            var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom);
 
-            // Verify that the RA actually has their own RCIs set up
-            if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
-            {
-                var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "dorm room", currentBuilding);
-            }
-
-            if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
-                (currentBuilding.Equals("FER") && (currentRoom.StartsWith("L"))))
-            {
-                var apartmentNumber = currentRoom.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
-                var commonAreaRCIs = dashboardService.GetCommonAreaRci(apartmentNumber, currentBuilding);
-
-                // If there was no common area RCI for someone in BRO, TAV, or FER apts, then add one
-                if (!commonAreaRCIs.Any())
-                {
-
-                    var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common area", currentBuilding);
-                }
-
-            }
-
-            // Also display all RCI's for the corresponding building
-            //string[] strBuildingAsArray = { strBuilding };
-
-            var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom, strID);
-            RCIs = RCIs.Concat(buildingRCIs);
-
-            return View(RCIs);
+            return View(buildingRCIs);
         }
 
         // GET: Home/RD
@@ -196,9 +133,7 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
 
-            var strID = (string)TempData["id"];
-
-            var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom, strID);
+            var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom);
             
             return View(buildingRCIs);
         }
@@ -209,8 +144,8 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
 
-            dashboardService.SyncRoomRcis(kingdom);
-            dashboardService.SyncCommonAreaRcis(kingdom);
+            dashboardService.SyncRoomRcisFor(kingdom);
+            dashboardService.SyncCommonAreaRcisFor(kingdom);
             return RedirectToAction("Index");
         }
         // Potentially later: admin option that can view all RCI's for all buildings
