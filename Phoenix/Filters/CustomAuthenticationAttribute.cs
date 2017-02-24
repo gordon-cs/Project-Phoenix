@@ -4,6 +4,8 @@ using System.Web.Mvc;
 using System.Web.Mvc.Filters;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Text;
+using System.Linq;
 
 namespace Phoenix.Filters
 {
@@ -32,7 +34,9 @@ namespace Phoenix.Filters
 
             var jwtToken = authCookie.Value;
             var decodedString = "";
-            var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
+            var secretString = System.Web.Configuration.WebConfigurationManager.AppSettings["jwtSecret"];
+            var encoding = new ASCIIEncoding();
+            var secretKey = encoding.GetBytes(secretString).ToArray();
 
             // Jose throws an exception on decode if the token isn't intact. #cryptographicmagic
             try
