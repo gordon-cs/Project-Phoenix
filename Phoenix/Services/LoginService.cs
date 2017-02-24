@@ -4,7 +4,6 @@ using System.Linq;
 using System.DirectoryServices.AccountManagement;
 using Jose;
 using Phoenix.Models;
-using System.Text;
 
 namespace Phoenix.Services
 {
@@ -29,8 +28,9 @@ namespace Phoenix.Services
                 "elder.gordon.edu:636",
                 "OU=Gordon College,DC=gordon,DC=edu",
                 ContextOptions.Negotiate | ContextOptions.ServerBind | ContextOptions.SecureSocketLayer,
-                System.Web.Configuration.WebConfigurationManager.AppSettings["serviceAccountUsername"],
-                System.Web.Configuration.WebConfigurationManager.AppSettings["serviceAccountPassword"]);
+                "CS-LDAP-CCT",
+                "QUl59QpdpL**sTwZ");
+            // This password should probs be stored elsewhere
 
             return ADContext;
         }
@@ -91,11 +91,10 @@ namespace Phoenix.Services
             {
                 kingdom = GetKingdom(id); // The buildings for which you are responsible
             }
+            
 
-
-            var secretString = System.Web.Configuration.WebConfigurationManager.AppSettings["jwtSecret"];
-            var encoding = new ASCIIEncoding();
-            var secretKey = encoding.GetBytes(secretString).ToArray();
+            // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
+            var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
             DateTime issued = DateTime.Now;
             DateTime expire = DateTime.Now.AddHours(2);
