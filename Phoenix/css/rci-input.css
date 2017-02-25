@@ -27,7 +27,7 @@ i {
     margin: 0 auto; 
     position: absolute;
     width:95%;
-    height: 320px;
+    height: 325px;
 }
 /* Get rid of random position:relative */
 .modal-header{
@@ -42,8 +42,7 @@ i {
     display: block;
     font-size: 35px;
     font-weight: bold;
-    padding-right: .25em;
-    padding-top: .25em;
+    padding: 0.2em 0.25em .3em;
 }
 material-icons.clear:hover,
 material-icons.clear:focus {
@@ -55,11 +54,11 @@ material-icons.clear:focus {
     padding: 0.2em;
 }
 .img-slide img {
+    height: 250px;
     max-width: 100%;
 }
 .backward, .forward {
     bottom: 10px;
-    margin-bottom: 10px;
     position: absolute;
 }
 .backward {

@@ -323,6 +323,8 @@ namespace Phoenix.Controllers
                     string imageName = "RciComponentId" + rciComponent + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
                     string imagePath = "\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
                     photoFile.SaveAs(Server.MapPath(imagePath));
+                    // First, resize the image, using pattern here: http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
+
 
                     newDamage.DamageImagePath = imagePath;
                     db.SaveChanges();
