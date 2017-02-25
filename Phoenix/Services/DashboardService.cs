@@ -157,8 +157,10 @@ namespace Phoenix.Services
          *          building - the building where the apartment is located
          * @return: the common area, if any, that was found in the db
          */ 
-        public IEnumerable<HomeRciViewModel> GetCommonAreaRci(string apartmentNumber, string building)
+        public IEnumerable<HomeRciViewModel> GetCommonAreaRci(string currentRoom, string building)
         {
+            var apartmentNumber = currentRoom.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+
             var commonAreaRCIs =
                 from tempCommonAreaRCI in db.Rci
                 where tempCommonAreaRCI.RoomNumber == apartmentNumber && tempCommonAreaRCI.BuildingCode == building
@@ -400,8 +402,8 @@ namespace Phoenix.Services
                 where rm.MAX_CAPACITY == 0 // This is how we narrow down to the rooms that are actually common areas.
                     && rm.ROOM_GENDER == null
                     && temp == null // select the records that were unmatched by the rci table
-                    && rm.BLDG_CDE == apartmentNumber
-                    && rm.ROOM_CDE == roomNumber
+                    && rm.BLDG_CDE.Trim() == buildingCode
+                    && rm.ROOM_CDE.Trim() == apartmentNumber
                 select rm;
 
             // There is a common area rci to create if the query has any results

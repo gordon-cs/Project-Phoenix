@@ -75,8 +75,9 @@ namespace Phoenix.Controllers
             dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom);
 
             var RCIs = dashboardService.GetRcisForResident(strID);
+            var commonAreaRcis = dashboardService.GetCommonAreaRci(currentRoom, currentBuilding);
 
-            return View(RCIs);
+            return View(RCIs.Concat(commonAreaRcis));
         }
 
         // GET: Home/RA
