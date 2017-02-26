@@ -1,89 +1,269 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <rciTypes>
-  <rci rciType="commonArea">
-    <buildingCodes>
+  <rci roomType="common">
+    <buildings>
       <buildingCode>BRO</buildingCode>
       <buildingCode>TAV</buildingCode>
-    </buildingCodes>
+    </buildings>
     <components>
-      <component name="Sofa" description="Living Room" />
-      <component name="Chair" description="Living Room" />
-      <component name="Coffee table" description="Living Room" />
-      <component name="Carpet" description="Living Room" />
-      <component name="Repaint walls" description="Living Room" />
-      <component name="Wireless router" description="Living Room" />
-      <component name="Closet" description="Kitchen" />
-      <component name="Table" description="Kitchen" />
-      <component name="Chairs" description="Kitchen" />
-      <component name="Refrigerator" description="Kitchen" />
-      <component name="Cabinets/countertops" description="Kitchen" />
-      <component name="Outlets" description="Kitchen" />
-      <component name="Stove" description="Kitchen" />
-      <component name="Floor" description="Kitchen" />
-      <component name="Walls" description="Kitchen" />
-      <component name="Lights" description="Kitchen" />
-      <component name="Recycling basket" description="Kitchen" />
-      <component name="Shower" description="Bathroom" />
-      <component name="Floor" description="Bathroom" />
-      <component name="Cabinets" description="Bathroom" />
-      <component name="Mirror" description="Bathroom" />
-      <component name="Repaint walls" description="Bathroom" />
-      <component name="Light" description="Bathroom" />
-      <component name="Toilet" description="Bathroom" />
-      <component name="Tower bar" description="Bathroom" />
+      <component name="Sofa" description="Living room" approxCost="350" costType="R" />
+      <component name="Chair" description="Living room" approxCost="250" costType="R" />
+      <component name="Coffee table" description="Living room" approxCost="150" costType="R" />
+      <component name="Carpet" description="Living room" approxCost="500" costType="R" />
+      <component name="Repaint walls" description="Living room" approxCost="100" costType="A" />
+      <component name="Wireless router" description="Living room" approxCost="600" costType="R" />
+      <component name="Closet" description="Kitchen" approxCost="50" costType="F" />
+      <component name="Table" description="Kitchen" approxCost="150" costType="R" />
+      <component name="Chairs" description="Kitchen" approxCost="50" costType="R" />
+      <component name="Regrigerator" description="Kitchen" approxCost="25" costType="C" />
+      <component name="Cabinets/countertops" description="Kitchen" approxCost="75" costType="F" />
+      <component name="Outlets" description="Kitchen" approxCost="20" costType="R" />
+      <component name="Stove" description="Kitchen" approxCost="25" costType="C" />
+      <component name="Floor" description="Kitchen" approxCost="10" costType="C" />
+      <component name="Walls" description="Kitchen" approxCost="20" costType="C" />
+      <component name="Lights" description="Kitchen" approxCost="20" costType="R" />
+      <component name="Recycling basket" description="Kitchen" approxCost="20" costType="R" />
+      <component name="Shower" description="Bathroom" approxCost="25" costType="C" />
+      <component name="Floor" description="Bathroom" approxCost="10" costType="C" />
+      <component name="Cabinets" description="Bathroom" approxCost="10" costType="C" />
+      <component name="Mirror" description="Bathroom" approxCost="60" costType="R" />
+      <component name="Repaint walls" description="Bathroom" approxCost="75" costType="A" />
+      <component name="Light" description="Bathroom" approxCost="50" costType="R" />
+      <component name="Toilet" description="Bathroom" approxCost="15" costType="C" />
+      <component name="Towel bar" description="Bathroom" approxCost="20" costType="R" />
     </components>
+    <otherCharges>
+      <cleaning>
+        <component name="Living room" approxCost="100" />
+        <component name="Kitchen" approxCost="100" />
+        <component name="Bathroom" approxCost="100" />
+        <component name="Three rooms" approxCost="300" />
+      </cleaning>
+    </otherCharges>
   </rci>
-  <rci rciType="commonArea">
-    <buildingCodes>
+  <rci roomType="common">
+    <buildings>
       <buildingCode>FER</buildingCode>
-    </buildingCodes>
+    </buildings>
     <components>
-      <component name="Sofa" description="Living Room" />
-      <component name="Chair" description="Living Room" />
-      <component name="Coffee table" description="Living Room" />
-      <component name="Carpet" description="Living Room" />
-      <component name="Repaint walls" description="Living Room" />
-      <component name="Closet" description="Kitchen" />
-      <component name="Table" description="Kitchen" />
-      <component name="Chairs" description="Kitchen" />
-      <component name="Refrigerator" description="Kitchen" />
-      <component name="Cabinets" description="Kitchen" />
-      <component name="Outlets" description="Kitchen" />
-      <component name="Stove" description="Kitchen" />
-      <component name="Floor" description="Kitchen" />
-      <component name="Walls" description="Kitchen" />
-      <component name="Lights" description="Kitchen" />
-      <component name="Recycling basket" description="Kitchen" />
-      <component name="Shower" description="Bathroom" />
-      <component name="Floor" description="Bathroom" />
-      <component name="Cabinets" description="Bathroom" />
-      <component name="Mirror" description="Bathroom" />
-      <component name="Repaint walls" description="Bathroom" />
-      <component name="Light" description="Bathroom" />
-      <component name="Toilet" description="Bathroom" />
-      <component name="Tower bar" description="Bathroom" />
+      <component name="Sofa" description="Living room" approxCost="350" costType="R" />
+      <component name="Chair" description="Living room" approxCost="250" costType="R" />
+      <component name="Coffee table" description="Living room" approxCost="150" costType="R" />
+      <component name="Carpet" description="Living room" approxCost="500" costType="R" />
+      <component name="Repaint walls" description="Living room" approxCost="100" costType="A" />
+      <component name="Closet" description="Kitchen" approxCost="50" costType="F" />
+      <component name="Table" description="Kitchen" approxCost="150" costType="R" />
+      <component name="Chairs" description="Kitchen" approxCost="50" costType="R" />
+      <component name="Regrigerator" description="Kitchen" approxCost="25" costType="C" />
+      <component name="Cabinets" description="Kitchen" approxCost="75" costType="F" />
+      <component name="Outlets" description="Kitchen" approxCost="20" costType="R" />
+      <component name="Stove" description="Kitchen" approxCost="25" costType="C" />
+      <component name="Floor" description="Kitchen" approxCost="10" costType="C" />
+      <component name="Walls" description="Kitchen" approxCost="20" costType="C" />
+      <component name="Lights" description="Kitchen" approxCost="20" costType="R" />
+      <component name="Recycling basket" description="Kitchen" approxCost="20" costType="R" />
+      <component name="Shower" description="Bathroom" approxCost="25" costType="C" />
+      <component name="Floor" description="Bathroom" approxCost="10" costType="C" />
+      <component name="Cabinets" description="Bathroom" approxCost="10" costType="C" />
+      <component name="Mirror" description="Bathroom" approxCost="60" costType="R" />
+      <component name="Repaint walls" description="Bathroom" approxCost="75" costType="A" />
+      <component name="Light" description="Bathroom" approxCost="50" costType="R" />
+      <component name="Toilet" description="Bathroom" approxCost="15" costType="C" />
+      <component name="Towel bar" description="Bathroom" approxCost="20" costType="R" />
     </components>
+    <otherCharges>
+      <cleaning>
+        <component name="Living room" approxCost="100" />
+        <component name="Kitchen" approxCost="100" />
+        <component name="Bathroom" approxCost="100" />
+        <component name="Three rooms" approxCost="300" />
+      </cleaning>
+    </otherCharges>
   </rci>
-  <rci rciType="individual">
-    <buildingCodes>
+  <rci roomType="individual">
+    <buildings>
       <buildingCode>FER</buildingCode>
       <buildingCode>DRE</buildingCode>
-    </buildingCodes>
+    </buildings>
     <components>
-      , , "", "", "", "", "",
-      "", "", "", "", "", "", ""
-      <component name="Beds" description="Living Room" />
-      <component name="Carpet" description="Living Room" />
-      <component name="Dresser" description="Living Room" />
-      <component name="Desks" description="Living Room" />
-      <component name="Door" description="Living Room" />
-      <component name="Electrical" description="Living Room" />
-      <component name="Mirror" description="Kitchen" />
-      <component name="Wall/ceiling" description="Kitchen" />
-      <component name="Closets" description="Kitchen" />
-      <component name="Wardrobe" description="Kitchen" />
-      <component name="Recycling basket" description="Kitchen" />
-      <component name="Outlets" description="Kitchen" />
+      <component name="Beds" description="Frames, mattress, cover, spring" approxCost="50,125,30,15" costType="F,R,R,F" />
+      <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
+      <component name="Dresser" description="Surface, drawer" approxCost="30,50" costType="F,F" />
+      <component name="Desks" description="Lamp/light/carrel, surface top, desk chair, drawer" approxCost="36,40,50,20" costType="R,F,R,F" />
+      <component name="Door" description="Replace, doorstop, lock damage, lockset replacement, card access lock replacement" approxCost="155,20,36,144,500" costType="R,R,F,R,R" />
+      <component name="Electrical" description="Ceiling light, outlets/switches, thermostat - heat control" approxCost="50,20,72" costType="R,R,R" />
+      <component name="Mirror" description="Broken, stickers/marks" approxCost="60,5ea" costType="R,A" />
+      <component name="Wall/ceiling" description="Repaint walls, repaint ceiling, paint chip, repair hole" approxCost="75,40,5ea,75" costType="A,A,A,A" />
+      <component name="Closets" description="Doors, towel rack" approxCost="100,15" costType="R,R" />
+      <component name="Wardrobe" description="" approxCost="60" costType="A" />
+      <component name="Recycling basket" description="" approxCost="20" costType="R" />
+      <component name="Outlets" description="Telephone, computer" approxCost="50,50" costType="R,R" />
+      <component name="Window" description="Glass, lock/crank/lever, screen, shades" approxCost="*,50,50,70" costType="*,R,R,R" />
     </components>
+    <otherCharges>
+      <cleaning>
+        <component name="General" approxCost="75" costType="A" />
+        <component name="Floor only" approxCost="40" costType="A" />
+        <component name="Furnishings" approxCost="35" costType="A" />
+        <component name="Walls/door/ceiling" approxCost="25" costType="A" />
+      </cleaning>
+      <community>
+        <component name="Floor/hall" />
+        <component name="Improper check-out" approxCost="30" />
+      </community>
+      <lostKey>
+        <component name="Room" approxCost="25" costType="R" />
+        <component name="Hall" approxCost="50" costType="R" />
+      </lostKey>
+    </otherCharges>
+  </rci>
+  <rci roomType="individual">
+    <buildings>
+      <buildingCode>EVA</buildingCode>
+      <buildingCode>LEW</buildingCode>
+      <buildingCode>WIL</buildingCode>
+    </buildings>
+    <components>
+      <component name="Black dividers" description="Tack holes" approxCost="5ea" costType="F" />
+      <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
+      <component name="Bookshelf" description="Over bed, over desk" approxCost="30,30" costType="F,A" />
+      <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
+      <component name="Closets" description="Doors, drawers" approxCost="100,30" costType="R,R" />
+      <component name="Desks" description="Lamp/light, surface top, desk chair, drawer" approxCost="36,40,50,20" costType="R,F,R,F" />
+      <component name="Door" description="Replace, doorstop, lock damage, lockset replacement" approxCost="200,20,36,144" costType="R,F,R,R" />
+      <component name="Electrical" description="Ceiling light, outlets/switches, thermostat - heat control" approxCost="60,20,72" costType="R,R,R" />
+      <component name="Mirror" description="Broken, stickers/marks" approxCost="60,5ea" costType="R,A" />
+      <component name="Recycling basket" description="" approxCost="20" costType="R" />
+      <component name="Wall/ceiling" description="Repaint walls, repaint ceiling, paint chip" approxCost="75,35,5ea" costType="A,A,A" />
+      <component name="Outlets" description="Telephone, computer" approxCost="50,50" costType="R,R" />
+      <component name="Window" description="Glass, lock/crank/lever, screen, shade" approxCost="*,50,50,70" costType="*,R,R,R" />
+    </components>
+    <otherCharges>
+      <cleaning>
+        <component name="General" approxCost="75" costType="A" />
+        <component name="Floor only" approxCost="40" costType="A" />
+        <component name="Furnishings" approxCost="35" costType="A" />
+        <component name="Walls/door/ceiling" approxCost="25" costType="A" />
+      </cleaning>
+      <community>
+        <component name="Floor" />
+        <component name="Hall" />
+        <component name="Improper check-out" approxCost="30" />
+      </community>
+      <lostKey>
+        <component name="Room" approxCost="25" costType="R" />
+        <component name="Hall" approxCost="50" costType="R" />
+      </lostKey>
+    </otherCharges>
+  </rci>
+  <rci roomType="individual">
+    <buildings>
+      <buildingCode>NYL</buildingCode>
+      <buildingCode>CHA</buildingCode>
+      <buildingCode>FUL</buildingCode>
+      <!-- CHASE and FULTON just for testing purpose because data is not given -->
+    </buildings>
+    <components>
+      <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
+      <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
+      <component name="Dresser" description="Surface, drawer" approxCost="15,50" costType="F,F" />
+      <component name="Desks" description="Lamp/light/carrel, surface top, desk chair, drawer and key board tray" approxCost="36,40,50,20" costType="R,F,R,F" />
+      <component name="Door" description="Replace, doorstop, lock damage, lockset replacement, card access lock replacement" approxCost="155,20,200,400,500" costType="R,R,F,R,R" />
+      <component name="Electrical" description="Ceiling light, outlets/switches, thermostat - heat control, wireless router" approxCost="60,20,72,600" costType="R,R,R,R" />
+      <component name="Mirror" description="Broken, stickers/marks" approxCost="60,5ea" costType="R,A" />
+      <component name="Wall/ceiling" description="Repaint walls, repaint ceiling, paint chip, repair hole" approxCost="75,40,5ea,75" costType="A,A,A,A" />
+      <component name="Wardrobe" description="Door" approxCost="100,60" costType="R,A" />
+      <component name="Recycling basket" description="" approxCost="20" costType="R" />
+      <component name="Outlets" description="Telephone, computer" approxCost="50,50" costType="R,R" />
+      <component name="Window" description="Glass, lock/crank/lever, screen, shade, cord/pulley" approxCost="*,30,50,70,50" costType="*,R,R,R,A" />
+    </components>
+    <otherCharges>
+      <cleaning>
+        <component name="General" approxCost="75" costType="A" />
+        <component name="Floor only" approxCost="40" costType="A" />
+        <component name="Furnishings" approxCost="35" costType="A" />
+        <component name="Walls/door/ceiling" approxCost="25" costType="A" />
+      </cleaning>
+      <community>
+        <component name="Floor/hall" />
+        <component name="Improper check-out" approxCost="30" />
+        <component name="Wireless router" approxCost="600" costType="R" />
+      </community>
+    </otherCharges>
+  </rci>
+  <rci roomType="individual">
+    <buildings>
+      <buildingCode>TAV</buildingCode>
+      <buildingCode>BRO</buildingCode>
+      <!-- BROMLEY just for testing purpose because data is not given -->
+    </buildings>
+    <components>
+      <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
+      <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
+      <component name="Closets" description="Doors, shelves" approxCost="100,25" costType="R,R" />
+      <component name="Desks" description="Lamp/light, surface top, desk chair, computer drawer" approxCost="15,40,40,25" costType="R,F,R,F" />
+      <component name="Door" description="Replace, lock damage, lockset replacement, card access lock replacement" approxCost="300,200,400,500" costType="R,F,R,R" />
+      <component name="Dresser" description="Surface, drawer" approxCost="15,35" costType="F,F" />
+      <component name="Electrical" description="Ceiling light, outlets/switches, thermostat - heat control" approxCost="60,20,72" costType="R,R,R" />
+      <component name="Mirror" description="Broken, stickers/marks" approxCost="60,5ea" costType="R,A" />
+      <component name="Wall/ceiling" description="Repaint walls, repaint ceiling, repair small hole" approxCost="50,35,50" costType="A,A,A" />
+      <component name="Outlets" description="Telephone, computer" approxCost="15,30" costType="R,R" />
+      <component name="Window" description="Glass, lock, mini-blinds, screen" approxCost="*,30,85set3ea,50" costType="*,R,RA,R" />
+      <component name="Baseboard heat cover" description="" approxCost="25" costType="R" />
+    </components>
+    <otherCharges>
+      <cleaning>
+        <component name="General" approxCost="75" costType="A" />
+        <component name="Floor only" approxCost="40" costType="A" />
+        <component name="Furnishings" approxCost="35" costType="A" />
+        <component name="Walls/door/ceiling" approxCost="25" costType="A" />
+      </cleaning>
+      <community>
+        <component name="Floor/hall" />
+        <component name="Improper check-out" approxCost="30" />
+      </community>
+    </otherCharges>
+  </rci>
+  <rci roomType="individual">
+    <buildings>
+      <buildingCode>GED</buildingCode>
+      <buildingCode>CON</buildingCode>
+      <buildingCode>GRA</buildingCode>
+      <buildingCode>HIL</buildingCode>
+      <buildingCode>MCI</buildingCode>
+      <buildingCode>RID</buildingCode>
+    </buildings>
+    <components>
+      <component name="Beds" description="Frames, mattress, mattress cover" approxCost="50,125,30" costType="F,R,R" />
+      <component name="Bookshelf" description="Over desk" approxCost="30" costType="A" />
+      <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
+      <component name="Closets" description="Doors, towel rack" approxCost="150,25" costType="R,R" />
+      <component name="Desks" description="Lamp/light, surface top, desk chair, drawer" approxCost="36,40,50,20" costType="R,F,R,F" />
+      <component name="Door" description="Replace, lock damage, lockset replacement" approxCost="200,50,144" costType="R,F,R" />
+      <component name="Dresser" description="Surface, drawer" approxCost="15,35" costType="F,F" />
+      <component name="Electrical" description="Ceiling light, outlets/switches, thermostat - heat control" approxCost="60,20,72" costType="R,R,R" />
+      <component name="Mirror" description="Broken, stickers/marks" approxCost="60,5ea" costType="R,A" />
+      <component name="Wall/ceiling" description="Repaint walls, repaint ceiling, paint chip, repair small hole" approxCost="75,75,5ea,75" costType="A,A,A,A" />
+      <component name="Recycling basket" description="" approxCost="20" costType="R" />
+      <component name="Outlets" description="Telephone, computer" approxCost="50" costType="R,R" />
+      <component name="Window" description="Glass, lock, shade, screen" approxCost="*,30,70,50" costType="*,R,R,R" />
+    </components>
+    <otherCharges>
+      <cleaning>
+        <component name="General" approxCost="75" costType="A" />
+        <component name="Floor only" approxCost="40" costType="A" />
+        <component name="Furnishings" approxCost="35" costType="A" />
+        <component name="Walls/door/ceiling" approxCost="25" costType="A" />
+      </cleaning>
+      <community>
+        <component name="Floor" />
+        <component name="Hall" />
+        <component name="Improper check-out" approxCost="30" />
+      </community>
+      <lostKey>
+        <component name="Room" approxCost="25" costType="R" />
+        <component name="Hall" approxCost="50" costType="R" />
+      </lostKey>
+    </otherCharges>
   </rci>
 </rciTypes>
