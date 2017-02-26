@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <rciTypes>
-  <rci roomType="common">
+  <rci roomType="common" BRO="" TAV="">
     <buildings>
       <buildingCode>BRO</buildingCode>
       <buildingCode>TAV</buildingCode>
@@ -41,7 +41,7 @@
       </cleaning>
     </otherCharges>
   </rci>
-  <rci roomType="common">
+  <rci roomType="common" FER="">
     <buildings>
       <buildingCode>FER</buildingCode>
     </buildings>
@@ -80,7 +80,7 @@
       </cleaning>
     </otherCharges>
   </rci>
-  <rci roomType="individual">
+  <rci roomType="individual" FER="" DRE="">
     <buildings>
       <buildingCode>FER</buildingCode>
       <buildingCode>DRE</buildingCode>
@@ -117,7 +117,7 @@
       </lostKey>
     </otherCharges>
   </rci>
-  <rci roomType="individual">
+  <rci roomType="individual" EVA="" LEW="" WIL="">
     <buildings>
       <buildingCode>EVA</buildingCode>
       <buildingCode>LEW</buildingCode>
@@ -156,7 +156,7 @@
       </lostKey>
     </otherCharges>
   </rci>
-  <rci roomType="individual">
+  <rci roomType="individual" NYL="" CHA="" FUL="">
     <buildings>
       <buildingCode>NYL</buildingCode>
       <buildingCode>CHA</buildingCode>
@@ -191,7 +191,7 @@
       </community>
     </otherCharges>
   </rci>
-  <rci roomType="individual">
+  <rci roomType="individual" TAV="" BRO="">
     <buildings>
       <buildingCode>TAV</buildingCode>
       <buildingCode>BRO</buildingCode>
@@ -224,7 +224,7 @@
       </community>
     </otherCharges>
   </rci>
-  <rci roomType="individual">
+  <rci roomType="individual" GED="" CON="" GRA="" HIL="" MCI="" RID="">
     <buildings>
       <buildingCode>GED</buildingCode>
       <buildingCode>CON</buildingCode>

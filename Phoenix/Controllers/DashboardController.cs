@@ -9,6 +9,7 @@ using Phoenix.Filters;
 using Phoenix.Services;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
 
 namespace Phoenix.Controllers
 {
@@ -86,7 +87,7 @@ namespace Phoenix.Controllers
             if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "dorm room", currentBuilding);
+                dashboardService.AddRciComponents(rciId, "individual", currentBuilding);
             }
 
             if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
@@ -102,7 +103,7 @@ namespace Phoenix.Controllers
                     
 
                     var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common area", currentBuilding);
+                    dashboardService.AddRciComponents(rciId, "common", currentBuilding);
                 }
 
                 RCIs = RCIs.Concat(commonAreaRCIs);
@@ -147,7 +148,7 @@ namespace Phoenix.Controllers
             if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "dorm room", currentBuilding);
+                dashboardService.AddRciComponents(rciId, "individual", currentBuilding);
             }
 
             if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
@@ -161,7 +162,7 @@ namespace Phoenix.Controllers
                 {
 
                     var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common area", currentBuilding);
+                    dashboardService.AddRciComponents(rciId, "common", currentBuilding);
                 }
 
             }

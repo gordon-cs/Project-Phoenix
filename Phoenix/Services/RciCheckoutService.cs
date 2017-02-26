@@ -46,9 +46,9 @@ namespace Phoenix.Services
                 CheckoutSigRA = temp.CheckoutSigRA,
                 CheckoutSigRD = temp.CheckoutSigRD,
                 CheckoutSigRAGordonID = temp.CheckoutSigRAGordonID,
-                CheckoutSigRAName = temp.CheckoutSigRAName,
+                //CheckoutSigRAName = temp.CheckoutSigRAName,
                 CheckoutSigRDGordonID = temp.CheckoutSigRDGordonID,
-                CheckoutSigRDName = temp.CheckoutSigRDName
+                //CheckoutSigRDName = temp.CheckoutSigRDName
             };
 
             return rci;
@@ -183,7 +183,7 @@ namespace Phoenix.Services
 
             rci.CheckoutSigRA = System.DateTime.Today;
             rci.CheckoutSigRAGordonID = raGordonID;
-            rci.CheckoutSigRAName = raName;
+            //rci.CheckoutSigRAName = raName;
 
             db.SaveChanges();
 
@@ -198,7 +198,7 @@ namespace Phoenix.Services
 
             rci.CheckoutSigRD = System.DateTime.Today;
             rci.CheckoutSigRDGordonID = rdGordonID;
-            rci.CheckoutSigRDName = rdName;
+            //rci.CheckoutSigRDName = rdName;
             rci.IsCurrent = false;
 
             db.SaveChanges();

@@ -5,6 +5,7 @@ using System.Web;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace Phoenix.Services
 {
@@ -108,81 +109,30 @@ namespace Phoenix.Services
          */ 
         public void AddRciComponents(int rciId, string roomType, string buildingCode)
         {
-            var componentNames = new List<string>();
-            var componentDescriptions = new List<string>();
-            if (roomType.Equals("common area"))
-            {
-                if (buildingCode.Equals("BRO") || buildingCode.Equals("TAV"))
-                {
-                    componentNames.AddRange(new string[]{ "Sofa", "Chair", "Coffee table", "Carpet", "Repaint walls",
-                        "Wireless router", "Closet", "Table", "Chairs", "Refrigerator", "Cabinets / countertops",
-                        "Outlets", "Stove", "Floor", "Walls", "Lights", "Recycling basket", "Shower",
-                        "Floor", "Cabinets", "Mirror", "Repaint walls", "Light", "Toilet", "Towel bar"});
-                }
-                else // Ferrin
-                {
-                    componentNames.AddRange(new string[]{ "Sofa", "Chair", "Coffee table", "Carpet", "Repaint walls",
-                        "Closet", "Table", "Chairs", "Refrigerator", "Cabinets", "Outlets", "Stove", "Floor", "Walls",
-                        "Lights", "Recycling basket", "Shower", "Floor", "Cabinets", "Mirror", "Repaint walls", "Light",
-                        "Toilet", "Towel bar"});
-                }
-                
-            }
-            else // for now, just generic dorm; will add more checks once we've determined which components go where
-            {
-                if (buildingCode.Equals("FER") || buildingCode.Equals("DRE"))
-                {
-                    componentNames.AddRange(new string[] { "Beds", "Carpet", "Dresser", "Desks", "Door", "Electrical", "Mirror",
-                        "Wall/ceiling", "Closets", "Wardrobe", "Recycling basket", "Outlets", "Window", "Room cleaning"});
-                    componentDescriptions.AddRange(new string[] { "frames, mattress, cover, spring", "minor burn, median stain, carpet replacement",
-                        "surface, drawer", "lamp/light/carrel, surface top, desk chair", "replace, doorstop, lock damage, lockset replacement, card access lock replacement",
-                        "ceiling light, outlets/switches, thermostat - heat control", "broken, stickers/marks", "repaint walls, repaint ceiling, paint chip, repair hole",
-                        "doors, towel rack", "", "", "telephone, computer", "glass, lock/crank/lever", "general, floor only, furnishings, walls/door/ceiling"});
-                }
-                else if (buildingCode.Equals("EVA") || buildingCode.Equals("WIL") || buildingCode.Equals("LEW"))
-                {
-                    componentNames.AddRange(new string[] { "Black divider", "Beds", "Book shelf", "Carpet", "Closets", "Desks", "Door",
-                        "Electrical", "Mirror", "Recycling basket", "Wall/ceiling", "Outlets", "Window", "Room cleaning"});
-                    componentDescriptions.AddRange(new string[] { "tack holes", "frames, mattress, cover", "over bed, over desk", "minor burn, medium stain, carpet replacement", "door, drawers", "lamp/light, surface top, desk chair, drawer",
-                        "replace, doorstop, lock damage, lockset replacement", "ceiling light, outlets/switches, thermostat - heat control", "broken, stickers/marks", "", "repaint walls, repaint ceiling, paint chip",
-                        "telephone, computer", "glass, lock/crank/lever, screen, shade", "general, floor only, furnishings, walls/door/ceiling"});
-                }
-                else if (buildingCode.Equals("NYL"))
-                {
-                    componentNames.AddRange(new string[] { "Beds", "Carpet", "Dresser", "Desks", "Door", "Electrical", "Mirror",
-                        "Wall/ceiling", "Wardrobe", "Recycling basket", "Outlets", "Window", "Room cleaning"});
-                    componentDescriptions.AddRange(new string[] { "frames, mattress, cover", "minor burn, medium stain, carpet replacement", "surface, drawer", "lamp/light/carrel, surface top, desk chair, drawer, keyboard tray",
-                        "replace, door closer, lock damage, lockset replacement, card access lock replacement", "ceiling light, outlets/switches, thermostat - heat control, wireless router", "broken, stickers/marks",
-                        "repaint walls, repaint ceiling, paint chip, repair hole", "door", "", "telephone, computer", "glass, lock/crank/lever, screen, shade, cord/pulley", "general, floor only, furnishings, walls/door/ceiling"});
-                }
-                else if (buildingCode.Equals("TAV") || buildingCode.Equals("BRO")) // this is not really for bromley but we don't have the one for bromley for now.
-                {
-                    componentNames.AddRange(new string[] { "Beds", "Carpet", "Closets", "Desks", "Door", "Dresser", "Electrical",
-                        "Mirror", "Wall/ceiling", "Outlets", "Window", "Baseboard heat cover", "Room cleaning"});
-                    componentDescriptions.AddRange(new string[] { "frames, mattress, cover", "minor burn, medium stain, carpet replacement", "door, shelves", "lamp/light, surface top, desk chair, computer drawer",
-                        "replace, lock damage, lockset replacement, card access lock replacement", "surface, drawer", "ceiling light, outlets/switches, thermostat - heat control", "broken, stickers/marks",
-                        "repaint walls, repaint ceiling, repair small hole", "telephone, computer", "glass, lock, mini-blinds, screen", "", "general, floor only, furnishings, walls/door/ceiling"});
-                }
-                else // road halls. right now also chase and fulton as we don't have data for them
-                {
-                    componentNames.AddRange(new string[] { "Beds", "Bookshelf", "Carpet", "Closets", "Desks", "Door", "Dresser",
-                        "Electrical", "Mirror", "Wall/ceiling", "Outlets", "Window", "Room cleaning"});
-                    componentDescriptions.AddRange(new string[] { "frames, mattress, cover", "over desk", "minor burn, medium stain, carpet replacement", "door, tower rack", "lamp/light, surface top, desk chair, drawer",
-                        "replace, lock damage, lockset replacement", "surface, drawer", "ceiling light, outlets/switches, thermostat - heat control", "broken, stickers/marks",
-                        "repaint walls, repaint ceiling, paint chip, repair small hole", "", "telephone, computer", "glass, lock, shade, screen", "general, floor only, furnishings, walls/door/ceiling"});
-                }
-            }
-            for (int i = 0; i < componentNames.Count(); i++)
+            var server = HttpContext.Current.Server;
+            XDocument document = XDocument.Load(server.MapPath("~/App_Data/RoomComponents.xml"));
+            XElement rciTypes = document.Root;
+            IEnumerable<XElement> componentElements =
+                from rci in rciTypes.Elements("rci")
+                where ((string)rci.Attribute("roomType")).Equals(roomType) && rci.Attribute(buildingCode) != null
+                from component in rci.Element("components").Elements("component")
+                select component;
+            IEnumerable<XElement> c =
+                from rci in rciTypes.Elements("rci")
+                where rci.Attribute(buildingCode) != null
+                select rci;
+            var a = 1;
+
+            foreach (var componentElement in componentElements)
             {
                 var newComponent = new RciComponent();
-                newComponent.RciComponentName = componentNames.ElementAt(i).ToString();
-                if (roomType == "dorm room")
-                    newComponent.RciComponentDescription = componentDescriptions.ElementAt(i).ToString();
+                newComponent.RciComponentName = (string)componentElement.Attribute("name");
+                newComponent.RciComponentDescription = (string)componentElement.Attribute("description");
                 newComponent.RciID = rciId;
-
                 db.RciComponent.Add(newComponent);
                 db.SaveChanges();
             }
+ 
         }
 
         /*
