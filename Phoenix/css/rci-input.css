@@ -20,6 +20,9 @@ i {
     padding: 0.1em;
     max-width: 20%;
 }
+.thumbnail {
+    height: 75px;
+}
 .img-modal {
     background-color: rgba(235,234, 234, 0.9);
     display: none;
