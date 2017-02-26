@@ -117,11 +117,6 @@ namespace Phoenix.Services
                 where ((string)rci.Attribute("roomType")).Equals(roomType) && rci.Attribute(buildingCode) != null
                 from component in rci.Element("components").Elements("component")
                 select component;
-            IEnumerable<XElement> c =
-                from rci in rciTypes.Elements("rci")
-                where rci.Attribute(buildingCode) != null
-                select rci;
-            var a = 1;
 
             foreach (var componentElement in componentElements)
             {
