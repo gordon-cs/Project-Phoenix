@@ -27,5 +27,11 @@ namespace Phoenix.Services
             return username;
         }
 
+        public IEnumerable<string> GetCommonRooms(int id)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            return rci.RciComponent.GroupBy(x => x.RciComponentDescription).Select(x => x.First()).Select(x => x.RciComponentDescription);
+        }
+
     }
 }

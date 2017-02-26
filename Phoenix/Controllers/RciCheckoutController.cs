@@ -2,8 +2,6 @@
 using Phoenix.Models.ViewModels;
 using Phoenix.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 
 namespace Phoenix.Controllers
@@ -36,7 +34,7 @@ namespace Phoenix.Controllers
             var rci = checkoutService.GetRciByID(id);
             if (rci.GordonID == null) // A common area rci
             {
-                ViewBag.commonRooms = rci.RciComponent.GroupBy(x => x.RciComponentDescription).Select(x => x.First()).Select(x => x.RciComponentDescription);
+                ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
             }
 
             return View(rci);

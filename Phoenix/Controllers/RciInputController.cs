@@ -52,7 +52,7 @@ namespace Phoenix.Controllers
             {
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
                 // Select rooms of common area RCIs to group the RCIs
-                ViewBag.commonRooms = rci.RciComponent.GroupBy(x => x.RciComponentDescription).Select(x => x.First()).Select(x => x.RciComponentDescription); 
+                ViewBag.commonRooms = rciInputService.GetCommonRooms(id); 
             }
             else
             {
