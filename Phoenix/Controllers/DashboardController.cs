@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Phoenix.Filters;
 using Phoenix.Services;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace Phoenix.Controllers
 {
@@ -70,8 +71,9 @@ namespace Phoenix.Controllers
             var strID = (string)TempData["id"];
             var currentBuilding = (string)TempData["currentBuilding"];
             var currentRoom = (string)TempData["currentRoom"];
+            var currentRoomAssignDate = (DateTime)TempData["currentRoomAssignDate"];
 
-            dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID);
+            dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID, currentRoomAssignDate);
             dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom);
 
             var RCIs = dashboardService.GetRcisForResident(strID);

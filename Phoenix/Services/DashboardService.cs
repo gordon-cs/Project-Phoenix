@@ -270,7 +270,7 @@ namespace Phoenix.Services
                 var newRci = CreateRciObject(
                     roomAssignment.BLDG_CDE.Trim(),
                     roomAssignment.ROOM_CDE.Trim(),
-                    roomAssignment.SESS_CDE.Trim(),
+                    GetCurrentSession(),
                     roomAssignment.ID_NUM.ToString());
 
                 newRcis.Add(newRci);
@@ -290,7 +290,7 @@ namespace Phoenix.Services
         /// <summary>
         /// Make sure the rci table is up to date with the room assign table for the specified room
         /// </summary>
-        public void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber)
+        public void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber, DateTime? roomAssignDate)
         {
             // Find all rcis for the person
             var myRcis =
@@ -303,26 +303,15 @@ namespace Phoenix.Services
             var mostRecentRci = myRcis.OrderByDescending(m => m.CreationDate).FirstOrDefault();
 
 
-            // Find all room assignments for the specified person in the specified room
-            var myRoomAssigns =
-                from rm in db.RoomAssign
-                where rm.ID_NUM.ToString() == idNumber
-                && rm.BLDG_CDE == buildingCode
-                && rm.ROOM_CDE == roomNumber
-                select rm;
-
-            // Get most recent
-            var mostRecentRoomAssign = myRoomAssigns.OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
-
             var createNewRci = false;
 
             // There are room assign records for this person but no rcis.
-            if(mostRecentRci == null && mostRecentRoomAssign != null) 
+            if(mostRecentRci == null && roomAssignDate != null) 
             {
                 createNewRci = true;
             }
-            // I don't  think this will ever happen.
-            else if(mostRecentRci != null && mostRecentRoomAssign == null)
+            // This will happen if there is no room assign record for the person
+            else if(mostRecentRci != null && roomAssignDate == null)
             {
                 createNewRci = false;
             }
@@ -330,7 +319,7 @@ namespace Phoenix.Services
             else
             {
                 // Compare Creation date of rci and assign date of room assign record
-                createNewRci = mostRecentRci.CreationDate < mostRecentRoomAssign.ASSIGN_DTE;
+                createNewRci = mostRecentRci.CreationDate < roomAssignDate;
             }
             
             if(createNewRci)
@@ -338,7 +327,7 @@ namespace Phoenix.Services
                 var newRci = CreateRciObject(
                     buildingCode,
                     roomNumber,
-                    mostRecentRoomAssign.SESS_CDE.Trim(),
+                    GetCurrentSession(),
                     idNumber);
 
                 db.Rci.Add(newRci);
