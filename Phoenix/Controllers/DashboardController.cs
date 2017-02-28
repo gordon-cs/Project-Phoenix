@@ -71,7 +71,8 @@ namespace Phoenix.Controllers
             var strID = (string)TempData["id"];
             var currentBuilding = (string)TempData["currentBuilding"];
             var currentRoom = (string)TempData["currentRoom"];
-            var currentRoomAssignDate = (DateTime)TempData["currentRoomAssignDate"];
+            var temp = (JValue)TempData["currentRoomAssignDate"];
+            DateTime currentRoomAssignDate = temp.ToObject<DateTime>();
 
             dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID, currentRoomAssignDate);
             dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom);
