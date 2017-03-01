@@ -91,11 +91,9 @@ function uploadPhoto() {
                 modalArea.append($newWrapperDiv);
 
                 savePhoto(file, rciComponentId);
-
             }
         }
     }
-
 }
 
 // Send the uploaded photo to the server via AJAX
