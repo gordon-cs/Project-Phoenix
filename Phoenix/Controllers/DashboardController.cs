@@ -217,8 +217,8 @@ namespace Phoenix.Controllers
         [HttpGet]
         public FileContentResult ExportFines()
         {
-            //string[] buildingCodes = dashboardService.CollectRDBuildingCodes((string)TempData["building"]);
-            var kingdom = (List<string>)TempData["kingdom"];
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
 
             string finesString = dashboardService.GenerateFinesSpreadsheet(kingdom);
 
