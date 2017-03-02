@@ -330,7 +330,7 @@ namespace Phoenix.Controllers
                     // Create an Image obj from the file
                     Image origImg = Image.FromStream(photoFile.InputStream);
       
-                    Size imgSize = rciInputService.NewImageSize(origImg.Size, new Size(200,200));
+                    Size imgSize = rciInputService.NewImageSize(origImg.Size, new Size(300,300));
 
                     // Bitmap is a subclass of Image; its constructor can take an Image and new Size, and then creates a new Image scaled to the new size
                     Image resizedImg = new Bitmap(origImg, imgSize);

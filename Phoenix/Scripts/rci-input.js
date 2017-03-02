@@ -65,6 +65,9 @@ function uploadPhoto() {
                 console.log(file.type);
                 alert("Oops! Please select an image file of type .jpg or .png.")
             }
+            else if (file.size > 10000000) { // Photo size > 10 MB
+                alert("Aw man, we're sorry! That photo is too big. Please use one that is 10 MB or smaller.")
+            }
             else {
                 console.log("Photo" + i + "size: " + file.size);
                 let img = document.createElement("img");
