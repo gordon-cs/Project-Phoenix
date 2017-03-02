@@ -113,24 +113,9 @@ namespace Phoenix.Controllers
         }
 
         // GET: Home/RA
+        [RAViewOnly]
         public ActionResult RA()
         {
-            // Redirect to other dashboards if role not correct
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("RD");
-            }
-            else if (role.Equals("Resident"))
-            {
-                return RedirectToAction("Resident");
-            }
 
             // TempData stores object, so always cast to string.
             var strID = (string)TempData["id"];
@@ -176,25 +161,9 @@ namespace Phoenix.Controllers
         }
 
         // GET: Home/RD
+        [RDViewOnly]
         public ActionResult RD()
         {
-            // Redirect to other dashboards if role not correct
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("Resident");
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("RA");
-            }
-
             // Display all RCI's for the corresponding building
 
             // RD is not in RoomAssign, so there will be nothing under currentRoomNumber and currentBuilding.
