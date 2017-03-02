@@ -178,6 +178,7 @@ namespace Phoenix.Controllers
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var user = ((string)TempData["user"]).ToLower().Trim();
+
             if (rciSig == user)
             {
                 rci.CheckinSigRes = DateTime.Today;
