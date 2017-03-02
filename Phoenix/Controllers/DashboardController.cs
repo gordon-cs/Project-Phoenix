@@ -87,7 +87,8 @@ namespace Phoenix.Controllers
             if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "individual", currentBuilding);
+                dashboardService.CreateRciComponents(rciId, "individual", currentBuilding);
+                // now rci components are only created but not added to the database
             }
 
             if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
@@ -103,7 +104,8 @@ namespace Phoenix.Controllers
                     
 
                     var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common", currentBuilding);
+                    dashboardService.CreateRciComponents(rciId, "common", currentBuilding);
+                    // now rci components are only created but not added to the database
                 }
 
                 RCIs = RCIs.Concat(commonAreaRCIs);
@@ -148,7 +150,8 @@ namespace Phoenix.Controllers
             if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "individual", currentBuilding);
+                dashboardService.CreateRciComponents(rciId, "individual", currentBuilding);
+                // now rci components are only created but not added to the database
             }
 
             if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
@@ -162,7 +165,8 @@ namespace Phoenix.Controllers
                 {
 
                     var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common", currentBuilding);
+                    dashboardService.CreateRciComponents(rciId, "common", currentBuilding);
+                    // now rci components are only created but not added to the database
                 }
 
             }

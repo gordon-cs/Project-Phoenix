@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <rciTypes>
-  <rci roomType="common" BRO="" TAV="">
-    <buildings>
-      <buildingCode>BRO</buildingCode>
-      <buildingCode>TAV</buildingCode>
-    </buildings>
+  <rci roomType="common" BRO="true" TAV="true">
     <components>
       <component name="Sofa" description="Living room" approxCost="350" costType="R" />
       <component name="Chair" description="Living room" approxCost="250" costType="R" />
@@ -41,10 +37,7 @@
       </cleaning>
     </otherCharges>
   </rci>
-  <rci roomType="common" FER="">
-    <buildings>
-      <buildingCode>FER</buildingCode>
-    </buildings>
+  <rci roomType="common" FER="true">
     <components>
       <component name="Sofa" description="Living room" approxCost="350" costType="R" />
       <component name="Chair" description="Living room" approxCost="250" costType="R" />
@@ -80,11 +73,7 @@
       </cleaning>
     </otherCharges>
   </rci>
-  <rci roomType="individual" FER="" DRE="">
-    <buildings>
-      <buildingCode>FER</buildingCode>
-      <buildingCode>DRE</buildingCode>
-    </buildings>
+  <rci roomType="individual" FER="true" DRE="true">
     <components>
       <component name="Beds" description="Frames, mattress, cover, spring" approxCost="50,125,30,15" costType="F,R,R,F" />
       <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
@@ -117,12 +106,7 @@
       </lostKey>
     </otherCharges>
   </rci>
-  <rci roomType="individual" EVA="" LEW="" WIL="">
-    <buildings>
-      <buildingCode>EVA</buildingCode>
-      <buildingCode>LEW</buildingCode>
-      <buildingCode>WIL</buildingCode>
-    </buildings>
+  <rci roomType="individual" EVA="true" LEW="true" WIL="true">
     <components>
       <component name="Black dividers" description="Tack holes" approxCost="5ea" costType="F" />
       <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
@@ -156,13 +140,8 @@
       </lostKey>
     </otherCharges>
   </rci>
-  <rci roomType="individual" NYL="" CHA="" FUL="">
-    <buildings>
-      <buildingCode>NYL</buildingCode>
-      <buildingCode>CHA</buildingCode>
-      <buildingCode>FUL</buildingCode>
-      <!-- CHASE and FULTON just for testing purpose because data is not given -->
-    </buildings>
+  <rci roomType="individual" NYL="true" CHA="true" FUL="true">
+    <!-- CHASE and FULTON just for testing purpose because data is not given -->
     <components>
       <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
       <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
@@ -191,12 +170,8 @@
       </community>
     </otherCharges>
   </rci>
-  <rci roomType="individual" TAV="" BRO="">
-    <buildings>
-      <buildingCode>TAV</buildingCode>
-      <buildingCode>BRO</buildingCode>
-      <!-- BROMLEY just for testing purpose because data is not given -->
-    </buildings>
+  <rci roomType="individual" TAV="true" BRO="true">
+    <!-- BROMLEY just for testing purpose because data is not given -->
     <components>
       <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
       <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
@@ -224,15 +199,7 @@
       </community>
     </otherCharges>
   </rci>
-  <rci roomType="individual" GED="" CON="" GRA="" HIL="" MCI="" RID="">
-    <buildings>
-      <buildingCode>GED</buildingCode>
-      <buildingCode>CON</buildingCode>
-      <buildingCode>GRA</buildingCode>
-      <buildingCode>HIL</buildingCode>
-      <buildingCode>MCI</buildingCode>
-      <buildingCode>RID</buildingCode>
-    </buildings>
+  <rci roomType="individual" GED="true" CON="true" GRA="true" HIL="true" MCI="true" RID="true">
     <components>
       <component name="Beds" description="Frames, mattress, mattress cover" approxCost="50,125,30" costType="F,R,R" />
       <component name="Bookshelf" description="Over desk" approxCost="30" costType="A" />

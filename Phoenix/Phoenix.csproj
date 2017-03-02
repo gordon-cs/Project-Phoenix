@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44349</IISExpressSSLPort>
+    <IISExpressSSLPort>44361</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
@@ -258,6 +258,8 @@
     <Content Include="Views\RciCheckout\RASignature.cshtml" />
     <Content Include="Views\RciComponentReassign\Index.cshtml" />
     <Content Include="Views\RciCheckout\RDSignature.cshtml" />
+    <Content Include="Views\RciInput\Component.cshtml" />
+    <Content Include="Views\RciCheckout\Component.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />

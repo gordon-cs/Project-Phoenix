@@ -107,8 +107,9 @@ namespace Phoenix.Services
          * @params: rciId - the id of the RCI to associate with 
          *          roomType - string to indicate type of room, either "common area" or "dorm room" currently
          */ 
-        public void AddRciComponents(int rciId, string roomType, string buildingCode)
+        public List<RciComponent> CreateRciComponents(int rciId, string roomType, string buildingCode)
         {
+            List<RciComponent> created = new List<RciComponent>();
             var server = HttpContext.Current.Server;
             XDocument document = XDocument.Load(server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
@@ -124,10 +125,9 @@ namespace Phoenix.Services
                 newComponent.RciComponentName = (string)componentElement.Attribute("name");
                 newComponent.RciComponentDescription = (string)componentElement.Attribute("description");
                 newComponent.RciID = rciId;
-                db.RciComponent.Add(newComponent);
-                db.SaveChanges();
+                created.Add(newComponent);
             }
- 
+            return created;
         }
 
         /*
