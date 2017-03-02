@@ -53,6 +53,8 @@ namespace Phoenix.Controllers
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
+                // Select rooms of common area RCIs to group the RCIs
+                ViewBag.commonRooms = rciInputService.GetCommonRooms(id); 
             }
             else
             {

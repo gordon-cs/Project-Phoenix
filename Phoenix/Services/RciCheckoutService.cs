@@ -21,6 +21,7 @@ namespace Phoenix.Services
                 from r in db.Rci
                 where r.RciID == id
                 join a in db.Account on r.GordonID equals a.ID_NUM into account
+                where r.RciID == id
                 from temp in account.DefaultIfEmpty()
                 select new CheckoutRciViewModel()
                 {
@@ -36,10 +37,10 @@ namespace Phoenix.Services
                     CheckoutSigRD = r.CheckoutSigRD,
                     CheckoutSigRAGordonID = r.CheckoutSigRAGordonID,
                     CheckoutSigRDGordonID = r.CheckoutSigRDGordonID,
-                    CheckoutSigRAName = 
+                    CheckoutSigRAName =
                                         (from acct in db.Account
-                                        where acct.ID_NUM.Equals(r.CheckoutSigRAGordonID)
-                                        select acct.firstname + " " + acct.lastname ).FirstOrDefault(),
+                                         where acct.ID_NUM.Equals(r.CheckoutSigRAGordonID)
+                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
                     CheckoutSigRDName =
                                          (from acct in db.Account
                                           where acct.ID_NUM.Equals(r.CheckoutSigRDGordonID)
@@ -197,6 +198,12 @@ namespace Phoenix.Services
 
             db.SaveChanges();
 
+        }
+
+        public IEnumerable<string> GetCommonRooms(int id)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            return rci.RciComponent.GroupBy(x => x.RciComponentDescription).Select(x => x.First()).Select(x => x.RciComponentDescription);
         }
 
     }

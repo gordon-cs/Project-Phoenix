@@ -95,7 +95,24 @@
                     </div>
                 </div>
         </div>
+        foreach (var component in Model.RciComponent)
+        {
+            @Html.Partial("Component", component);
+        }
     }
+    else
+    {
+        foreach (var room in ViewBag.commonRooms)
+        {
+            <h2>@room</h2>
+            foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room)))
+            {
+                @Html.Partial("Component", component);
+            }
+        }
+    }
+    
+    
     <div class="button-group">
         <button id="save-button" class="button-group-element">Save</button>
         <button id="next-button" class="button-group-element" onclick="window.location.href = '@Url.Action(actionName:"CheckinSig", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Next</button>

@@ -32,6 +32,10 @@ namespace Phoenix.Controllers
             }
 
             var rci = checkoutService.GetRciByID(id);
+            if (rci.GordonID == null) // A common area rci
+            {
+                ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
+            }
 
             return View(rci);
         }

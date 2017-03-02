@@ -9,6 +9,7 @@ using Phoenix.Filters;
 using Phoenix.Services;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
 
 namespace Phoenix.Controllers
 {
@@ -86,7 +87,8 @@ namespace Phoenix.Controllers
             if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "dorm room", currentBuilding);
+                dashboardService.CreateRciComponents(rciId, "individual", currentBuilding);
+                // now rci components are only created but not added to the database
             }
 
             if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
@@ -102,7 +104,8 @@ namespace Phoenix.Controllers
                     
 
                     var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common area", currentBuilding);
+                    dashboardService.CreateRciComponents(rciId, "common", currentBuilding);
+                    // now rci components are only created but not added to the database
                 }
 
                 RCIs = RCIs.Concat(commonAreaRCIs);
@@ -147,7 +150,8 @@ namespace Phoenix.Controllers
             if (!dashboardService.CurrentRciExists(RCIs, currentBuilding, currentRoom))
             {
                 var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, currentRoom, strID);
-                dashboardService.AddRciComponents(rciId, "dorm room", currentBuilding);
+                dashboardService.CreateRciComponents(rciId, "individual", currentBuilding);
+                // now rci components are only created but not added to the database
             }
 
             if (currentBuilding.Equals("BRO") || currentBuilding.Equals("TAV") ||
@@ -161,7 +165,8 @@ namespace Phoenix.Controllers
                 {
 
                     var rciId = dashboardService.GenerateOneRCIinDb(currentBuilding, apartmentNumber);
-                    dashboardService.AddRciComponents(rciId, "common area", currentBuilding);
+                    dashboardService.CreateRciComponents(rciId, "common", currentBuilding);
+                    // now rci components are only created but not added to the database
                 }
 
             }
@@ -216,8 +221,8 @@ namespace Phoenix.Controllers
         [HttpGet]
         public FileContentResult ExportFines()
         {
-            //string[] buildingCodes = dashboardService.CollectRDBuildingCodes((string)TempData["building"]);
-            var kingdom = (List<string>)TempData["kingdom"];
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
 
             string finesString = dashboardService.GenerateFinesSpreadsheet(kingdom);
 
