@@ -11,8 +11,6 @@ using System.Data.Entity.Validation;
 using System;
 using Phoenix.Services;
 using System.Web.UI;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace Phoenix.Controllers
 {
@@ -326,26 +324,7 @@ namespace Phoenix.Controllers
                     var damageId = newDamage.DamageID;
                     string imageName = "RciComponentId" + rciComponent + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
                     string imagePath = "\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
-
-                    // First, resize the image, using pattern here: http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
-
-                    // Create an Image obj from the file
-                    Image origImg = Image.FromStream(photoFile.InputStream);
-      
-                    Size imgSize = rciInputService.NewImageSize(origImg.Size, new Size(300,300));
-
-                    // Bitmap is a subclass of Image; its constructor can take an Image and new Size, and then creates a new Image scaled to the new size
-                    Image resizedImg = new Bitmap(origImg, imgSize);
-
-                    using (Graphics gr = Graphics.FromImage(resizedImg))
-                    {
-                        gr.SmoothingMode = SmoothingMode.HighQuality;
-                        gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        gr.DrawImage(origImg, new Rectangle(0, 0, imgSize.Width, imgSize.Height));
-                    }
-
-                    resizedImg.Save(Server.MapPath(imagePath), resizedImg.RawFormat);
+                    photoFile.SaveAs(Server.MapPath(imagePath));
 
                     newDamage.DamageImagePath = imagePath;
                     db.SaveChanges();

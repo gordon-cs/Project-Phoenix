@@ -243,8 +243,4 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-/Phoenix/Content/Images/Damages/RciComponentId955_DamageId335.jpg
-/Phoenix/Content/Images/Damages/RciComponentId955_DamageId336.jpg
-/Phoenix/Content/Images/Damages/RciComponentId955_DamageId337.jpg
 /Phoenix/secrets.config
-/Phoenix/Content/Images/Damages

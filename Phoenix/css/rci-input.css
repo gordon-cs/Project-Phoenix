@@ -18,19 +18,17 @@ i {
 }
 .img-thumbnails div {
     padding: 0.1em;
-    max-width: 20%;
+    max-width: 33%;
 }
-.thumbnail {
-    height: 75px;
-}
+/* Always Place the modal in the middle of the viewport.*/
 .img-modal {
     background-color: rgba(235,234, 234, 0.9);
     display: none;
     top: 0; right: 0; left:0; bottom: 0;
-    margin: 0 auto; 
+    margin: 0 auto;  
     position: absolute;
-    width:95%;
-    height: 325px;
+    width:90%;
+    height: 320px;
 }
 /* Get rid of random position:relative */
 .modal-header{
@@ -38,14 +36,12 @@ i {
 }
 .modal-content {
     margin: auto;
-    margin-top: -25px;
     padding: 0.5em;
 }
 .material-icons.clear {
     display: block;
     font-size: 35px;
     font-weight: bold;
-    padding: 0.2em 0.25em .3em;
 }
 material-icons.clear:hover,
 material-icons.clear:focus {
@@ -57,16 +53,8 @@ material-icons.clear:focus {
     padding: 0.2em;
 }
 .img-slide img {
-    height: 250px;
     max-width: 100%;
 }
 .backward, .forward {
-    bottom: 10px;
-    position: absolute;
-}
-.backward {
-    left: 5px;
-}
-.forward {
-    left: 25px;
+    margin-bottom: 10px;
 }
