@@ -18,6 +18,6 @@ html, body {
 
 img {
     display: block;
-    /*height: auto;*/
+    height: auto;
     max-width: 100%;
 }
