@@ -20,81 +20,9 @@
     </ul>
 }
 <div class="view">
-    @foreach(var component in Model.RciComponent)
+    @if (ViewBag.commonRooms == null)
     {
-        <div class="pane component" id="@component.RciComponentID">
-            <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2> 
-            
-            <div class="input pane-content">
-                @if (component.RciComponentDescription != null & component.RciComponentDescription != "")
-                {
-                    <p><b>Possible places:</b> @component.RciComponentDescription</p>
-                }
-                <div class="divAddOn">
-                    <label class="file-input-label divAddOn-field" for="dmg-input-@component.RciComponentID">
-                        <i class="material-icons">add_a_photo</i>
-                        <span>Take picture</span>
-                    </label>
-                    @*<span class="divAddOn-item">0 Picture(s)</span>*@
-                </div>
-                <input id="dmg-input-@component.RciComponentID" class="file-input" multiple type="file" accept="image/*;capture=camera">
-                <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
-                    @foreach (var damage in component.Damage)
-                    {
-                        if (damage.DamageType.Equals("IMAGE"))
-                        {
-                           <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div> 
-                        }
-                    }
-                </div>
-                <div id="modal-@component.RciComponentID" class="img-modal">
-                    <div class="modal-header"><i class="material-icons clear">clear</i></div>
-                    <div class="modal-content">
-                        @foreach (var damage in component.Damage)
-                        {
-                            if (damage.DamageType.Equals("IMAGE"))
-                            {
-                                <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
-                            }
-                        }
 
-                    </div>
-                    <div>
-                        <i class="material-icons backward">navigate_before</i>
-                        <i class="material-icons forward">navigate_next</i>
-                    </div>
-                </div>
-                <br/>
-                    <div>
-                        <p>OR</p>
-                    </div>
-                <br/>
-                    <div>
-                        <p>Describe the damage and its location:</p>
-                    </div>
-                    <div class="divAddOn">
-                        <input class="divAddOn-field adding-damages" type="text" placeholder="Damage + Location"
-                               id="text-input-@component.RciComponentID" />
-                        <button class="divAddOn-item" onclick="addDamage(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
-                    </div>
-                    <div class="div-list" id="div-list-@component.RciComponentID">
-                        <div class="div-list-toggle icon-label">
-                            <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
-                            <span>Hide/Show Entered Damages</span>
-                        </div>
-                        @foreach (var damage in component.Damage)
-                        {
-                            if (damage.DamageDescription != null)
-                            {
-                                <div class="divAddOn">
-                                    <p class="divAddOn-field">@damage.DamageDescription</p>
-                                    <i class='divAddOn-item material-icons' onclick="deleteExistingDamages(event, this, @damage.DamageID)">delete</i>
-                                </div>
-                            }
-                        }
-                    </div>
-                </div>
-        </div>
         foreach (var component in Model.RciComponent)
         {
             @Html.Partial("Component", component);
