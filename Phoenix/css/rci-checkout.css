@@ -22,3 +22,55 @@ i {
 .adding-fines {
     min-width: 25%;
 }
+
+/*Modal styles*/
+i {
+    cursor: pointer;
+}
+.img-thumbnails {
+    display: flex; /* Flexbox !*/
+    flex-wrap: wrap; /* Cause elements to wrap */
+    align-items: center; /* Vertical align elements to the center */
+}
+.img-thumbnails div {
+    padding: 0.1em;
+    max-width: 33%;
+}
+/* Always Place the modal in the middle of the viewport.*/
+.img-modal {
+    background-color: rgba(235,234, 234, 0.9);
+    display: none;
+    top: 0; right: 0; left:0; bottom: 0;
+    margin: 0 auto;  
+    position: absolute;
+    width:90%;
+    height: 320px;
+}
+/* Get rid of random position:relative */
+.modal-header{
+    text-align: right;
+}
+.modal-content {
+    margin: auto;
+    padding: 0.5em;
+}
+.material-icons.clear {
+    display: block;
+    font-size: 35px;
+    font-weight: bold;
+}
+material-icons.clear:hover,
+material-icons.clear:focus {
+  color: #999;
+  text-decoration: none;
+  cursor: pointer;
+} 
+.uploaded-img {
+    padding: 0.2em;
+}
+.img-slide img {
+    max-width: 100%;
+}
+.backward, .forward {
+    margin-bottom: 10px;
+}
