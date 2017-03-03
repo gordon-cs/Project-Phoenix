@@ -22,6 +22,7 @@
 <div class="view">
     @if (ViewBag.commonRooms == null)
     {
+
         foreach (var component in Model.RciComponent)
         {
             @Html.Partial("Component", component);
