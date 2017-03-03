@@ -6,6 +6,7 @@ using Phoenix.Models.ViewModels;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Data.SqlClient;
+using System.Web;
 
 namespace Phoenix.Services
 {
@@ -225,11 +226,16 @@ namespace Phoenix.Services
 
             db.SaveChanges();
 
-            // This will actuall be: var newComponents = CreateComponents(newRcis);
-            CreateRciComponents(newRcis);
-            
-            //then db.RciComponents.Add(newComponents) 
+            // Create the components
+            var newComponents = new List<RciComponent>();
 
+            foreach(var rci in newRcis)
+            {
+                newComponents.AddRange(CreateRciComponents(rci.RciID, "individual", rci.BuildingCode));
+            }
+
+            db.RciComponent.AddRange(newComponents);
+            db.SaveChanges();
         }
 
         /// <summary>
@@ -278,7 +284,11 @@ namespace Phoenix.Services
                 db.Rci.Add(newRci);
                 db.SaveChanges();
 
-                // same deal for creating components as before
+                // Create Components
+                db.RciComponent.AddRange(CreateRciComponents(newRci.RciID, "individual", newRci.BuildingCode));
+                db.SaveChanges();
+
+                
             }
         }
 
@@ -315,8 +325,16 @@ namespace Phoenix.Services
 
             db.SaveChanges();
 
+            // Create components
+            var newRciComponents = new List<RciComponent>();
+            foreach(var rci in newCommonAreaRcis)
+            {
+                newRciComponents.AddRange(CreateRciComponents(rci.RciID, "common", rci.BuildingCode));
+            }
 
-            // same deal for creating components as before
+            db.RciComponent.AddRange(newRciComponents);
+            db.SaveChanges();
+
         }
 
         /// <summary>
@@ -355,7 +373,9 @@ namespace Phoenix.Services
                 db.Rci.Add(commonAreaRci);
                 db.SaveChanges();
 
-                // same deal for creating components as before
+                // Create Components
+                db.RciComponent.AddRange(CreateRciComponents(commonAreaRci.RciID, "common", commonAreaRci.BuildingCode));
+                db.SaveChanges();
             }
         }
 
@@ -374,34 +394,6 @@ namespace Phoenix.Services
                 CreationDate = DateTime.Now
             };
             return rci;
-        }
-
-        /// <summary>
-        /// Create RciComponent objects for rcis passed in.
-        /// </summary>
-        public void CreateRciComponents(List<Rci> rciList)
-        {
-            var rciComponentList = new List<RciComponent>();
-
-            foreach(var rci in rciList)
-            {
-                // Create a components given the rci here.
-                // place them in the list
-            }
-
-            // return the list of components
-        }
-
-        /// <summary>
-        /// Create RciComponent objects for the rci passed in
-        /// </summary>
-        public void CreateRciComponents(Rci rci)
-        {
-            var rciComponentList = new List<RciComponent>();
-
-            // Create the component given the rci
-
-            // return the component list.
         }
     }
 }
