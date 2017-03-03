@@ -176,7 +176,10 @@ function deleteExistingDamages(event, element, id)
     damagesToDelete.push(id);
 }
 
+/* Delete an image, which will have already been saved to the db */
+function deletePhoto() {
 
+}
 
 /* Register Handers */
 

@@ -11,6 +11,8 @@ using System.Data.Entity.Validation;
 using System;
 using Phoenix.Services;
 using System.Web.UI;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace Phoenix.Controllers
 {
@@ -47,12 +49,12 @@ namespace Phoenix.Controllers
             var gordon_id = (string)TempData["id"];
 
             //var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
-            var rci = rciInputService.GetRci(id); 
+            var rci = rciInputService.GetRci(id);
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
                 // Select rooms of common area RCIs to group the RCIs
-                ViewBag.commonRooms = rciInputService.GetCommonRooms(id); 
+                ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
             }
             else
             {
@@ -60,7 +62,7 @@ namespace Phoenix.Controllers
                     .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
             }
-            
+
             return View(rci);
         }
 
@@ -297,6 +299,7 @@ namespace Phoenix.Controllers
             return;
         }
 
+
         /// <summary>
         /// If a photo(s) of a damage was uploaded, this method first creates a new Damage entry in db, then saves the image to the server
         /// For reference, see: http://codepedia.info/upload-image-using-jquery-ajax-asp-net-c-sharp/#jQuery_ajax_call
@@ -324,7 +327,26 @@ namespace Phoenix.Controllers
                     var damageId = newDamage.DamageID;
                     string imageName = "RciComponentId" + rciComponent + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
                     string imagePath = "\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
-                    photoFile.SaveAs(Server.MapPath(imagePath));
+
+                    // First, resize the image, using pattern here: http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
+
+                    // Create an Image obj from the file
+                    Image origImg = Image.FromStream(photoFile.InputStream);
+
+                    Size imgSize = rciInputService.NewImageSize(origImg.Size, new Size(300, 300));
+
+                    // Bitmap is a subclass of Image; its constructor can take an Image and new Size, and then creates a new Image scaled to the new size
+                    Image resizedImg = new Bitmap(origImg, imgSize);
+
+                    using (Graphics gr = Graphics.FromImage(resizedImg))
+                    {
+                        gr.SmoothingMode = SmoothingMode.HighQuality;
+                        gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        gr.DrawImage(origImg, new Rectangle(0, 0, imgSize.Width, imgSize.Height));
+                    }
+
+                    resizedImg.Save(Server.MapPath(imagePath), resizedImg.RawFormat);
 
                     newDamage.DamageImagePath = imagePath;
                     db.SaveChanges();
@@ -332,7 +354,7 @@ namespace Phoenix.Controllers
                     Response.Write(imagePath);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Response.Status = "Error saving photo";
                 Debug.Write("Error saving photo to database: " + e.Message);
@@ -340,5 +362,14 @@ namespace Phoenix.Controllers
             return;
         }
 
+
+
+        [HttpDelete]
+        public void DeletePhoto(string imagePath, int componentId) //Hmm, this would be cleaner if we used the damage id
+        {
+            Damage damage = db.Damage.Where(m => m.DamageImagePath.Equals(imagePath) && m.RciComponentID == (componentId)).FirstOrDefault();
+            db.Damage.Remove(damage);
+
+        }
     }
 }
