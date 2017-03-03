@@ -110,44 +110,44 @@ function savePhoto(photoFile, fileName) {
 /*
  * Open the picture modal
  */
-function openModal(componentID, slideNum) {
-    $("#modal-" + componentID).show();
-    showSlides(slideNum, "modal-" + componentID);
-}
+//function openModal(componentID, slideNum) {
+//    $("#modal-" + componentID).show();
+//    showSlides(slideNum, "modal-" + componentID);
+//}
 
-/*
- * Close the picture modal
- */
-function closeModal(modalID) {
-    $("#" + modalID).hide();
-}
+///*
+// * Close the picture modal
+// */
+//function closeModal(modalID) {
+//    $("#" + modalID).hide();
+//}
 
-/*
- * Show the slides in the modal
- */
-var slideIndex = 0;
-// This function increments the slide index (a global variable) by a given value
-function plusSlides(n, modalId) {
-    showSlides(slideIndex += n, modalId);
-}
-// Display the slide, based on the selected image
-function showSlides(slideNumber, modalId) {
-    let slides = $("#" + modalId).find(".img-slide");
-    if (slideNumber >= slides.length)
-    {
-        slideIndex = 0;
-    }
-    else if (slideNumber < 0) {
-        slideIndex = slides.length - 1;
-    }
-    else {
-        slideIndex = slideNumber;
-    }
-    for (var i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-    }
-    slides[slideIndex].style.display = "block";
-}
+///*
+// * Show the slides in the modal
+// */
+//var slideIndex = 0;
+//// This function increments the slide index (a global variable) by a given value
+//function plusSlides(n, modalId) {
+//    showSlides(slideIndex += n, modalId);
+//}
+//// Display the slide, based on the selected image
+//function showSlides(slideNumber, modalId) {
+//    let slides = $("#" + modalId).find(".img-slide");
+//    if (slideNumber >= slides.length)
+//    {
+//        slideIndex = 0;
+//    }
+//    else if (slideNumber < 0) {
+//        slideIndex = slides.length - 1;
+//    }
+//    else {
+//        slideIndex = slideNumber;
+//    }
+//    for (var i = 0; i < slides.length; i++) {
+//        slides[i].style.display = "none";
+//    }
+//    slides[slideIndex].style.display = "block";
+//}
 
 
 /* Add a div to the right component. This div will contain a :
@@ -195,28 +195,28 @@ $("input[id^='dmg-input']").change(uploadPhoto);
 // Attach modal handlers (reference: https://www.w3schools.com/howto/howto_js_lightbox.asp)
 
 // For all the thumbnail areas, attach the modal opener to each of its thumbnail images
-$(".img-thumbnails").each(function (index, element) {
-    let componentID = $(this).attr("id").substring(12);
-    $(this).find(".thumbnail").each(function (index, element) {
-        $(this).click(function () {
-            openModal(componentID, index)
-        });
-    });
-});
+//$(".img-thumbnails").each(function (index, element) {
+//    let componentID = $(this).attr("id").substring(12);
+//    $(this).find(".thumbnail").each(function (index, element) {
+//        $(this).click(function () {
+//            openModal(componentID, index)
+//        });
+//    });
+//});
 
-$(".material-icons.clear").click(function () {
-    let modalID = $(this).closest(".img-modal").attr("id");
-    console.log(modalID);
-    closeModal(modalID);
-});
+//$(".material-icons.clear").click(function () {
+//    let modalID = $(this).closest(".img-modal").attr("id");
+//    console.log(modalID);
+//    closeModal(modalID);
+//});
 
-$(".forward").click(function () {
-    let modalID = $(this).closest(".img-modal").attr("id");
-    plusSlides(1, modalID);
-});
-$(".backward").click(function () {
-    let modalID = $(this).closest(".img-modal").attr("id");
-    plusSlides(-1, modalID);
-});
+//$(".forward").click(function () {
+//    let modalID = $(this).closest(".img-modal").attr("id");
+//    plusSlides(1, modalID);
+//});
+//$(".backward").click(function () {
+//    let modalID = $(this).closest(".img-modal").attr("id");
+//    plusSlides(-1, modalID);
+//});
 
 

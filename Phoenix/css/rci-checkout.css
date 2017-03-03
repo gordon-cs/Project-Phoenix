@@ -3,6 +3,9 @@
 .pane {
     box-shadow: 0 0 5px 0 #ddd;
 }
+.checkout .div-list {
+    position: relative;
+}
 
 i {
     cursor: pointer;
@@ -36,17 +39,18 @@ i {
     padding: 0.1em;
     max-width: 33%;
 }
-/* Always Place the modal in the middle of the viewport.*/
 .img-modal {
     background-color: rgba(235,234, 234, 0.9);
     display: none;
-    top: 0; right: 0; left:0; bottom: 0;
-    margin: 0 auto;  
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: 0 auto;
     position: absolute;
-    width:90%;
+    width: 90%;
     height: 320px;
 }
-/* Get rid of random position:relative */
 .modal-header{
     text-align: right;
 }
