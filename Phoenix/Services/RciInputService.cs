@@ -28,6 +28,7 @@ namespace Phoenix.Services
             return username;
         }
 
+
         // Image resize method, taken mostly from  http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
         // Takes an original size, and returns proportional dimensions to be used in resizing the image
         public Size NewImageSize(Size imageSize, Size newSize)
@@ -36,7 +37,7 @@ namespace Phoenix.Services
             //double tempval;
             int origHeight = imageSize.Height;
             int origWidth = imageSize.Width;
-
+           
 
             if (origHeight > newSize.Height || origWidth > newSize.Width)
             {
