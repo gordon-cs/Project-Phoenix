@@ -21,6 +21,42 @@ namespace Phoenix.Services
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             return rci;
         }
+        
+        public IEnumerable<SignAllRDViewModel> GetRcis(string gordonID)
+        {
+            var rcis =
+                from r in db.Rci
+                where r.CheckinSigRDGordonID == gordonID
+                where r.CheckinSigRD == null
+                join a in db.Account on r.GordonID equals a.ID_NUM into account
+                from temp in account.DefaultIfEmpty()
+                select new SignAllRDViewModel()
+                {
+                    RciID = r.RciID,
+                    GordonID = r.GordonID,
+                    FirstName = temp.firstname ?? "Common Area",
+                    LastName = temp.lastname ?? "Rci",
+                    BuildingCode = r.BuildingCode,
+                    RoomNumber = r.RoomNumber
+                };
+                
+            return rcis;
+        }
+
+        public void SignRcis(string gordonID)
+        {
+            var rcis =
+                from r in db.Rci
+                where r.CheckinSigRDGordonID == gordonID
+                where r.CheckinSigRD == null
+                select r;
+            foreach (var rci in rcis)
+            {
+                rci.CheckinSigRD = DateTime.Today;
+            }
+            db.SaveChanges();
+        }
+        
 
         public string GetUsername(string gordon_id)
         {

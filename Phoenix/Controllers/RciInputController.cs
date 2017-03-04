@@ -169,6 +169,43 @@ namespace Phoenix.Controllers
             return View(rci);
         }
 
+        public ActionResult SignAllRD()
+        {
+            // TempData stores object, so always cast to string.
+            var role = (string)TempData["role"];
+            var gordonID = (string)TempData["id"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            if (role.Equals("Resident") || role.Equals("RA"))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            var rcis = rciInputService.GetRcis(gordonID);
+            
+            ViewBag.User = (string)TempData["user"];
+            return View(rcis);
+        }
+
+        [HttpPost]
+        public ActionResult SubmitSignAllRD(string rciSig)
+        {
+            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
+            var gordonID = (string)TempData["id"];
+            var user = ((string)TempData["user"]).ToLower().Trim();
+            if (rciSig == user)
+            {
+                rciInputService.SignRcis(gordonID);
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            
+            return Json(Url.Action("SignAllRD"));
+        }
+
         // Save signatures for resident
         [HttpPost]
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
@@ -258,9 +295,19 @@ namespace Phoenix.Controllers
         }
 
         [HttpPost]
-        public void CheckSigRD(string sigCheck, int id)
+        public void CheckSigRD(int sigCheck, int id)
         {
-            
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            var gordonID = (string)TempData["id"];
+            if (sigCheck == 1)
+            {
+                rci.CheckinSigRDGordonID = gordonID;
+            }
+            else
+            {
+                rci.CheckinSigRDGordonID = null;
+            }
+            db.SaveChanges();
         }
 
         /// <summary>

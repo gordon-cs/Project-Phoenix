@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Phoenix.Models.ViewModels.SignAllRDViewModel>
+
+@{
+    ViewBag.Title = "SignAllRD";
+    ViewBag.MenuExists = "T";
+}
+
+@section Scripts{
+    @Scripts.Render("~/Scripts/sign-all-rd.js")
+}
+
+@section Menu {
+    <ul class="drawer-menu">
+        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
+        <li class="drawer-menu-item logout-button">Logout</li>
+    </ul>
+}
+
+<h2>RD Signature On All</h2>
+
+<div>
+    <p>Please sign with your name @ViewBag.User to confirm the entered existing damages for the RCIs below that you have checked.</p>
+    <input type="text" id="rci-sig" />
+
+    <div class="distribute-evenly">
+        <button id="submit-button">Submit</button>
+    </div>
+
+    <div>
+        @foreach (var rci in Model)
+        {
+            <div class="divAddOn">
+                <div class="divAddOn-field">
+                    <p>@rci.BuildingCode @rci.RoomNumber</p>
+                    <p>@rci.FirstName @rci.LastName</p>
+                </div>
+                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                    <div>
+                        <i class="material-icons">mode_edit</i>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+</div>
+
+
