@@ -20,8 +20,23 @@ i {
     padding: 0.1em;
     max-width: 20%;
 }
+.thumbnail-container {
+    position: relative;
+}
 .thumbnail {
     height: 75px;
+}
+.img-thumbnails .delete-icon {
+    background-color: #000;
+    border-radius: 3px;
+    font-size: .9em;
+    max-width: 26px;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+}
+.delete-icon i {
+    color: #fff;
 }
 .img-modal {
     background-color: rgba(235,234, 234, 0.9);
