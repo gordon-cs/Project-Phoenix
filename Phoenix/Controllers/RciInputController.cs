@@ -369,10 +369,13 @@ namespace Phoenix.Controllers
         [HttpPost]
         public void DeletePhoto(int damageId) //Hmm, this would be cleaner if we used the damage id
         {
-            var damage = db.Damage.Where(m => m.DamageID == damageId).ToList();
+            var damage = db.Damage.Where(m => m.DamageID == damageId).FirstOrDefault();
+
+            var filePath = Server.MapPath(damage.DamageImagePath);
             try
             {
-                db.Damage.RemoveRange(damage);
+                db.Damage.Remove(damage);
+                System.IO.File.Delete(filePath);
                 Debug.Write("Successfully delete damage photo: " + damageId);
                 db.SaveChanges();
                 Response.Status = "200 Successfully deleted.";            
