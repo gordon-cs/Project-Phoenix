@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace Phoenix.Services
 {
