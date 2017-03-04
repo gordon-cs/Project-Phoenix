@@ -214,7 +214,6 @@
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
     <Content Include="Scripts\dom-manipulation.js" />
-    <Content Include="Scripts\modal.js" />
     <Content Include="Scripts\rci-checkout.js" />
     <Content Include="Scripts\rci-input.js" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />

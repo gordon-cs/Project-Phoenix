@@ -83,3 +83,67 @@ $(".search-bar").keyup(function () {
         }
     }).parent().hide()
 });
+
+
+
+/*
+ * Open the picture modal
+ */
+function openModal(componentID, slideNum) {
+    $("#modal-" + componentID).show();
+    showSlides(slideNum, "modal-" + componentID);
+}
+
+/*
+ * Close the picture modal
+ */
+function closeModal(modalID) {
+    $("#" + modalID).hide();
+}
+
+/*
+ * Show the slides in the modal
+ */
+var slideIndex = 0;
+// This function increments the slide index (a global variable) by a given value
+function plusSlides(n, modalId) {
+    showSlides(slideIndex += n, modalId);
+}
+// Display the slide, based on the selected image
+function showSlides(slideNumber, modalId) {
+    let slides = $("#" + modalId).find(".img-slide");
+    if (slideNumber >= slides.length) {
+        slideIndex = 0;
+    }
+    else if (slideNumber < 0) {
+        slideIndex = slides.length - 1;
+    }
+    else {
+        slideIndex = slideNumber;
+    }
+    for (var i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+    }
+    slides[slideIndex].style.display = "block";
+}
+
+$(".img-thumbnails").on("click", ".thumbnail", function () {
+    let componentID = $(this).closest(".img-thumbnails").attr("id").substring(12);
+    // Count up all the previous thumbnail images to know what to set the slide index to for the modal
+    let newIndex = $(this).parent().prevAll().length;
+    openModal(componentID, newIndex);
+});
+
+$(".forward").click(function () {
+    let modalID = $(this).closest(".img-modal").attr("id");
+    plusSlides(1, modalID);
+});
+$(".backward").click(function () {
+    let modalID = $(this).closest(".img-modal").attr("id");
+    plusSlides(-1, modalID);
+});
+$(".material-icons.clear").click(function () {
+    let modalID = $(this).closest(".img-modal").attr("id");
+    console.log(modalID);
+    closeModal(modalID);
+});

@@ -350,26 +350,38 @@ namespace Phoenix.Controllers
                     resizedImg.Save(Server.MapPath(imagePath), resizedImg.RawFormat);
 
                     newDamage.DamageImagePath = imagePath;
+                    
                     db.SaveChanges();
 
-                    Response.Write(imagePath);
+                    Response.Write(damageId);
                 }
             }
             catch (Exception e)
             {
-                Response.Status = "Error saving photo";
+                Response.Status = "500 Error saving photo";
                 Debug.Write("Error saving photo to database: " + e.Message);
             }
             return;
         }
 
 
-
-        [HttpDelete]
-        public void DeletePhoto(string imagePath, int componentId) //Hmm, this would be cleaner if we used the damage id
+        // Delete a damage photo from the database, based on the damageId
+        [HttpPost]
+        public void DeletePhoto(int damageId) //Hmm, this would be cleaner if we used the damage id
         {
-            Damage damage = db.Damage.Where(m => m.DamageImagePath.Equals(imagePath) && m.RciComponentID == (componentId)).FirstOrDefault();
-            db.Damage.Remove(damage);
+            var damage = db.Damage.Where(m => m.DamageID == damageId).ToList();
+            try
+            {
+                db.Damage.RemoveRange(damage);
+                Debug.Write("Successfully delete damage photo: " + damageId);
+                db.SaveChanges();
+                Response.Status = "200 Successfully deleted.";            
+            }
+            catch(Exception e)
+            {
+                Response.Status = "500 Error saving photo. Error message: " + e.Message;
+            }
+            return;
 
         }
     }
