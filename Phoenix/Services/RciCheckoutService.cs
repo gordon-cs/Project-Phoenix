@@ -19,6 +19,7 @@ namespace Phoenix.Services
         {
             var query =
                 from r in db.Rci
+                where r.RciID == id
                 join a in db.Account on r.GordonID equals a.ID_NUM into account
                 where r.RciID == id
                 from temp in account.DefaultIfEmpty()
@@ -197,6 +198,12 @@ namespace Phoenix.Services
 
             db.SaveChanges();
 
+        }
+
+        public IEnumerable<string> GetCommonRooms(int id)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            return rci.RciComponent.GroupBy(x => x.RciComponentDescription).Select(x => x.First()).Select(x => x.RciComponentDescription);
         }
 
     }
