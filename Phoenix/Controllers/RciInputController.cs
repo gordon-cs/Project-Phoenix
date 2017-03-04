@@ -257,6 +257,12 @@ namespace Phoenix.Controllers
             }
         }
 
+        [HttpPost]
+        public void CheckSigRD(string sigCheck, int id)
+        {
+            
+        }
+
         /// <summary>
         /// If an rci form was submitted, the method loops through it and creates Damage records for the damages the user entered.
         /// If the user chose to delete some existing damages, the method loops through the damages the user wanted to delete and removes them from the dataabse.

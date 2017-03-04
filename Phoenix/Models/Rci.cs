@@ -63,6 +63,12 @@ namespace Phoenix.Models
         [StringLength(50)]
         public string CheckoutSigRDGordonID { get; set; }
 
+        [StringLength(50)]
+        public string CheckinSigRAGordonID { get; set; }
+
+        [StringLength(50)]
+        public string CheckinSigRDGordonID { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RciComponent> RciComponent { get; set; }
     }
