@@ -249,6 +249,7 @@ namespace Phoenix.Controllers
             if (rciSig == user)
             {
                 rci.CheckinSigRA = DateTime.Today;
+                rci.CheckinSigRAGordonID = gordonID;
             }
             if (rciSigRes == user)
             {
@@ -281,6 +282,7 @@ namespace Phoenix.Controllers
             if (rciSig == user)
             {
                 rci.CheckinSigRD = DateTime.Today;
+                rci.CheckinSigRDGordonID = gordonID;
             }
             db.SaveChanges();
 
