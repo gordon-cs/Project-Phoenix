@@ -228,7 +228,7 @@ namespace Phoenix.Services
                 var newRci = CreateRciObject(
                     roomAssignment.BLDG_CDE.Trim(),
                     roomAssignment.ROOM_CDE.Trim(),
-                    GetCurrentSession(),
+                    currentSession,
                     roomAssignment.ID_NUM.ToString());
 
                 newRcis.Add(newRci);
@@ -310,6 +310,7 @@ namespace Phoenix.Services
         /// </summary>
         public void SyncCommonAreaRcisFor(List<string> kingdom)
         {
+            var currentSession = GetCurrentSession();
             var query =
                 from rm in db.Room
                 join rci in db.Rci
@@ -328,7 +329,7 @@ namespace Phoenix.Services
                 var newCommonAreaRci = CreateRciObject(
                     room.BLDG_CDE.Trim(),
                     room.ROOM_CDE.Trim(),
-                    GetCurrentSession());
+                    currentSession);
 
                 newCommonAreaRcis.Add(newCommonAreaRci);
             }
