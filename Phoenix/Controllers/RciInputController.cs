@@ -57,8 +57,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                var name = db.Account.Where(m => m.ID_NUM == rci.GordonID)
-                    .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
+                var name = rciInputService.GetName(rci.GordonID);
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
             }
 
@@ -211,21 +210,13 @@ namespace Phoenix.Controllers
         {
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            
             var gordonID = (string)TempData["id"];
             var user = ((string)TempData["user"]).ToLower().Trim();
 
-            if (rciSig == user)
-            {
-                rci.CheckinSigRes = DateTime.Today;
-            }
-            if (lacSig == user)
-            {
-                rci.LifeAndConductSigRes = DateTime.Today;
-            }
-            db.SaveChanges();
+            bool complete = rciInputService.SaveResSigs(rciSig, lacSig, user, id);
 
-            if (rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null)
+            if (complete)
             {
                 return Json(Url.Action("Index", "Dashboard"));
             }
@@ -242,25 +233,12 @@ namespace Phoenix.Controllers
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             if (rciSigRes != null) rciSigRes = rciSigRes.ToLower().Trim();
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             var gordonID = (string)TempData["id"];
             var user = ((string)TempData["user"]).ToLower().Trim();
-            if (rciSig == user)
-            {
-                rci.CheckinSigRA = DateTime.Today;
-                rci.CheckinSigRAGordonID = gordonID;
-            }
-            if (rciSigRes == user)
-            {
-                rci.CheckinSigRes = DateTime.Today;
-            }
-            if (lacSig == user)
-            {
-                rci.LifeAndConductSigRes = DateTime.Today;
-            }
-            db.SaveChanges();
 
-            if (rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null)
+            var complete = rciInputService.SaveRASigs(rciSig, lacSig, rciSigRes, user, id, gordonID);
+            
+            if (complete)
             {
                 return Json(Url.Action("Index", "Dashboard"));
             }
@@ -269,23 +247,24 @@ namespace Phoenix.Controllers
                 return Json(Url.Action("CheckinSigRA", new { id = id }));
             }
         }
-
-        // Save signatures for RD
+        
+        /// <summary>
+        /// Save signatures for RD
+        /// </summary>
+        /// <param name="rciSig">Signature</param>
+        /// <param name="id">RCI ID</param>
+        /// <returns>Redirect to dashboard if signed or checked</returns>
         [HttpPost]
         public ActionResult SaveSigRD(string rciSig, int id)
         {
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            
             var gordonID = (string)TempData["id"];
             var user = ((string)TempData["user"]).ToLower().Trim();
-            if (rciSig == user)
-            {
-                rci.CheckinSigRD = DateTime.Today;
-                rci.CheckinSigRDGordonID = gordonID;
-            }
-            db.SaveChanges();
 
-            if (rci.CheckinSigRes != null && rci.CheckinSigRA != null)
+            var complete = rciInputService.SaveRDSigs(rciSig, user, id, gordonID);
+
+            if (complete)
             {
                 return Json(Url.Action("Index", "Dashboard"));
             }
@@ -295,20 +274,20 @@ namespace Phoenix.Controllers
             }
         }
 
+        /// <summary>
+        /// When an RD wants to check on an RCI upon checking in, after they click the checkbox,
+        /// an HttpPost request will be sent here and change CheckinSigRDGordonID but not fill
+        /// in the date for CheckinSigRD.
+        /// </summary>
+        /// <param name="sigCheck">1: checked, 0: unchecked</param>
+        /// <param name="id">RCI ID</param>
+        /// <returns></returns>
         [HttpPost]
         public void CheckSigRD(int sigCheck, int id)
         {
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            
             var gordonID = (string)TempData["id"];
-            if (sigCheck == 1)
-            {
-                rci.CheckinSigRDGordonID = gordonID;
-            }
-            else
-            {
-                rci.CheckinSigRDGordonID = null;
-            }
-            db.SaveChanges();
+            rciInputService.CheckRcis(sigCheck, gordonID, id);
         }
 
         /// <summary>

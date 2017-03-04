@@ -3,6 +3,7 @@ using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System.Drawing;
 using System.Collections.Generic;
+using System;
 
 namespace Phoenix.Services
 {
@@ -54,7 +55,76 @@ namespace Phoenix.Services
             }
             db.SaveChanges();
         }
-        
+
+        public string GetName(string gordonID)
+        {
+            return db.Account.Where(m => m.ID_NUM == gordonID)
+                    .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
+        }
+
+        public bool SaveResSigs(string rciSig, string lacSig, string user, int id)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+
+            if (rciSig == user)
+            {
+                rci.CheckinSigRes = DateTime.Today;
+            }
+            if (lacSig == user)
+            {
+                rci.LifeAndConductSigRes = DateTime.Today;
+            }
+            db.SaveChanges();
+            return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null;
+        }
+
+        public bool SaveRASigs(string rciSig, string lacSig, string rciSigRes, string user, int id, string gordonID)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+
+            if (rciSig == user)
+            {
+                rci.CheckinSigRA = DateTime.Today;
+                rci.CheckinSigRAGordonID = gordonID;
+            }
+            if (rciSigRes == user)
+            {
+                rci.CheckinSigRes = DateTime.Today;
+            }
+            if (lacSig == user)
+            {
+                rci.LifeAndConductSigRes = DateTime.Today;
+            }
+            db.SaveChanges();
+            return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null;
+        }
+
+        public bool SaveRDSigs(string rciSig, string user, int id, string gordonID)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            if (rciSig == user)
+            {
+                rci.CheckinSigRD = DateTime.Today;
+                rci.CheckinSigRDGordonID = gordonID;
+            }
+            db.SaveChanges();
+            return rci.CheckinSigRDGordonID != null;
+        }
+
+        public void CheckRcis(int sigCheck, string gordonID, int id)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            if (sigCheck == 1)
+            {
+                rci.CheckinSigRDGordonID = gordonID;
+            }
+            else
+            {
+                rci.CheckinSigRDGordonID = null;
+            }
+            db.SaveChanges();
+        }
+
 
         public string GetUsername(string gordon_id)
         {
