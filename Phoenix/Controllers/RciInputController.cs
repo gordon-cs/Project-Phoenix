@@ -364,8 +364,11 @@ namespace Phoenix.Controllers
             return;
         }
 
-
-        // Delete a damage photo from the database, based on the damageId
+        /// <summary>
+        /// For a particular damage image, delete the damage entry from the database and delete the photo file from
+        /// server, based on the damageId
+        /// </summary>
+        /// <param name="damageId">The id for the damage that has the associated photo we want to delete</param>
         [HttpPost]
         public void DeletePhoto(int damageId) //Hmm, this would be cleaner if we used the damage id
         {
@@ -374,10 +377,9 @@ namespace Phoenix.Controllers
             var filePath = Server.MapPath(damage.DamageImagePath);
             try
             {
-                db.Damage.Remove(damage);
-                System.IO.File.Delete(filePath);
-                Debug.Write("Successfully delete damage photo: " + damageId);
+                db.Damage.Remove(damage); // Remove from db
                 db.SaveChanges();
+                System.IO.File.Delete(filePath); // Remove from server
                 Response.Status = "200 Successfully deleted.";            
             }
             catch(Exception e)
