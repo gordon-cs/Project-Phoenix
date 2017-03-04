@@ -81,7 +81,7 @@ namespace Phoenix.Controllers
                 return RedirectToAction("RASignature", new { id = id });
             }
 
-            var signatureMatch = (rci.FirstName + " " + rci.LastName).Equals(signature);
+            var signatureMatch = (rci.FirstName.ToLower() + " " + rci.LastName.ToLower()).Equals(signature.ToLower());
             if(!signatureMatch) // Signature provided doesn't match
             {
                 ViewBag.ErrorMessage = "The Signatures did not match! The signature should match the name indicated.";
@@ -129,7 +129,7 @@ namespace Phoenix.Controllers
                 return RedirectToAction("RDSignature", new { id = id });
             }
 
-            var signatureMatch = ((string)TempData["user"]).Equals(signature);
+            var signatureMatch = (((string)TempData["user"]).ToLower()).Equals(signature.ToLower());
             if(!signatureMatch) // Signature provided doesn't match
             {
                 ViewBag.ExpectedSignature = (string)TempData["user"];
@@ -192,7 +192,7 @@ namespace Phoenix.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            var signatureMatch = ((string)TempData["user"]).Equals(signature);
+            var signatureMatch = (((string)TempData["user"]).ToLower()).Equals(signature.ToLower());
             if (!signatureMatch) // Signature provided doesn't match
             {
                 ViewBag.ExpectedSignature = (string)TempData["user"];

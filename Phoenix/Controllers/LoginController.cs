@@ -4,7 +4,6 @@ using System.Web.Mvc;
 using System.DirectoryServices.AccountManagement;
 using Phoenix.Models.ViewModels;
 using Phoenix.Services;
-using Phoenix.Models;
 
 
 namespace Phoenix.Controllers
