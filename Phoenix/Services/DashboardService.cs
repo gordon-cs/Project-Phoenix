@@ -222,8 +222,20 @@ namespace Phoenix.Services
          */
          public string GetCurrentSession()
         {
-            var currentSessionCode = db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE;
-            return currentSessionCode;
+            var today = DateTime.Now;
+            var sessions = db.Session.Where(m => m.SESS_BEGN_DTE.HasValue && m.SESS_END_DTE.HasValue);
+            sessions = sessions.Where(x => today.CompareTo(x.SESS_BEGN_DTE) > 0 && today.CompareTo(x.SESS_END_DTE) < 0 ); // We are assuming sessions don't overlap
+            var currentSession = sessions.FirstOrDefault();
+            // If we are within a session.
+            if(currentSession != null)
+            {
+                return currentSession.SESS_CDE.Trim();
+            }
+            // If the table doesn't have a session for the date we are within
+            else
+            {
+                return db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE.Trim();
+            }
         } 
 
     }
