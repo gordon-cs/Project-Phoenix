@@ -20,7 +20,10 @@
             {
                 if (damage.DamageType.Equals("IMAGE"))
                 {
-                    <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div>
+                    <div class="thumbnail-container">
+                        <img id ="thumbnail-img-@damage.DamageID"class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail">
+                        <div class="delete-icon"><i id="@damage.DamageID" class="material-icons delete">close</i></div>
+                    </div>
                 }
             }
         </div>
@@ -31,7 +34,7 @@
                 {
                     if (damage.DamageType.Equals("IMAGE"))
                     {
-                        <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
+                        <div id="img-slide-@damage.DamageID" class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
                     }
                 }
                 <i class="material-icons backward">navigate_before</i>

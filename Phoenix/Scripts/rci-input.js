@@ -78,8 +78,20 @@ function uploadPhoto() {
                     window.URL.revokeObjectURL(this.src);
                 }
                 img.alt = "Damage Image Thumbnail";
+                
+                // Add the delete icon and wrap it in div for css purposs
+                let $deleteIcon = $("<i>close</i>");
+                $deleteIcon.addClass("material-icons");
+                $deleteIcon.addClass("delete");
+                let $deleteWrapper = $("<div></div>");
+                $deleteWrapper.addClass("delete-icon");
+                $deleteWrapper.append($deleteIcon);
+                
+                // Wrap everything in another div for css purposes
                 let $wrapperDiv = $("<div></div>");
-                $wrapperDiv.append(img)
+                $wrapperDiv.addClass("thumbnail-container");
+                $wrapperDiv.append(img);
+                $wrapperDiv.append($deleteWrapper);
                 previewArea.append($wrapperDiv);
 
                 // Now create and add the image for the modal
@@ -93,14 +105,15 @@ function uploadPhoto() {
                 $newWrapperDiv.append(slideImg);
                 modalArea.append($newWrapperDiv);
 
-                savePhoto(file, rciComponentId);
+                var response = savePhoto(file, rciComponentId, $deleteIcon, img, $newWrapperDiv);
+                console.log(response);
             }
         }
     }
 }
 
 // Send the uploaded photo to the server via AJAX
-function savePhoto(photoFile, fileName) {
+function savePhoto(photoFile, fileName, deleteIcon, imgElement, slideDiv) {
     let formData = new FormData();
     formData.append('file', photoFile, fileName);
 
@@ -110,58 +123,88 @@ function savePhoto(photoFile, fileName) {
         method: "POST",
         processData: false,
         contentType: false,
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log("Status: " + jqXHR.status);
-            console.log("Response Text: " + jqXHR.responseText);
-            console.log(textStatus);
-            console.log(errorThrown);
-        }
+    }).done(function (data) {
+        // the ajax call returns the damage id, so here we set the image's id to be its db DamageId
+        console.log(data);
+        deleteIcon.attr("id", data);
+        imgElement.id = "thumbnail-img-" + data; // This looks different b/c imgElement is not passed as a jQuery obj
+        slideDiv.attr("id", "img-slide-" + data);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        alert("Oops! We were unable to save that image to the database.");
+        console.log("Status: " + jqXHR.status);
+        console.log("Response Text: " + jqXHR.responseText);
+        console.log(textStatus);
+        console.log(errorThrown);
     });
+}
+
+/* Delete a selected photo from the db */
+function deletePhoto(damageId) {
+    $.ajax({
+        url: '/RciInput/DeletePhoto',
+        data: { damageId: damageId },
+        method: "POST"
+    }).done(function (data) {
+        console.log("Successfully deleted.");
+        // Remove the image from the DOM
+        console.log("Damage img: " + $("#thumbnail-img-" + damageId));
+        $("#thumbnail-img-" + damageId).closest(".thumbnail-container").remove(); // Remove the thumbnail image, which was the previous element
+
+        $("#img-slide-" + damageId).remove(); // Remove the slide with this image
+        //$("#" + damageId).remove();
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        alert("Oops! We were unable to delete that image from the database.");
+        console.log("Status: " + jqXHR.status);
+        console.log("Response Text: " + jqXHR.responseText);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
 }
 
 /****** Modal functions ******/
 
-/*
- * Open the picture modal
- */
-function openModal(componentID, slideNum) {
-    $("#modal-" + componentID).show();
-    showSlides(slideNum, "modal-" + componentID);
-}
+///*
+// * Open the picture modal
+// */
+//function openModal(componentID, slideNum) {
+//    $("#modal-" + componentID).show();
+//    showSlides(slideNum, "modal-" + componentID);
+//}
 
-/*
- * Close the picture modal
- */
-function closeModal(modalID) {
-    $("#" + modalID).hide();
-}
+///*
+// * Close the picture modal
+// */
+//function closeModal(modalID) {
+//    $("#" + modalID).hide();
+//}
 
-/*
- * Show the slides in the modal
- */
-var slideIndex = 0;
-// This function increments the slide index (a global variable) by a given value
-function plusSlides(n, modalId) {
-    showSlides(slideIndex += n, modalId);
-}
-// Display the slide, based on the selected image
-function showSlides(slideNumber, modalId) {
-    let slides = $("#" + modalId).find(".img-slide");
-    if (slideNumber >= slides.length)
-    {
-        slideIndex = 0;
-    }
-    else if (slideNumber < 0) {
-        slideIndex = slides.length - 1;
-    }
-    else {
-        slideIndex = slideNumber;
-    }
-    for (var i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-    }
-    slides[slideIndex].style.display = "block";
-}
+///*
+// * Show the slides in the modal
+// */
+//var slideIndex = 0;
+//// This function increments the slide index (a global variable) by a given value
+//function plusSlides(n, modalId) {
+//    showSlides(slideIndex += n, modalId);
+//}
+//// Display the slide, based on the selected image
+//function showSlides(slideNumber, modalId) {
+//    let slides = $("#" + modalId).find(".img-slide");
+//    if (slideNumber >= slides.length)
+//    {
+//        slideIndex = 0;
+//    }
+//    else if (slideNumber < 0) {
+//        slideIndex = slides.length - 1;
+//    }
+//    else {
+//        slideIndex = slideNumber;
+//    }
+//    for (var i = 0; i < slides.length; i++) {
+//        slides[i].style.display = "none";
+//    }
+//    slides[slideIndex].style.display = "block";
+//}
 
 
 /* Add a div to the right component. This div will contain a :
@@ -191,7 +234,6 @@ function deleteExistingDamages(event, element, id)
 }
 
 
-
 /* Register Handers */
 
 
@@ -206,31 +248,37 @@ $(".adding-damages").on("keypress", function (e) {
 // Attach upload photo handler
 $("input[id^='dmg-input']").change(uploadPhoto);
 
+// Handler for deleting photos
+$(".img-thumbnails").on("click", ".delete", function () {
+    console.log($(this));
+    deletePhoto($(this).attr("id"));
+});
+
 // Attach modal handlers (reference: https://www.w3schools.com/howto/howto_js_lightbox.asp)
 
 // For all the thumbnail areas, attach the modal opener to each of its thumbnail images
 
-$(".img-thumbnails").on("click", ".thumbnail", function () {
-    let componentID = $(this).closest(".img-thumbnails").attr("id").substring(12);
-    // Count up all the previous thumbnail images to know what to set the slide index to for the modal
-    let newIndex = $(this).parent().prevAll().length;
-    openModal(componentID, newIndex);
- });
+//$(".img-thumbnails").on("click", ".thumbnail", function () {
+//    let componentID = $(this).closest(".img-thumbnails").attr("id").substring(12);
+//    // Count up all the previous thumbnail images to know what to set the slide index to for the modal
+//    let newIndex = $(this).parent().prevAll().length;
+//    openModal(componentID, newIndex);
+// });
 
 
-$(".material-icons.clear").click(function () {
-    let modalID = $(this).closest(".img-modal").attr("id");
-    console.log(modalID);
-    closeModal(modalID);
-});
+//$(".material-icons.clear").click(function () {
+//    let modalID = $(this).closest(".img-modal").attr("id");
+//    console.log(modalID);
+//    closeModal(modalID);
+//});
 
-$(".forward").click(function () {
-    let modalID = $(this).closest(".img-modal").attr("id");
-    plusSlides(1, modalID);
-});
-$(".backward").click(function () {
-    let modalID = $(this).closest(".img-modal").attr("id");
-    plusSlides(-1, modalID);
-});
+//$(".forward").click(function () {
+//    let modalID = $(this).closest(".img-modal").attr("id");
+//    plusSlides(1, modalID);
+//});
+//$(".backward").click(function () {
+//    let modalID = $(this).closest(".img-modal").attr("id");
+//    plusSlides(-1, modalID);
+//});
 
 

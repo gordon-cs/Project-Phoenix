@@ -7,6 +7,29 @@
             <p><b>Possible places:</b> @Model.RciComponentDescription</p>
         }
         <div class="div-list">
+            <div id="img-preview-@Model.RciComponentID" class="img-thumbnails">
+                @foreach (var damage in Model.Damage)
+            {
+                if (damage.DamageType.Equals("IMAGE"))
+                {
+                        <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div>
+                    }
+                }
+            </div>
+            <div id="modal-@Model.RciComponentID" class="img-modal">
+                <div class="modal-header"><i class="material-icons clear">clear</i></div>
+                <div class="modal-content">
+                    @foreach (var damage in Model.Damage)
+                    {
+                        if (damage.DamageType.Equals("IMAGE"))
+                        {
+                            <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
+                        }
+                    }
+                    <i class="material-icons backward">navigate_before</i>
+                    <i class="material-icons forward">navigate_next</i>
+                </div>
+            </div>
             <div class="div-list-toggle icon-label">
                 <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
                 <span>Hide/Show Existing Damages</span>
