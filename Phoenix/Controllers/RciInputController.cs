@@ -48,12 +48,12 @@ namespace Phoenix.Controllers
             var gordon_id = (string)TempData["id"];
 
             //var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
-            var rci = rciInputService.GetRci(id); 
+            var rci = rciInputService.GetRci(id);
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
                 // Select rooms of common area RCIs to group the RCIs
-                ViewBag.commonRooms = rciInputService.GetCommonRooms(id); 
+                ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
             }
             else
             {
@@ -61,7 +61,7 @@ namespace Phoenix.Controllers
                     .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
             }
-            
+
             return View(rci);
         }
 
@@ -299,6 +299,7 @@ namespace Phoenix.Controllers
             return;
         }
 
+
         /// <summary>
         /// If a photo(s) of a damage was uploaded, this method first creates a new Damage entry in db, then saves the image to the server
         /// For reference, see: http://codepedia.info/upload-image-using-jquery-ajax-asp-net-c-sharp/#jQuery_ajax_call
@@ -348,18 +349,44 @@ namespace Phoenix.Controllers
                     resizedImg.Save(Server.MapPath(imagePath), resizedImg.RawFormat);
 
                     newDamage.DamageImagePath = imagePath;
+                    
                     db.SaveChanges();
 
-                    Response.Write(imagePath);
+                    Response.Write(damageId);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Response.Status = "Error saving photo";
+                Response.Status = "500 Error saving photo";
                 Debug.Write("Error saving photo to database: " + e.Message);
             }
             return;
         }
 
+        /// <summary>
+        /// For a particular damage image, delete the damage entry from the database and delete the photo file from
+        /// server, based on the damageId
+        /// </summary>
+        /// <param name="damageId">The id for the damage that has the associated photo we want to delete</param>
+        [HttpPost]
+        public void DeletePhoto(int damageId) //Hmm, this would be cleaner if we used the damage id
+        {
+            var damage = db.Damage.Where(m => m.DamageID == damageId).FirstOrDefault();
+
+            var filePath = Server.MapPath(damage.DamageImagePath);
+            try
+            {
+                db.Damage.Remove(damage); // Remove from db
+                db.SaveChanges();
+                System.IO.File.Delete(filePath); // Remove from server
+                Response.Status = "200 Successfully deleted.";            
+            }
+            catch(Exception e)
+            {
+                Response.Status = "500 Error saving photo. Error message: " + e.Message;
+            }
+            return;
+
+        }
     }
 }

@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44361</IISExpressSSLPort>
+    <IISExpressSSLPort>44398</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
@@ -190,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\RoomComponents.xml" />
+    <Content Include="Content\Images\Damages\HelloWorld.xml" />
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
     <Content Include="css\rci-checkout.css" />
