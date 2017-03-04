@@ -7,7 +7,6 @@ using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
 using System.Diagnostics;
-using System.Data.Entity.Validation;
 using System;
 using Phoenix.Services;
 using System.Web.UI;

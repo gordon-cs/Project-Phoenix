@@ -11,7 +11,7 @@ namespace Phoenix.Services
         private RCIContext db;
         public RciCheckoutService()
         {
-            db = new Models.RCIContext();
+            db = new RCIContext();
         }
 
         // 

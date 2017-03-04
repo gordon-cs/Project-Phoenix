@@ -84,8 +84,20 @@ namespace Phoenix.Services
 
 
             var role = GetRole(id);
-            var currentBuildingCode = GetCurrentBuilding(id);
-            var currentRoomNumber = GetCurrentRoom(id);
+            var mostRecentRoomAssign = GetCurrentRoomAssign(id);
+
+            string currentBuildingCode = null;
+            string currentRoomNumber = null;
+            DateTime? currentRoomAssignDate = null;
+
+            if (mostRecentRoomAssign != null)
+            {
+                currentBuildingCode = mostRecentRoomAssign.BLDG_CDE.Trim();
+                currentRoomNumber = mostRecentRoomAssign.ROOM_CDE.Trim();
+                currentRoomAssignDate = mostRecentRoomAssign.ASSIGN_DTE;
+            }
+            
+
             List<string> kingdom = null;
             if(role == "RA" || role == "RD")
             {
@@ -110,7 +122,9 @@ namespace Phoenix.Services
                 {"role", role },
                 {"kingdom", kingdom },
                 {"currentRoom", currentRoomNumber},
-                {"currentBuilding",  currentBuildingCode }
+                {"currentBuilding",  currentBuildingCode },
+                {"currentRoomAssignDate", currentRoomAssignDate }
+
             };
 
             string token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
@@ -201,26 +215,16 @@ namespace Phoenix.Services
 
         }
 
-        /* Get the building where the person is currently living */
-        public string GetCurrentBuilding(string id)
+        /* Get the most recent room assign information for the person  */
+        public RoomAssign GetCurrentRoomAssign(string id)
         {
             var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
             if(ResidentEntry != null)
             {
-                return ResidentEntry.BLDG_CDE.Trim();
+                return ResidentEntry;
             }
             return null;
         }
 
-        /* Get the room number where the person is currently living */
-        public string GetCurrentRoom(string id)
-        {
-            var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
-            if (ResidentEntry != null)
-            {
-                return ResidentEntry.ROOM_CDE.Trim();
-            }
-            return null;
-        }
     }
 }

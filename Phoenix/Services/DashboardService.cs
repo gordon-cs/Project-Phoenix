@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System.Diagnostics;
 using System.Xml.Linq;
+using System.Data.SqlClient;
+using System.Web;
 
 namespace Phoenix.Services
 {
@@ -46,9 +47,8 @@ namespace Phoenix.Services
         /*
          * Display all RCI's for the corresponding building 
          * @params: buildingCode - code(s) for the building(s) of the RA or RD's sphere of authority
-         *          gordonId - gordon ID of the RA or RD so that his or her RCI (if applicable) is not included 
          */
-        public IEnumerable<HomeRciViewModel> GetRcisForBuilding(List<string> buildingCode, string gordonId)
+        public IEnumerable<HomeRciViewModel> GetRcisForBuilding(List<string> buildingCode)
         {
             // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
@@ -56,7 +56,6 @@ namespace Phoenix.Services
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
                 from account in rci.DefaultIfEmpty()
                 where buildingCode.Contains(personalRCI.BuildingCode) && personalRCI.IsCurrent == true
-                && personalRCI.GordonID != gordonId
                 select new HomeRciViewModel
                 {
                     RciID = personalRCI.RciID,
@@ -65,42 +64,9 @@ namespace Phoenix.Services
                     FirstName = account.firstname == null ? "Common Area" : account.firstname,
                     LastName = account.lastname == null ? "RCI" : account.lastname
                 };
-            return buildingRCIs;
+            return buildingRCIs.OrderBy(m => m.RoomNumber);
         }
 
-        /*
-         * Resolve inconsistencies in RD building code naming conventions in the db
-         * @params: building code as it appears in CurrentRD table
-         * @return: building codes that correspond to RoomAssign and RCI tables
-         */ 
-        public string [] CollectRDBuildingCodes(string jobTitle)
-        {
-            return (string[])db.BuildingAssign.Where(b => b.JobTitleHall.Equals(jobTitle)).Select(b => b.BuildingCode).ToArray();
-        }
-
-        /*
-         * Create a new RCI for a user
-         * @params: buildingCode - indicates which dorm building
-         *          roomNumber - indicates roomNumber for new RCI
-         *          id - indicates student's id (Note: a null id parameter indicates a common area RCI
-         * @return: id for newly generated RCI
-         */
-        public int GenerateOneRCIinDb(string buildingCode, string roomNumber, string id = null)
-        {
-            var newRCI = new Rci();
-            newRCI.GordonID = id;
-            newRCI.BuildingCode = buildingCode;
-            newRCI.RoomNumber = roomNumber;
-            newRCI.IsCurrent = true;
-            newRCI.CreationDate = DateTime.Now;
-            newRCI.SessionCode = GetCurrentSession();
-
-            db.Rci.Add(newRCI);
-            db.SaveChanges();
-
-            return newRCI.RciID;
-
-        }
 
         /*
          * Create RCI Components that are associated with a single RCI, according to room type
@@ -130,14 +96,6 @@ namespace Phoenix.Services
             return created;
         }
 
-        /*
-         * Check to see if an up-to-date RCI exists for a user
-         */ 
-        public bool CurrentRciExists(IEnumerable<HomeRciViewModel> RCIs, string currentBuildingCode, string roomNumber)
-        {
-            var RCIsForCurrentBuilding = RCIs.Where(m => m.BuildingCode == currentBuildingCode && m.RoomNumber == roomNumber);
-            return RCIsForCurrentBuilding.Any();
-        }
 
         /*
          * Get the current common area RCIs for an apartment
@@ -145,8 +103,10 @@ namespace Phoenix.Services
          *          building - the building where the apartment is located
          * @return: the common area, if any, that was found in the db
          */ 
-        public IEnumerable<HomeRciViewModel> GetCommonAreaRci(string apartmentNumber, string building)
+        public IEnumerable<HomeRciViewModel> GetCommonAreaRci(string currentRoom, string building)
         {
+            var apartmentNumber = currentRoom.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+
             var commonAreaRCIs =
                 from tempCommonAreaRCI in db.Rci
                 where tempCommonAreaRCI.RoomNumber == apartmentNumber && tempCommonAreaRCI.BuildingCode == building
@@ -222,9 +182,218 @@ namespace Phoenix.Services
          */
          public string GetCurrentSession()
         {
-            var currentSessionCode = db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE;
+            var currentSessionCode = db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE.Trim();
             return currentSessionCode;
-        } 
+        }
 
+        /// <summary>
+        /// Make sure the rci table is up to date with the room assign table for the specified kingdom
+        /// </summary>
+        public void SyncRoomRcisFor(List<string> kingdom)
+        {
+            var result = Enumerable.Empty<RoomAssign>();
+            var currentSession = GetCurrentSession();
+
+            // Find the room assign records that are missing rcis
+            foreach (var building in kingdom)
+            {
+                // Create sql parameters that we will pass to the stored procedure
+                var buildingParameter = new SqlParameter("@building", building);
+                var currentSessionParameter = new SqlParameter("@currentSession", currentSession);
+                
+                // call the stored procedure.
+                // We are using a stored procedure here because linq only supports equality joins. This operation uses a greater than join, so we execute it directly.
+                var query = db.Database.SqlQuery<RoomAssign>("FindMissingRcis @building, @currentSession", buildingParameter, currentSessionParameter).AsEnumerable();
+                result = result.Concat(query);
+
+            }
+
+            // Create the rcis
+            var newRcis = new List<Rci>();
+
+            foreach (var roomAssignment in result)
+            {
+                var newRci = CreateRciObject(
+                    roomAssignment.BLDG_CDE.Trim(),
+                    roomAssignment.ROOM_CDE.Trim(),
+                    GetCurrentSession(),
+                    roomAssignment.ID_NUM.ToString());
+
+                newRcis.Add(newRci);
+            }
+
+            db.Rci.AddRange(newRcis);
+
+            db.SaveChanges();
+
+            // Create the components
+            var newComponents = new List<RciComponent>();
+
+            foreach(var rci in newRcis)
+            {
+                newComponents.AddRange(CreateRciComponents(rci.RciID, "individual", rci.BuildingCode));
+            }
+
+            db.RciComponent.AddRange(newComponents);
+            db.SaveChanges();
+        }
+
+        /// <summary>
+        /// Make sure the rci table is up to date with the room assign table for the specified room
+        /// </summary>
+        public void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber, DateTime? roomAssignDate)
+        {
+            // Find all rcis for the person
+            var myRcis =
+                from rci in db.Rci
+                where rci.GordonID == idNumber
+                && rci.BuildingCode == buildingCode
+                && rci.RoomNumber == roomNumber
+                select rci;
+            // Get most recent rci.
+            var mostRecentRci = myRcis.OrderByDescending(m => m.CreationDate).FirstOrDefault();
+
+
+            var createNewRci = false;
+
+            // There are room assign records for this person but no rcis.
+            if(mostRecentRci == null && roomAssignDate != null) 
+            {
+                createNewRci = true;
+            }
+            // This will happen if there is no room assign record for the person
+            else if(mostRecentRci != null && roomAssignDate == null)
+            {
+                createNewRci = false;
+            }
+            // Both values are non-null.
+            else
+            {
+                // Compare Creation date of rci and assign date of room assign record
+                createNewRci = mostRecentRci.CreationDate < roomAssignDate;
+            }
+            
+            if(createNewRci)
+            {
+                var newRci = CreateRciObject(
+                    buildingCode,
+                    roomNumber,
+                    GetCurrentSession(),
+                    idNumber);
+
+                db.Rci.Add(newRci);
+                db.SaveChanges();
+
+                // Create Components
+                db.RciComponent.AddRange(CreateRciComponents(newRci.RciID, "individual", newRci.BuildingCode));
+                db.SaveChanges();
+
+                
+            }
+        }
+
+        /// <summary>
+        /// Create rci records that correspond to common areas in the Room table for the list of buildings we are given.
+        /// End result: All rooms will have corresponding rci records that are current.
+        /// </summary>
+        public void SyncCommonAreaRcisFor(List<string> kingdom)
+        {
+            var query =
+                from rm in db.Room
+                join rci in db.Rci
+                on new { buildingCode = rm.BLDG_CDE.Trim(), roomNumber = rm.ROOM_CDE.Trim() } equals new { buildingCode = rci.BuildingCode, roomNumber = rci.RoomNumber } into matchedRcis
+                from temp in matchedRcis.DefaultIfEmpty()
+                where rm.MAX_CAPACITY == 0 // This is how we narrow down to the rooms that are actually common areas.
+                    && rm.ROOM_GENDER == null
+                    && temp == null // select the records that were unmatched by the rci table
+                    && kingdom.Contains(rm.BLDG_CDE.Trim())
+                select rm;
+
+            var newCommonAreaRcis = new List<Rci>();
+
+            foreach(var room in query)
+            {
+                var newCommonAreaRci = CreateRciObject(
+                    room.BLDG_CDE.Trim(),
+                    room.ROOM_CDE.Trim(),
+                    GetCurrentSession());
+
+                newCommonAreaRcis.Add(newCommonAreaRci);
+            }
+
+            db.Rci.AddRange(newCommonAreaRcis);
+
+            db.SaveChanges();
+
+            // Create components
+            var newRciComponents = new List<RciComponent>();
+            foreach(var rci in newCommonAreaRcis)
+            {
+                newRciComponents.AddRange(CreateRciComponents(rci.RciID, "common", rci.BuildingCode));
+            }
+
+            db.RciComponent.AddRange(newRciComponents);
+            db.SaveChanges();
+
+        }
+
+        /// <summary>
+        /// Create rci records that correspond to common areas in the Room table for the specified room.
+        /// End result: If there isn't a common area rci associated with the given room, always create one.
+        /// </summary>
+        public void SyncCommonAreaRcisFor(string buildingCode, string roomNumber)
+        {
+            var apartmentNumber = roomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+
+            // No need to check if it is an apartment. If it isn't an apartment, the result of the query will be empty.
+            var query =
+                from rm in db.Room
+                join rci in db.Rci
+                on new { buildingCode = rm.BLDG_CDE.Trim(), roomNumber = rm.ROOM_CDE.Trim() } equals new { buildingCode = rci.BuildingCode, roomNumber = rci.RoomNumber } into matchedRcis
+                from temp in matchedRcis.DefaultIfEmpty()
+                where rm.MAX_CAPACITY == 0 // This is how we narrow down to the rooms that are actually common areas.
+                    && rm.ROOM_GENDER == null
+                    && temp == null // select the records that were unmatched by the rci table
+                    && rm.BLDG_CDE.Trim() == buildingCode
+                    && rm.ROOM_CDE.Trim() == apartmentNumber
+                select rm;
+
+            // There is a common area rci to create if the query has any results
+            var createCommonAreaRci = query.Any();
+
+            if(createCommonAreaRci)
+            {
+                var commonAreaRoom = query.FirstOrDefault();
+                    
+                var commonAreaRci = CreateRciObject(
+                    commonAreaRoom.BLDG_CDE.Trim(),
+                    commonAreaRoom.ROOM_CDE.Trim(),
+                    GetCurrentSession());
+
+                db.Rci.Add(commonAreaRci);
+                db.SaveChanges();
+
+                // Create Components
+                db.RciComponent.AddRange(CreateRciComponents(commonAreaRci.RciID, "common", commonAreaRci.BuildingCode));
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Helper method to create and return an Rci Object. Makes no calls to the database
+        /// </summary>
+        public Rci CreateRciObject(string buildingCode, string roomNumber, string sessionCode, string idNumber = null)
+        {
+            var rci = new Rci
+            {
+                IsCurrent = true,
+                BuildingCode = buildingCode,
+                RoomNumber = roomNumber,
+                SessionCode = sessionCode,
+                GordonID = idNumber,
+                CreationDate = DateTime.Now
+            };
+            return rci;
+        }
     }
 }
