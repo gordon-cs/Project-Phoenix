@@ -76,7 +76,7 @@ namespace Phoenix.Services
                 ContextOptions.SimpleBind | ContextOptions.SecureSocketLayer);
         }
 
-        public string GenerateToken(string username, string name, string id)
+        public string GenerateToken(string username, string id)
         {
             // Add some code here to check the db to see if user has admin permissions
             // Right now just hardcode to true for test purposes
@@ -103,7 +103,9 @@ namespace Phoenix.Services
             {
                 kingdom = GetKingdom(id); // The buildings for which you are responsible
             }
-            
+
+            var account = db.Account.Where(m => m.ID_NUM == id).FirstOrDefault();
+            var name = account.firstname + " " + account.lastname;
 
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
