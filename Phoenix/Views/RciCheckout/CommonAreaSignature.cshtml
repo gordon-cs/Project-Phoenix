@@ -16,6 +16,15 @@
 <div class="view">
     <div class="pane">
         <div class="pane-content">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="error-message">
+                    @foreach (var error in ViewBag.ErrorMessage)
+                    {
+                        <p>@error</p>
+                    }
+                </div>
+            }
             @using (Html.BeginForm(actionName: "CommonAreaSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
@@ -31,22 +40,15 @@
                         }
                         else
                         {
-                            <p>I hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
+                            <p>I, @person.FirstName @person.LastName, hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
                             <div class="divAddOn">
                                 <input class="divAddOn-field" name="signature" type="text" placeholder="@person.FirstName @person.LastName" />
                             </div>
                         }
                     }
-                    @if (ViewBag.ErrorMessage != null)
-                    {
-                        foreach (var error in ViewBag.ErrorMessage)
-                        { 
-                            <div>@error</div>
-                        }
-                    }
                 </div>
                 <div class="distribute-evenly">
-                    <input type="submit" value="Next" />
+                    <input type="submit" value="OK" />
                 </div>
             }
         </div>

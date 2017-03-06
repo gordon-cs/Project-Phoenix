@@ -83,25 +83,32 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult CommonAreaSignature(int id, string[] signature)
         {
-            HashSet<string> signatures = new HashSet<string>(signature);
-            signatures.Remove(""); // Remove empty strings.
+            var  signatures = new List<string>(signature);
+            signatures.RemoveAll( x => x == ""); // Remove empty strings.
+
+            for (var i = 0; i < signatures.Count; i++)
+            {
+                signatures[i] = signatures[i].ToLower();
+            }
+            
 
             var rci = checkoutService.GetCommonAreaRciByID(id);
 
             if (rci.EveryoneHasSigned()) // Already signed
             {
-                    return RedirectToAction("RASignatureIndividual", new { id = id });
+                    return RedirectToAction("RASignature", new { id = id });
             }
 
             // Not yet signed
             foreach (var member in rci.CommonAreaMember)
             {
-                if(!member.HasSignedCommonAreaRci)
+                var expectedSignature = member.FirstName.ToLower() + " " + member.LastName.ToLower();
+                if(signatures.Contains(expectedSignature))
                 {
-                    var expectedSignature = member.FirstName.ToLower() + " " + member.LastName.ToLower();
-                    if(signatures.Contains(expectedSignature))
+                    signatures.Remove(expectedSignature);
+
+                    if(!member.HasSignedCommonAreaRci)
                     {
-                        signatures.Remove(expectedSignature);
                         checkoutService.CheckoutCommonAreaMemberSignRci(id, member.GordonID);
                     }
                 }
@@ -115,7 +122,8 @@ namespace Phoenix.Controllers
                 {
                     errorMessages.Add("The name " + sig + " does not match.");
                 }
-                ViewBag.ErrorMessages = errorMessages;
+                ViewBag.ErrorMessage = errorMessages;
+                rci = checkoutService.GetCommonAreaRciByID(id); // Reload the rci to reflect those who have already signed.
                 return View(rci);
             }
 
@@ -177,7 +185,7 @@ namespace Phoenix.Controllers
         {
             var raName = (string)TempData["user"];
             ViewBag.ExpectedSignature = raName;
-            var rci = checkoutService.GetIndividualRoomRciByID(id);
+            var rci = checkoutService.GetGenericCheckoutRciByID(id);
             return View(rci);
         }
 
@@ -185,11 +193,11 @@ namespace Phoenix.Controllers
         /// Verify the RA's signature
         /// </summary>
         [HttpPost]
-        public ActionResult RASignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
+        public ActionResult RASignature(int id, string signature)
         {
             var role = (string)TempData["role"];
 
-            var rci = checkoutService.GetIndividualRoomRciByID(id);
+            var rci = checkoutService.GetGenericCheckoutRciByID(id);
             if(rci.CheckoutSigRA != null) // Already signed
             {
                 return RedirectToAction("RDSignature", new { id = id });
@@ -201,15 +209,6 @@ namespace Phoenix.Controllers
                 ViewBag.ExpectedSignature = (string)TempData["user"];
                 ViewBag.ErrorMessage = "The Signatures did not match! The signature should match the name indicated.";
                 return View(rci);
-            }
-
-            if(improperCheckout)
-            {
-                checkoutService.SetImproperCheckout(id);
-            }
-            if(lostKey)
-            {
-                checkoutService.SetLostKeyFine(id, lostKeyFine);
             }
 
             checkoutService.CheckoutRASignRci(rci.RciID, (string)TempData["id"]);
@@ -225,7 +224,7 @@ namespace Phoenix.Controllers
         {
             var rdName = (string)TempData["user"];
             ViewBag.ExpectedSignature = rdName;
-            var rci = checkoutService.GetIndividualRoomRciByID(id);
+            var rci = checkoutService.GetGenericCheckoutRciByID(id);
             return View(rci);
         }
 
@@ -234,9 +233,9 @@ namespace Phoenix.Controllers
         /// </summary>
         [HttpPost]
         [RD]
-        public ActionResult RDSignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
+        public ActionResult RDSignature(int id, string signature)
         {
-            var rci = checkoutService.GetIndividualRoomRciByID(id);
+            var rci = checkoutService.GetGenericCheckoutRciByID(id);
             if (rci.CheckoutSigRD != null) // Already signed
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
@@ -248,15 +247,6 @@ namespace Phoenix.Controllers
                 ViewBag.ExpectedSignature = (string)TempData["user"];
                 ViewBag.ErrorMessage = "The Signatures did not match! The signature should match the name indicated.";
                 return View(rci);
-            }
-
-            if (improperCheckout)
-            {
-                checkoutService.SetImproperCheckout(id);
-            }
-            if (lostKey)
-            {
-                checkoutService.SetLostKeyFine(id, lostKeyFine);
             }
 
             checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);

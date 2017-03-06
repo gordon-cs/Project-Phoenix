@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.ViewModels.CheckoutIndividualRoomRciViewModel
+﻿@model Phoenix.Models.ViewModels.GenericCheckoutViewModel
 
 @{
     ViewBag.Title = "Checkout";
@@ -16,31 +16,22 @@
 <div class="view">
     <div class="pane">
         <div class="pane-content">
+            <div class="error-message">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
             @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
                     @if (Model.CheckoutSigRD == null)
                     {
-                        <div class="divAddOn">
-                            <div class="divAddOn-item"><input type="checkbox" name="improperCheckout" value="true" /></div>
-                            <div class="divAddOn-field">Improper Checkout</div>
-                        </div>
-                        <div class="divAddOn">
-                            <div class="divAddOn-item"><input type="checkbox" name="lostKey" value="true" /></div>
-                            <div class="divAddOn-field">Lost Keys</div>
-                            <div class="divAddOn-item">$</div>
-                            <input class="lost-key-fine divAddOn-item" name="lostKeyFine" type="number" placeholder="2.00" />
-                        </div>
-
-                        <p>I hereby agree to the fines assessed by the RA.</p>
+                        <p>I, @ViewBag.ExpectedSignature, hereby agree to the fines assessed by the RA.</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />
                         </div>
-                        <div>@ViewBag.ErrorMessage</div>
                     }
                     else
                     {
-                        <p>This RCI has been signed by the Resident Director for @Model.FirstName @Model.LastName</p>
+                        <p>This RCI has been signed by the Resident Director</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.CheckoutSigRDName" />
                             <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRD" />

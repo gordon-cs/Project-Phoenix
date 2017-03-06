@@ -16,16 +16,18 @@
 <div class="view">
     <div class="pane">
         <div class="pane-content">
+            <div class="error-message">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
             @using (Html.BeginForm(actionName: "ResidentSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
                     @if (Model.CheckoutSigRes == null)
                     {
-                        <p>I hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
+                        <p>I, @Model.FirstName @Model.LastName, hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@Model.FirstName @Model.LastName" />
                         </div>
-                        <div>@ViewBag.ErrorMessage</div>
                     }
                     else
                     {
