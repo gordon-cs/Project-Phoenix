@@ -51,6 +51,7 @@
     background-color: #ebeaea;
     display: flex;
     flex-direction: column;
+    height: 100%;
     width: 100%;
 }
 
@@ -405,8 +406,10 @@ div.icon-label {
      display: flex;
      flex-direction: column;
      justify-content: center;
+     margin-left:auto;
+     margin-right:auto;
      padding: 2em;
-     width: 100%;
+     width: 300px;
  }
 
  .login-container  input[type=text],
@@ -430,6 +433,7 @@ div.icon-label {
      border: 1px solid #ccc;
      border-radius: 0 0 3px 3px;
      box-shadow: none;
+     padding: 0.5em;
      width: 100%;  
 }
 
