@@ -14,7 +14,7 @@ namespace Phoenix.Filters
             var isRD = role == "RD";
             var isAdmin = role == "ADMIN";
 
-            if (!isRD || isAdmin)
+            if (!(isRD || isAdmin))
             {
                 filterContext.Result = new RedirectToRouteResult(
                     new System.Web.Routing.RouteValueDictionary(

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace Phoenix.Filters
 {
@@ -15,7 +11,7 @@ namespace Phoenix.Filters
             var isRA = role == "RA";
             var isAdmin = role == "ADMIN";
 
-            if (!isRD || !isRA || isAdmin)
+            if (!(isRD || isRA || isAdmin))
             {
                 filterContext.Result = new RedirectToRouteResult(
                     new System.Web.Routing.RouteValueDictionary(
