@@ -28,7 +28,6 @@
                                 <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@person.FirstName @person.LastName" />
                                 <input class="divAddOn-item" type="text" disabled value="@person.Signature" />
                             </div>
-                            <div>@ViewBag.ErrorMessage</div>
                         }
                         else
                         {
@@ -36,7 +35,13 @@
                             <div class="divAddOn">
                                 <input class="divAddOn-field" name="signature" type="text" placeholder="@person.FirstName @person.LastName" />
                             </div>
-                            <div>@ViewBag.ErrorMessage</div>
+                        }
+                    }
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        foreach (var error in ViewBag.ErrorMessage)
+                        { 
+                            <div>@error</div>
                         }
                     }
                 </div>

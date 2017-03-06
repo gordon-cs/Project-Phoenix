@@ -16,7 +16,7 @@
 <div class="view">
     <div class="pane">
         <div class="pane-content">
-            @using (Html.BeginForm(actionName: "RDSignatureIndividual", controllerName: "RciCheckout", method: FormMethod.Post))
+            @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
                     @if (Model.CheckoutSigRD == null)
@@ -45,7 +45,6 @@
                             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.CheckoutSigRDName" />
                             <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRD" />
                         </div>
-                        <div>@ViewBag.ErrorMessage</div>
                     }
                 </div>
                 <div class="distribute-evenly">

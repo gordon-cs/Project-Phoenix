@@ -19,5 +19,18 @@ namespace Phoenix.Models.ViewModels
         public string CheckoutSigRAGordonID { get; set; }
         public string CheckoutSigRDName { get; set; }
         public string CheckoutSigRDGordonID { get; set; }
+
+        public bool EveryoneHasSigned()
+        {
+            var everyoneHasSigned = true;
+            foreach(var member in CommonAreaMember)
+            {
+                if(member.HasSignedCommonAreaRci == false)
+                {
+                    everyoneHasSigned = false;
+                }
+            }
+            return everyoneHasSigned;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using Phoenix.Models.ViewModels;
 using Phoenix.Services;
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace Phoenix.Controllers
@@ -75,27 +76,68 @@ namespace Phoenix.Controllers
         }
 
         /// <summary>
-        /// Verify the common area signatures
+        /// Verify the common area signatures.
+        /// Once everyone has signed, the CheckoutSigRes column is filled.
         /// </summary>
         [HttpPost]
-        public void CommonAreaSignature()
+        public ActionResult CommonAreaSignature(int id, string[] signature)
         {
+            HashSet<string> signatures = new HashSet<string>(signature);
+            signatures.Remove(""); // Remove empty strings.
+
+            var rci = checkoutService.GetCommonAreaRciByID(id);
+
+            if (rci.EveryoneHasSigned()) // Already signed
+            {
+                    return RedirectToAction("RASignatureIndividual", new { id = id });
+            }
+
+            // Not yet signed
+            foreach (var member in rci.CommonAreaMember)
+            {
+                if(!member.HasSignedCommonAreaRci)
+                {
+                    var expectedSignature = member.FirstName.ToLower() + " " + member.LastName.ToLower();
+                    if(signatures.Contains(expectedSignature))
+                    {
+                        signatures.Remove(expectedSignature);
+                        checkoutService.CheckoutCommonAreaMemberSignRci(id, member.GordonID);
+                    }
+                }
+            }
+            
+            // There were some signatures that were submitted, but did not match
+            if(signatures.Count > 0) 
+            {
+                var errorMessages = new List<string>();
+                foreach(var sig in signatures)
+                {
+                    errorMessages.Add("The name " + sig + " does not match.");
+                }
+                ViewBag.ErrorMessages = errorMessages;
+                return View(rci);
+            }
+
+            // If at the end of the loop, the boolean is still true, then everyone has signed.
+            if(rci.EveryoneHasSigned())
+            {
+                checkoutService.CheckoutResidentSignRci(id); // This is set once everybody has signed
+                return RedirectToAction("RASignature", new { id = id });
+            }
+            else
+            {
+                return RedirectToAction(controllerName: "Dashboard", actionName: "Index");
+            }
 
         }
+
+
         /// <summary>
         /// Return the html view where a resident can sign to checkout
         /// </summary>
         [HttpGet]
         public ActionResult ResidentSignature(int id)
         {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
             var rci = checkoutService.GetIndividualRoomRciByID(id);
             return View(rci);
         }
@@ -106,20 +148,11 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult ResidentSignature(int id, string signature)
         {
-            var role = (string)TempData["role"];
-
             var rci = checkoutService.GetIndividualRoomRciByID(id);
+
             if(rci.CheckoutSigRes != null) // Already signed
             {
-                if(role == "Resident")
-                {
-                    return RedirectToAction(controllerName:"Dashboard", actionName:"Index");
-                }
-                else
-                {
-                    return RedirectToAction("RASignatureIndividual", new { id = id });
-                }
-                
+                    return RedirectToAction("RASignature", new { id = id });
             }
 
             // Not yet signed.
@@ -130,37 +163,18 @@ namespace Phoenix.Controllers
                 return View(rci);
             }
 
-            checkoutService.CheckoutResidentSignRci(rci);
-
-            if (role == "Resident")
-            {
-                return RedirectToAction(controllerName: "Dashboard", actionName: "Index");
-            }
-            else
-            {
-                return RedirectToAction("RASignatureIndividual", new { id = id });
-            }
+            checkoutService.CheckoutResidentSignRci(rci.RciID);
+            return RedirectToAction("RASignature", new { id = id });
         }
+
 
         /// <summary>
         /// Return the html view where an RA can sign to checkout a resident.
         /// </summary>
         [HttpGet]
-        public ActionResult RASignatureIndividual(int id)
+        [ResLifeStaff]
+        public ActionResult RASignature(int id)
         {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("ResidentSignature", new { id = id });
-            }
-
             var raName = (string)TempData["user"];
             ViewBag.ExpectedSignature = raName;
             var rci = checkoutService.GetIndividualRoomRciByID(id);
@@ -171,21 +185,15 @@ namespace Phoenix.Controllers
         /// Verify the RA's signature
         /// </summary>
         [HttpPost]
-        public ActionResult RASignatureIndividual(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
+        [ResLifeStaff]
+        public ActionResult RASignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
         {
             var role = (string)TempData["role"];
 
             var rci = checkoutService.GetIndividualRoomRciByID(id);
             if(rci.CheckoutSigRA != null) // Already signed
             {
-                if(role == "RD" || role == "ADMIN")
-                {
-                    return RedirectToAction("RDSignatureIndividual", new { id = id });
-                }
-                else
-                {
-                    return RedirectToAction(controllerName: "Dashboard", actionName: "Index");
-                }
+                return RedirectToAction("RDSignature", new { id = id });
             }
 
             var signatureMatch = (((string)TempData["user"]).ToLower()).Equals(signature.ToLower());
@@ -204,42 +212,18 @@ namespace Phoenix.Controllers
             {
                 checkoutService.SetLostKeyFine(id, lostKeyFine);
             }
-            checkoutService.CheckoutRASignRci(rci,(string)TempData["user"], (string)TempData["id"]);
 
-            if (role == "RD" || role == "ADMIN")
-            {
-                return RedirectToAction("RDSignatureIndividual", new { id = id });
-            }
-            else
-            {
-                return RedirectToAction(controllerName: "Dashboard", actionName: "Index");
-            }
+            checkoutService.CheckoutRASignRci(rci.RciID, (string)TempData["id"]);
+            return RedirectToAction("RDSignature", new { id = id });
         }
 
         /// <summary>
         /// Return the html view where an RD can sign to checkout a resident.
         /// </summary>
         [HttpGet]
-        public ActionResult RDSignatureIndividual(int id)
+        [ResLifeStaff]
+        public ActionResult RDSignature(int id)
         {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
-            if (role.Equals("RA"))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
             var rdName = (string)TempData["user"];
             ViewBag.ExpectedSignature = rdName;
             var rci = checkoutService.GetIndividualRoomRciByID(id);
@@ -250,7 +234,8 @@ namespace Phoenix.Controllers
         /// Verify the RD's signature
         /// </summary>
         [HttpPost]
-        public ActionResult RDSignatureIndividual(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
+        [ResLifeStaff]
+        public ActionResult RDSignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
         {
             var rci = checkoutService.GetIndividualRoomRciByID(id);
             if (rci.CheckoutSigRD != null) // Already signed
@@ -274,7 +259,8 @@ namespace Phoenix.Controllers
             {
                 checkoutService.SetLostKeyFine(id, lostKeyFine);
             }
-            checkoutService.CheckoutRDSignRci(rci,(string)TempData["user"],(string)TempData["id"]);
+
+            checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
     }

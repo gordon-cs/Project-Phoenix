@@ -1,5 +1,6 @@
 ﻿using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -223,11 +224,26 @@ namespace Phoenix.Services
         }
 
         /// <summary>
+        /// Let the indicated resident sign the rci. This signature is represented by adding a record to the
+        /// CommonAreaRciSignature table.
+        /// </summary>
+        public void CheckoutCommonAreaMemberSignRci(int rciID, string gordonID)
+        {
+            var signature = new CommonAreaRciSignature
+            {
+                RciID = rciID,
+                GordonID = gordonID,
+                Signature = DateTime.Now
+            };
+            db.CommonAreaRciSignature.Add(signature);
+            db.SaveChanges();
+        }
+        /// <summary>
         /// Sign the resident portion of the rci during the checkout process
         /// </summary>
-        public void CheckoutResidentSignRci(CheckoutIndividualRoomRciViewModel rciViewModel)
+        public void CheckoutResidentSignRci(int rciID)
         {
-            var rci = db.Rci.Find(rciViewModel.RciID);
+            var rci = db.Rci.Find(rciID);
 
             rci.CheckoutSigRes = System.DateTime.Today;
 
@@ -238,9 +254,9 @@ namespace Phoenix.Services
         /// <summary>
         /// Sign the RA portion of the rci during the checkout process
         /// </summary>
-        public void CheckoutRASignRci(CheckoutIndividualRoomRciViewModel rciViewModel, string raName, string raGordonID)
+        public void CheckoutRASignRci(int rciID, string raGordonID)
         {
-            var rci = db.Rci.Find(rciViewModel.RciID);
+            var rci = db.Rci.Find(rciID);
 
             rci.CheckoutSigRA = System.DateTime.Today;
             rci.CheckoutSigRAGordonID = raGordonID;
@@ -252,9 +268,9 @@ namespace Phoenix.Services
         /// <summary>
         /// Sign the RD portion of the rci during the checkout process and make the rci non-current.
         /// </summary>
-        public void CheckoutRDSignRci(CheckoutIndividualRoomRciViewModel rciViewModel, string rdName, string rdGordonID)
+        public void CheckoutRDSignRci(int rciID, string rdGordonID)
         {
-            var rci = db.Rci.Find(rciViewModel.RciID);
+            var rci = db.Rci.Find(rciID);
 
             rci.CheckoutSigRD = System.DateTime.Today;
             rci.CheckoutSigRDGordonID = rdGordonID;
