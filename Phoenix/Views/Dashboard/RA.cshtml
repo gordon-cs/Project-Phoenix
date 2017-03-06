@@ -31,34 +31,36 @@
         
                 @foreach (var rci in Model)
                 {
-                    <div class="divAddOn-vert">
-                        <div class="divAddOn-vert-field search-field">
-                            <p>@rci.BuildingCode @rci.RoomNumber</p>
-                            <p>@rci.FirstName @rci.LastName</p>
-                        </div>
-                        <div class="divAddOn-vert-row">
-                            @*<a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                                <div>
-                                    <i class="material-icons">mode_edit</i>
-                                </div>
-                            </a>*@
-                            <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                                Checkout
-                                @*<div>
-                                    <i class="material-icons">attach_money</i>
-                                </div>*@
+                    <div class="divAddOn-vert-field">
+                        <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                            <div class="divAddOn-vert search-field">
+                                <p>@rci.BuildingCode @rci.RoomNumber</p>
+                                <p>@rci.FirstName @rci.LastName</p>
+                            </div>
                             </a>
-                            @if (rci.FirstName != "Common Area")
-                            {
-                                <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
-                                    Swap Furniture
-                                    @*<div>
-                                        <i class="material-icons">swap_horiz</i>
-                                    </div>*@
-                                </a>
-                            }
-                        </div>
+                            <div class="divAddOn-vert-row">
+                                @*<a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                    <div>
+                        <i class="material-icons">mode_edit</i>
                     </div>
+                </a>*@
+                                <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
+                                    Checkout
+                                    @*<div>
+                        <i class="material-icons">attach_money</i>
+                    </div>*@
+                                </a>
+                                @if (rci.FirstName != "Common Area")
+                                {
+                                    <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
+                                        Swap Furniture
+                                        @*<div>
+                            <i class="material-icons">swap_horiz</i>
+                        </div>*@
+                                    </a>
+                                }
+                            </div>
+</div>
                 }
 
         }

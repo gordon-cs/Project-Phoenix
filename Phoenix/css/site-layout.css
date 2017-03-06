@@ -135,7 +135,7 @@
      }
 
         .pane-title {
-            padding: 7px;
+            padding: .45em;
             text-align: center;
         }
         .pane-content {
@@ -477,7 +477,9 @@ a.button {
 }
 
 @media only screen and (min-width: 980px) {
-    
+    #content {
+        width: 65%;
+    }
     .logo-box {
         left: 10%;
     }
