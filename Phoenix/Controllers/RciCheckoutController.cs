@@ -8,6 +8,7 @@ using System.Web.Mvc;
 namespace Phoenix.Controllers
 {
     [CustomAuthentication]
+    [ResLifeStaff]
     public class RciCheckoutController : Controller
     {
         private RciCheckoutService checkoutService;
@@ -172,7 +173,6 @@ namespace Phoenix.Controllers
         /// Return the html view where an RA can sign to checkout a resident.
         /// </summary>
         [HttpGet]
-        [ResLifeStaff]
         public ActionResult RASignature(int id)
         {
             var raName = (string)TempData["user"];
@@ -185,7 +185,6 @@ namespace Phoenix.Controllers
         /// Verify the RA's signature
         /// </summary>
         [HttpPost]
-        [ResLifeStaff]
         public ActionResult RASignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
         {
             var role = (string)TempData["role"];
@@ -221,7 +220,7 @@ namespace Phoenix.Controllers
         /// Return the html view where an RD can sign to checkout a resident.
         /// </summary>
         [HttpGet]
-        [ResLifeStaff]
+        [RD]
         public ActionResult RDSignature(int id)
         {
             var rdName = (string)TempData["user"];
@@ -234,7 +233,7 @@ namespace Phoenix.Controllers
         /// Verify the RD's signature
         /// </summary>
         [HttpPost]
-        [ResLifeStaff]
+        [RD]
         public ActionResult RDSignature(int id, string signature, DateTime date, bool improperCheckout = false, bool lostKey = false, decimal lostKeyFine = 0.00M)
         {
             var rci = checkoutService.GetIndividualRoomRciByID(id);
