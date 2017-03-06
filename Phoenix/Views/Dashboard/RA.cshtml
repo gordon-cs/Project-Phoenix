@@ -4,6 +4,7 @@
     ViewBag.Title = "RCI-Dashboard";
     ViewBag.ViewTitle = "RCI Dashboard";
     ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
 }
 
 @section Styles {
@@ -28,34 +29,38 @@
             <div class="divAddOn-item"><i class="material-icons">search</i></div>
         </div>
         
-        @foreach (var rci in Model)
-        {
-            <div class="divAddOn-vert">
-                <div class="divAddOn-vert-field search-field">
-                    <p>@rci.BuildingCode @rci.RoomNumber</p>
-                    <p>@rci.FirstName @rci.LastName</p>
-                </div>
-                <div class="divAddOn-vert-row">
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                        <div>
-                            <i class="material-icons">mode_edit</i>
+                @foreach (var rci in Model)
+                {
+                    <div class="divAddOn-vert">
+                        <div class="divAddOn-vert-field search-field">
+                            <p>@rci.BuildingCode @rci.RoomNumber</p>
+                            <p>@rci.FirstName @rci.LastName</p>
                         </div>
-                    </a>
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                        <div>
-                            <i class="material-icons">attach_money</i>
+                        <div class="divAddOn-vert-row">
+                            @*<a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                                <div>
+                                    <i class="material-icons">mode_edit</i>
+                                </div>
+                            </a>*@
+                            <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
+                                Checkout
+                                @*<div>
+                                    <i class="material-icons">attach_money</i>
+                                </div>*@
+                            </a>
+                            @if (rci.FirstName != "Common Area")
+                            {
+                                <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
+                                    Swap Furniture
+                                    @*<div>
+                                        <i class="material-icons">swap_horiz</i>
+                                    </div>*@
+                                </a>
+                            }
                         </div>
-                    </a>
-                    @if (rci.FirstName != "Common Area")
-                    {
-                        <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
-                            <div>
-                                <i class="material-icons">swap_horiz</i>
-                            </div>
-                        </a>
-                    }
-                </div>
-            </div>
+                    </div>
+                }
+
         }
     </div> 
 </div>

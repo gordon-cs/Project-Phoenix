@@ -12,18 +12,27 @@
  }
 
  #header {
-     background-color: #FDB913; 
+     background-color: #31342B; 
      color: #fff;
  }
 
  #content {
-     background-color: #fff;
+     /*background-color: #fff;*/
+ }
+
+ .login-container > button {
+     background-color: #014983;
+     color: #fff;
  }
 
  .file-input-label {
      background-color: #31342b;
      color: #fff;
  }
+
+button.dropdown {
+    color: #fff;
+}
  
  /*button {
      background-color: #014983;
@@ -41,13 +50,23 @@
      background-color: #fff;
  }
  .pane-title {
-     color: #00AEEF;
- }
-
- /*.divAddOn-field {
      background-color: #014983;
      color: #fff;
- }*/
+ }
+
+ .divAddOn-vert {
+     background-color: #014983;
+     color: #fff;
+ }
+
+ .divAddOn-vert-row {
+     background-color: #fff;
+     color: #000;
+ }
+
+ .divAddOn-vert-row a {
+     color: #31342b;
+ }
 
  a .material-icons {
      color: #014983;

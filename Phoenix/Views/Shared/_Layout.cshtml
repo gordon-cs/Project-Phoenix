@@ -16,13 +16,14 @@
     @Scripts.Render("~/bundles/js/jquery")
     <div id="page-container">
         <header id="header">
+            <div class="logo-box"><img src="~/Content/Images/gordon-logo-horizontal.svg" /></div>
             <div class="view-title">
-                <h2>@ViewBag.ViewTitle</h2>
+                <h2>Online RCI</h2>
             </div>
             @if (ViewBag.MenuExists != null)
             {
-                <button class="view-drawer">
-                    <i class="material-icons">more_vert</i>
+                <button class="dropdown">
+                    <p class="uppercase username">@ViewBag.Name<i class="material-icons">keyboard_arrow_down</i></p>    
                 </button>
             }
         </header>
