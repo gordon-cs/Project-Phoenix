@@ -41,7 +41,7 @@
  * .............. login-form
  * .............. a.button
  * .............. lift
- *
+ * .............. error-message
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -443,6 +443,17 @@ a.button {
  */
 .lift {
     box-shadow: 0 0 9px 0 #ddd;
+}
+
+
+/* Error Message Box*/
+
+.error-message{
+    margin: 0.5em;
+}
+.error-message > div,
+.error-message > p {
+    padding: 0.5em;
 }
 
 
