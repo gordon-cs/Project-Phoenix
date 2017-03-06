@@ -12,6 +12,6 @@ namespace Phoenix.Models.ViewModels
         public string LastName { get; set; }
         public string BuildingCode { get; set; }
         public string RoomNumber { get; set; }
-        public string GordonID { get; set; }
+        public string CheckinSigRDGordonID { get; set; }
     }
 }

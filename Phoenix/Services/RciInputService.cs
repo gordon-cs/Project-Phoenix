@@ -20,8 +20,29 @@ namespace Phoenix.Services
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             return rci;
         }
-        
-        public IEnumerable<SignAllRDViewModel> GetRcis(string gordonID)
+
+        public IEnumerable<SignAllRDViewModel> GetRcisForBuilding(List<string> buildingCode)
+        {
+            // Not sure if this will end up with duplicates for the RA's own RCI
+            var buildingRCIs =
+                from r in db.Rci
+                join account in db.Account on r.GordonID equals account.ID_NUM into rci
+                from account in rci.DefaultIfEmpty()
+                where buildingCode.Contains(r.BuildingCode) && r.IsCurrent == true
+                where r.CheckinSigRD == null && r.CheckinSigRA != null && r.CheckinSigRes != null
+                select new SignAllRDViewModel
+                {
+                    RciID = r.RciID,
+                    BuildingCode = r.BuildingCode.Trim(),
+                    RoomNumber = r.RoomNumber.Trim(),
+                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
+                    LastName = account.lastname == null ? "RCI" : account.lastname,
+                    CheckinSigRDGordonID = r.CheckinSigRDGordonID
+                };
+            return buildingRCIs.OrderBy(m => m.RoomNumber);
+        }
+
+        /*public IEnumerable<SignAllRDViewModel> GetCheckedRcis(string gordonID)
         {
             var rcis =
                 from r in db.Rci
@@ -40,7 +61,7 @@ namespace Phoenix.Services
                 };
                 
             return rcis;
-        }
+        }*/
 
         public void SignRcis(string gordonID)
         {

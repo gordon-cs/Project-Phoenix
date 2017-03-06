@@ -12,6 +12,7 @@ using Phoenix.Services;
 using System.Web.UI;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using Newtonsoft.Json.Linq;
 
 namespace Phoenix.Controllers
 {
@@ -183,10 +184,15 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
 
-            var rcis = rciInputService.GetRcis(gordonID);
-            
+
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
+
+            var buildingRcis = rciInputService.GetRcisForBuilding(kingdom);
+
+
             ViewBag.User = (string)TempData["user"];
-            return View(rcis);
+            return View(buildingRcis);
         }
 
         [HttpPost]
