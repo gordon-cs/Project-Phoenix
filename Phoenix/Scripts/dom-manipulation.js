@@ -4,6 +4,7 @@
  * 1.................. DivListDropDown
  * 2.................. Drawer Menu
  * 3.................. Damage Image Slides Modal
+ * 4................... Loading screen
  *
 /***********************************************/
 
@@ -147,4 +148,13 @@ $(".material-icons.clear").click(function () {
     let modalID = $(this).closest(".img-modal").attr("id");
     console.log(modalID);
     closeModal(modalID);
+});
+
+/* Simulate a loading screen
+  * The sneaky trick to this is to put a loading screen in layout that covers everything.
+  * Then, when all elements are loading, remove it
+  */
+$(window).load(function () {
+    $("#loading-screen").delay(500).fadeOut(200);
+    $("#page-container").delay(500).fadeIn(200);
 });
