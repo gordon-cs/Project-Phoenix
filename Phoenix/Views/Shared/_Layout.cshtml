@@ -17,14 +17,15 @@
     <div id="page-container">
         <header id="header">
             <div class="logo-box">
-                @if (ViewBag.PastDashboard == true)
+                @if (ViewBag.NeedsLogo == true)
                 {
-                    <a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">
-                        <i class="material-icons back-button">keyboard_backspace</i>
-                    </a>
+                    <img src="~/Content/Images/gordon-logo-horizontal.svg" />
+
                 }
                 else
-                {<img src="~/Content/Images/gordon-logo-horizontal.svg" />}
+                {<a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">
+                    <i class="material-icons back-button">keyboard_backspace</i>
+                </a>}
             </div>                   
             <div class="view-title">
                 <h2>Online RCI</h2>
