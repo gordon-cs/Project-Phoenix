@@ -53,7 +53,7 @@ namespace Phoenix.Controllers
         /// </summary>
         public void SaveRci(RciFinesForm rci)
         {
-            checkoutService.AddFines(rci.NewFines, rci.GordonID);
+            checkoutService.AddFines(rci.NewFines);
             checkoutService.RemoveFines(rci.FinesToDelete);
             return;
         }
