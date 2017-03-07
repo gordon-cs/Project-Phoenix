@@ -6,6 +6,12 @@ $("#save-button").click(function () {
     });
 });
 
+$("#next-button").click(function () {
+    let $this = $(this);
+    save().then(function () {
+        location.href = $this.attr("data");
+    });
+});
 
 /* Save the fines */
 function save() {
@@ -37,7 +43,7 @@ function save() {
 }
 
 function addFine(componentID) {
-    let $finesArea = $("#div-list-" + componentID);
+    let $finesArea = $("#fine-list-" + componentID);
     let fineText = $("#text-input-" + componentID).val();
     let fineAmount = Number($("#fine-amount-input-" + componentID).val());
     let fineOwnerName = $("#fine-owner-" + componentID + " option:selected").text(); // Will only be defined for common areas.
