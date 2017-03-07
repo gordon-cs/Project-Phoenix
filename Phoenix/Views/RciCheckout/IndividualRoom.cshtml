@@ -22,26 +22,12 @@
 }
 
 <div class="view" data="@Model.GordonID">
-    @if (ViewBag.commonRooms == null)
-    {
-        foreach (var component in Model.RciComponent)
+
+        @foreach (var component in Model.RciComponent)
         {
-            @Html.Partial("Component", component);
+            @Html.Partial("PartialViewComponentIndividual", component);
         }
-    }
-    else
-    {
-        foreach (var room in ViewBag.commonRooms)
-        {
-            <h2>@room</h2>
-            foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room)))
-            {
-                @Html.Partial("Component", component);
-            }
-        }
-    }
-    
-    
+  
     <div class="distribute-evenly">
         <button id="save-button">Save</button>
         <a class="button" href="@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</a>

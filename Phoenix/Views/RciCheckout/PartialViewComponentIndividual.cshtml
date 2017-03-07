@@ -2,10 +2,7 @@
 <div class="pane component" id="@Model.RciComponentID">
     <h2 class="pane-title div-list-toggle">@Model.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
     <div class="checkout pane-content">
-        @if (Model.Rci.GordonID != null)
-        {
-            <p><b>Possible places:</b> @Model.RciComponentDescription</p>
-        }
+        <p><b>Possible places:</b> @Model.RciComponentDescription</p>
         <div class="div-list">
             <div id="img-preview-@Model.RciComponentID" class="img-thumbnails">
                 @foreach (var damage in Model.Damage)
@@ -30,10 +27,6 @@
                     <i class="material-icons forward">navigate_next</i>
                 </div>
             </div>
-            <div class="div-list-toggle icon-label">
-                <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
-                <span>Hide/Show Existing Damages</span>
-            </div>
             @foreach (var damage in Model.Damage)
             {
                 if (damage.DamageDescription != null)
@@ -45,7 +38,7 @@
             }
         </div>
         <div>
-            <p>Add Fine(s)</p>
+            <p>Add Charge(s)</p>
         </div>
         <div class="divAddOn">
             <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@Model.RciComponentID" />
@@ -53,10 +46,6 @@
             <button class="divAddOn-item" onclick="addFine(@Model.RciComponentID);" id="add-@Model.RciComponentID">Add</button>
         </div>
         <div class="div-list" id="div-list-@Model.RciComponentID">
-            <div class="div-list-toggle icon-label">
-                <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
-                <span>Hide/Show Fines</span>
-            </div>
             @foreach (var fine in Model.Fine)
             {
                 <div class="divAddOn">
