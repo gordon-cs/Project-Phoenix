@@ -448,7 +448,8 @@ a.button {
 .error-message{
     margin: 0.5em;
 }
-.error-message > div {
+.error-message  div,
+.error-message  p {
     padding: 0.5em;
 }
 
