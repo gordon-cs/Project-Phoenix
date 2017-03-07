@@ -41,6 +41,7 @@
  * .............. login-form
  * .............. a.button
  * .............. lift
+ * .............. loading screen
  *
  * MISC - Anything layout related, that doesn't fit above
  * 
@@ -445,7 +446,22 @@ a.button {
     box-shadow: 0 0 9px 0 #ddd;
 }
 
-
+/* Styles associated with the loading screen */
+#loading-screen {
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    position: absolute;
+    width:100%;
+}
+#loading-image {
+    max-width: 30%;
+}
+#page-container {
+    display: none;
+}
 /***************************/
 /***********MISC************/
 /***************************/
