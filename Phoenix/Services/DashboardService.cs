@@ -184,7 +184,10 @@ namespace Phoenix.Services
         {
             var today = DateTime.Now;
             var sessions = db.Session.Where(m => m.SESS_BEGN_DTE.HasValue && m.SESS_END_DTE.HasValue);
-            sessions = sessions.Where(x => today.CompareTo(x.SESS_BEGN_DTE.Value) > 0 && today.CompareTo(x.SESS_END_DTE.Value) < 0 ); // We are assuming sessions don't overlap
+            sessions = sessions.Where(x => 
+                            today.CompareTo(x.SESS_BEGN_DTE.Value) >= 0 
+                            && 
+                            today.CompareTo(x.SESS_END_DTE.Value) <= 0 ); // We are assuming sessions don't overlap
             var currentSession = sessions.FirstOrDefault();
             // If we are within a session.
             if(currentSession != null)
