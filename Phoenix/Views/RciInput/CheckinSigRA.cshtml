@@ -3,18 +3,20 @@
 @{
     ViewBag.Title = "CheckinSigRA";
     ViewBag.MenuExists = "T";
+    ViewBag.IsRA = true;
+    ViewBag.PastDashboard = true;
 }
 
 @section Scripts{
     @Scripts.Render("~/Scripts/checkin-sig-ra.js")
 }
 
-@section Menu {
+@*@section Menu {
     <ul class="drawer-menu">
         <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
         <li class="drawer-menu-item logout-button">Logout</li>
     </ul>
-}
+}*@
 
 <h2 id="rci-@Model.RciID">Signature</h2>
 

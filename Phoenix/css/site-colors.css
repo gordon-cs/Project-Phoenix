@@ -9,10 +9,15 @@
 
  body {
      color: #31342b;
+     background-color: #ebeaea;
  }
 
  #header {
      background-color: #31342B; 
+     color: #fff;
+ }
+
+ #header .material-icons .back-space {
      color: #fff;
  }
 
@@ -32,6 +37,11 @@
 
 button.dropdown {
     color: #fff;
+}
+
+.dropdown-menu {
+    background-color: #fff;
+    color: #000;
 }
  
  /*button {
@@ -68,7 +78,7 @@ button.dropdown {
      color: #31342b;
  }
 
- a .material-icons {
+ /*a .material-icons {
      color: #014983;
- }
+ }*/
 

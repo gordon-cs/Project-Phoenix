@@ -16,18 +16,41 @@
     @Scripts.Render("~/bundles/js/jquery")
     <div id="page-container">
         <header id="header">
-            <div class="logo-box"><img src="~/Content/Images/gordon-logo-horizontal.svg" /></div>
+            <div class="logo-box">
+                @if (ViewBag.PastDashboard == true)
+                {
+                    <a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">
+                        <i class="material-icons back-button">keyboard_backspace</i>
+                    </a>
+                }
+                else
+                {<img src="~/Content/Images/gordon-logo-horizontal.svg" />}
+            </div>                   
+            @*<div class="logo-box"><img src="~/Content/Images/gordon-logo-horizontal.svg" /></div>*@
             <div class="view-title">
                 <h2>Online RCI</h2>
             </div>
             @if (ViewBag.MenuExists != null)
             {
                 <button class="dropdown">
-                    <p class="uppercase username">@ViewBag.Name<i class="material-icons">keyboard_arrow_down</i></p>    
+                    <p class="uppercase username">@ViewBag.Name<i class="material-icons down-arrow">keyboard_arrow_down</i></p>
+                    <i class="material-icons hamburger">menu</i>    
                 </button>
+                <ul class="dropdown-menu">
+                    @if (ViewBag.IsRD == true || ViewBag.IsRA == true)
+                    {
+                        <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "SyncRcis", controllerName: "Dashboard")"><i class="material-icons">sync</i>Sync Rcis</a></li>
+                    }
+                    @if (ViewBag.IsRD == true)
+                    {
+                        <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "ExportFines", controllerName: "Dashboard")">Export Fines</a></li>
+                    }
+                    <li class="dropdown-menu-item">Help</li>
+                    <li class="dropdown-menu-item logout-button">Logout</li>
+                </ul>
             }
         </header>
-        @RenderSection("Menu", false)
+        @*@RenderSection("Menu", false)*@
         <div id="content">
             @RenderBody()
         </div>

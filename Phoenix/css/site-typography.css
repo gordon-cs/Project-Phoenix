@@ -17,6 +17,9 @@ body {
     letter-spacing: .05em;
 }
 
+#header .back-button {
+    font-size: 2em;
+}
 a {
     color: inherit;
     text-decoration: none;

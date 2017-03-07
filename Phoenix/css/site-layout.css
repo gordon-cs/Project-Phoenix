@@ -48,10 +48,8 @@
  */
 
 #page-container {
-    background-color: #ebeaea;
     display: flex;
     flex-direction: column;
-    height: 100%;
     width: 100%;
 }
 
@@ -64,12 +62,14 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    height: 80px;
     margin-bottom: 10px;
     padding: 2em .5em; 
     width: 100%;
 }
 
     .view-title {
+        display: none;
         flex: 1;
         padding: 0 10px;
         text-align:center;
@@ -77,8 +77,10 @@
     .logo-box {
         left: 4%;
         position: absolute;
-
         width: 100px;
+    }
+    .logo-box .back-button {
+        margin-left: .5em;
     }
     .dropdown {
         padding: 0 .25em;
@@ -88,33 +90,40 @@
         background: none;
         position:absolute;
         right: 3%;
+        top: 25px;
     }
     button.dropdown:focus{
         outline: none;
+    }
+    .dropdown .username, .dropdown .down-arrow {
+        display: none;
     }
 
 /***************************/
 /******Navigation Menu******/
 /***************************/
 
-.drawer-menu {
-    box-shadow: 0 0 5px 0 #ddd;
+.dropdown-menu {
+    /*box-shadow: 0 0 5px 0 #ddd;*/
+    border: solid 1px #cccccb;
     display:none;
     margin: 0 auto;
-    width: 90%;
+    position: absolute;
+    top: 80px;
+    width: 100%;
     z-index: 200;
 }
-.drawer-menu-item {
+.dropdown-menu-item {
     list-style: none;
     margin: 0;
     padding: 0.5em;
     cursor: pointer;
 }
-.drawer-menu a {
+.dropdown-menu a {
     text-decoration: none;
     color: inherit;
 }
-.drawer-menu :hover {
+.dropdown-menu :hover {
     font-weight:bold;
 }
 
@@ -478,6 +487,28 @@ a.button {
     #page-container{
         margin: 0 auto;
     }
+    .view-title {
+        display: inline-block;
+    }
+    button.dropdown {
+        top: 27px;
+    }
+    .dropdown .hamburger {
+        display: none;
+    }
+    .dropdown .username, .dropdown .down-arrow {
+        display: inline;
+    }
+    .dropdown-menu {
+    /*box-shadow: 0 0 5px 0 #ddd;*/
+    display:none;
+    margin: 0 auto;
+    position: absolute;
+    right: 4%;
+    top: 55px;
+    width: 150px;
+    z-index: 200;
+}
 }
 
 @media only screen and (min-width: 980px) {
