@@ -151,7 +151,7 @@ namespace Phoenix.Services
         /// <summary>
         /// Insert fines into the database
         /// </summary>
-        public void AddFines(List<RciNewFineViewModel> newFines, string gordonID)
+        public void AddFines(List<RciNewFineViewModel> newFines)
         {
             if (newFines != null)
             {
@@ -159,7 +159,7 @@ namespace Phoenix.Services
 
                 foreach (var fine in newFines)
                 {
-                    var newFine = new Fine { RciComponentID = fine.ComponentID, Reason = fine.FineReason, FineAmount = fine.FineAmount, GordonID = gordonID };
+                    var newFine = new Fine { RciComponentID = fine.ComponentID, Reason = fine.FineReason, FineAmount = fine.FineAmount, GordonID = fine.FineOwner };
                     toAdd.Add(newFine);
                 }
                 db.Fine.AddRange(toAdd);
