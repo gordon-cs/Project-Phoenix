@@ -12,13 +12,6 @@
     @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
 
-@*@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "SyncRcis", controllerName: "Dashboard")"><i class="material-icons">sync</i>Sync Rcis</a></li>
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "ExportFines", controllerName: "Dashboard")">Export Fines</a></li>
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}*@
 
 <div class="view"> 
     <div class="pane">
@@ -39,29 +32,18 @@
                         <p>@rci.FirstName @rci.LastName</p>
                     </div>
                 </a>
-                    <div class="divAddOn-vert-row">
-                        @*<a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                            <div>
-                                <i class="material-icons">mode_edit</i>
-                            </div>
-                        </a>*@
-                        <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                            Checkout
-                            @*<div>
-                                <i class="material-icons">attach_money</i>
-                            </div>*@
+                <div class="divAddOn-vert-row">
+                    <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
+                        Checkout
+                    </a>
+                    @if (rci.FirstName != "Common Area")
+                    {
+                        <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
+                            Swap Furniture
                         </a>
-                        @if (rci.FirstName != "Common Area")
-                        {
-                            <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
-                               Swap Furniture
-                                @*<div>
-                                    <i class="material-icons">swap_horiz</i>
-                                </div>*@
-                            </a>
-                        }
-                    </div>
-</div>
+                    }
+                </div>
+              </div>
         }
     </div>
 

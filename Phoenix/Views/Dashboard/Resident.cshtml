@@ -12,12 +12,6 @@
     @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
 
-@*@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}*@
-
 <div class="view">
     <div class="pane">
         @*<h4 class="dashboard-rci-list-header">
@@ -35,16 +29,6 @@
                     </a>
                     </div>
                 </div>
-                    @*<div class="divAddOn-field">
-                        <p>@rci.BuildingCode @rci.RoomNumber</p>
-                        <p>@rci.FirstName @rci.LastName</p>
-                    </div>
-                    <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                        <div>
-                            <i class="material-icons">mode_edit</i>
-                        </div>
-                    </a>
-                </div>*@
         }
     </div> 
 </div>
