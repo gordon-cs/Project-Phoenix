@@ -127,6 +127,7 @@ namespace Phoenix.Controllers
                 return View(rci);
             }
 
+            rci = checkoutService.GetCommonAreaRciByID(id); // reload rci from db to see if everyone has now signed.
             // If at the end of the loop, the boolean is still true, then everyone has signed.
             if(rci.EveryoneHasSigned())
             {

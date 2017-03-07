@@ -147,9 +147,6 @@
 /******GENERIC ELEMENTS******/
 /****************************/
 
-p {
-    padding: 3px 3px;
-}
 
 ul {
     list-style-type: none;
@@ -451,8 +448,7 @@ a.button {
 .error-message{
     margin: 0.5em;
 }
-.error-message > div,
-.error-message > p {
+.error-message > div {
     padding: 0.5em;
 }
 
