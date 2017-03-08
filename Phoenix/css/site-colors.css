@@ -78,6 +78,16 @@ button.dropdown {
      color: #31342b;
  }
 
+ .swappable-component .check-box {
+     background: #fff;
+     border-bottom: none;
+     border-left: solid 7px #014983;
+     border-top: none;
+ }
+ .swappable-component .divAddOn-field {
+     background-color: #fff;
+ }
+
 .signature-overlay {
     background: #31342b;
     opacity: 0.5;

@@ -16,8 +16,8 @@
         {
             foreach (var component in Model.RciComponent)
             {
-                <div class="divAddOn">
-                    <div class="divAddOn-item"><input type="checkbox" name="rciComponent" value="@component.RciComponentID" /></div>
+                <div class="divAddOn swappable-component">
+                    <div class="divAddOn-item check-box"><input type="checkbox" name="rciComponent" value="@component.RciComponentID" /></div>
                     <h3 class="divAddOn-field">@component.RciComponentName</h3>
                 </div>
             }
