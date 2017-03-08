@@ -109,7 +109,7 @@ namespace Phoenix.Services
                                         (from rm in db.RoomAssign
                                          join acct in db.Account
                                          on rm.ID_NUM.ToString() equals acct.ID_NUM
-                                         where rm.SESS_CDE.Trim() == "201701"
+                                         where rm.SESS_CDE.Trim() == currentSession
                                          && rm.BLDG_CDE.Trim() == rci.BuildingCode
                                          && rm.ROOM_CDE.Trim().Contains(rci.RoomNumber)
                                          select new CommonAreaMember
