@@ -66,7 +66,7 @@ $(".search-bar").keyup(function () {
     textToMatch = textToMatch.toLowerCase();
     let content = "";
 
-    $(".search-field").parent().show();
+    $(".search-field").parent().parent().show();
 
     $(".search-field").filter(function () {
 
@@ -82,7 +82,7 @@ $(".search-bar").keyup(function () {
         else {
             return false;
         }
-    }).parent().hide()
+    }).parent().parent().hide()
 });
 
 
