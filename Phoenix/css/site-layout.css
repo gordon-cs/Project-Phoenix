@@ -146,6 +146,7 @@
      }
 
         .pane-title {
+            border-radius: 4px;
             padding: .45em;
             text-align: center;
         }
@@ -186,12 +187,14 @@ input[type=password] {
 }
 
 button {
-     display: block;
-     cursor: pointer;
-     font-size: 100%;
-     padding: 0.2em 1em;
-     text-align: center;
-     margin: 0;
+    border: none;
+    border-radius: 4px;
+    display: block;
+    cursor: pointer;
+    font-size: 100%;
+    padding: 0.2em 1em;
+    text-align: center;
+    margin: 0;
  }
 
 i {
@@ -258,7 +261,7 @@ i {
  * Div Add ON (vertical version)
  */
 .divAddOn-vert {
-    box-shadow: 0 0 3px 0 #ddd;
+    border-radius: 3px;
     display: flex;
     flex-direction: column;
     margin-top: 15px;
@@ -369,6 +372,7 @@ i {
  */
 .distribute-evenly {
     align-items: center;
+    padding-top: 1em;
     display: flex;
     justify-content: space-around;
 }
