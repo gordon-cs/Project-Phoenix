@@ -39,6 +39,24 @@
     
     <div class="button-group">
         <button id="save-button" class="button-group-element">Save</button>
-        <button id="next-button" class="button-group-element" onclick="window.location.href = '@Url.Action(actionName:"CheckinSig", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Next</button>
+        <button id="next-button" class="button-group-element">Next</button>
     </div>
+    <div class="signature-overlay">
+
+    </div>
+    <div id="signature-container">
+        @if (ViewBag.Role == "Resident")
+            {
+            @Html.Partial("CheckinSigRes", Model)
+        }
+        else if (ViewBag.Role == "RA")
+        {
+            @Html.Partial("CheckinSigRA", Model)
+        }
+        else if (ViewBag.Role == "RD")
+        {
+            @Html.Partial("CheckinSigRD", Model)
+        }
+    </div>
+
  </div>

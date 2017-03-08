@@ -128,6 +128,16 @@ function showSlides(slideNumber, modalId) {
     slides[slideIndex].style.display = "block";
 }
 
+
+// Open the signature overlay
+$("#next-button").click(function () {
+    $(".signature-overlay").show();
+    $("#signature-container").toggle();
+});
+
+
+/********* Register handlers **********/
+
 $(".img-thumbnails").on("click", ".thumbnail", function () {
     let componentID = $(this).closest(".img-thumbnails").attr("id").substring(12);
     // Count up all the previous thumbnail images to know what to set the slide index to for the modal

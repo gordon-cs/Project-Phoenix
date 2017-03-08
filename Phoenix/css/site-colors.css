@@ -78,7 +78,11 @@ button.dropdown {
      color: #31342b;
  }
 
- /*a .material-icons {
-     color: #014983;
- }*/
+.signature-overlay {
+    background: #31342b;
+    opacity: 0.5;
+}
+#signature-container {
+     background-color: #fff;
+}
 
