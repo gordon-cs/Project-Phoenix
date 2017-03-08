@@ -4,6 +4,8 @@
     ViewBag.Title = "Reassign Components";
     ViewBag.MenuExists = "T";
     ViewBag.ViewTitle = Model.BuildingCode + Model.RoomNumber + " " + Model.FirstName + " " + Model.LastName;
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
 }
 
 @section Styles{
