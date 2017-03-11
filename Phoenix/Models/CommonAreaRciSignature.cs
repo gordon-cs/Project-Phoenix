@@ -22,6 +22,10 @@ namespace Phoenix.Models
         [Column(TypeName = "date")]
         public DateTime? Signature { get; set; }
 
+        [Required]
+        [StringLength(50)]
+        public string SignatureType { get; set; }
+
         public virtual Rci Rci { get; set; }
     }
 }

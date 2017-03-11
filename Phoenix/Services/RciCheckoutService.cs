@@ -121,11 +121,13 @@ namespace Phoenix.Services
                                                             ((from sigs in db.CommonAreaRciSignature
                                                              where sigs.GordonID == acct.ID_NUM
                                                              && sigs.RciID == rci.RciID
+                                                             && sigs.SignatureType == "CHECKOUT"
                                                              select sigs).Any() == true ? true : false),
                                              Signature =
                                                              ((from sigs in db.CommonAreaRciSignature
                                                                where sigs.GordonID == acct.ID_NUM
                                                                && sigs.RciID == rci.RciID
+                                                               && sigs.SignatureType == "CHECKOUT"
                                                                select sigs).FirstOrDefault().Signature)
                                          }).ToList(),
                     CheckoutSigRes = rci.CheckoutSigRes,
@@ -197,7 +199,8 @@ namespace Phoenix.Services
             {
                 RciID = rciID,
                 GordonID = gordonID,
-                Signature = DateTime.Now
+                Signature = DateTime.Now,
+                SignatureType = "CHECKOUT"
             };
             db.CommonAreaRciSignature.Add(signature);
             db.SaveChanges();
