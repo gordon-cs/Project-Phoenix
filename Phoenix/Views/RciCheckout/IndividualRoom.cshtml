@@ -28,7 +28,10 @@
             <div class="pane component" id="@component.RciComponentID">
                 <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
                 <div class="checkout pane-content">
-                    <p><b>Possible places:</b> @component.RciComponentDescription</p>
+                    @if (component.RciComponentDescription != null && component.RciComponentDescription.Trim() != "")
+                    {
+                        <p><b>Possible places:</b> @component.RciComponentDescription</p>
+                    }
                     <div class="div-list">
                         <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
                             @foreach (var damage in component.Damage)
