@@ -64,26 +64,30 @@
                             }
                         }
                     </div>
-                    <div>
-                        <p>Add Charge</p>
-                    </div>
-                    <div class="divAddOn-vert">
-                        <div class="divAddOn">
-                            <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
-                            <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RciComponentID" />
+                    @if(Model.CheckoutSigRD == null)
+                    {
+                        <div>
+                            <p>Add Charge</p>
                         </div>
-                        <div class="divAddOn">
-                            <label class="divAddOn-item">Charge to:</label>
-                            <select class="divAddOn-field" id="fine-owner-@component.RciComponentID">
-                                <option value="0">All - Split the charge</option>
-                                @foreach (var person in Model.CommonAreaMember)
-                                {
-                                    <option value="@person.GordonID">@person.FirstName @person.LastName</option>
-                                }
-                            </select>
+                        <div class="divAddOn-vert">
+                            <div class="divAddOn">
+                                <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
+                                <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RciComponentID" />
+                            </div>
+                            <div class="divAddOn">
+                                <label class="divAddOn-item">Charge to:</label>
+                                <select class="divAddOn-field" id="fine-owner-@component.RciComponentID">
+                                    <option value="0">All - Split the charge</option>
+                                    @foreach (var person in Model.CommonAreaMember)
+                                    {
+                                        <option value="@person.GordonID">@person.FirstName @person.LastName</option>
+                                    }
+                                </select>
+                            </div>
+                            <button class="divAddOn-vert-field" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
                         </div>
-                        <button class="divAddOn-vert-field" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
-                    </div>
+                    }
+
                     <div class="div-list" id="fine-list-@component.RciComponentID">
                         @foreach (var fine in component.Fine)
                         {
