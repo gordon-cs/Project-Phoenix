@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Phoenix.Models.ViewModels
 {
-    public class CheckoutRciViewModel
+    public class CheckoutIndividualRoomRciViewModel
     {
         public int RciID { get; set; }
         public string FirstName { get; set; }

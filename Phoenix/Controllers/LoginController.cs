@@ -80,7 +80,7 @@ namespace Phoenix.Controllers
                             // I think we could add code here for authorization of admin, etc.
 
                             // Generate token and attach to header
-                            var jwtToken = loginService.GenerateToken(username, userEntry.Name, userEntry.EmployeeId);
+                            var jwtToken = loginService.GenerateToken(username, userEntry.EmployeeId);
                             HttpCookie tokenCookie = new HttpCookie("Authentication");
                             tokenCookie.Value = jwtToken;
                             tokenCookie.Expires = DateTime.Now.AddHours(2.0);
