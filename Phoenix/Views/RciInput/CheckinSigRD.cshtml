@@ -35,13 +35,14 @@
     else if (Model.CheckinSigRD == null)
     {
         <input type="text" id="rci-sig" />
+        <p>OR</p>
         if (Model.CheckinSigRDGordonID == null)
         {
-            <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Check to sign together later.</label>
+            <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Queue for signing later</label>
         }
         else
         {
-            <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Check to sign together later.</label>
+            <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Queue for signing later</label>
         }
     }
     else
