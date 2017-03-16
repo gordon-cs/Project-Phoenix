@@ -478,6 +478,21 @@ a.button {
 /***************************/
 /***********MISC************/
 /***************************/
+
+.damage-wrapper {
+    box-shadow: none;
+}
+.damage-element,
+.damage-element:last-child {
+    border: none;
+    border-left: 2px solid #ccc;
+    font-size: 0.9em;
+}
+.damage-wrapper .material-icons {
+    font-size: 1em;
+    font-weight:bold;
+    padding-top: .25em;
+}
 .signature-overlay {
     display: none;
     position:absolute;

@@ -1,10 +1,11 @@
 ﻿/* CSS Styles specific to the RCICheckout Page*/
 
-.pane {
-    box-shadow: 0 0 5px 0 #ddd;
-}
 .checkout .div-list {
     position: relative;
+}
+
+.checkout.pane-content {
+    background-color: #fff;
 }
 
 i {

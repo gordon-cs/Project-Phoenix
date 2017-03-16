@@ -30,16 +30,16 @@
                     <i class="material-icons forward">navigate_next</i>
                 </div>
             </div>
-            <div class="div-list-toggle icon-label">
+            @*<div class="div-list-toggle icon-label">
                 <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
                 <span>Hide/Show Existing Damages</span>
-            </div>
+            </div>*@
             @foreach (var damage in Model.Damage)
             {
                 if (damage.DamageDescription != null)
                 {
-                    <div class="divAddOn existing-damage-wrapper">
-                        <p class="divAddOn-field existing-damage">@damage.DamageDescription</p>
+                    <div class="divAddOn damage-wrapper">
+                        <p class="damage-element">@damage.DamageDescription</p>
                     </div>
                 }
             }

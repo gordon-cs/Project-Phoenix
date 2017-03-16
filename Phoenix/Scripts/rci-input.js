@@ -251,7 +251,7 @@ function RDSigSubmit() {
     <input> hidden element that will be used when submitting the form
     */
 function addDamage(componentID) {
-    var pElement = "<p class='divAddOn-field new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='divAddOn-item material-icons' onclick='deleteNewDamages(event, this);'>delete</i>";
+    var pElement = "<p class=damage-element new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='material-icons' onclick='deleteNewDamages(event, this);'>close</i>";
     //var inputHiddenElement = "<input type='hidden' name=" + componentID + " value='" + $("#text-input-" + componentID).val() + "'/>";
     var divWrapper = "<div class='divAddOn'>" + pElement + "</div>";
     $("#div-list-" + componentID).append(divWrapper);
