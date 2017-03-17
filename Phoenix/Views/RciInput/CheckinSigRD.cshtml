@@ -14,30 +14,33 @@
 <h2 id="rci-@Model.RciID">Signature</h2>
 
 <div>
-    <p>Please sign with your name @ViewBag.User to confirm the entered existing damages.</p>
+    
 
     @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
     {
         <p>Resident hasn't signed yet. Please make sure resident and RA have signed before signing.</p>
-        <input type="text" id="rci-sig" disabled="disabled" />
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
     else if (Model.CheckinSigRA == null)
     {
         <p>RA hasn't signed yet. Please make sure RA has signed before signing.</p>
-        <input type="text" id="rci-sig" disabled="disabled" />
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
     else if (Model.CheckinSigRD == null)
     {
+        <p>Please sign with your name @ViewBag.User to confirm the entered existing damages.</p>
         <input type="text" id="rci-sig" />
+        <div class="distribute-evenly">
+            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+            <button id="submit-button" onclick="RDSigSubmit()">Submit</button>
+        </div>
     }
     else
     {
-        <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User" />
+        <p>You've already signed! You're all set.</p>
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
 
 </div>
 
-<div class="distribute-evenly">
-    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-    <button id="submit-button" onclick="RDSigSubmit()">Submit</button>
-</div>
+

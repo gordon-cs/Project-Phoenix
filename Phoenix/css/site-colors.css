@@ -44,7 +44,7 @@ button.dropdown {
     color: #000;
 }
  
- button {
+ button, a.button {
      background-color: #31342b;
      color: #fff;
  }

@@ -3,7 +3,9 @@
 @{
     ViewBag.Title = "Checkout";
     ViewBag.ViewTitle = "Checkout: Resident Signature";
+    ViewBag.Name = TempData["user"];
     ViewBag.MenuExists = "T";
+    ViewBag.Role = TempData["role"];
 }
 
 
@@ -33,7 +35,7 @@
                     }
                 </div>
                 <div class="distribute-evenly">
-                    <input type="submit" value="Next" />
+                    <button type="submit">Next</button>
                 </div>
             }
         </div>
