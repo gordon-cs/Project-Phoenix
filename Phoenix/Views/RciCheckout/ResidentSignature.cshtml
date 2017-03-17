@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.ViewModels.CheckoutRciViewModel
+﻿@model Phoenix.Models.ViewModels.CheckoutIndividualRoomRciViewModel
 
 @{
     ViewBag.Title = "Checkout";
@@ -12,26 +12,26 @@
 <div class="view">
     <div class="pane">
         <div class="pane-content">
+            <div class="error-message">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
             @using (Html.BeginForm(actionName: "ResidentSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
                     @if (Model.CheckoutSigRes == null)
                     {
-                        <p>I hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
+                        <p>I, @Model.FirstName @Model.LastName, hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@Model.FirstName @Model.LastName" />
-                            <input class="divAddOn-item" name="date" type="text" readonly="readonly" value="@(DateTime.Today.Month)/@(DateTime.Today.Day)/@(DateTime.Today.Year)" />
                         </div>
-                        <div>@ViewBag.ErrorMessage</div>
                     }
                     else
                     {
                         <p>This RCI has been signed by the resident @Model.FirstName @Model.LastName</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.FirstName @Model.LastName" />
-                            <input class="divAddOn-item" name="date" type="text" readonly="readonly" value="@Model.CheckoutSigRes" />
+                            <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRes" />
                         </div>
-                        <div>@ViewBag.ErrorMessage</div>
                     }
                 </div>
                 <div class="distribute-evenly">

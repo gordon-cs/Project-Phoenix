@@ -1,5 +1,6 @@
 ﻿using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,21 +15,58 @@ namespace Phoenix.Services
             db = new RCIContext();
         }
 
-        // 
-        public CheckoutRciViewModel GetRciByID(int id)
+        public bool IsIndividualRci(int rciID)
+        {
+            var rci = db.Rci.Find(rciID);
+            return rci.GordonID != null ? true : false;
+        }
+        /// <summary>
+        /// Get a generic checkout rci view model.
+        /// The RA and RD views use this since they don't need the other information
+        /// </summary>
+        public GenericCheckoutViewModel GetGenericCheckoutRciByID(int id)
         {
             var query =
                 from r in db.Rci
                 where r.RciID == id
-                join a in db.Account on r.GordonID equals a.ID_NUM into account
+                select new GenericCheckoutViewModel()
+                {
+                    RciID = r.RciID,
+                    BuildingCode = r.BuildingCode,
+                    RoomNumber = r.RoomNumber,
+                    CheckoutSigRes = r.CheckoutSigRes,
+                    CheckoutSigRA = r.CheckoutSigRA,
+                    CheckoutSigRD = r.CheckoutSigRD,
+                    CheckoutSigRAGordonID = r.CheckoutSigRAGordonID,
+                    CheckoutSigRDGordonID = r.CheckoutSigRDGordonID,
+                    CheckoutSigRAName =
+                                        (from acct in db.Account
+                                         where acct.ID_NUM.Equals(r.CheckoutSigRAGordonID)
+                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
+                    CheckoutSigRDName =
+                                         (from acct in db.Account
+                                          where acct.ID_NUM.Equals(r.CheckoutSigRDGordonID)
+                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
+
+                };
+
+            return query.FirstOrDefault();
+        }
+        /// <summary>
+        /// Get the rci for a person by RciID
+        /// </summary>
+        public CheckoutIndividualRoomRciViewModel GetIndividualRoomRciByID(int id)
+        {
+            var query =
+                from r in db.Rci
+                join a in db.Account on r.GordonID equals a.ID_NUM
                 where r.RciID == id
-                from temp in account.DefaultIfEmpty()
-                select new CheckoutRciViewModel()
+                select new CheckoutIndividualRoomRciViewModel()
                 {
                     RciID = r.RciID,
                     GordonID = r.GordonID,
-                    FirstName = temp.firstname ?? "Common Area",
-                    LastName = temp.lastname ?? "Rci",
+                    FirstName = a.firstname,
+                    LastName = a.lastname,
                     BuildingCode = r.BuildingCode,
                     RoomNumber = r.RoomNumber,
                     RciComponent = r.RciComponent,
@@ -52,77 +90,70 @@ namespace Phoenix.Services
         }
 
         /// <summary>
-        /// Creates an RCI Component called Improper checkout and adds a fine
+        /// Get the rci for a common area by ID
         /// </summary>
-        public void SetImproperCheckout(int rciID)
+        public CheckoutCommonAreaRciViewModel GetCommonAreaRciByID(int id)
         {
-            var rci = db.Rci.Find(rciID);
+            var currentSession = new DashboardService().GetCurrentSession();
 
-            // Create a new component
-            var comp = new RciComponent
-            {
-                RciComponentName = "Improper Checkout",
-                RciID = rciID
-            };
-
-            if (!rci.RciComponent.Where(m => m.RciComponentName.Equals(comp.RciComponentName)).Any())
-            {
-                var newComponent = db.RciComponent.Add(comp);
-
-                db.SaveChanges();
-
-                var fine = new Fine
+            var query =
+                from rci in db.Rci
+                where rci.RciID == id
+                select new CheckoutCommonAreaRciViewModel
                 {
-                    FineAmount = 30.00M,
-                    GordonID = db.Rci.Find(rciID).GordonID,
-                    RciComponentID = newComponent.RciComponentID,
-                    Reason = "Improper Checkout"
+                    RciID = rci.RciID,
+                    BuildingCode = rci.BuildingCode,
+                    RoomNumber = rci.RoomNumber,
+                    RciComponent = rci.RciComponent,
+                    CommonAreaMember =
+                                        (from rm in db.RoomAssign
+                                         join acct in db.Account
+                                         on rm.ID_NUM.ToString() equals acct.ID_NUM
+                                         where rm.SESS_CDE.Trim() == currentSession
+                                         && rm.BLDG_CDE.Trim() == rci.BuildingCode
+                                         && rm.ROOM_CDE.Trim().Contains(rci.RoomNumber)
+                                         select new CommonAreaMember
+                                         {
+                                             GordonID = acct.ID_NUM,
+                                             FirstName = acct.firstname,
+                                             LastName = acct.lastname,
+                                             HasSignedCommonAreaRci = 
+                                                            ((from sigs in db.CommonAreaRciSignature
+                                                             where sigs.GordonID == acct.ID_NUM
+                                                             && sigs.RciID == rci.RciID
+                                                             && sigs.SignatureType == "CHECKOUT"
+                                                             select sigs).Any() == true ? true : false),
+                                             Signature =
+                                                             ((from sigs in db.CommonAreaRciSignature
+                                                               where sigs.GordonID == acct.ID_NUM
+                                                               && sigs.RciID == rci.RciID
+                                                               && sigs.SignatureType == "CHECKOUT"
+                                                               select sigs).FirstOrDefault().Signature)
+                                         }).ToList(),
+                    CheckoutSigRes = rci.CheckoutSigRes,
+                    CheckoutSigRA = rci.CheckoutSigRA,
+                    CheckoutSigRD = rci.CheckoutSigRD,
+                    CheckoutSigRAGordonID = rci.CheckoutSigRAGordonID,
+                    CheckoutSigRDGordonID = rci.CheckoutSigRDGordonID,
+                    CheckoutSigRAName =
+                                        (from acct in db.Account
+                                         where acct.ID_NUM.Equals(rci.CheckoutSigRAGordonID)
+                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
+                    CheckoutSigRDName =
+                                         (from acct in db.Account
+                                          where acct.ID_NUM.Equals(rci.CheckoutSigRDGordonID)
+                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
+
                 };
 
-                db.Fine.Add(fine);
-
-                db.SaveChanges();
-            }
+            return query.FirstOrDefault();
 
         }
-
-        /// <summary>
-        /// Creates an RCI component called Lost Keys and adds a fine to it
-        /// </summary>
-        public void SetLostKeyFine(int rciID, decimal fineAmount)
-        {
-            var rci = db.Rci.Find(rciID);
-
-            var comp = new RciComponent
-            {
-                RciComponentName = "Lost Keys",
-                RciID = rciID
-            };
-
-            if (!rci.RciComponent.Where(m => m.RciComponentName.Equals(comp.RciComponentName)).Any())
-            {
-                var newComponent = db.RciComponent.Add(comp);
-
-                db.SaveChanges();
-
-                var fine = new Fine
-                {
-                    FineAmount = fineAmount,
-                    GordonID = db.Rci.Find(rciID).GordonID,
-                    RciComponentID = newComponent.RciComponentID,
-                    Reason = "Lost Keys"
-                };
-
-                db.Fine.Add(fine);
-
-                db.SaveChanges();
-            }
-        }
-
+       
         /// <summary>
         /// Insert fines into the database
         /// </summary>
-        public void AddFines(List<RciNewFineViewModel> newFines, string gordonID)
+        public void AddFines(List<RciNewFineViewModel> newFines)
         {
             if (newFines != null)
             {
@@ -130,7 +161,7 @@ namespace Phoenix.Services
 
                 foreach (var fine in newFines)
                 {
-                    var newFine = new Fine { RciComponentID = fine.ComponentID, Reason = fine.FineReason, FineAmount = fine.FineAmount, GordonID = gordonID };
+                    var newFine = new Fine { RciComponentID = fine.ComponentID, Reason = fine.FineReason, FineAmount = fine.FineAmount, GordonID = fine.FineOwner };
                     toAdd.Add(newFine);
                 }
                 db.Fine.AddRange(toAdd);
@@ -159,11 +190,27 @@ namespace Phoenix.Services
         }
 
         /// <summary>
+        /// Let the indicated resident sign the rci. This signature is represented by adding a record to the
+        /// CommonAreaRciSignature table.
+        /// </summary>
+        public void CheckoutCommonAreaMemberSignRci(int rciID, string gordonID)
+        {
+            var signature = new CommonAreaRciSignature
+            {
+                RciID = rciID,
+                GordonID = gordonID,
+                Signature = DateTime.Now,
+                SignatureType = "CHECKOUT"
+            };
+            db.CommonAreaRciSignature.Add(signature);
+            db.SaveChanges();
+        }
+        /// <summary>
         /// Sign the resident portion of the rci during the checkout process
         /// </summary>
-        public void CheckoutResidentSignRci(CheckoutRciViewModel rciViewModel)
+        public void CheckoutResidentSignRci(int rciID)
         {
-            var rci = db.Rci.Find(rciViewModel.RciID);
+            var rci = db.Rci.Find(rciID);
 
             rci.CheckoutSigRes = System.DateTime.Today;
 
@@ -174,9 +221,9 @@ namespace Phoenix.Services
         /// <summary>
         /// Sign the RA portion of the rci during the checkout process
         /// </summary>
-        public void CheckoutRASignRci(CheckoutRciViewModel rciViewModel, string raName, string raGordonID)
+        public void CheckoutRASignRci(int rciID, string raGordonID)
         {
-            var rci = db.Rci.Find(rciViewModel.RciID);
+            var rci = db.Rci.Find(rciID);
 
             rci.CheckoutSigRA = System.DateTime.Today;
             rci.CheckoutSigRAGordonID = raGordonID;
@@ -188,9 +235,9 @@ namespace Phoenix.Services
         /// <summary>
         /// Sign the RD portion of the rci during the checkout process and make the rci non-current.
         /// </summary>
-        public void CheckoutRDSignRci(CheckoutRciViewModel rciViewModel, string rdName, string rdGordonID)
+        public void CheckoutRDSignRci(int rciID, string rdGordonID)
         {
-            var rci = db.Rci.Find(rciViewModel.RciID);
+            var rci = db.Rci.Find(rciID);
 
             rci.CheckoutSigRD = System.DateTime.Today;
             rci.CheckoutSigRDGordonID = rdGordonID;

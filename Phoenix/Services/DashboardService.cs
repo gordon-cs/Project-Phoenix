@@ -182,9 +182,24 @@ namespace Phoenix.Services
          */
          public string GetCurrentSession()
         {
-            var currentSessionCode = db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE.Trim();
-            return currentSessionCode;
-        }
+            var today = DateTime.Now;
+            var sessions = db.Session.Where(m => m.SESS_BEGN_DTE.HasValue && m.SESS_END_DTE.HasValue);
+            sessions = sessions.Where(x => 
+                            today.CompareTo(x.SESS_BEGN_DTE.Value) >= 0 
+                            && 
+                            today.CompareTo(x.SESS_END_DTE.Value) <= 0 ); // We are assuming sessions don't overlap
+            var currentSession = sessions.FirstOrDefault();
+            // If we are within a session.
+            if(currentSession != null)
+            {
+                return currentSession.SESS_CDE.Trim();
+            }
+            // If the table doesn't have a session for the date we are within
+            else
+            {
+                return db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE.Trim();
+            }
+        } 
 
         /// <summary>
         /// Make sure the rci table is up to date with the room assign table for the specified kingdom
@@ -216,7 +231,7 @@ namespace Phoenix.Services
                 var newRci = CreateRciObject(
                     roomAssignment.BLDG_CDE.Trim(),
                     roomAssignment.ROOM_CDE.Trim(),
-                    GetCurrentSession(),
+                    currentSession,
                     roomAssignment.ID_NUM.ToString());
 
                 newRcis.Add(newRci);
@@ -298,6 +313,7 @@ namespace Phoenix.Services
         /// </summary>
         public void SyncCommonAreaRcisFor(List<string> kingdom)
         {
+            var currentSession = GetCurrentSession();
             var query =
                 from rm in db.Room
                 join rci in db.Rci
@@ -316,7 +332,7 @@ namespace Phoenix.Services
                 var newCommonAreaRci = CreateRciObject(
                     room.BLDG_CDE.Trim(),
                     room.ROOM_CDE.Trim(),
-                    GetCurrentSession());
+                    currentSession);
 
                 newCommonAreaRcis.Add(newCommonAreaRci);
             }

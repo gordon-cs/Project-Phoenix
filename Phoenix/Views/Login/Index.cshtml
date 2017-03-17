@@ -18,7 +18,9 @@
 <!-- Anti forgery token to prevent CSRF attacks, since authentication token is stored in a cookie-->
         @Html.AntiForgeryToken()
 
-        <div class="error-msg">@Html.ValueFor(m => m.ErrorMessage)</div>
+        <div class="error-message">
+            <p>@Html.ValueFor(m => m.ErrorMessage)</p>
+        </div>
 
         <div class="login-container">
             @Html.TextBoxFor(m => m.Username, new { placeholder = "Username" })

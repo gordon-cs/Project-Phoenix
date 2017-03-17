@@ -2,7 +2,7 @@
 <div class="pane component" id="@Model.RciComponentID">
     <h2 class="pane-title div-list-toggle">@Model.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
     <div class="checkout pane-content">
-        @if (Model.Rci.GordonID != null)
+        @if (component.RciComponentDescription != null && component.RciComponentDescription.Trim() != "")
         {
             <p><b>Possible places:</b> @Model.RciComponentDescription</p>
         }
@@ -45,7 +45,7 @@
             }
         </div>
         <div>
-            <p>Add Fine(s)</p>
+            <p>Add Charge(s)</p>
         </div>
         <div class="divAddOn">
             <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@Model.RciComponentID" />

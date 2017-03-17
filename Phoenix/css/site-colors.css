@@ -64,6 +64,12 @@ button.dropdown {
      color: #fff;
  }
 
+ .error-message {
+     background-color: #B53228;
+     color: #fff;
+ }
+
+
  .divAddOn-vert {
      background-color: #014983;
      color: #fff;
