@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "SignAllRD";
+    ViewBag.ViewTitle = "Batch Sign RCI Checkins";
     ViewBag.MenuExists = "T";
 }
 
@@ -16,46 +17,46 @@
     </ul>
 }
 
-<h2>RD Signature On All</h2>
+<div class="view">
+    <div class="pane">
+        <div>
+            <p>@ViewBag.User, please sign with your name to confirm the entered existing damages for the selected RCIs below. Only the RCIs that are checked off will be signed</p>
+            <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
 
-<div>
-    <p>Please sign with your name @ViewBag.User to confirm the entered existing damages for the RCIs below that you have checked.</p>
-    <input type="text" id="rci-sig" />
-
-    <div class="distribute-evenly">
-        <button id="submit-button">Submit</button>
-    </div>
-
-    <div>
-        @foreach (var rci in Model)
-        {
-            <div class="divAddOn">
-                <div class="divAddOn-field">
-                    <p>@rci.BuildingCode @rci.RoomNumber</p>
-                    <p>@rci.FirstName @rci.LastName</p>
-                </div>
-                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                    <div>
-                        <i class="material-icons">mode_edit</i>
-                    </div>
-                </a>
-                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                    <div>
-                        @if (rci.CheckinSigRDGordonID == null)
-                        {
-                            <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" />
-                        }
-                        else
-                        {
-                            <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" checked="checked" />
-                        }
-
-                    </div>
-                </a>
+            <div class="distribute-evenly">
+                <button id="submit-button">Submit</button>
             </div>
-        }
+
+            <div>
+                @foreach (var rci in Model)
+                {
+                    <div class="divAddOn">
+                        <div class="divAddOn-field">
+                            <p>@rci.BuildingCode @rci.RoomNumber</p>
+                            <p>@rci.FirstName @rci.LastName</p>
+                        </div>
+                        <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                            <div>
+                                <i class="material-icons">mode_edit</i>
+                            </div>
+                        </a>
+                        <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                            <div>
+                                @if (rci.CheckinSigRDGordonID == null)
+                                {
+                                    <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" checked="checked" />
+                                }
+
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+
+        </div>
     </div>
-
 </div>
-
-

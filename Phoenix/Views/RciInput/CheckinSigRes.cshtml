@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "CheckinSigRes";
+    ViewBag.ViewTitle = "Checkin: Resident Signature";
     ViewBag.MenuExists = "T";
 }
 
@@ -16,37 +17,42 @@
     </ul>
 }
 
-<h2 id="rci-@Model.RciID">Signature</h2>
+<div class="view">
+    <div class="pane">
+        <h2 id="rci-@Model.RciID">Signature</h2>
 
-<div>
-    <p>Please sign with your Gordon username @ViewBag.User to confirm the entered existing damages.</p>
+        <div>
+            <p>Please sign with your Gordon username @ViewBag.User to confirm the entered existing damages.</p>
 
-    @if (Model.CheckinSigRes == null)
-    {
-        <input type="text" id="rci-sig" />
-    }
-    else 
-    {
-    <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User"/>
-    }
-    
-</div>
+            @if (Model.CheckinSigRes == null)
+            {
+                <input type="text" id="rci-sig" />
+            }
+            else
+            {
+                <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User" />
+            }
 
-<div>
-    <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
-    <p>Please sign with your Gordon username @ViewBag.User</p>
+        </div>
 
-    @if (Model.LifeAndConductSigRes == null)
-    {
-        <input type="text" id="lac-sig" />
-    }
-    else
-    {
-        <input type="text" id="lac-sig" disabled="disabled" value="@ViewBag.User" />
-    }
+        <div>
+            <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
+            <p>Please sign with your Gordon username @ViewBag.User</p>
 
-</div>
+            @if (Model.LifeAndConductSigRes == null)
+            {
+                <input type="text" id="lac-sig" />
+            }
+            else
+            {
+                <input type="text" id="lac-sig" disabled="disabled" value="@ViewBag.User" />
+            }
 
-<div class="distribute-evenly">
-    <button id="submit-button">Submit</button>
+        </div>
+
+        <div class="distribute-evenly">
+            <button id="submit-button">Submit</button>
+        </div>
+
+    </div>
 </div>

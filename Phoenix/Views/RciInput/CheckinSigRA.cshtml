@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "CheckinSigRA";
+    ViewBag.ViewTitle = "Checkin: RA Signature";
     ViewBag.MenuExists = "T";
 }
 
@@ -16,54 +17,58 @@
     </ul>
 }
 
-<h2 id="rci-@Model.RciID">Signature</h2>
+<div class="view">
+    <div class="pane">
+        <h2 id="rci-@Model.RciID">Signature</h2>
 
-<div>
+        <div>
 
-    @if (Model.GordonID == ViewBag.GordonID)
-    {
-        <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as a resident.</p>
+            @if (Model.GordonID == ViewBag.GordonID)
+            {
+                <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as a resident.</p>
 
-        if (Model.CheckinSigRes == null)
-        {
-            <input type="text" id="rci-sig-res" />
-        }
-        else
-        {
-            <input type="text" id="rci-sig-res" disabled="disabled" value="@ViewBag.User" />
-        }
+                if (Model.CheckinSigRes == null)
+                {
+                    <input type="text" id="rci-sig-res" />
+                }
+                else
+                {
+                    <input type="text" id="rci-sig-res" disabled="disabled" value="@ViewBag.User" />
+                }
 
-        <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
-        <p>Please sign with your name @ViewBag.User</p>
+                <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
+                <p>Please sign with your name @ViewBag.User</p>
 
-        if (Model.LifeAndConductSigRes == null)
-        {
-            <input type="text" id="lac-sig" />
-        }
-        else
-        {
-            <input type="text" id="lac-sig" disabled="disabled" value="@ViewBag.User" />
-        }
-    }
+                if (Model.LifeAndConductSigRes == null)
+                {
+                    <input type="text" id="lac-sig" />
+                }
+                else
+                {
+                    <input type="text" id="lac-sig" disabled="disabled" value="@ViewBag.User" />
+                }
+            }
 
-    @if ((Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null) && Model.GordonID != ViewBag.GordonID)
-    {
-        <p>Resident hasn't signed yet. Please make sure resident has signed before signing.</p>
-        <input type="text" id="rci-sig" disabled="disabled" />
-    }
-    else if (Model.CheckinSigRA == null)
-    {
-        <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
-        <input type="text" id="rci-sig" />
-    }
-    else
-    {
-        <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
-        <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User" />
-    }
+            @if ((Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null) && Model.GordonID != ViewBag.GordonID)
+            {
+                <p>Resident hasn't signed yet. Please make sure resident has signed before signing.</p>
+                <input type="text" id="rci-sig" disabled="disabled" />
+            }
+            else if (Model.CheckinSigRA == null)
+            {
+                <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
+                <input type="text" id="rci-sig" />
+            }
+            else
+            {
+                <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
+                <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User" />
+            }
 
-</div>
+        </div>
 
-<div class="distribute-evenly">
-    <button id="submit-button">Submit</button>
+        <div class="distribute-evenly">
+            <button id="submit-button">Submit</button>
+        </div>
+    </div>
 </div>
