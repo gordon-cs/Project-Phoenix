@@ -3,7 +3,9 @@
 @{
     ViewBag.Title = "RCI Checkout";
     ViewBag.ViewTitle = "RCI Checkout: " + Model.FirstName + " " + Model.LastName;
+    ViewBag.Name = TempData["user"];
     ViewBag.MenuExists = "T";
+    ViewBag.Role = TempData["role"];
 }
 
 @section Styles{
