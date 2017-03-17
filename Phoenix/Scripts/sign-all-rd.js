@@ -1,22 +1,18 @@
-﻿$(document).ready(function () {
-    $("#submit-button").click(function () {
-        submit();
-    });
-
-    $("#rci-sig-checkbox").click(function () {
-        check();
-    });
+﻿$("#submit-button").click(function () {
+    submit();
 })
 
+$("input:checkbox[id^='rci-sig-checkbox-']").click(function () {
+    check(($(this).attr("id")).substring(17));
+});
 
-function check() {
-    if ($("#rci-sig-checkbox").is(":checked")) {
+function check(id) {
+    if ($("#rci-sig-checkbox-"+id).is(":checked")) {
         var sigCheck = 1;
     }
     else {
         var sigCheck = 0;
     }
-    var id = $("h2[id^='rci-']").first().attr("id").substring(4);
     $.ajax({
         sync: false,
         url: "/RciInput/CheckSigRD",
@@ -32,18 +28,16 @@ function check() {
     })
 }
 
-/* Submit signatures for both RCI and Life and Conduct Agreement */
 function submit() {
     var rciSig = "";
     if ($("#rci-sig").attr("disabled") != "disabled") {
         rciSig = $("#rci-sig").val();
     }
-    var id = $("h2[id^='rci-']").first().attr("id").substring(4);
 
     $.ajax({
         sync: false,
-        url: "/RciInput/SaveSigRD",
-        data: { rciSig: rciSig, id: id },
+        url: "/RciInput/SubmitSignAllRD",
+        data: { rciSig: rciSig},
         method: "POST",
         success: function (data) {
             window.location.href = data;

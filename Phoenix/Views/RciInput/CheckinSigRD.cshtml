@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "CheckinSigRD";
+    ViewBag.ViewTitle = "Checkin: RD Signature";
     ViewBag.MenuExists = "T";
 }
 
@@ -12,37 +13,50 @@
 @section Menu {
     <ul class="drawer-menu">
         <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
+        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "SignAllRD", controllerName: "RciInput")">Batch Sign RCI Checkins</a></li>
         <li class="drawer-menu-item logout-button">Logout</li>
     </ul>
 }
 
-<h2 id="rci-@Model.RciID">Signature</h2>
+<div class="view">
+    <div class="pane">
+        <h2 id="rci-@Model.RciID">Signature</h2>
 
-<div>
-    <p>Please sign with your name @ViewBag.User to confirm the entered existing damages.</p>
+        <div>
+            <p>Please sign with your name @ViewBag.User to confirm the entered existing damages.</p>
 
-    @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
-    {
-        <p>Resident hasn't signed yet. Please make sure resident and RA have signed before signing.</p>
-        <input type="text" id="rci-sig" disabled="disabled" />
-    }
-    else if (Model.CheckinSigRA == null)
-    {
-        <p>RA hasn't signed yet. Please make sure RA has signed before signing.</p>
-        <input type="text" id="rci-sig" disabled="disabled" />
-    }
-    else if (Model.CheckinSigRD == null)
-    {
-        <input type="text" id="rci-sig" />
-    }
-    else
-    {
-        <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User" />
-    }
+            @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
+            {
+                <p>Resident hasn't signed yet. Please make sure resident and RA have signed before signing.</p>
+                <input type="text" id="rci-sig" disabled="disabled" />
+            }
+            else if (Model.CheckinSigRA == null)
+            {
+                <p>RA hasn't signed yet. Please make sure RA has signed before signing.</p>
+                <input type="text" id="rci-sig" disabled="disabled" />
+            }
+            else if (Model.CheckinSigRD == null)
+            {
+                <input type="text" id="rci-sig" />
+                <p>OR</p>
+                if (Model.CheckinSigRDGordonID == null)
+                {
+                    <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Queue for signing later</label>
+                }
+                else
+                {
+                    <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Queue for signing later</label>
+                }
+            }
+            else
+            {
+                <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User" />
+            }
 
-</div>
+        </div>
 
-<div class="distribute-evenly">
-    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-    <button id="submit-button">Submit</button>
+        <div class="distribute-evenly">
+            <button id="submit-button">Submit</button>
+        </div>
+    </div>
 </div>
