@@ -12,9 +12,15 @@
 <div class="view">
     <div class="pane">
         <div class="pane-content">
-            <div class="error-message">
-                <p>@ViewBag.ErrorMessage</p>
-            </div>
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="error-message">
+                    @foreach (var error in ViewBag.ErrorMessage)
+                    {
+                        <p>@error</p>
+                    }
+                </div>
+            }
             @using (Html.BeginForm(actionName: "ResidentSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
