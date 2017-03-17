@@ -10,5 +10,6 @@ namespace Phoenix.Models.ViewModels
         public int ComponentID { get; set; }
         public string FineReason { get; set; }
         public decimal FineAmount { get; set; }
+        public string FineOwner { get; set; }
     }
 }

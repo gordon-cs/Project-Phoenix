@@ -3,7 +3,7 @@
     <h2 class="pane-title div-list-toggle">@Model.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
 
     <div class="input pane-content">
-        @if (Model.Rci.GordonID != null)
+        @if (Model.Rci.GordonID != null && Model.RciComponentDescription != null && Model.RciComponentDescription.Trim() != "")
         {
             <p><b>Possible places:</b> @Model.RciComponentDescription</p>
         }

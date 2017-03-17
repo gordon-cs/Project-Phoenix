@@ -12,6 +12,7 @@ namespace Phoenix.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Rci()
         {
+            CommonAreaRciSignature = new HashSet<CommonAreaRciSignature>();
             RciComponent = new HashSet<RciComponent>();
         }
 
@@ -68,6 +69,9 @@ namespace Phoenix.Models
 
         [StringLength(50)]
         public string CheckinSigRDGordonID { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CommonAreaRciSignature> CommonAreaRciSignature { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RciComponent> RciComponent { get; set; }

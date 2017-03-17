@@ -44,6 +44,11 @@
      color: #00AEEF;
  }
 
+ .error-message {
+     background-color: #B53228;
+     color: #fff;
+ }
+
  /*.divAddOn-field {
      background-color: #014983;
      color: #fff;

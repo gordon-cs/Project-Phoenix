@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44398</IISExpressSSLPort>
+    <IISExpressSSLPort>44345</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
@@ -154,12 +154,15 @@
     <Compile Include="Controllers\RciInputController.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
     <Compile Include="Filters\AdminAuthorizationAttribute.cs" />
+    <Compile Include="Filters\RDAttribute.cs" />
+    <Compile Include="Filters\ResLifeStaffAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Admin.cs" />
     <Compile Include="Models\BuildingAssign.cs" />
+    <Compile Include="Models\CommonAreaRciSignature.cs" />
     <Compile Include="Models\CurrentRA.cs" />
     <Compile Include="Models\CurrentRD.cs" />
     <Compile Include="Models\Damage.cs" />
@@ -172,7 +175,10 @@
     <Compile Include="Models\RoomChangeHistory.cs" />
     <Compile Include="Models\RoomMaster.cs" />
     <Compile Include="Models\Session.cs" />
-    <Compile Include="Models\ViewModels\CheckoutRciViewModel.cs" />
+    <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
+    <Compile Include="Models\ViewModels\CheckoutCommonAreaRciViewModel.cs" />
+    <Compile Include="Models\ViewModels\CheckoutIndividualRoomRciViewModel.cs" />
+    <Compile Include="Models\ViewModels\CommonAreaMember.cs" />
     <Compile Include="Models\ViewModels\HomeRciViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
     <Compile Include="Models\ViewModels\PotentialRciReassignTarget.cs" />
@@ -256,13 +262,14 @@
     <Content Include="Views\RciInput\CheckinSigRes.cshtml" />
     <Content Include="Views\RciInput\CheckinSigRA.cshtml" />
     <Content Include="Views\RciInput\CheckinSigRD.cshtml" />
-    <Content Include="Views\RciCheckout\Index.cshtml" />
+    <Content Include="Views\RciCheckout\IndividualRoom.cshtml" />
     <Content Include="Views\RciCheckout\ResidentSignature.cshtml" />
     <Content Include="Views\RciCheckout\RASignature.cshtml" />
     <Content Include="Views\RciComponentReassign\Index.cshtml" />
     <Content Include="Views\RciCheckout\RDSignature.cshtml" />
     <Content Include="Views\RciInput\Component.cshtml" />
-    <Content Include="Views\RciCheckout\Component.cshtml" />
+    <Content Include="Views\RciCheckout\CommonArea.cshtml" />
+    <Content Include="Views\RciCheckout\CommonAreaSignature.cshtml" />
     <Content Include="Views\RciInput\SignAllRD.cshtml" />
   </ItemGroup>
   <ItemGroup>
