@@ -126,7 +126,24 @@ namespace Phoenix.Controllers
 
         public ActionResult CheckinSigCommonArea(int id)
         {
-            return View();
+            var role = (string)TempData["role"];
+
+            if (role == null)
+            {
+                return RedirectToAction("Index", "LoginController");
+            }
+
+            if (role.Equals("RD"))
+            {
+                return RedirectToAction("CheckinSigRD", new { id = id });
+            }
+            else if (role.Equals("RA"))
+            {
+                return RedirectToAction("CheckinSigRA", new { id = id });
+            }
+
+            var rci = rciInputService.GetCommonAreaRciById(id);
+            return View(rci);
         }
 
         // GET: RCIInput/CheckinSigRA/1
