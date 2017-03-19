@@ -74,17 +74,17 @@ button.dropdown {
  }
 
 
- .divAddOn-vert {
+ .rci-card-main {
      background-color: #014983;
      color: #fff;
  }
 
- .divAddOn-vert-row {
+ .rci-card-links {
      background-color: #fff;
      color: #000;
  }
 
- .divAddOn-vert-row a {
+ .rci-card-links a {
      color: #31342b;
  }
 

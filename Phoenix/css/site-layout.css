@@ -225,6 +225,8 @@ i {
 
 .divAddOn-field,
 .divAddOn-item {
+    display: block;
+    min-width:0;
     padding: 0.5em 0.5em;
 }
 
@@ -234,7 +236,6 @@ i {
     border-bottom: 1px solid #ccc;
     display: flex;
     justify-content: center;
-    min-width: 5%;
     align-items: center;
 }
 
@@ -264,14 +265,12 @@ i {
     display: flex;
     flex-direction: column;
     margin-top: 15px;
-    padding: .5em 1.5em;
-    vertical-align: baseline;
 }
 
 .divAddOn-vert-field {
-    /*border-left: 1px solid #ccc;
+    border-left: 1px solid #ccc;
     border-top: 1px solid #ccc;
-    border-right: 1px solid #ccc;*/
+    border-right: 1px solid #ccc;
     flex: 1 1 auto;
 }
 
@@ -282,7 +281,7 @@ i {
 
 .divAddOn-vert-row, .bottom-button {
     border-left: 1px solid #ccc;
-    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     border-right: 1px solid #ccc;
     display: flex;
     justify-content: space-around;
