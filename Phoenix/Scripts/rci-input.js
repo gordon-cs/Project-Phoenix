@@ -14,7 +14,7 @@ $("#next-button").click(function () {
 //}
 
 /* Save the damages in the RCI. Can be used in both regular save and auto save */
-function save() {
+/*function save() {
     let rci = {}
     rci.newDamages = [];
     rci.damagesToDelete = damagesToDelete;
@@ -40,7 +40,7 @@ function save() {
         }
 
     });
-}
+}*/
 
 /* Receive a photo from the <input> element, add it to the DOM, and save it to the db
 /* Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications */
@@ -212,25 +212,61 @@ function deletePhoto(damageId) {
     <input> hidden element that will be used when submitting the form
     */
 function addDamage(componentID) {
-    var pElement = "<p class='divAddOn-field new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='divAddOn-item material-icons' onclick='deleteNewDamages(event, this);'>delete</i>";
-    //var inputHiddenElement = "<input type='hidden' name=" + componentID + " value='" + $("#text-input-" + componentID).val() + "'/>";
-    var divWrapper = "<div class='divAddOn'>" + pElement + "</div>";
-    $("#div-list-" + componentID).append(divWrapper);
-    console.log(divWrapper);
-    console.log($("#text-input-" + componentID).val());
-    $("#text-input-" + componentID).val(""); // Empty the textfield of adding damages
+    var damageDescription = $("#text-input-" + componentID).val();
+    console.log(componentID);
+    console.log(damageDescription);
+
+    $.ajax({
+        url: '/RciInput/SaveDamage',
+        data: { componentID: componentID, damageDescription: damageDescription },
+        method: "POST"
+    }).done(function (data) {
+        // the ajax call returns the damage id
+        console.log(data);
+        var pElement = "<p class='divAddOn-field new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='divAddOn-item material-icons' " + "id='" + data + "' onclick='deleteDamage(event, this);'>delete</i>";
+        //var inputHiddenElement = "<input type='hidden' name=" + componentID + " value='" + $("#text-input-" + componentID).val() + "'/>";
+        var divWrapper = "<div class='divAddOn'>" + pElement + "</div>";
+        $("#div-list-" + componentID).append(divWrapper);
+        console.log(divWrapper);
+        console.log($("#text-input-" + componentID).val());
+        $("#text-input-" + componentID).val(""); // Empty the textfield of adding damages
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        alert("Oops! We were unable to save that damage to the database.");
+        console.log("Status: " + jqXHR.status);
+        console.log("Response Text: " + jqXHR.responseText);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 /* Delete the div wrapper for a damage entry that was created, but not yet saved to the database*/
-function deleteNewDamages(event, element) {
+/*function deleteNewDamages(event, element) {
     $(element).parent().remove();
-}
+}*/
 
 /* Delete the div wrapper for a damage that has already been saved to the database */
-function deleteExistingDamages(event, element, id)
+/*function deleteExistingDamages(event, element, id)
 {
     $(element).parent().remove();
     damagesToDelete.push(id);
+}*/
+
+function deleteDamage(event, element)
+{
+    var id = $(element).attr("id");
+    $(element).parent().remove();
+    console.log(id);
+    $.ajax({
+        url: '/RciInput/DeleteDamage',
+        data: { damageID: id },
+        method: "POST"
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        alert("Oops! We were unable to save that damage to the database.");
+        console.log("Status: " + jqXHR.status);
+        console.log("Response Text: " + jqXHR.responseText);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 

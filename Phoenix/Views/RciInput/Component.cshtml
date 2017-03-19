@@ -65,7 +65,7 @@
                 {
                     <div class="divAddOn">
                         <p class="divAddOn-field">@damage.DamageDescription</p>
-                        <i class='divAddOn-item material-icons' onclick="deleteExistingDamages(event, this, @damage.DamageID)">delete</i>
+                        <i class='divAddOn-item material-icons' id="@damage.DamageID" onclick="deleteDamage(event, this)">delete</i>
                     </div>
                 }
             }

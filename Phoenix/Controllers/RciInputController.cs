@@ -339,6 +339,16 @@ namespace Phoenix.Controllers
             return;
         }
 
+        // save one damage to db and return damage id in response
+        [HttpPost]
+        public void SaveDamage(int componentID, string damageDescription)
+        {
+            var newDamage = new Damage { RciComponentID = componentID, DamageDescription = damageDescription, DamageType = "TEXT" };
+            db.Damage.Add(newDamage);
+            db.SaveChanges();
+            Response.Write(newDamage.DamageID);
+        }
+
 
         /// <summary>
         /// If a photo(s) of a damage was uploaded, this method first creates a new Damage entry in db, then saves the image to the server
@@ -427,6 +437,26 @@ namespace Phoenix.Controllers
             }
             return;
 
+        }
+        /// <summary>
+        /// For a particular damage text, delete the damage entry from the database based on the damageId
+        /// </summary>
+        /// <param name="damageId">The id for the damage</param>
+        [HttpPost]
+        public void DeleteDamage(int damageID)
+        {
+            var damage = db.Damage.Where(m => m.DamageID == damageID).FirstOrDefault();
+            try
+            {
+                db.Damage.Remove(damage); // Remove from db
+                db.SaveChanges();
+                Response.Status = "200 Successfully deleted.";
+            }
+            catch (Exception e)
+            {
+                Response.Status = "500 Error deleting damage description. Error message: " + e.Message;
+            }
+            return;
         }
     }
 }
