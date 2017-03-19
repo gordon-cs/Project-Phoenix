@@ -16,23 +16,21 @@
 <div class="view">
     <div class="pane">
         @*<h4 class="dashboard-rci-list-header">
-            My RCIs
-        </h4>*@
+                My RCIs
+            </h4>*@
         @foreach (var rci in Model)
         {
-            <div class="divAddOn">
-                <div class="divAddOn-vert-field">
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                        <div class="divAddOn-vert search-field">
-                            <p class="emphasized">@rci.BuildingCode @rci.RoomNumber</p>
-                            <p>@rci.FirstName @rci.LastName</p>
-                            <i class="material-icons edit">mode_edit</i>
-                        </div>
-                    </a>
+            <div class="divAddOn-vert rci-card">
+                <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                    <div class="divAddOn-vert-field search-field rci-card-main">
+                        <p class="emphasized">@rci.BuildingCode @rci.RoomNumber</p>
+                        <p>@rci.FirstName @rci.LastName</p>
+                        <i class="material-icons edit">mode_edit</i>
                     </div>
-                </div>
+                </a>
+            </div>
         }
-    </div> 
+    </div>
 </div>
 
 
