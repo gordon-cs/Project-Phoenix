@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "CheckinSigRD";
+    ViewBag.ViewTitle = "Checkin: RD Signature";
     ViewBag.MenuExists = "T";
     ViewBag.IsRD = true;
 }
@@ -11,7 +12,9 @@
 }
 
 
-<h2 id="rci-@Model.RciID">Signature</h2>
+<div class="view">
+    <div class="pane">
+        <h2 id="rci-@Model.RciID">Signature</h2>
 
 <div>
     
@@ -29,7 +32,16 @@
     else if (Model.CheckinSigRD == null)
     {
         <p>Please sign with your name @ViewBag.User to confirm the entered existing damages.</p>
-        <input type="text" id="rci-sig" />
+    <input type="text" id="rci-sig" />
+    <p>OR</p>
+    if (Model.CheckinSigRDGordonID == null)
+    {
+    <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Queue for signing later</label>
+    }
+    else
+    {
+    <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Queue for signing later</label>
+    }
         <div class="distribute-evenly">
             <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
             <button id="submit-button" onclick="RDSigSubmit()">Submit</button>
@@ -41,6 +53,6 @@
         <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
 
-</div>
+        </div>
 
 

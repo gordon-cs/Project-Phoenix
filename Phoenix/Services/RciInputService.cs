@@ -3,6 +3,7 @@ using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System.Drawing;
 using System.Collections.Generic;
+using System;
 
 namespace Phoenix.Services
 {
@@ -19,6 +20,132 @@ namespace Phoenix.Services
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
             return rci;
         }
+
+        public IEnumerable<SignAllRDViewModel> GetRcisForBuilding(List<string> buildingCode)
+        {
+            // Not sure if this will end up with duplicates for the RA's own RCI
+            var buildingRCIs =
+                from r in db.Rci
+                join account in db.Account on r.GordonID equals account.ID_NUM into rci
+                from account in rci.DefaultIfEmpty()
+                where buildingCode.Contains(r.BuildingCode) && r.IsCurrent == true
+                where r.CheckinSigRD == null && r.CheckinSigRA != null && r.CheckinSigRes != null
+                select new SignAllRDViewModel
+                {
+                    RciID = r.RciID,
+                    BuildingCode = r.BuildingCode.Trim(),
+                    RoomNumber = r.RoomNumber.Trim(),
+                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
+                    LastName = account.lastname == null ? "RCI" : account.lastname,
+                    CheckinSigRDGordonID = r.CheckinSigRDGordonID
+                };
+            return buildingRCIs.OrderBy(m => m.RoomNumber);
+        }
+
+        /*public IEnumerable<SignAllRDViewModel> GetCheckedRcis(string gordonID)
+        {
+            var rcis =
+                from r in db.Rci
+                where r.CheckinSigRDGordonID == gordonID
+                where r.CheckinSigRD == null
+                join a in db.Account on r.GordonID equals a.ID_NUM into account
+                from temp in account.DefaultIfEmpty()
+                select new SignAllRDViewModel()
+                {
+                    RciID = r.RciID,
+                    GordonID = r.GordonID,
+                    FirstName = temp.firstname ?? "Common Area",
+                    LastName = temp.lastname ?? "Rci",
+                    BuildingCode = r.BuildingCode,
+                    RoomNumber = r.RoomNumber
+                };
+                
+            return rcis;
+        }*/
+
+        public void SignRcis(string gordonID)
+        {
+            var rcis =
+                from r in db.Rci
+                where r.CheckinSigRDGordonID == gordonID
+                where r.CheckinSigRD == null
+                select r;
+            foreach (var rci in rcis)
+            {
+                rci.CheckinSigRD = DateTime.Today;
+            }
+            db.SaveChanges();
+        }
+
+        public string GetName(string gordonID)
+        {
+            return db.Account.Where(m => m.ID_NUM == gordonID)
+                    .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
+        }
+
+        public bool SaveResSigs(string rciSig, string lacSig, string user, int id)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+
+            if (rciSig == user)
+            {
+                rci.CheckinSigRes = DateTime.Today;
+            }
+            if (lacSig == user)
+            {
+                rci.LifeAndConductSigRes = DateTime.Today;
+            }
+            db.SaveChanges();
+            return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null;
+        }
+
+        public bool SaveRASigs(string rciSig, string lacSig, string rciSigRes, string user, int id, string gordonID)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+
+            if (rciSig == user)
+            {
+                rci.CheckinSigRA = DateTime.Today;
+                rci.CheckinSigRAGordonID = gordonID;
+            }
+            if (rciSigRes == user)
+            {
+                rci.CheckinSigRes = DateTime.Today;
+            }
+            if (lacSig == user)
+            {
+                rci.LifeAndConductSigRes = DateTime.Today;
+            }
+            db.SaveChanges();
+            return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null;
+        }
+
+        public bool SaveRDSigs(string rciSig, string user, int id, string gordonID)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            if (rciSig == user)
+            {
+                rci.CheckinSigRD = DateTime.Today;
+                rci.CheckinSigRDGordonID = gordonID;
+            }
+            db.SaveChanges();
+            return rci.CheckinSigRDGordonID != null;
+        }
+
+        public void CheckRcis(int sigCheck, string gordonID, int id)
+        {
+            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            if (sigCheck == 1)
+            {
+                rci.CheckinSigRDGordonID = gordonID;
+            }
+            else
+            {
+                rci.CheckinSigRDGordonID = null;
+            }
+            db.SaveChanges();
+        }
+
 
         public string GetUsername(string gordon_id)
         {

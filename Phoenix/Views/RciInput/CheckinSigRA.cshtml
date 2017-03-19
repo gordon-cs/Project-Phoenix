@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "CheckinSigRA";
+    ViewBag.ViewTitle = "Checkin: RA Signature";
     ViewBag.MenuExists = "T";
     ViewBag.Role = TempData["role"];
 }
@@ -12,7 +13,7 @@
 
 <h2 id="rci-@Model.RciID">Signature</h2>
 
-<div>
+        <div>
 
     @if (Model.GordonID == ViewBag.GordonID)
     {
@@ -23,7 +24,7 @@
             if (Model.CheckoutSigRes == null)
             {
             <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as a resident.</p>
-            <input type="text" id="rci-sig-res" />
+            <input type="text" id="rci-sig-res" value="@ViewBag.User" />
             }
             else
             {
@@ -34,7 +35,7 @@
             {
                 <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
                 <p>Please sign with your name @ViewBag.User</p>
-                <input type="text" id="lac-sig" />
+                <input type="text" id="lac-sig" value="@ViewBag.User" />
             }
             else
             {
@@ -62,7 +63,7 @@
     else if (Model.CheckinSigRA == null)
     {
         <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
-        <input type="text" id="rci-sig" />
+        <input type="text" id="rci-sig" value="@ViewBag.User" />
         <div class="distribute-evenly">
             <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
             <button id="submit-button" onclick="RASigSubmit()">Submit</button>
@@ -74,5 +75,5 @@
         <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
 
-</div>
+        </div>
 

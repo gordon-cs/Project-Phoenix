@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "CheckinSigRes";
+    ViewBag.ViewTitle = "Checkin: Resident Signature";
     ViewBag.MenuExists = "T";
     ViewBag.Role = TempData["role"];
     ViewBag.User = TempData["user"];
@@ -12,14 +13,16 @@
 }
 
 
-<h2 id="rci-@Model.RciID">Signature</h2>
+<div class="view">
+    <div class="pane">
+        <h2 id="rci-@Model.RciID">Signature</h2>
 
 <div>
 
     @if (Model.CheckinSigRes == null)
     {
         <p>Please sign with your Gordon username @ViewBag.User to confirm the entered existing damages.</p>
-        <input type="text" id="rci-sig" />
+        <input type="text" id="rci-sig" value="@ViewBag.User" />
     }
     else 
     {
@@ -46,6 +49,6 @@
         <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
 
-</div>
+        </div>
 
 

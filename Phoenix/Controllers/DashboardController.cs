@@ -138,9 +138,9 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
 
-            var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom);
+            var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
             
-            return View(buildingRCIs);
+            return View(buildingRcis);
         }
 
         [HttpGet]
