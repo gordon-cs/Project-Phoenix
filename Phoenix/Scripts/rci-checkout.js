@@ -1,11 +1,5 @@
 ﻿var finesToDelete = [];
 
-$("#save-button").click(function () {
-    save().then(function () {
-        location.reload(true);
-    });
-});
-
 $("#next-button").click(function () {
     let $this = $(this);
     save().then(function () {
@@ -13,35 +7,12 @@ $("#next-button").click(function () {
     });
 });
 
-/* Save the fines */
-function save() {
-    let rci = {}
-    rci.newFines = [];
-    rci.finesToDelete = finesToDelete;
-    $(".component").each(function (index, element) {
-        let componentId = $(element).attr("id");
-        $(element).find(".new-fine").each(function (index, element) {
-            let fineText = $(element).text();
-            let fineAmount = $(element).siblings(".new-fine-amount").first().text();
-            let fineOwner = $(element).siblings(".new-fine-owner").attr("data");
-            let newFine = {};
-            newFine["componentId"] = componentId;
-            newFine["fineReason"] = fineText;
-            newFine["fineAmount"] = fineAmount;
-            newFine["fineOwner"] = $(".view").attr("data") || fineOwner;
-            rci.newFines.push(newFine);
-        });
-    });
-
-    finesToDelete = [];
-
-    return $.ajax({
-        url: "/RciCheckout/SaveRci",
-        data: { rci: rci },
-        method: "POST"
-    });
-}
-
+/* Add a fine
+  * To differentiate between the common areas and individual views, we check whether fineOwnerName 
+  * is defined. That refers to what is curretnly selected in the dropdown. 
+  * Since there is no dropdown for indivudial views, it won't be defined 
+  * It seems hacky, but I couldn't think of an easier way that wouldn't require two seperate js files
+  */
 function addFine(componentID) {
     let $finesArea = $("#fine-list-" + componentID);
     let fineText = $("#text-input-" + componentID).val();
@@ -49,56 +20,79 @@ function addFine(componentID) {
     let fineOwnerName = $("#fine-owner-" + componentID + " option:selected").text(); // Will only be defined for common areas.
     let fineOwnerID = $("#fine-owner-" + componentID + " option:selected").val();
 
-    if (fineOwnerID === "0") { // Split the charge among everyone.
+    if (fineOwnerName && fineOwnerID === "0") { // Split the charge among everyone.
         let numberOfPeople = $("#fine-owner-" + componentID).children().length - 1;
         $("#fine-owner-" + componentID).children().each(function (index, element) {
+
             let $element = $(element);
             if ($element.val() === "0") { return; }
 
-            let div = $("<div />", { "class": "divAddOn" });
-            div.append("<p class='divAddOn-field new-fine'>" + fineText + "</p>");
-            div.append("<span class='divAddOn-item'>$</span>");
-            div.append("<p class=\"divAddOn-item new-fine-amount\">" + (fineAmount / numberOfPeople).toFixed(2) + "</p>");
-            div.append("<span data='" + $element.val() + "' class='divAddOn-item new-fine-owner'>" + $element.text() + "</span>");
-            div.append("<i class='divAddOn-item material-icons' onclick='deleteNewFines(event, this);'>delete</i>");
-            console.log(div);
-            $finesArea.append(div);
+            addFineToDb(componentID, fineText, (fineAmount / numberOfPeople).toFixed(2), $element.val())
+            .then(function (data) {
+                let div = $("<div />", { "class": "divAddOn" });
+                div.append("<p class='divAddOn-field'>" + fineText + "</p>");
+                div.append("<span class='divAddOn-item'>$</span>");
+                div.append("<p class=\"divAddOn-item\">" + (fineAmount / numberOfPeople).toFixed(2) + "</p>");
+                div.append("<p  class='divAddOn-item'>" + $element.text() + "</p>");
+                div.append("<i class='divAddOn-item material-icons' onclick='deleteFine(event, this,"+data+");'>delete</i>");
+                console.log(div);
+                $finesArea.append(div);
+            });
         });        
     }
     else if (fineOwnerName) { // A person was selected
-        let div = $("<div />", { "class": "divAddOn" });
-        div.append("<p class='divAddOn-field new-fine'>" + fineText + "</p>");
-        div.append("<span class='divAddOn-item'>$</span>");
-        div.append("<p class=\"divAddOn-item new-fine-amount\">" + fineAmount.toFixed(2) + "</p>");
-        div.append("<span data='" + fineOwnerID + "' class='divAddOn-item new-fine-owner'>" + fineOwnerName + "</span>")
-        div.append("<i class='divAddOn-item material-icons' onclick='deleteNewFines(event, this);'>delete</i>");
-        $finesArea.append(div);
+        addFineToDb(componentID, fineText, fineAmount, fineOwnerID)
+        .then(function (data) {
+            let div = $("<div />", { "class": "divAddOn" });
+            div.append("<p class='divAddOn-field'>" + fineText + "</p>");
+            div.append("<span class='divAddOn-item'>$</span>");
+            div.append("<p class=\"divAddOn-item\">" + fineAmount.toFixed(2) + "</p>");
+            div.append("<p class='divAddOn-item'>" + fineOwnerName + "</p>")
+            div.append("<i class='divAddOn-item material-icons' onclick='deleteFine(event, this, "+data+");'>delete</i>");
+            $finesArea.append(div);
+        });
     }
     else { // fineOwnerName is not defined, which means this is an individual checkout
-        let div = $("<div />", { "class": "divAddOn" });
-        div.append("<p class='divAddOn-field new-fine'>" + fineText + "</p>");
-        div.append("<span class='divAddOn-item'>$</span>");
-        div.append("<p class=\"divAddOn-item new-fine-amount\">" + fineAmount.toFixed(2) + "</p>");
-        div.append("<i class='divAddOn-item material-icons' onclick='deleteNewFines(event, this);'>delete</i>");
-        $finesArea.append(div);
+        let gordonID = $(".view").attr("data");
+        addFineToDb(componentID, fineText, fineAmount, gordonID )
+        .then(function (data) {
+            let div = $("<div />", { "class": "divAddOn" });
+            div.append("<p class='divAddOn-field'>" + fineText + "</p>");
+            div.append("<span class='divAddOn-item'>$</span>");
+            div.append("<p class=\"divAddOn-item\">" + fineAmount.toFixed(2) + "</p>");
+            div.append("<i class='divAddOn-item material-icons' onclick='deleteFine(event, this, "+data+");'>delete</i>");
+            $finesArea.append(div);
+        });
     }
     $("#text-input-" + componentID).val(""); // Empty the textfield of adding fines
     $("#fine-amount-input-" + componentID).val("");
 }
 
-/* Delete the div wrapper for a fine entry that was created, but not yet saved to the database*/
-function deleteNewFines(event, element) {
-    $(element).parent().remove();
+/* Delete a fine */
+function deleteFine(event, element, id) {
+    removeFineFromDb(id)
+    .then(function () {
+        $(element).parent().remove();
+    });   
 }
 
-/* Delete the div wrapper for a fine that has already been saved to the database */
-function deleteExistingFines(event, element, id) {
-    $(element).parent().remove();
-    finesToDelete.push(id);
+/* Helper method to make the ajax call and return the promise */
+function addFineToDb(componentId, reason, amount, owner) {
+    return $.ajax({
+        method: "POST",
+        url: "/RciCheckout/AddFine",
+        data: {componentId: componentId, fineReason: reason, fineAmount: amount, fineOwner: owner}
+    });
 }
 
-
-
+/* Helper method to make the ajax call and return the promise */
+function removeFineFromDb(fineId) {
+    return $.ajax({
+        method: "POST",
+        url: "/RciCheckout/RemoveFine",
+        data: {fineId: fineId}
+    });
+}
 
 /* Register Handers */
 

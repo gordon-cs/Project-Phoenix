@@ -81,7 +81,7 @@
                                 <p class="divAddOn-field">@fine.Reason</p>
                                 <span class="divAddOn-item">$</span>
                                 <p class="divAddOn-item">@fine.FineAmount</p>
-                                <i class='divAddOn-item material-icons' onclick="deleteExistingFines(event, this, @fine.FineID)">delete</i>
+                                <i class='divAddOn-item material-icons' onclick="deleteFine(event, this, @fine.FineID)">delete</i>
                             </div>
                         }
                     </div>
@@ -90,7 +90,6 @@
         }
   
     <div class="distribute-evenly">
-        <button id="save-button">Save</button>
         <button id="next-button" data="@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</button>
     </div>
 </div>
