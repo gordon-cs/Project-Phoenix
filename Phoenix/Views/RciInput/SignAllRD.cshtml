@@ -4,17 +4,12 @@
     ViewBag.Title = "SignAllRD";
     ViewBag.ViewTitle = "Batch Sign RCI Checkins";
     ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
 }
 
 @section Scripts{
     @Scripts.Render("~/Scripts/sign-all-rd.js")
-}
-
-@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
 }
 
 <div class="view">

@@ -8,6 +8,7 @@
     ViewBag.Role = TempData["role"];
 }
 
+<h2>@ViewBag.ViewTitle</h2>
 
 <div class="view">
     <div class="pane">
@@ -15,10 +16,7 @@
             @if (ViewBag.ErrorMessage != null)
             {
                 <div class="error-message">
-                    @foreach (var error in ViewBag.ErrorMessage)
-                    {
-                        <p>@error</p>
-                    }
+                   <p>@ViewBag.ErrorMessage</p>
                 </div>
             }
             @using (Html.BeginForm(actionName: "ResidentSignature", controllerName: "RciCheckout", method: FormMethod.Post))
