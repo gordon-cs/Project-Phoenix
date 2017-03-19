@@ -21,7 +21,7 @@ namespace Phoenix.Services
             return rci;
         }
 
-        public IEnumerable<SignAllRDViewModel> GetRcisForBuilding(List<string> buildingCode)
+        public IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(List<string> buildingCode)
         {
             // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
