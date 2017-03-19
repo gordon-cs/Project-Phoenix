@@ -160,6 +160,16 @@ namespace Phoenix.Services
                     db.CommonAreaRciSignature.Add(signature);
                     db.SaveChanges();
                 }
+
+                rci = GetCommonAreaRciById(rciID); // Check to see if everyone has signed now.
+                if(rci.EveryoneHasSigned())
+                {
+                    var genericRci = db.Rci.Find(rciID);
+                    if(genericRci.CheckinSigRes == null)
+                    {
+                        genericRci.CheckinSigRes = DateTime.Now;
+                    }
+                }
                 return true;
             }
             else

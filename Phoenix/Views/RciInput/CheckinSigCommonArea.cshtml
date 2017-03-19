@@ -1,2 +1,48 @@
 ﻿@model Phoenix.Models.ViewModels.CheckinCommonAreaRciViewModel
 
+@{
+    ViewBag.Title = "Checkin Signature";
+    ViewBag.ViewTitle = "Checkin: Common Area Signature";
+    ViewBag.MenuExists = "T";
+}
+
+@section Scripts{
+    @Scripts.Render("~/Scripts/checkin-sig-common-area.js")
+}
+
+@section Menu {
+    <ul class="drawer-menu">
+        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
+        <li class="drawer-menu-item logout-button">Logout</li>
+    </ul>
+}
+
+<div class="view">
+    <div class="pane">
+        <div id="rci-@Model.RciID">
+            @foreach (var member in Model.CommonAreaMember)
+            {
+                if (member.HasSignedCommonAreaRci)
+                {
+                    <p>This Common Area RCI has been signed by the resident @member.FirstName @member.LastName</p>
+                    <div class="divAddOn">
+                        <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@member.FirstName @member.LastName" />
+                        <input class="divAddOn-item" type="text" disabled value="@member.Signature" />
+                    </div>
+                }
+                else
+                {
+                    <p>I, @member.FirstName @member.LastName, confirm, by signing below that I have recorded  all the pre-existing damages to the room in this RCI to the best of my ability. I am responsible for any substantial damage found in the room, but absent from this RCI.</p>
+                    <div class="divAddOn">
+                        <input class="divAddOn-field rci-sig" name="signature" type="text" placeholder="@member.FirstName @member.LastName" />
+                    </div>
+                }
+            }
+           
+        </div>
+
+        <div class="distribute-evenly">
+            <button id="submit-button">Submit</button>
+        </div>
+    </div>
+</div>
