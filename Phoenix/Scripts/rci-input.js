@@ -8,39 +8,6 @@ $("#save-button").click(function () {
 $("#next-button").click(function () {
     save();
 });
-/* Save before the window unloads its resources e.g. reloading, closing browser etc... */
-//window.onbeforeunload = function (event) {
-//    save(); 
-//}
-
-/* Save the damages in the RCI. Can be used in both regular save and auto save */
-/*function save() {
-    let rci = {}
-    rci.newDamages = [];
-    rci.damagesToDelete = damagesToDelete;
-    $(".component").each(function (index, element) {
-        let componentId = $(element).attr("id");
-        $(element).find(".new-damage").each(function (index, element) {
-            let damageText = $(element).text();
-            let newDamageDescriptions = {};
-            newDamageDescriptions["componentId"] = componentId;
-            newDamageDescriptions["damage"] = damageText;
-            rci.newDamages.push(newDamageDescriptions);
-        });
-    });
-    // clear the array of delete elements
-    damagesToDelete = [];
-    $.ajax({
-        url: "/RciInput/SaveRci",
-        data: { rci: rci },
-        method: "POST",
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
-        }
-
-    });
-}*/
 
 /* Receive a photo from the <input> element, add it to the DOM, and save it to the db
 /* Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications */
@@ -238,18 +205,6 @@ function addDamage(componentID) {
         console.log(errorThrown);
     });
 }
-
-/* Delete the div wrapper for a damage entry that was created, but not yet saved to the database*/
-/*function deleteNewDamages(event, element) {
-    $(element).parent().remove();
-}*/
-
-/* Delete the div wrapper for a damage that has already been saved to the database */
-/*function deleteExistingDamages(event, element, id)
-{
-    $(element).parent().remove();
-    damagesToDelete.push(id);
-}*/
 
 function deleteDamage(event, element)
 {
