@@ -55,24 +55,26 @@
 
 
     }
-
-    @if ((Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null) && Model.GordonID != ViewBag.GordonID)
-    {
-        <p>Resident hasn't signed yet. Please make sure resident has signed before signing.</p>
-    }
-    else if (Model.CheckinSigRA == null)
-    {
-        <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
-        <input type="text" id="rci-sig" value="@ViewBag.User" />
-        <div class="distribute-evenly">
-            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-            <button id="submit-button" onclick="RASigSubmit()">Submit</button>
-        </div>
-    }
     else
     {
-        <p>You've already signed this resident's RCI.</p>
-        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        if ((Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null) && Model.GordonID != ViewBag.GordonID)
+        {
+            <p>Resident hasn't signed yet. Please make sure resident has signed before signing.</p>
+        }
+        else if (Model.CheckinSigRA == null)
+        {
+            <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
+            <input type="text" id="rci-sig" value="@ViewBag.User" />
+            <div class="distribute-evenly">
+                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+                <button id="submit-button" onclick="RASigSubmit()">Submit</button>
+            </div>
+        }
+        else
+        {
+            <p>You've already signed this resident's RCI.</p>
+            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        }
     }
 
         </div>
