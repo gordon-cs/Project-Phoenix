@@ -1,13 +1,4 @@
-﻿var finesToDelete = [];
-
-$("#next-button").click(function () {
-    let $this = $(this);
-    save().then(function () {
-        location.href = $this.attr("data");
-    });
-});
-
-/* Add a fine
+﻿/* Add a fine
   * To differentiate between the common areas and individual views, we check whether fineOwnerName 
   * is defined. That refers to what is curretnly selected in the dropdown. 
   * Since there is no dropdown for indivudial views, it won't be defined 

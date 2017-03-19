@@ -90,6 +90,6 @@
         }
   
     <div class="distribute-evenly">
-        <button id="next-button" data="@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</button>
+        <button id="next-button" onclick="window.location.href = '@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })'">Next</button>
     </div>
 </div>
