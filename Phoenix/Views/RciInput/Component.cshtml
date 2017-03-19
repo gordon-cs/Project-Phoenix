@@ -55,17 +55,17 @@
             <button class="divAddOn-item" onclick="addDamage(@Model.RciComponentID);" id="add-@Model.RciComponentID">Add</button>
         </div>
         <div class="div-list" id="div-list-@Model.RciComponentID">
-            <div class="div-list-toggle icon-label">
+            @*<div class="div-list-toggle icon-label">
                 <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
                 <span>Hide/Show Entered Damages</span>
-            </div>
+            </div>*@
             @foreach (var damage in Model.Damage)
             {
                 if (damage.DamageDescription != null)
                 {
-                    <div class="divAddOn">
-                        <p class="divAddOn-field">@damage.DamageDescription</p>
-                        <i class='divAddOn-item material-icons' onclick="deleteExistingDamages(event, this, @damage.DamageID)">delete</i>
+                    <div class="divAddOn damage-wrapper">
+                        <p class="damage-element">@damage.DamageDescription</p>
+                        <i class="material-icons" onclick="deleteExistingDamages(event, this, @damage.DamageID)">close</i>
                     </div>
                 }
             }

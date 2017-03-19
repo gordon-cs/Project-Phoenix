@@ -5,6 +5,7 @@
     ViewBag.NavigationAction = "";
     ViewBag.NavigationController = "";
     ViewBag.NavigationIcon = "";
+    ViewBag.NeedsLogo = true;
 }
 
 @section Styles {
@@ -17,14 +18,16 @@
 <!-- Anti forgery token to prevent CSRF attacks, since authentication token is stored in a cookie-->
         @Html.AntiForgeryToken()
 
-        <div class="error-message">
-            <p>@Html.ValueFor(m => m.ErrorMessage)</p>
-        </div>
-
+        if (Html.ValueFor(m => m.ErrorMessage) != null)
+        {
+            <div class="login-error-message">
+                <p>@Html.ValueFor(m => m.ErrorMessage)</p>
+            </div>
+        }
         <div class="login-container">
             @Html.TextBoxFor(m => m.Username, new { placeholder = "Username" })
             @Html.PasswordFor(m => m.Password, new { placeholder = "Password" })
-            <button type="submit">Enter</button>
+            <button type="submit">Login</button>
         </div>
         
         

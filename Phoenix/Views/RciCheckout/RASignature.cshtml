@@ -3,28 +3,27 @@
 @{
     ViewBag.Title = "Checkout";
     ViewBag.ViewTitle = "Checkout: RA Signature";
+    ViewBag.Name = TempData["user"];
     ViewBag.MenuExists = "T";
+    ViewBag.Role = TempData["role"];
 }
 
-@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}
-
+<h2>@ViewBag.ViewTitle</h2>
 <div class="view">
     <div class="pane">
         <div class="pane-content">
-            <div class="error-message">
-                <p>@ViewBag.ErrorMessage</p>
-            </div>
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="error-message">
+                   <p>@ViewBag.ErrorMessage</p>
+                </div>
+            }
             @using (Html.BeginForm(actionName: "RASignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
                     @if (Model.CheckoutSigRA == null)
                     {
-                        <p>I, @ViewBag.ExpectedSignature, hereby agree that i have assessed preliminary fines to the best of my ability. I understand that these fines are subject to change at the discretion of the Resident Director.</p>
+                        <p>I, @ViewBag.ExpectedSignature, hereby agree that I have assessed preliminary fines to the best of my ability. I understand that these fines are subject to change at the discretion of the Resident Director.</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />
                         </div>
@@ -39,7 +38,7 @@
                     }
                 </div>
                 <div class="distribute-evenly">
-                    <input type="submit" value="OK" />
+                    <button type="submit">Next</button>
                 </div>
             }
         </div>
