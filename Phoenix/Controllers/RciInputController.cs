@@ -84,9 +84,18 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("CheckinSigRA", new { id = id });
             }
-            else
+            else // Either an individual resident or someone who is part of a common area
             {
-                return RedirectToAction("CheckinSigRes", new { id = id });
+                var checkoutService = new RciCheckoutService(); // To avoid duplicating code.
+                var isIndividualRci = checkoutService.IsIndividualRci(id); 
+                if(isIndividualRci)
+                {
+                    return RedirectToAction("CheckinSigRes", new { id = id });
+                }
+                else
+                {
+                    return RedirectToAction("CheckinSigCommonArea", new { id = id });
+                }
             }
         }
 
@@ -113,6 +122,11 @@ namespace Phoenix.Controllers
             var rci = rciInputService.GetRci(id);
             ViewBag.User = TempData["user"];
             return View(rci);
+        }
+
+        public ActionResult CheckinSigCommonArea(int id)
+        {
+            return View();
         }
 
         // GET: RCIInput/CheckinSigRA/1
