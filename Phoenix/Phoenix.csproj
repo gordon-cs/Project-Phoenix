@@ -216,6 +216,7 @@
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Scripts\checkin-sig-common-area.js" />
     <Content Include="Scripts\checkin-sig-ra.js" />
     <Content Include="Scripts\checkin-sig-rd.js" />
     <Content Include="Scripts\checkin-sig-res.js" />

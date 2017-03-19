@@ -142,6 +142,32 @@ namespace Phoenix.Services
                     .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
         }
 
+        public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
+        {
+            var rci = GetCommonAreaRciById(rciID);
+            var alreadySigned = rci.CommonAreaMember.Where(m => m.GordonID == gordonID).FirstOrDefault().HasSignedCommonAreaRci;
+            if (rciSig == user)
+            {
+                if(!alreadySigned)
+                {
+                    var signature = new CommonAreaRciSignature
+                    {
+                        RciID = rciID,
+                        GordonID = gordonID,
+                        Signature = DateTime.Now,
+                        SignatureType = "CHECKIN"
+                    };
+                    db.CommonAreaRciSignature.Add(signature);
+                    db.SaveChanges();
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool SaveResSigs(string rciSig, string lacSig, string user, int id)
         {
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();

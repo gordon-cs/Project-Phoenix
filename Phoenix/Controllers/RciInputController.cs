@@ -241,6 +241,31 @@ namespace Phoenix.Controllers
             return Json(Url.Action("SignAllRD"));
         }
 
+        /// <summary>
+        /// Method that accepts a resident's signature on the common area rci. 
+        /// If the signature is valid, the resident has signed the common area rci checkin and a record is inserted into 
+        /// the CommonAreaSignatures table.
+        /// If everyone has signed, CheckinSigRes column is updated.
+        /// </summary>
+        [HttpPost]
+        public ActionResult SaveSigCommonArea(int rciID, string rciSig)
+        {
+            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
+
+            var gordonID = (string)TempData["id"];
+            var user = ((string)TempData["user"]).ToLower().Trim();
+
+            bool complete = rciInputService.SaveCommonAreaMemberSig(rciSig, user, gordonID, rciID);
+
+            if (complete)
+            {
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            else
+            {
+                return Json(Url.Action("CheckinSigCommonArea", new { id = rciID }));
+            }
+        }
         // Save signatures for resident
         [HttpPost]
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
