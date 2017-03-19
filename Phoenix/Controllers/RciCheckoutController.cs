@@ -49,13 +49,21 @@ namespace Phoenix.Controllers
         }
 
         /// <summary>
-        /// Similar to the SaveRci Method for RciInputController
+        /// Add a new fine and return its id
         /// </summary>
-        public void SaveRci(RciFinesForm rci)
+        public int AddFine(RciNewFineViewModel fine)
         {
-            checkoutService.AddFines(rci.NewFines);
-            checkoutService.RemoveFines(rci.FinesToDelete);
-            return;
+            var fineID = checkoutService.AddFine(fine);
+            return fineID;
+        }
+
+        /// <summary>
+        /// Delete an existing fine and return a status code
+        /// </summary>
+        public ActionResult RemoveFine(int fineID)
+        {
+            checkoutService.RemoveFine(fineID);
+            return new HttpStatusCodeResult(200, "OK");
         }
 
         /// <summary>
