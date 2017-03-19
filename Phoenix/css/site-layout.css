@@ -134,6 +134,7 @@
 #content {
     margin-left: auto;
     margin-right: auto;
+    padding: .75em;
     position: relative;
     width: 100%;
 }
@@ -151,7 +152,7 @@
             text-align: center;
         }
         .pane-content {
-            padding: 7px;
+            padding: 1em;
         }
         .input.pane-content, .checkout.pane-content {
             display: none;
@@ -212,6 +213,7 @@ i {
 .divAddOn {
     vertical-align: baseline;
     display: flex;
+    margin: .5em 0;
 }
 
 .divAddOn-field {
@@ -472,7 +474,7 @@ div.icon-label {
 
 /* Error Message Box*/
 
-.error-message{
+.error-message, .login-error-message{
     margin: 0.5em;
 }
 .error-message  div,
@@ -493,11 +495,13 @@ div.icon-label {
     border: none;
     border-left: 2px solid #ccc;
     font-size: 0.9em;
+    padding-left: .3em;
 }
 .damage-wrapper .material-icons {
     font-size: 1em;
     font-weight:bold;
-    padding-top: .25em;
+    padding-left: .25em;
+    padding-top: .1em;
 }
 .signature-overlay {
     display: none;
@@ -515,7 +519,6 @@ div.icon-label {
     width: 75%;
     z-index: 99;
 }
-
 
 
 /****************************/

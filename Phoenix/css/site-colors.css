@@ -35,6 +35,10 @@
      color: #fff;
  }
 
+ input {
+     border: solid 2px #cccccb;
+ }
+
 button.dropdown {
     color: #fff;
 }

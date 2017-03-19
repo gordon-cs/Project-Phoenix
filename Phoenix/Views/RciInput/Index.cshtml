@@ -1,7 +1,7 @@
 ﻿@model Phoenix.Models.Rci
 
 @{
-    ViewBag.Title = "Damage Input";
+    ViewBag.Title = "Damage Input: " + TempData["user"];
     ViewBag.MenuExists = "T";
     ViewBag.Name = TempData["user"];
     ViewBag.Role = TempData["role"];
@@ -16,6 +16,7 @@
 }
 
 <div class="view">
+    <h2>@ViewBag.Title</h2>
     @if (ViewBag.commonRooms == null)
     {
 
