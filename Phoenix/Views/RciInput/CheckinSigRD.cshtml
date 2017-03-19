@@ -12,36 +12,34 @@
 }
 
 
-<div class="view">
-    <div class="pane">
-        <h2 id="rci-@Model.RciID">Signature</h2>
+<h2 id="rci-@Model.RciID">Signature</h2>
 
 <div>
-    
+
 
     @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
-    {
+            {
         <p>Resident hasn't signed yet. Please make sure resident and RA have signed before signing.</p>
-        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
     else if (Model.CheckinSigRA == null)
     {
         <p>RA hasn't signed yet. Please make sure RA has signed before signing.</p>
-        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
     else if (Model.CheckinSigRD == null)
     {
         <p>Please sign with your name @ViewBag.User to confirm the entered existing damages.</p>
-    <input type="text" id="rci-sig" />
-    <p>OR</p>
-    if (Model.CheckinSigRDGordonID == null)
-    {
-    <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Queue for signing later</label>
-    }
-    else
-    {
-    <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Queue for signing later</label>
-    }
+                <input type="text" id="rci-sig" />
+                <p>OR</p>
+        if (Model.CheckinSigRDGordonID == null)
+        {
+            <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Queue for signing later</label>
+        }
+        else
+        {
+            <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Queue for signing later</label>
+        }
         <div class="distribute-evenly">
             <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
             <button id="submit-button" onclick="RDSigSubmit()">Submit</button>
@@ -50,9 +48,10 @@
     else
     {
         <p>You've already signed! You're all set.</p>
-        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
 
-        </div>
+</div>
+
 
 
