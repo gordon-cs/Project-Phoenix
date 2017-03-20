@@ -244,9 +244,9 @@ function addDamage(componentID) {
     }).done(function (data) {
         // the ajax call returns the damage id
         console.log(data);
-        var pElement = "<p class='divAddOn-field new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='divAddOn-item material-icons' " + "id='" + data + "' onclick='deleteDamage(event, this);'>delete</i>";
+        var pElement = "<p class='damage-element'>" + $("#text-input-" + componentID).val() + "</p><i class='material-icons' " + "id='" + data + "' onclick='deleteDamage(event, this);'>close</i>";
         //var inputHiddenElement = "<input type='hidden' name=" + componentID + " value='" + $("#text-input-" + componentID).val() + "'/>";
-        var divWrapper = "<div class='divAddOn'>" + pElement + "</div>";
+        var divWrapper = "<div class='divAddOn damage-wrapper'>" + pElement + "</div>";
         $("#div-list-" + componentID).append(divWrapper);
         console.log(divWrapper);
         console.log($("#text-input-" + componentID).val());
