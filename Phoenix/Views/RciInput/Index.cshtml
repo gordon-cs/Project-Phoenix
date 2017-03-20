@@ -48,8 +48,15 @@
     </div>
     <div id="signature-container">
         @if (ViewBag.Role == "Resident")
+        {
+            if (Model.GordonID == null)
             {
-            @Html.Partial("CheckinSigRes", Model)
+                @Html.Partial("CheckinSigCommonArea")
+            }
+            else
+            {
+                @Html.Partial("CheckinSigRes", Model)
+            }
         }
         else if (ViewBag.Role == "RA")
         {
