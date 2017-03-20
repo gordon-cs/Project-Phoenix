@@ -510,13 +510,23 @@ div.icon-label {
 }
 #signature-container {
     display: none;
-    margin-left: 12%;
+    margin: auto;
+    max-height: 400px;
+    overflow: auto;
+    padding: 2em 1.5em;
+    position: fixed;
+    top: 0; right: 0; left: 0; bottom: 0;
+    width: 80%;
+    z-index: 99;
+
+    /*margin-left: 12%;
+    overflow: auto;
     right: 12%;
     padding: 2em 1.5em;
     position: fixed;
     top: 90px;
     width: 75%;
-    z-index: 99;
+    z-index: 99;*/
 }
 
 
