@@ -454,7 +454,7 @@ namespace Phoenix.Controllers
             }
             catch (Exception e)
             {
-                return new HttpStatusCodeResult(500, "Erro deleting damage description. Error message: " + e.Message);
+                return new HttpStatusCodeResult(500, "Error deleting damage description. Error message: " + e.Message);
             }
         }
     }
