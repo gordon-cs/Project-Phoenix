@@ -198,9 +198,6 @@
   <ItemGroup>
     <Content Include="App_Data\RoomComponents.xml" />
     <Content Include="Content\Images\Damages\HelloWorld.xml" />
-    <Content Include="Content\Images\gordon-logo-horizontal.svg" />
-    <Content Include="Content\Images\gordon-logo-vertical-white.png" />
-    <Content Include="Content\Images\gordon-logo-vertical-white.svg" />
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
     <Content Include="css\rci-checkout.css" />
