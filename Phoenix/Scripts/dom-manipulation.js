@@ -45,8 +45,8 @@ $(trigger).click( function() {
  * Menu that is toggled by clicking on the view-drawer div in the header.
  * Menu is originally hidden. The toggle jquery function toggles an element's visiblity.
  */
-$(".view-drawer").click(function () {
-    $(".drawer-menu").toggle(200);   
+$(".dropdown").click(function () {
+    $(".dropdown-menu").toggle(200);   
 });
 
 
@@ -66,7 +66,7 @@ $(".search-bar").keyup(function () {
     textToMatch = textToMatch.toLowerCase();
     let content = "";
 
-    $(".search-field").parent().show();
+    $(".search-field").parent().parent().show();
 
     $(".search-field").filter(function () {
 
@@ -82,7 +82,7 @@ $(".search-bar").keyup(function () {
         else {
             return false;
         }
-    }).parent().hide()
+    }).parent().parent().hide()
 });
 
 
@@ -127,6 +127,16 @@ function showSlides(slideNumber, modalId) {
     }
     slides[slideIndex].style.display = "block";
 }
+
+
+// Open the signature overlay
+$("#next-button").click(function () {
+    $(".signature-overlay").show();
+    $("#signature-container").toggle();
+});
+
+
+/********* Register handlers **********/
 
 $(".img-thumbnails").on("click", ".thumbnail", function () {
     let componentID = $(this).closest(".img-thumbnails").attr("id").substring(12);

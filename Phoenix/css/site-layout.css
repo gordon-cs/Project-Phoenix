@@ -62,49 +62,68 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    height: 80px;
     margin-bottom: 10px;
-    padding: 1.5em .5em; 
+    padding: 2em .5em; 
     width: 100%;
 }
 
     .view-title {
+        display: none;
         flex: 1;
         padding: 0 10px;
+        text-align:center;
     }
-
-    .view-drawer {
-        padding: 0 10px;
+    .logo-box {
+        left: 4%;
+        position: absolute;
+        width: 100px;
     }
-    button.view-drawer {
+    .logo-box .back-button {
+        margin-left: .5em;
+    }
+    .dropdown {
+        padding: 0 .25em;
+    }
+    button.dropdown {
         border: none;
         background: none;
+        position:absolute;
+        right: 3%;
+        top: 25px;
     }
-    button.view-drawer:focus{
+    button.dropdown:focus{
         outline: none;
+    }
+    .dropdown .username, .dropdown .down-arrow {
+        display: none;
     }
 
 /***************************/
 /******Navigation Menu******/
 /***************************/
 
-.drawer-menu {
-    box-shadow: 0 0 5px 0 #ddd;
+.dropdown-menu {
+    /*box-shadow: 0 0 5px 0 #ddd;*/
+    border: solid 1px #cccccb;
     display:none;
     margin: 0 auto;
-    width: 90%;
+    position: absolute;
+    top: 80px;
+    width: 100%;
     z-index: 200;
 }
-.drawer-menu-item {
+.dropdown-menu-item {
     list-style: none;
     margin: 0;
     padding: 0.5em;
     cursor: pointer;
 }
-.drawer-menu a {
+.dropdown-menu a {
     text-decoration: none;
     color: inherit;
 }
-.drawer-menu :hover {
+.dropdown-menu :hover {
     font-weight:bold;
 }
 
@@ -113,6 +132,10 @@
 /******CONTENT ELEMENTS*****/
 /***************************/
 #content {
+    margin-left: auto;
+    margin-right: auto;
+    padding: .75em;
+    position: relative;
     width: 100%;
 }
 
@@ -124,11 +147,12 @@
      }
 
         .pane-title {
-            padding: 7px;
+            border-radius: 4px;
+            padding: .45em;
             text-align: center;
         }
         .pane-content {
-            padding: 7px;
+            padding: 1em;
         }
         .input.pane-content, .checkout.pane-content {
             display: none;
@@ -160,13 +184,15 @@ input[type=password] {
     font-size: 100%;
 }
 
-button {
-     display: block;
-     cursor: pointer;
-     font-size: 100%;
-     padding: 0.2em 1em;
-     text-align: center;
-     margin: 0;
+button, a.button {
+    border: none;
+    border-radius: 4px;
+    display: block;
+    cursor: pointer;
+    font-size: 100%;
+    padding: 0.2em 1em;
+    text-align: center;
+    margin: 0;
  }
 
 i {
@@ -186,19 +212,21 @@ i {
  */
 .divAddOn {
     vertical-align: baseline;
-    box-shadow: 0 0 3px 0 #ddd;
     display: flex;
+    margin: .5em 0;
 }
 
 .divAddOn-field {
-    border-left: 1px solid #ccc;
+    /*border-left: 1px solid #ccc;
     border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;*/
     flex: 1 1 auto;
 }
 
 .divAddOn-field,
 .divAddOn-item {
+    display: block;
+    min-width:0;
     padding: 0.5em 0.5em;
 }
 
@@ -208,7 +236,6 @@ i {
     border-bottom: 1px solid #ccc;
     display: flex;
     justify-content: center;
-    min-width: 5%;
     align-items: center;
 }
 
@@ -234,11 +261,10 @@ i {
  * Div Add ON (vertical version)
  */
 .divAddOn-vert {
-    box-shadow: 0 0 3px 0 #ddd;
+    border-radius: 3px;
     display: flex;
     flex-direction: column;
     margin-top: 15px;
-    vertical-align: baseline;
 }
 
 .divAddOn-vert-field {
@@ -255,19 +281,19 @@ i {
 
 .divAddOn-vert-row, .bottom-button {
     border-left: 1px solid #ccc;
-    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     border-right: 1px solid #ccc;
     display: flex;
     justify-content: space-around;
 }
 
-.divAddOn-vert-row:last-child {
+/*.divAddOn-vert-row:last-child {
     border-bottom: 1px solid #ccc;
 }
 
 .divAddOn-vert-field:last-child {
     border-bottom: 1px solid #ccc;
-}
+}*/
 
 .divAddOn-vert-field:first-child,
 .divAddOn-vert-row:first-child {
@@ -344,6 +370,7 @@ i {
  */
 .distribute-evenly {
     align-items: center;
+    padding-top: 1em;
     display: flex;
     justify-content: space-around;
 }
@@ -391,8 +418,10 @@ div.icon-label {
      display: flex;
      flex-direction: column;
      justify-content: center;
+     margin-left:auto;
+     margin-right:auto;
      padding: 2em;
-     width: 100%;
+     width: 300px;
  }
 
  .login-container  input[type=text],
@@ -416,15 +445,14 @@ div.icon-label {
      border: 1px solid #ccc;
      border-radius: 0 0 3px 3px;
      box-shadow: none;
+     padding: 0.5em;
      width: 100%;  
 }
 
 /* Usefule style for when we want to use an anchor tag, but make it appear as a button 
 
 */
-a.button {
-    border-color: ButtonFace;
-    border-style: outset;
+/*a.button {
     border-width: 2px;
     color: inherit;
     cursor: pointer;
@@ -433,7 +461,7 @@ a.button {
     margin: 0;
     padding: 0.2em 1em;
     text-decoration: none;
-}
+}*/
 
 /* Lift
  * Fancy way to say make a box shadow.
@@ -445,7 +473,7 @@ a.button {
 
 /* Error Message Box*/
 
-.error-message{
+.error-message, .login-error-message{
     margin: 0.5em;
 }
 .error-message  div,
@@ -458,7 +486,38 @@ a.button {
 /***********MISC************/
 /***************************/
 
-
+.damage-wrapper {
+    box-shadow: none;
+}
+.damage-element,
+.damage-element:last-child {
+    border: none;
+    border-left: 2px solid #ccc;
+    font-size: 0.9em;
+    padding-left: .3em;
+}
+.damage-wrapper .material-icons {
+    font-size: 1em;
+    font-weight:bold;
+    padding-left: .25em;
+    padding-top: .1em;
+}
+.signature-overlay {
+    display: none;
+    position:absolute;
+    top: 0; right: 0; left: 0; bottom: 0;
+    z-index:10;
+}
+#signature-container {
+    display: none;
+    margin-left: 12%;
+    right: 12%;
+    padding: 2em 1.5em;
+    position: fixed;
+    top: 90px;
+    width: 75%;
+    z-index: 99;
+}
 
 
 /****************************/
@@ -470,6 +529,39 @@ a.button {
 
     #page-container{
         margin: 0 auto;
-        width: 750px;
+    }
+    #content {
+        width: 75%;
+    }
+    .view-title {
+        display: inline-block;
+    }
+    button.dropdown {
+        top: 27px;
+    }
+    .dropdown .hamburger {
+        display: none;
+    }
+    .dropdown .username, .dropdown .down-arrow {
+        display: inline;
+    }
+    .dropdown-menu {
+    /*box-shadow: 0 0 5px 0 #ddd;*/
+    display:none;
+    margin: 0 auto;
+    position: absolute;
+    right: 4%;
+    top: 55px;
+    width: 150px;
+    z-index: 200;
+}
+}
+
+@media only screen and (min-width: 980px) {
+    #content {
+        width: 65%;
+    }
+    .logo-box {
+        left: 10%;
     }
 }

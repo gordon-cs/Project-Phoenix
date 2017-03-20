@@ -21,7 +21,7 @@ namespace Phoenix.Services
             return rci;
         }
 
-        public IEnumerable<SignAllRDViewModel> GetRcisForBuilding(List<string> buildingCode)
+        public IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(List<string> buildingCode)
         {
             // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
@@ -198,7 +198,7 @@ namespace Phoenix.Services
         {
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
 
-            if (rciSig == user)
+            if (rciSig == user || rci.GordonID == gordonID) // rciSig is null when it is the RA signing for himself. Make another check to see if the logged in RA is the owner of the rci.
             {
                 rci.CheckinSigRA = DateTime.Today;
                 rci.CheckinSigRAGordonID = gordonID;

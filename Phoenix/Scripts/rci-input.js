@@ -162,49 +162,116 @@ function deletePhoto(damageId) {
 
 }
 
-/****** Modal functions ******/
+/* Different signature submission methods, distinguished by role */
 
-///*
-// * Open the picture modal
-// */
-//function openModal(componentID, slideNum) {
-//    $("#modal-" + componentID).show();
-//    showSlides(slideNum, "modal-" + componentID);
-//}
+function ResSigSubmit() {
+    var rciSig = "";
+    var lacSig = "";
+    if ($("#rci-sig").attr("disabled") != "disabled") {
+        rciSig = $("#rci-sig").val();
+    }
+    if ($("#lac-sig").attr("disabled") != "disabled") {
+        lacSig = $("#lac-sig").val();
+    }
+    var id = $("h2[id^='rci-']").first().attr("id").substring(4);
 
-///*
-// * Close the picture modal
-// */
-//function closeModal(modalID) {
-//    $("#" + modalID).hide();
-//}
+    $.ajax({
+        sync: false,
+        url: "/RciInput/SaveSigRes",
+        data: { rciSig: rciSig, lacSig: lacSig, id: id },
+        method: "POST",
+        success: function (data) {
+            window.location.href = data;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
 
-///*
-// * Show the slides in the modal
-// */
-//var slideIndex = 0;
-//// This function increments the slide index (a global variable) by a given value
-//function plusSlides(n, modalId) {
-//    showSlides(slideIndex += n, modalId);
-//}
-//// Display the slide, based on the selected image
-//function showSlides(slideNumber, modalId) {
-//    let slides = $("#" + modalId).find(".img-slide");
-//    if (slideNumber >= slides.length)
-//    {
-//        slideIndex = 0;
-//    }
-//    else if (slideNumber < 0) {
-//        slideIndex = slides.length - 1;
-//    }
-//    else {
-//        slideIndex = slideNumber;
-//    }
-//    for (var i = 0; i < slides.length; i++) {
-//        slides[i].style.display = "none";
-//    }
-//    slides[slideIndex].style.display = "block";
-//}
+    });
+}
+
+function RASigSubmit() {
+    var rciSig = "";
+    var rciSigRes = "";
+    var lacSig = "";
+    if ($("#rci-sig").attr("disabled") != "disabled") {
+        rciSig = $("#rci-sig").val();
+    }
+    if ($("#rci-sig-res").attr("disabled") != "disabled") {
+        rciSigRes = $("#rci-sig-res").val();
+    }
+    if ($("#lac-sig").attr("disabled") != "disabled") {
+        lacSig = $("#lac-sig").val();
+    }
+    var id = $("h2[id^='rci-']").first().attr("id").substring(4);
+
+    $.ajax({
+        sync: false,
+        url: "/RciInput/SaveSigRA",
+        data: { rciSig: rciSig, rciSigRes: rciSigRes, lacSig: lacSig, id: id },
+        method: "POST",
+        success: function (data) {
+            window.location.href = data;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+
+    });
+}
+
+function RDSigSubmit() {
+    var rciSig = "";
+    if ($("#rci-sig").attr("disabled") != "disabled") {
+        rciSig = $("#rci-sig").val();
+    }
+    var id = $("h2[id^='rci-']").first().attr("id").substring(4);
+
+    $.ajax({
+        sync: false,
+        url: "/RciInput/SaveSigRD",
+        data: { rciSig: rciSig, id: id },
+        method: "POST",
+        success: function (data) {
+            window.location.href = data;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+
+    });
+}
+
+
+$("#rci-sig-checkbox").click(function () {
+    check();
+});
+
+function check() {
+    if ($("#rci-sig-checkbox").is(":checked")) {
+        var sigCheck = 1;
+    }
+    else {
+        var sigCheck = 0;
+    }
+    var id = $("h2[id^='rci-']").first().attr("id").substring(4);
+    $.ajax({
+        sync: false,
+        url: "/RciInput/CheckSigRD",
+        data: { sigCheck: sigCheck, id: id },
+        method: "POST",
+        /*success: function (data) {
+            window.location.href = data;
+        },*/
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    })
+}
 
 
 /* Add a div to the right component. This div will contain a :
@@ -212,7 +279,7 @@ function deletePhoto(damageId) {
     <input> hidden element that will be used when submitting the form
     */
 function addDamage(componentID) {
-    var pElement = "<p class='divAddOn-field new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='divAddOn-item material-icons' onclick='deleteNewDamages(event, this);'>delete</i>";
+    var pElement = "<p class='damage-element new-damage'>" + $("#text-input-" + componentID).val() + "</p><i class='material-icons' onclick='deleteNewDamages(event, this);'>close</i>";
     //var inputHiddenElement = "<input type='hidden' name=" + componentID + " value='" + $("#text-input-" + componentID).val() + "'/>";
     var divWrapper = "<div class='divAddOn'>" + pElement + "</div>";
     $("#div-list-" + componentID).append(divWrapper);
@@ -253,32 +320,5 @@ $(".img-thumbnails").on("click", ".delete", function () {
     console.log($(this));
     deletePhoto($(this).attr("id"));
 });
-
-// Attach modal handlers (reference: https://www.w3schools.com/howto/howto_js_lightbox.asp)
-
-// For all the thumbnail areas, attach the modal opener to each of its thumbnail images
-
-//$(".img-thumbnails").on("click", ".thumbnail", function () {
-//    let componentID = $(this).closest(".img-thumbnails").attr("id").substring(12);
-//    // Count up all the previous thumbnail images to know what to set the slide index to for the modal
-//    let newIndex = $(this).parent().prevAll().length;
-//    openModal(componentID, newIndex);
-// });
-
-
-//$(".material-icons.clear").click(function () {
-//    let modalID = $(this).closest(".img-modal").attr("id");
-//    console.log(modalID);
-//    closeModal(modalID);
-//});
-
-//$(".forward").click(function () {
-//    let modalID = $(this).closest(".img-modal").attr("id");
-//    plusSlides(1, modalID);
-//});
-//$(".backward").click(function () {
-//    let modalID = $(this).closest(".img-modal").attr("id");
-//    plusSlides(-1, modalID);
-//});
 
 

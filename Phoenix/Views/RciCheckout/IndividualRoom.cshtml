@@ -3,7 +3,9 @@
 @{
     ViewBag.Title = "RCI Checkout";
     ViewBag.ViewTitle = "RCI Checkout: " + Model.FirstName + " " + Model.LastName;
+    ViewBag.Name = TempData["user"];
     ViewBag.MenuExists = "T";
+    ViewBag.Role = TempData["role"];
 }
 
 @section Styles{
@@ -13,84 +15,85 @@
 @section Scripts{
     @Scripts.Render("~/bundles/page_specific/js/rci-checkout")
 }
+<div class="view" data-add-back-btn="@Model.GordonID">
+    <h2>@ViewBag.ViewTitle</h2>
 
-@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}
-
-<div class="view" data="@Model.GordonID">
-
-        @foreach (var component in Model.RciComponent)
-        {
-            <div class="pane component" id="@component.RciComponentID">
-                <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
-                <div class="checkout pane-content">
-                    @if (component.RciComponentDescription != null && component.RciComponentDescription.Trim() != "")
+    @foreach (var component in Model.RciComponent)
+    {
+        <div class="pane component" id="@component.RciComponentID">
+            <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
+            <div class="checkout pane-content">
+                @if (component.RciComponentDescription != null && component.RciComponentDescription.Trim() != "")
+                {
+                    <p><b>Possible places:</b> @component.RciComponentDescription</p>
+                }
+                <div class="div-list">
+                    <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
+                        @foreach (var damage in component.Damage)
+                {
+                    if (damage.DamageType.Equals("IMAGE"))
                     {
-                        <p><b>Possible places:</b> @component.RciComponentDescription</p>
-                    }
-                    <div class="div-list">
-                        <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
+                                <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div>
+                            }
+                        }
+                    </div>
+                    <div id="modal-@component.RciComponentID" class="img-modal">
+                        <div class="modal-header"><i class="material-icons clear">clear</i></div>
+                        <div class="modal-content">
                             @foreach (var damage in component.Damage)
                             {
                                 if (damage.DamageType.Equals("IMAGE"))
                                 {
-                                    <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div>
+                                    <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
                                 }
                             }
+                            <i class="material-icons backward">navigate_before</i>
+                            <i class="material-icons forward">navigate_next</i>
                         </div>
-                        <div id="modal-@component.RciComponentID" class="img-modal">
-                            <div class="modal-header"><i class="material-icons clear">clear</i></div>
-                            <div class="modal-content">
-                                @foreach (var damage in component.Damage)
-                                {
-                                    if (damage.DamageType.Equals("IMAGE"))
-                                    {
-                                        <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
-                                    }
-                                }
-                                <i class="material-icons backward">navigate_before</i>
-                                <i class="material-icons forward">navigate_next</i>
-                            </div>
-                        </div>
-                        @foreach (var damage in component.Damage)
+                    </div>
+                    @*<div class="div-list-toggle icon-label">
+                            <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
+                            <span>Hide/Show Existing Damages</span>
+                        </div>*@
+                    @foreach (var damage in component.Damage)
+                    {
+                        if (damage.DamageDescription != null)
                         {
-                            if (damage.DamageDescription != null)
-                            {
-                                <div class="divAddOn existing-damage-wrapper">
-                                    <p class="divAddOn-field existing-damage">@damage.DamageDescription</p>
-                                </div>
-                            }
-                        }
-                    </div>
-                    <div>
-                        <p>Add Charge(s)</p>
-                    </div>
-                    <div class="divAddOn">
-                        <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
-                        <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RciComponentID" />
-                        <button class="divAddOn-item" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
-                    </div>
-                    <div class="div-list" id="fine-list-@component.RciComponentID">
-                        @foreach (var fine in component.Fine)
-                        {
-                            <div class="divAddOn">
-                                <p class="divAddOn-field">@fine.Reason</p>
-                                <span class="divAddOn-item">$</span>
-                                <p class="divAddOn-item">@fine.FineAmount</p>
-                                <i class='divAddOn-item material-icons' onclick="deleteExistingFines(event, this, @fine.FineID)">delete</i>
+                            <div class="divAddOn damage-wrapper">
+                                <p class="damage-element">@damage.DamageDescription</p>
                             </div>
                         }
+                    }
+                </div>
+                <div>
+                    <p>Add Charge(s)</p>
+                </div>
+                <div class="divAddOn">
+                    <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
+                    <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RciComponentID" />
+                    <button class="divAddOn-item" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
+                </div>
+                <div class="div-list" id="fine-list-@component.RciComponentID">
+                    <div class="div-list-toggle icon-label">
+                        <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
+                        <span>Hide/Show Fines</span>
                     </div>
+                    @foreach (var fine in component.Fine)
+                    {
+                        <div class="divAddOn">
+                            <p class="divAddOn-field">@fine.Reason</p>
+                            <span class="divAddOn-item">$</span>
+                            <p class="divAddOn-item">@fine.FineAmount</p>
+                            <i class='divAddOn-item material-icons' onclick="deleteExistingFines(event, this, @fine.FineID)">delete</i>
+                        </div>
+                    }
                 </div>
             </div>
-        }
-  
+        </div>
+    }
     <div class="distribute-evenly">
         <button id="save-button">Save</button>
-        <button id="next-button" data="@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</button>
+        <a class="button" href="@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</a>
+        @*<a class="button" href="@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</a>*@
     </div>
 </div>

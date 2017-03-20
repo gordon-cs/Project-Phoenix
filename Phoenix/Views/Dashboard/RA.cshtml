@@ -4,19 +4,14 @@
     ViewBag.Title = "RCI-Dashboard";
     ViewBag.ViewTitle = "RCI Dashboard";
     ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
+    ViewBag.NeedsLogo = true;
 }
 
 @section Styles {
     @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
-
-@section Menu {
-<ul class="drawer-menu">
-    <li class="drawer-menu-item"><a href="@Url.Action(actionName: "SyncRcis", controllerName: "Dashboard")"><i class="material-icons">sync</i>Sync Rcis</a></li>
-    <li class="drawer-menu-item logout-button">Logout</li>
-</ul>
-}
-
 
 <div class="view">
     <div class="pane">
@@ -25,37 +20,30 @@
         </div>
         <div class="divAddOn search-bar">
             <input class="divAddOn-field" type="text" placeholder="Search..." />
-            <div class="divAddOn-item"><i class="material-icons">search</i></div>
         </div>
         
-        @foreach (var rci in Model)
-        {
-            <div class="divAddOn-vert">
-                <div class="divAddOn-vert-field search-field">
-                    <p>@rci.BuildingCode @rci.RoomNumber</p>
-                    <p>@rci.FirstName @rci.LastName</p>
-                </div>
-                <div class="divAddOn-vert-row">
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                        <div>
-                            <i class="material-icons">mode_edit</i>
-                        </div>
-                    </a>
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                        <div>
-                            <i class="material-icons">attach_money</i>
-                        </div>
-                    </a>
-                    @if (rci.FirstName != "Common Area")
-                    {
-                        <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
-                            <div>
-                                <i class="material-icons">swap_horiz</i>
+                @foreach (var rci in Model)
+                {
+                    <div class="divAddOn-vert rci-card">
+                        <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                            <div class="divAddOn-vert-field search-field rci-card-main">
+                                <p>@rci.BuildingCode @rci.RoomNumber</p>
+                                <p>@rci.FirstName @rci.LastName</p>
+                                <i class="material-icons edit">mode_edit</i>
                             </div>
-                        </a>
-                    }
-                </div>
-            </div>
-        }
+                            </a>
+                            <div class="divAddOn-vert-row rci-card-links">
+                                <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
+                                    Checkout
+                                </a>
+                                @if (rci.FirstName != "Common Area")
+                                {
+                                    <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
+                                        Swap Furniture
+                                    </a>
+                                }
+                            </div>
+                       </div>
+                }
     </div> 
 </div>

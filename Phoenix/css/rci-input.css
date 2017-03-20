@@ -1,10 +1,12 @@
 ﻿/* CSS Styles specific to the RCIInput Page*/
 
-.pane {
-    box-shadow: 0 0 9px 0 #ddd;
+.component {
+    margin: 14px 0;
+    padding: 0;
 }
 
 .pane-content.input {
+    background-color: #fff;
     position: relative;
 
 }
