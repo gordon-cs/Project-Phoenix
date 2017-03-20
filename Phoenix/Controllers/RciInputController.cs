@@ -286,7 +286,7 @@ namespace Phoenix.Controllers
         /// For reference, see: http://codepedia.info/upload-image-using-jquery-ajax-asp-net-c-sharp/#jQuery_ajax_call
         /// </summary>
         [HttpPost]
-        public void SavePhoto()
+        public int SavePhoto()
         {
             try
             {
@@ -333,7 +333,7 @@ namespace Phoenix.Controllers
                     
                     db.SaveChanges();
 
-                    Response.Write(damageId);
+                    return damageId;
                 }
             }
             catch (Exception e)
@@ -341,7 +341,7 @@ namespace Phoenix.Controllers
                 Response.Status = "500 Error saving photo";
                 Debug.Write("Error saving photo to database: " + e.Message);
             }
-            return;
+            return -1;
         }
 
         /// <summary>
@@ -350,9 +350,9 @@ namespace Phoenix.Controllers
         /// </summary>
         /// <param name="damageId">The id for the damage that has the associated photo we want to delete</param>
         [HttpPost]
-        public void DeletePhoto(int damageId) //Hmm, this would be cleaner if we used the damage id
+        public ActionResult DeletePhoto(int damageId) //Hmm, this would be cleaner if we used the damage id
         {
-            var damage = db.Damage.Where(m => m.DamageID == damageId).FirstOrDefault();
+            var damage = db.Damage.Find(damageId);
 
             var filePath = Server.MapPath(damage.DamageImagePath);
             try
@@ -360,14 +360,43 @@ namespace Phoenix.Controllers
                 db.Damage.Remove(damage); // Remove from db
                 db.SaveChanges();
                 System.IO.File.Delete(filePath); // Remove from server
-                Response.Status = "200 Successfully deleted.";            
+                return new HttpStatusCodeResult(200, "Successfully deleted!");
             }
             catch(Exception e)
             {
-                Response.Status = "500 Error saving photo. Error message: " + e.Message;
+                return new HttpStatusCodeResult(500, "Error saving photo. Error message: " + e.Message);
             }
-            return;
 
+        }
+
+        // save one damage to db and return damage id in response
+        [HttpPost]
+        public int SaveDamage(int componentID, string damageDescription)
+        {
+            var newDamage = new Damage { RciComponentID = componentID, DamageDescription = damageDescription, DamageType = "TEXT" };
+            db.Damage.Add(newDamage);
+            db.SaveChanges();
+            return newDamage.DamageID;
+        }
+
+        /// <summary>
+        /// For a particular damage text, delete the damage entry from the database based on the damageId
+        /// </summary>
+        /// <param name="damageId">The id for the damage</param>
+        [HttpPost]
+        public ActionResult DeleteDamage(int damageID)
+        {
+            var damage = db.Damage.Find(damageID);
+            try
+            {
+                db.Damage.Remove(damage); // Remove from db
+                db.SaveChanges();
+                return new HttpStatusCodeResult(200, "Successfully deleted!");
+            }
+            catch (Exception e)
+            {
+                return new HttpStatusCodeResult(500, "Error deleting damage description. Error message: " + e.Message);
+            }
         }
     }
 }
