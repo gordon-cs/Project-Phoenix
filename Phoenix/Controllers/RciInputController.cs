@@ -55,6 +55,7 @@ namespace Phoenix.Controllers
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
                 // Select rooms of common area RCIs to group the RCIs
                 ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
+                ViewBag.CommonAreaModel = rciInputService.GetCommonAreaRciById(id);
             }
             else
             {
@@ -62,140 +63,6 @@ namespace Phoenix.Controllers
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
             }
 
-            return View(rci);
-        }
-
-        // Redirect to checkin signature page for certain roles.
-        public ActionResult CheckinSig(int id)
-        {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("CheckinSigRD", new { id = id });
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("CheckinSigRA", new { id = id });
-            }
-            else // Either an individual resident or someone who is part of a common area
-            {
-                var checkoutService = new RciCheckoutService(); // To avoid duplicating code.
-                var isIndividualRci = checkoutService.IsIndividualRci(id); 
-                if(isIndividualRci)
-                {
-                    return RedirectToAction("CheckinSigRes", new { id = id });
-                }
-                else
-                {
-                    return RedirectToAction("CheckinSigCommonArea", new { id = id });
-                }
-            }
-        }
-
-        // GET: RCIInput/CheckinSigRes/1
-        public ActionResult CheckinSigRes(int id)
-        {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("CheckinSigRD", new { id = id });
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("CheckinSigRA", new { id = id });
-            }
-
-            var rci = rciInputService.GetRci(id);
-            ViewBag.User = TempData["user"];
-            return View(rci);
-        }
-
-        public ActionResult CheckinSigCommonArea(int id)
-        {
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("CheckinSigRD", new { id = id });
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("CheckinSigRA", new { id = id });
-            }
-
-            var rci = rciInputService.GetCommonAreaRciById(id);
-            return View(rci);
-        }
-
-        // GET: RCIInput/CheckinSigRA/1
-        public ActionResult CheckinSigRA(int id)
-        {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("CheckinSigRD", new { id = id });
-            }
-            else if (role.Equals("Resident"))
-            {
-                return RedirectToAction("CheckinSigRes", new { id = id });
-            }
-
-            var rci = rciInputService.GetRci(id);
-            var gordonID = (string)TempData["id"];
-            ViewBag.User = TempData["user"];
-            ViewBag.GordonID = gordonID;
-            return View(rci);
-        }
-
-        // GET: RCIInput/CheckinSigRD/1
-        public ActionResult CheckinSigRD(int id)
-        {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("CheckinSigRes", new { id = id });
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("CheckinSigRA", new { id = id });
-            }
-
-            var rci = rciInputService.GetRci(id);
-            var gordonID = (string)TempData["id"];
-            ViewBag.User = TempData["user"];
             return View(rci);
         }
 
@@ -250,6 +117,10 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult SaveSigCommonArea(int rciID, string rciSig)
         {
+            if(rciSig == null || rciSig.Trim() == "")
+            {
+                return new HttpStatusCodeResult(400, "You didn't enter a signature, please enter your name in the correct field(s) and submit again.");
+            }
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
 
             var gordonID = (string)TempData["id"];
@@ -263,13 +134,18 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return Json(Url.Action("CheckinSigCommonArea", new { id = rciID }));
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. Please submit again.");
             }
         }
         // Save signatures for resident
         [HttpPost]
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
         {
+            if (rciSig == null || rciSig.Trim() == "" || lacSig == null || lacSig.Trim() == "")
+            {
+                return new HttpStatusCodeResult(400, "You didn't enter a signature, please enter your name in the correct field(s) and submit again.");
+            }
+
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
             
@@ -284,7 +160,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return Json(Url.Action("CheckinSigRes", new { id = id }));
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. Please submit again.");
             }
         }
 
@@ -292,6 +168,9 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult SaveSigRA(string rciSig, string rciSigRes, string lacSig, int id)
         {
+            // No error checking here yet because it is a bit more complex.
+            // Some parameters might be null depending on if the RA is signing his/her rci or not.
+
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             if (rciSigRes != null) rciSigRes = rciSigRes.ToLower().Trim();
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
@@ -306,7 +185,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return Json(Url.Action("CheckinSigRA", new { id = id }));
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. Please submit again.");
             }
         }
         
@@ -319,6 +198,10 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult SaveSigRD(string rciSig, int id)
         {
+            if (rciSig == null || rciSig.Trim() == "")
+            {
+                return new HttpStatusCodeResult(400, "You didn't enter a signature, please enter your name in the correct field(s) and submit again.");
+            }
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             
             var gordonID = (string)TempData["id"];
@@ -332,7 +215,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return Json(Url.Action("CheckinSigRD", new { id = id }));
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. Please submit again.");
             }
         }
 
