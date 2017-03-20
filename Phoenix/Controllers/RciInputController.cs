@@ -423,7 +423,7 @@ namespace Phoenix.Controllers
             }
             catch(Exception e)
             {
-                return new HttpStatusCodeResult(200, "Error saving photo. Error message: " + e.Message);
+                return new HttpStatusCodeResult(500, "Error saving photo. Error message: " + e.Message);
             }
 
         }
