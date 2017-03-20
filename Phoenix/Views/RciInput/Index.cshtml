@@ -62,7 +62,14 @@
     }
     else if (ViewBag.Role == "RA")
     {
-        @Html.Partial("CheckinSigRA", Model)
+        if(Model.GordonID == null && ViewBag.RAIsMemberOfApartment && Model.CheckinSigRes == null)
+        {
+            @Html.Partial("CheckinSigCommonArea", (Phoenix.Models.ViewModels.CheckinCommonAreaRciViewModel)ViewBag.CommonAreaModel)
+        }
+        else
+        {
+            @Html.Partial("CheckinSigRA", Model)
+        }
     }
     else if (ViewBag.Role == "RD")
     {
