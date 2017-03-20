@@ -37,35 +37,35 @@
             }
         }
     }
-    
-    
+
+
     <div class="button-group">
         <button id="save-button" class="button-group-element">Save</button>
         <button id="next-button" class="button-group-element">Next</button>
     </div>
-    <div class="signature-overlay">
+</div>
 
-    </div>
-    <div id="signature-container">
-        @if (ViewBag.Role == "Resident")
-        {
-            if (Model.GordonID == null)
-            {
-                @Html.Partial("CheckinSigCommonArea")
-            }
-            else
-            {
-                @Html.Partial("CheckinSigRes", Model)
-            }
-        }
-        else if (ViewBag.Role == "RA")
-        {
-            @Html.Partial("CheckinSigRA", Model)
-        }
-        else if (ViewBag.Role == "RD")
-        {
-            @Html.Partial("CheckinSigRD", Model)
-        }
-    </div>
+<div class="signature-overlay">
 
- </div>
+</div>
+<div id="signature-container">
+    @if (ViewBag.Role == "Resident")
+    {
+        if (Model.GordonID == null)
+        {
+            @Html.Partial("CheckinSigCommonArea", (Phoenix.Models.ViewModels.CheckinCommonAreaRciViewModel)ViewBag.CommonAreaModel)
+        }
+        else
+        {
+            @Html.Partial("CheckinSigRes", Model)
+        }
+    }
+    else if (ViewBag.Role == "RA")
+    {
+        @Html.Partial("CheckinSigRA", Model)
+    }
+    else if (ViewBag.Role == "RD")
+    {
+        @Html.Partial("CheckinSigRD", Model)
+    }
+</div>
