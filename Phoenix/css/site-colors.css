@@ -9,26 +9,49 @@
 
  body {
      color: #31342b;
+     background-color: #ebeaea;
  }
 
  #header {
-     background-color: #FDB913; 
+     background-color: #31342B; 
+     color: #fff;
+ }
+
+ #header .material-icons .back-space {
      color: #fff;
  }
 
  #content {
-     background-color: #fff;
+     /*background-color: #fff;*/
+ }
+
+ .login-container > button {
+     background-color: #014983;
+     color: #fff;
  }
 
  .file-input-label {
      background-color: #31342b;
      color: #fff;
  }
+
+ input {
+     border: solid 2px #cccccb;
+ }
+
+button.dropdown {
+    color: #fff;
+}
+
+.dropdown-menu {
+    background-color: #fff;
+    color: #000;
+}
  
- /*button {
-     background-color: #014983;
+ button, a.button {
+     background-color: #31342b;
      color: #fff;
- }*/
+ }
 
  .dashboard-rci-list-header {
      letter-spacing: .05em;
@@ -41,7 +64,8 @@
      background-color: #fff;
  }
  .pane-title {
-     color: #00AEEF;
+     background-color: #014983;
+     color: #fff;
  }
 
  .error-message {
@@ -49,12 +73,36 @@
      color: #fff;
  }
 
- /*.divAddOn-field {
+
+ .rci-card-main {
      background-color: #014983;
      color: #fff;
- }*/
-
- a .material-icons {
-     color: #014983;
  }
+
+ .rci-card-links {
+     background-color: #fff;
+     color: #000;
+ }
+
+ .rci-card-links a {
+     color: #31342b;
+ }
+
+ .swappable-component .check-box {
+     background: #fff;
+     border-bottom: none;
+     border-left: solid 7px #014983;
+     border-top: none;
+ }
+ .swappable-component .divAddOn-field {
+     background-color: #fff;
+ }
+
+.signature-overlay {
+    background: #31342b;
+    opacity: 0.5;
+}
+#signature-container {
+     background-color: #fff;
+}
 

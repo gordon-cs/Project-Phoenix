@@ -5,38 +5,32 @@
     ViewBag.Title = "RCI-Dashboard";
     ViewBag.ViewTitle = "RCI Dashboard";
     ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.NeedsLogo = true;
 }
 
 @section Styles {
     @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
 
-@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}
-
 <div class="view">
     <div class="pane">
-        <h4 class="dashboard-rci-list-header">
-            My RCIs
-        </h4>
+        @*<h4 class="dashboard-rci-list-header">
+                My RCIs
+            </h4>*@
         @foreach (var rci in Model)
         {
-            <div class="divAddOn">
-                <div class="divAddOn-field">
-                    <p>@rci.BuildingCode @rci.RoomNumber</p>
-                    <p>@rci.FirstName @rci.LastName</p>
-                </div>
-                <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                    <div>
-                        <i class="material-icons">mode_edit</i>
+            <div class="divAddOn-vert rci-card">
+                <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                    <div class="divAddOn-vert-field search-field rci-card-main">
+                        <p class="emphasized">@rci.BuildingCode @rci.RoomNumber</p>
+                        <p>@rci.FirstName @rci.LastName</p>
+                        <i class="material-icons edit">mode_edit</i>
                     </div>
                 </a>
             </div>
         }
-    </div> 
+    </div>
 </div>
 
 

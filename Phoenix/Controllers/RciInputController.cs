@@ -188,7 +188,7 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
 
-            var buildingRcis = rciInputService.GetRcisForBuilding(kingdom);
+            var buildingRcis = rciInputService.GetRcisForBuildingThatCanBeSignedByRD(kingdom);
 
 
             ViewBag.User = (string)TempData["user"];
