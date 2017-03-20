@@ -4,6 +4,7 @@
  * 1.................. DivListDropDown
  * 2.................. Drawer Menu
  * 3.................. Damage Image Slides Modal
+ * 4.................. Signature overlay
  *
 /***********************************************/
 
@@ -129,9 +130,15 @@ function showSlides(slideNumber, modalId) {
 }
 
 
-// Open the signature overlay
+/* Signature overlay handlers
+*/
 $("#next-button").click(function () {
     $(".signature-overlay").show();
+    $("#signature-container").toggle();
+});
+
+$(".signature-overlay").click(function () {
+    $(".signature-overlay").hide();
     $("#signature-container").toggle();
 });
 
