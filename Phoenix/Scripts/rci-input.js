@@ -5,14 +5,6 @@ $("#save-button").click(function () {
     location.reload(true); 
 });
 
-$("#next-button").click(function () {
-    save();
-});
-/* Save before the window unloads its resources e.g. reloading, closing browser etc... */
-//window.onbeforeunload = function (event) {
-//    save(); 
-//}
-
 /* Save the damages in the RCI. Can be used in both regular save and auto save */
 function save() {
     let rci = {}
@@ -37,6 +29,7 @@ function save() {
         error: function (jqXHR, textStatus, errorThrown) {
             console.log(textStatus);
             console.log(errorThrown);
+
         }
 
     });
@@ -163,6 +156,34 @@ function deletePhoto(damageId) {
 }
 
 /* Different signature submission methods, distinguished by role */
+function CommonAreaSubmit() {
+    var signature = "";
+    var rciId = $("div[id^='rci-']").first().attr("id").substring(4);
+
+    $(".rci-sig").each(function (index, element) {
+        var $element = $(element);
+        if ($element.val() && $element.val().trim() !== "") {
+            signature = $element.val();
+        }
+    });
+
+    $.ajax({
+        sync: false,
+        url: "/RciInput/SaveSigCommonArea",
+        data: { rciSig: signature, rciId: rciId },
+        method: "POST",
+        success: function (data) {
+            window.location.href = data;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $(".error-message").remove();
+            let $div = $("<div />", { "class": "error-message" });
+            $div.append("<p>" + errorThrown);
+            $div.insertBefore($("#submit-button").parent());
+        }
+
+    });
+}
 
 function ResSigSubmit() {
     var rciSig = "";
@@ -184,8 +205,10 @@ function ResSigSubmit() {
             window.location.href = data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
+            $(".error-message").remove();
+            let $div = $("<div />", { "class": "error-message" });
+            $div.append("<p>" + errorThrown);
+            $div.insertBefore($("#submit-button").parent());
         }
 
     });
@@ -215,8 +238,10 @@ function RASigSubmit() {
             window.location.href = data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
+            $(".error-message").remove();
+            let $div = $("<div />", { "class": "error-message" });
+            $div.append("<p>" + errorThrown);
+            $div.insertBefore($("#submit-button").parent());
         }
 
     });
@@ -238,8 +263,10 @@ function RDSigSubmit() {
             window.location.href = data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
+            $(".error-message").remove();
+            let $div = $("<div />", { "class": "error-message" });
+            $div.append("<p>" + errorThrown);
+            $div.insertBefore($("#submit-button").parent());
         }
 
     });
