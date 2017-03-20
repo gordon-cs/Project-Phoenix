@@ -1,14 +1,5 @@
 ﻿var damagesToDelete = [];
 
-$("#save-button").click(function () {
-    save();
-    location.reload(true); 
-});
-
-$("#next-button").click(function () {
-    save();
-});
-
 /* Receive a photo from the <input> element, add it to the DOM, and save it to the db
 /* Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications */
 function uploadPhoto() {
