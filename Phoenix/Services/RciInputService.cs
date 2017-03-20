@@ -168,6 +168,7 @@ namespace Phoenix.Services
                     if(genericRci.CheckinSigRes == null)
                     {
                         genericRci.CheckinSigRes = DateTime.Now;
+                        db.SaveChanges();
                     }
                 }
                 return true;
