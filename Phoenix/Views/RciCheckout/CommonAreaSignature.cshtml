@@ -4,15 +4,11 @@
     ViewBag.Title = "Checkout";
     ViewBag.ViewTitle = "Checkout: Common Area Signature";
     ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
 }
 
-@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}
-
+<h2>@ViewBag.ViewTitle</h2>
 <div class="view">
     <div class="pane">
         <div class="pane-content">

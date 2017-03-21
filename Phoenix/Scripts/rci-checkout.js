@@ -97,3 +97,9 @@ $(".adding-fines").on("keypress", function (e) {
     }
 });
 
+// Open the signature overlay
+$("#next-button").click(function () {
+    $(".signature-overlay").show();
+    $("#signature-container").toggle();
+});
+

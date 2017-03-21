@@ -4,55 +4,48 @@
     ViewBag.Title = "CheckinSigRes";
     ViewBag.ViewTitle = "Checkin: Resident Signature";
     ViewBag.MenuExists = "T";
+    ViewBag.Role = TempData["role"];
+    ViewBag.User = TempData["user"];
 }
 
 @section Scripts{
     @Scripts.Render("~/Scripts/checkin-sig-res.js")
 }
 
-@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}
 
-<div class="view">
-    <div class="pane">
-        <h2 id="rci-@Model.RciID">Signature</h2>
+<h2 id="rci-@Model.RciID">Signature</h2>
 
-        <div>
-            <p>Please sign with your Gordon username @ViewBag.User to confirm the entered existing damages.</p>
+<div>
 
-            @if (Model.CheckinSigRes == null)
+    @if (Model.CheckinSigRes == null)
             {
-                <input type="text" id="rci-sig" />
-            }
-            else
-            {
-                <input type="text" id="rci-sig" disabled="disabled" value="@ViewBag.User" />
-            }
+        <p>Please sign with your Gordon username @ViewBag.User to confirm the entered existing damages.</p>
+                <input type="text" id="rci-sig" value="@ViewBag.User" />
+    }
+    else
+    {
+        <p>You've already signed your RCI. You're all set on that front!</p>
+    }
 
-        </div>
-
-        <div>
-            <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
-            <p>Please sign with your Gordon username @ViewBag.User</p>
-
-            @if (Model.LifeAndConductSigRes == null)
-            {
-                <input type="text" id="lac-sig" />
-            }
-            else
-            {
-                <input type="text" id="lac-sig" disabled="disabled" value="@ViewBag.User" />
-            }
-
-        </div>
-
-        <div class="distribute-evenly">
-            <button id="submit-button">Submit</button>
-        </div>
-
-    </div>
 </div>
+
+<div>
+
+    @if (Model.LifeAndConductSigRes == null)
+            {
+        <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
+                <p>Please sign with your Gordon username @ViewBag.User</p>
+                <input type="text" id="lac-sig" />
+                <div class="distribute-evenly">
+                    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+                    <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
+                </div>
+    }
+    else
+    {
+        <p>You've already signed the Life and Conduct Statement. You're good to go here!</p>
+                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+    }
+
+</div>
+

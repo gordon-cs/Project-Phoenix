@@ -7,7 +7,8 @@
     @Styles.Render("~/bundles/css")
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cloud.typography.com/7763712/7875172/css/fonts.css">
+    <!-- Uncomment this out for Gordon font-->
+    @*<link rel="stylesheet" type="text/css" href="https://cloud.typography.com/7763712/7875172/css/fonts.css">*@
     <link href="https://hayageek.github.io/jQuery-Upload-File/4.0.10/uploadfile.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://hayageek.github.io/jQuery-Upload-File/4.0.10/jquery.uploadfile.min.js"></script>
@@ -16,17 +17,40 @@
     @Scripts.Render("~/bundles/js/jquery")
     <div id="page-container">
         <header id="header">
+            <div class="logo-box">
+               @if (ViewBag.NeedsLogo == true)
+                                {
+                                    <a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")"><img src="~/Content/Images/gordon-logo-horizontal.svg" /></a>
+                }
+                else
+                {<a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">
+                    <i class="material-icons back-button">keyboard_backspace</i>
+                </a>}
+            </div>                   
             <div class="view-title">
-                <h2>@ViewBag.ViewTitle</h2>
-            </div>
+                <a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")"><h2>Online RCI</h2></a>
+</div>
             @if (ViewBag.MenuExists != null)
             {
-                <button class="view-drawer">
-                    <i class="material-icons">more_vert</i>
+                <button class="dropdown">
+                    <p class="uppercase username">@ViewBag.Name<i class="material-icons down-arrow">keyboard_arrow_down</i></p>
+                    <i class="material-icons hamburger">menu</i>    
                 </button>
+                <ul class="dropdown-menu">
+                    @if (ViewBag.Role == "RD" || ViewBag.Role == "RA")
+                    {
+                        <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "SyncRcis", controllerName: "Dashboard")"><i class="material-icons">sync</i>Sync Rcis</a></li>
+                    }
+                    @if (ViewBag.Role == "RD")
+                    {
+                        <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "SignAllRD", controllerName: "RciInput")">Batch Sign RCI Checkins</a></li>
+                        <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "ExportFines", controllerName: "Dashboard")">Export Fines</a></li>
+                    }
+                    <li class="dropdown-menu-item">Help</li>
+                    <li class="dropdown-menu-item logout-button">Logout</li>
+                </ul>
             }
         </header>
-        @RenderSection("Menu", false)
         <div id="content">
             @RenderBody()
         </div>

@@ -6,7 +6,22 @@
     margin-bottom: 10px;
 }
 
+.divAddOn-vert {
+    position: relative;
+}
+
 .divAddOn-item {
     width: 40px;
 }
+
+.divAddOn .material-icons, .divAddOn-vert .material-icons {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+.username p {
+    font-size: 0.9em;
+}
+
 

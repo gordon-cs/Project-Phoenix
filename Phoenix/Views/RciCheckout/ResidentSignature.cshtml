@@ -3,22 +3,22 @@
 @{
     ViewBag.Title = "Checkout";
     ViewBag.ViewTitle = "Checkout: Resident Signature";
+    ViewBag.Name = TempData["user"];
     ViewBag.MenuExists = "T";
+    ViewBag.Role = TempData["role"];
 }
 
-@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}
+<h2>@ViewBag.ViewTitle</h2>
 
 <div class="view">
     <div class="pane">
         <div class="pane-content">
-            <div class="error-message">
-                <p>@ViewBag.ErrorMessage</p>
-            </div>
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="error-message">
+                   <p>@ViewBag.ErrorMessage</p>
+                </div>
+            }
             @using (Html.BeginForm(actionName: "ResidentSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
@@ -39,7 +39,7 @@
                     }
                 </div>
                 <div class="distribute-evenly">
-                    <input type="submit" value="OK" />
+                    <button type="submit">Next</button>
                 </div>
             }
         </div>

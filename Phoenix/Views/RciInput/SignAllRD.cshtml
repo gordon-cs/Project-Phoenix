@@ -4,24 +4,23 @@
     ViewBag.Title = "SignAllRD";
     ViewBag.ViewTitle = "Batch Sign RCI Checkins";
     ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
 }
 
 @section Scripts{
     @Scripts.Render("~/Scripts/sign-all-rd.js")
 }
 
-@section Menu {
-    <ul class="drawer-menu">
-        <li class="drawer-menu-item"><a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">Dashboard</a></li>
-        <li class="drawer-menu-item logout-button">Logout</li>
-    </ul>
-}
-
 <div class="view">
     <div class="pane">
-        <div>
-            <p>@ViewBag.User, please sign with your name to confirm the entered existing damages for the selected RCIs below. Only the RCIs that are checked off will be signed</p>
-            <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
+        <h2>@ViewBag.ViewTitle</h2>
+        <div class="pane-content">
+            <p>@ViewBag.User, please sign with your name to confirm the entered damages for the selected RCIs below. </p>
+            <p>Only the RCIs that are checked off will be signed</p>
+            <div class="divAddOn">
+                <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
+            </div>
 
             <div class="distribute-evenly">
                 <button id="submit-button">Submit</button>
