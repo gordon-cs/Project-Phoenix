@@ -63,11 +63,13 @@
                         <p>Add Charge</p>
                     </div>
                     <div class="divAddOn-vert">
-                        <div class="divAddOn">
-                            <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
-                            <input class="divAddOn-item adding-fines" type="number" placeholder="$" id="fine-amount-input-@component.RciComponentID" />
+                        <div class="divAddOn-vert-field">
+                            <div class="divAddOn">
+                                <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
+                                <input class="divAddOn-item adding-fines" type="number" placeholder="$" id="fine-amount-input-@component.RciComponentID" />
+                            </div>
                         </div>
-                        <div class="divAddOn">
+                        <div class="divAddOn-vert-row">
                             <label class="divAddOn-item">Charge to:</label>
                             <select class="divAddOn-field" id="fine-owner-@component.RciComponentID">
                                 <option value="0">All - Split the charge</option>
@@ -80,7 +82,7 @@
                         <button class="divAddOn-vert-field" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
                     </div>
                     <div style="overflow-x:auto;">
-                        <table id="fine-list-@component.RciComponentID">
+                        <table class="fine-table" id="fine-list-@component.RciComponentID">
                             <tr>
                                 <th>Charge</th>
                                 <th>Amount ($)</th>
