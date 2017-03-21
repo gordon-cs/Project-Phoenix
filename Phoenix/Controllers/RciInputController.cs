@@ -4,12 +4,10 @@ using System.Web;
 using System.Web.Mvc;
 
 using Phoenix.Models;
-using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
 using System.Diagnostics;
 using System;
 using Phoenix.Services;
-using System.Web.UI;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using Newtonsoft.Json.Linq;
@@ -68,6 +66,7 @@ namespace Phoenix.Controllers
             return View(rci);
         }
 
+        [RD]
         public ActionResult SignAllRD()
         {
             // TempData stores object, so always cast to string.
@@ -95,6 +94,7 @@ namespace Phoenix.Controllers
             return View(buildingRcis);
         }
 
+        [RD]
         [HttpPost]
         public ActionResult SubmitSignAllRD(string rciSig)
         {
@@ -170,6 +170,7 @@ namespace Phoenix.Controllers
         }
 
         // Save signatures for RA
+        [ResLifeStaff]
         [HttpPost]
         public ActionResult SaveSigRA(string rciSig, string rciSigRes, string lacSig, int id)
         {
@@ -200,6 +201,7 @@ namespace Phoenix.Controllers
         /// <param name="rciSig">Signature</param>
         /// <param name="id">RCI ID</param>
         /// <returns>Redirect to dashboard if signed or checked</returns>
+        [RD]
         [HttpPost]
         public ActionResult SaveSigRD(string rciSig, int id)
         {
@@ -232,6 +234,7 @@ namespace Phoenix.Controllers
         /// <param name="sigCheck">1: checked, 0: unchecked</param>
         /// <param name="id">RCI ID</param>
         /// <returns></returns>
+        [RD]
         [HttpPost]
         public void CheckSigRD(int sigCheck, int id)
         {
@@ -239,50 +242,6 @@ namespace Phoenix.Controllers
             var gordonID = (string)TempData["id"];
             rciInputService.CheckRcis(sigCheck, gordonID, id);
         }
-
-        /// <summary>
-        /// If an rci form was submitted, the method loops through it and creates Damage records for the damages the user entered.
-        /// If the user chose to delete some existing damages, the method loops through the damages the user wanted to delete and removes them from the dataabse.
-        /// </summary>
-        /// <param name="rci">The data sent to the method.</param>
-        /// <returns></returns>
-        [HttpPost]
-        public void SaveRci(RciForm rci)
-        {
-            // Check if anything was submitted
-            if (rci.NewDamages != null)
-            {
-                var toAdd = new List<Damage>();
-                // Save of newly added components
-                foreach (var damage in rci.NewDamages)
-                {
-                    var newDamage = new Damage { RciComponentID = damage.ComponentID, DamageDescription = damage.Damage, DamageType = "TEXT" };
-                    toAdd.Add(newDamage);
-                    //db.Damage.Add(newDamage);  
-                }
-                db.Damage.AddRange(toAdd);
-            }
-
-            // Check if any existing damages were enqueued for deletion
-            if (rci.DamagesToDelete != null)
-            {
-                var toDelete = new List<Damage>();
-                // Delete all the damages that were enqueued for deletion.
-                foreach (var damageID in rci.DamagesToDelete)
-                {
-                    var damage = db.Damage.Find(damageID);
-                    toDelete.Add(damage);
-                    //db.Damage.Remove(damage);
-                }
-                db.Damage.RemoveRange(toDelete);
-            }
-
-            // Save changes to database
-            db.SaveChanges();
-
-            return;
-        }
-
 
         /// <summary>
         /// If a photo(s) of a damage was uploaded, this method first creates a new Damage entry in db, then saves the image to the server
