@@ -69,15 +69,11 @@
                     <p>Add Charge(s)</p>
                 </div>
                 <div class="divAddOn">
-                    <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
+                    <input class="divAddOn-field adding-fines" type="text" placeholder="Charge" id="text-input-@component.RciComponentID" />
                     <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RciComponentID" />
                     <button class="divAddOn-item" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
                 </div>
                 <div class="div-list" id="fine-list-@component.RciComponentID">
-                    <div class="div-list-toggle icon-label">
-                        <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
-                        <span>Hide/Show Fines</span>
-                    </div>
                     @foreach (var fine in component.Fine)
                     {
                         <div class="divAddOn">
