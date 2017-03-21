@@ -145,21 +145,17 @@ namespace Phoenix.Services
         public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
         {
             var rci = GetCommonAreaRciById(rciID);
-            var alreadySigned = rci.CommonAreaMember.Where(m => m.GordonID == gordonID).FirstOrDefault().HasSignedCommonAreaRci;
             if (rciSig == user)
             {
-                if(!alreadySigned)
+                var signature = new CommonAreaRciSignature
                 {
-                    var signature = new CommonAreaRciSignature
-                    {
-                        RciID = rciID,
-                        GordonID = gordonID,
-                        Signature = DateTime.Now,
-                        SignatureType = "CHECKIN"
-                    };
-                    db.CommonAreaRciSignature.Add(signature);
-                    db.SaveChanges();
-                }
+                    RciID = rciID,
+                    GordonID = gordonID,
+                    Signature = DateTime.Now,
+                    SignatureType = "CHECKIN"
+                };
+                db.CommonAreaRciSignature.Add(signature);
+                db.SaveChanges();
 
                 rci = GetCommonAreaRciById(rciID); // Check to see if everyone has signed now.
                 if(rci.EveryoneHasSigned())

@@ -119,11 +119,14 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult SaveSigCommonArea(int rciID, string rciSig)
         {
-            if(rciSig == null || rciSig.Trim() == "")
+            if (rciSig == null || rciSig.Trim() == "")
             {
                 return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
             }
-            if (rciSig != null) rciSig = rciSig.ToLower().Trim();
+            else
+            {
+                rciSig = rciSig.ToLower().Trim();
+            }
 
             var gordonID = (string)TempData["id"];
             var user = ((string)TempData["user"]).ToLower().Trim();
