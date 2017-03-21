@@ -42,6 +42,7 @@
  * .............. a.button
  * .............. lift
  * .............. error-message
+ * .............. table
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -478,6 +479,22 @@ div.icon-label {
 }
 .error-message  div,
 .error-message  p {
+    padding: 0.5em;
+}
+
+/* Table styling */
+
+table {
+    border-collapse: collapse;
+    min-width: 100%;
+}
+
+table, th, td {
+    
+}
+
+td, th {
+    border-bottom: 1px solid #31342b;
     padding: 0.5em;
 }
 

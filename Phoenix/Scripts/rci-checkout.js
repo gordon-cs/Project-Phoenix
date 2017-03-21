@@ -20,39 +20,35 @@ function addFine(componentID) {
 
             addFineToDb(componentID, fineText, (fineAmount / numberOfPeople).toFixed(2), $element.val())
             .then(function (data) {
-                let div = $("<div />", { "class": "divAddOn" });
-                div.append("<p class='divAddOn-field'>" + fineText + "</p>");
-                div.append("<span class='divAddOn-item'>$</span>");
-                div.append("<p class=\"divAddOn-item\">" + (fineAmount / numberOfPeople).toFixed(2) + "</p>");
-                div.append("<p  class='divAddOn-item'>" + $element.text() + "</p>");
-                div.append("<i class='divAddOn-item material-icons' onclick='deleteFine(event, this,"+data+");'>delete</i>");
-                console.log(div);
-                $finesArea.append(div);
+                let row = $("<tr />");
+                row.append("<td >" + fineText + "</td>");
+                row.append("<td style='vertical-align:middle; text-align:center;'>" + (fineAmount / numberOfPeople).toFixed(2) + "</td>");
+                row.append("<td>" + $element.text() + "</td>");
+                row.append("<td style='vertical-align:middle; text-align:center;'><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
+                $finesArea.append(row);
             });
         });        
     }
     else if (fineOwnerName) { // A person was selected
         addFineToDb(componentID, fineText, fineAmount, fineOwnerID)
         .then(function (data) {
-            let div = $("<div />", { "class": "divAddOn" });
-            div.append("<p class='divAddOn-field'>" + fineText + "</p>");
-            div.append("<span class='divAddOn-item'>$</span>");
-            div.append("<p class=\"divAddOn-item\">" + fineAmount.toFixed(2) + "</p>");
-            div.append("<p class='divAddOn-item'>" + fineOwnerName + "</p>")
-            div.append("<i class='divAddOn-item material-icons' onclick='deleteFine(event, this, "+data+");'>delete</i>");
-            $finesArea.append(div);
+            let row = $("<tr />");
+            row.append("<td >" + fineText + "</td>");
+            row.append("<td style='vertical-align:middle; text-align:center;'>" + fineAmount.toFixed(2) + "</td>");
+            row.append("<td>" + fineOwnerName + "</td>")
+            row.append("<td style='vertical-align:middle; text-align:center;'><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
+            $finesArea.append(row);
         });
     }
     else { // fineOwnerName is not defined, which means this is an individual checkout
         let gordonID = $(".view").attr("data");
         addFineToDb(componentID, fineText, fineAmount, gordonID )
         .then(function (data) {
-            let div = $("<div />", { "class": "divAddOn" });
-            div.append("<p class='divAddOn-field'>" + fineText + "</p>");
-            div.append("<span class='divAddOn-item'>$</span>");
-            div.append("<p class=\"divAddOn-item\">" + fineAmount.toFixed(2) + "</p>");
-            div.append("<i class='divAddOn-item material-icons' onclick='deleteFine(event, this, "+data+");'>delete</i>");
-            $finesArea.append(div);
+            let row = $("<tr />");
+            row.append("<td >" + fineText + "</td>");
+            row.append("<td style='vertical-align:middle; text-align:center;'>" + fineAmount.toFixed(2) + "</td>");
+            row.append("<td style='vertical-align:middle; text-align:center;'><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
+            $finesArea.append(row);
         });
     }
     $("#text-input-" + componentID).val(""); // Empty the textfield of adding fines
@@ -63,7 +59,7 @@ function addFine(componentID) {
 function deleteFine(event, element, id) {
     removeFineFromDb(id)
     .then(function () {
-        $(element).parent().remove();
+        $(element).parent().parent().remove();
     });   
 }
 
