@@ -121,7 +121,7 @@ namespace Phoenix.Controllers
         {
             if(rciSig == null || rciSig.Trim() == "")
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature, please enter your name in the correct field(s) and submit again.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
             }
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
 
@@ -136,7 +136,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. Please submit again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
         // Save signatures for resident
@@ -145,7 +145,7 @@ namespace Phoenix.Controllers
         {
             if (rciSig == null || rciSig.Trim() == "" || lacSig == null || lacSig.Trim() == "")
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature, please enter your name in the correct field(s) and submit again.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
             }
 
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
@@ -162,7 +162,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. Please submit again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
 
@@ -187,7 +187,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. Please submit again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
         
@@ -202,7 +202,7 @@ namespace Phoenix.Controllers
         {
             if (rciSig == null || rciSig.Trim() == "")
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature, please enter your name in the correct field(s) and submit again.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
             }
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             
@@ -217,7 +217,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. Please submit again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
 

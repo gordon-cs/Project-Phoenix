@@ -125,13 +125,8 @@ function CommonAreaSubmit() {
     var signature = "";
     var rciId = $("div[id^='rci-']").first().attr("id").substring(4);
 
-    $(".rci-sig").each(function (index, element) {
-        var $element = $(element);
-        if ($element.val() && $element.val().trim() !== "") {
-            signature = $element.val();
-        }
-    });
-
+    var signature = $("#rci-sig").val();
+    
     $.ajax({
         sync: false,
         url: "/RciInput/SaveSigCommonArea",
