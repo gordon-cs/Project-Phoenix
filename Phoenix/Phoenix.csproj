@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44345</IISExpressSSLPort>
+    <IISExpressSSLPort>44397</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
@@ -228,6 +228,7 @@
     <Content Include="Scripts\dom-manipulation.js" />
     <Content Include="Scripts\rci-checkout.js" />
     <Content Include="Scripts\rci-input.js" />
+    <None Include="Properties\PublishProfiles\RCIPublish_DEV.pubxml" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\sign-all-rd.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />
