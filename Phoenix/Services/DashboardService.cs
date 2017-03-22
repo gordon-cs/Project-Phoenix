@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using Phoenix.Utilities;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Data.SqlClient;
@@ -410,6 +411,45 @@ namespace Phoenix.Services
                 CreationDate = DateTime.Now
             };
             return rci;
+        }
+
+        /// <summary>
+        /// Get a string that represents the state of the rci.
+        /// </summary>
+        public string GetRciState(Rci rci)
+        {
+            if(rci.CheckinSigRes == null)
+            {
+                return Constants.RCI_UNSIGNED;
+            }
+            else if(rci.CheckinSigRA == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RES_CHECKIN;
+            }
+            else if(rci.CheckinSigRD == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RA_CHECKIN;
+            }
+            else if(rci.CheckoutSigRes == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RD_CHECKIN;
+            }
+            else if(rci.CheckoutSigRA == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RES_CHECKOUT;
+            }
+            else if(rci.CheckoutSigRD == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RA_CHECKOUT;
+            }
+            else if(rci.CheckoutSigRD != null)
+            {
+                return Constants.RCI_COMPLETE;
+            }
+            else
+            {
+                return Constants.RCI_UNDEFINED_STATE;
+            }
         }
     }
 }
