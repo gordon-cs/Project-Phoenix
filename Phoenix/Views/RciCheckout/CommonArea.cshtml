@@ -1,8 +1,8 @@
 ﻿@model Phoenix.Models.ViewModels.CheckoutCommonAreaRciViewModel
 
 @{
-    ViewBag.Title = "RCI Checkout";
-    ViewBag.ViewTitle = "RCI Checkout: " + Model.BuildingCode + " " + Model.RoomNumber;
+    ViewBag.Title = "Checkout";
+    ViewBag.ViewTitle = "Checkout: " + Model.BuildingCode + " " + Model.RoomNumber;
     ViewBag.Name = TempData["user"];
     ViewBag.MenuExists = "T";
     ViewBag.Role = TempData["role"];
@@ -17,6 +17,7 @@
 }
 
 <div class="view">
+    <h2>@ViewBag.ViewTitle</h2>
     @foreach (var room in ViewBag.commonRooms)
     {
         <h2>@room</h2>

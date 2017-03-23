@@ -56,14 +56,14 @@ namespace Phoenix.Controllers
             
             if (rci.GordonID == null) // A common area rci
             {
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
+                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
                 // Select rooms of common area RCIs to group the RCIs
                 ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
             }
             else
             {
                 var name = rciInputService.GetName(rci.GordonID);
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
+                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " " + name;
             }
 
             return View(rci);
@@ -79,13 +79,13 @@ namespace Phoenix.Controllers
             var rci = rciInputService.GetRci(id);
             if (rci.GordonID == null) // A common area rci
             {
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
+                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
                 ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
             }
             else
             {
                 var name = rciInputService.GetName(rci.GordonID);
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
+                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " " + name;
             }
 
             return View(rci);

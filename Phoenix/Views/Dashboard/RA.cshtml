@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRciViewModel>
 
 @{
-    ViewBag.Title = "RCI-Dashboard";
-    ViewBag.ViewTitle = "RCI Dashboard";
+    ViewBag.Title = "Dashboard";
+    ViewBag.ViewTitle = "Dashboard";
     ViewBag.MenuExists = "T";
     ViewBag.Name = TempData["user"];
     ViewBag.Role = TempData["role"];
@@ -14,6 +14,16 @@
 }
 
 <div class="view">
+    <div class="legend">
+        <div>
+            <span style ="background:#014983;" class="legend-color"></span>
+            <span class="legend-text">Check-In</span>
+        </div>
+        <div>
+            <span style ="background:#B2BB1C;" class="legend-color"></span>
+            <span class="legend-text">Checkout</span>
+        </div>
+    </div>
     <div class="pane">
         <div>
             RCIs
@@ -33,15 +43,7 @@
                             </div>
                             </a>
                             <div class="divAddOn-vert-row rci-card-links">
-                                <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                                    Checkout
-                                </a>
-                                @if (rci.FirstName != "Common Area")
-                                {
-                                    <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
-                                        Swap Furniture
-                                    </a>
-                                }
+                                This RCI has been signed by the Resident
                             </div>
                        </div>
                 }
