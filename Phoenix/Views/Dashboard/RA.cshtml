@@ -25,7 +25,7 @@
                 @foreach (var rci in Model)
                 {
                     <div class="divAddOn-vert rci-card">
-                        <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                        <a href="@Url.Action(actionName:"GotoRci", controllerName:"Dashboard", routeValues: new { rciID = rci.RciID })">
                             <div class="divAddOn-vert-field search-field rci-card-main">
                                 <p>@rci.BuildingCode @rci.RoomNumber</p>
                                 <p>@rci.FirstName @rci.LastName</p>
