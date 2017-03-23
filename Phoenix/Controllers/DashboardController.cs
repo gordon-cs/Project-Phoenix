@@ -191,7 +191,7 @@ namespace Phoenix.Controllers
             {
                 if (role == Constants.RESIDENT)
                 {
-
+                    return RedirectToAction(actionName: "Index", controllerName: "RciReviewCheckout", routeValues: new { id = rciID });
                 }
                 else if (role == Constants.RA || role == Constants.RD)
                 {
@@ -206,7 +206,7 @@ namespace Phoenix.Controllers
             {
                 if (role == Constants.RESIDENT || role == Constants.RA)
                 {
-
+                    return RedirectToAction(actionName: "Index", controllerName: "RciReviewCheckout", routeValues: new { id = rciID });
                 }
                 else if (role == Constants.RD)
                 {
@@ -219,7 +219,7 @@ namespace Phoenix.Controllers
             }
             else if (state == Constants.RCI_COMPLETE)
             {
-
+                return RedirectToAction(actionName: "Index", controllerName: "RciReviewCheckout", routeValues: new { id = rciID });
             }
             else
             {

@@ -153,6 +153,7 @@
     <Compile Include="Controllers\RciComponentReassignController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
     <Compile Include="Controllers\RciReviewCheckinController.cs" />
+    <Compile Include="Controllers\RciReviewCheckoutController.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
     <Compile Include="Filters\AdminAuthorizationAttribute.cs" />
     <Compile Include="Filters\RDAttribute.cs" />
@@ -196,6 +197,7 @@
     <Compile Include="Services\RciInputService.cs" />
     <Compile Include="Services\RciCheckoutService.cs" />
     <Compile Include="Services\RciReviewCheckinService.cs" />
+    <Compile Include="Services\RciReviewCheckoutService.cs" />
     <Compile Include="Utilities\Constants.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -279,6 +281,7 @@
     <Content Include="Views\RciCheckout\CommonAreaSignature.cshtml" />
     <Content Include="Views\RciInput\SignAllRD.cshtml" />
     <Content Include="Views\RciReviewCheckin\Index.cshtml" />
+    <Content Include="Views\RciReviewCheckout\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />
