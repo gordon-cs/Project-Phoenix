@@ -42,13 +42,18 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "LoginController");
             }
-             
+
+            var rci = rciInputService.GetRci(id);
+
+            //  Redirect to the review page if this is already signed by the RD
+            if(rci.CheckinSigRD != null)
+            {
+                return RedirectToAction("RciReview");
+            }
 
             // This is how we access items set in the filter.
             var gordon_id = (string)TempData["id"];
-
-            //var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
-            var rci = rciInputService.GetRci(id);
+            
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";

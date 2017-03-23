@@ -39,11 +39,19 @@ namespace Phoenix.Controllers
             {
                 ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
                 var rci = checkoutService.GetCommonAreaRciByID(id);
+                if(rci.CheckoutSigRD != null)
+                {
+                    return RedirectToAction("RciReview");
+                }
                 return View("CommonArea", rci);
             }
             else // An individual room
             {
                 var rci = checkoutService.GetIndividualRoomRciByID(id);
+                if (rci.CheckoutSigRD != null)
+                {
+                    return RedirectToAction("RciReview");
+                }
                 return View("IndividualRoom", rci);
             }
         }
