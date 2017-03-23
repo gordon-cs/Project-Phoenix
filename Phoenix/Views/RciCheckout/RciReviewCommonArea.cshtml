@@ -1,0 +1,80 @@
+﻿@model Phoenix.Models.ViewModels.CheckoutCommonAreaRciViewModel
+
+@{
+    ViewBag.Title = "RCI Checkout Review";
+    ViewBag.ViewTitle = "RCI Checkout: " + Model.BuildingCode + " " + Model.RoomNumber;
+    ViewBag.Name = TempData["user"];
+    ViewBag.MenuExists = "T";
+    ViewBag.Role = TempData["role"];
+}
+
+@section Styles{
+    @Styles.Render("~/bundles/page_specific/css/rci-checkout")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/rci-checkout")
+}
+
+<div class="view">
+    @foreach (var room in ViewBag.commonRooms)
+    {
+        <h2>@room</h2>
+        foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room)))
+        {
+            <div class="pane component" id="@component.RciComponentID">
+                <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
+                <div class="checkout pane-content">
+                    <h3>Recorded Damages:</h3>
+                    <div class="div-list">
+                        <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
+                            @foreach (var damage in component.Damage)
+                            {
+                                if (damage.DamageType.Equals("IMAGE"))
+                                {
+                                    <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div>
+                                }
+                            }
+                        </div>
+                        <div id="modal-@component.RciComponentID" class="img-modal">
+                            <div class="modal-header"><i class="material-icons clear">clear</i></div>
+                            <div class="modal-content">
+                                @foreach (var damage in component.Damage)
+                                {
+                                    if (damage.DamageType.Equals("IMAGE"))
+                                    {
+                                        <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
+                                    }
+                                }
+                                <i class="material-icons backward">navigate_before</i>
+                                <i class="material-icons forward">navigate_next</i>
+                            </div>
+                        </div>
+                        @foreach (var damage in component.Damage)
+                        {
+                            if (damage.DamageDescription != null)
+                            {
+                                <div class="divAddOn existing-damage-wrapper">
+                                    <p class="divAddOn-field existing-damage">@damage.DamageDescription</p>
+                                </div>
+                            }
+                        }
+                    </div>
+  
+                    <div class="div-list" id="fine-list-@component.RciComponentID">
+                        @foreach (var fine in component.Fine)
+                        {
+                            <div class="divAddOn">
+                                <p class="divAddOn-field">@fine.Reason</p>
+                                <span class="divAddOn-item">$</span>
+                                <p class="divAddOn-item">@fine.FineAmount</p>
+                                <p class="divAddOn-item">@Model.CommonAreaMember.Where(x => x.GordonID == fine.GordonID).Select(m => m.FirstName + " " + m.LastName).FirstOrDefault()</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>

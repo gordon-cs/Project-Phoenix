@@ -42,8 +42,7 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "LoginController");
             }
-
-            Debug.WriteLine("Reached Index Method for RCIInput Controller");
+             
 
             // This is how we access items set in the filter.
             var gordon_id = (string)TempData["id"];
@@ -65,6 +64,27 @@ namespace Phoenix.Controllers
             return View(rci);
         }
 
+        /// <summary>
+        /// Returns the checkin review view
+        /// </summary>
+        public ActionResult RciReview(int id)
+        {
+            var gordon_id = (string)TempData["id"];
+
+            var rci = rciInputService.GetRci(id);
+            if (rci.GordonID == null) // A common area rci
+            {
+                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
+                ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
+            }
+            else
+            {
+                var name = rciInputService.GetName(rci.GordonID);
+                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
+            }
+
+            return View(rci);
+        }
         // Redirect to checkin signature page for certain roles.
         public ActionResult CheckinSig(int id)
         {
