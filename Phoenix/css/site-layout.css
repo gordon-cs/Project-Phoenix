@@ -27,6 +27,7 @@
  *
  * Altering initial state of elements
  * ............. hide
+ *  ............. show
  *
  * Custom elements
  * .............. divAddOn
@@ -154,9 +155,6 @@
         .pane-content {
             padding: 1em;
         }
-        .input.pane-content, .checkout.pane-content {
-            display: none;
-        }
 
 /***************************/
 /**********FOOTER***********/
@@ -197,6 +195,18 @@ button, a.button {
 
 i {
     vertical-align: middle;
+}
+
+
+/**************************/
+/******INITIAL STATE****/
+
+.hide {
+    display: none;
+}
+
+.show{
+    display: block;
 }
 /***************************/
 /******CUSTOM ELEMENTS******/
