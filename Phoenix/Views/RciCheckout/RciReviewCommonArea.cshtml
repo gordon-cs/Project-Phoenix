@@ -20,7 +20,7 @@
     @foreach (var room in ViewBag.commonRooms)
     {
         <h2>@room</h2>
-        foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room)))
+        foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && (x.Damage.Any() || x.Fine.Any()) ))
         {
             <div class="pane component" id="@component.RciComponentID">
                 <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
@@ -60,7 +60,7 @@
                             }
                         }
                     </div>
-  
+                    <h3>Recorded Charges:</h3>
                     <div class="div-list" id="fine-list-@component.RciComponentID">
                         @foreach (var fine in component.Fine)
                         {
