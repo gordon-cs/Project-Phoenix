@@ -15,6 +15,16 @@
 
 
 <div class="view"> 
+    <div class="legend">
+        <div>
+            <span style="background:#014983;" class="legend-color"></span>
+            <span class="legend-text">Check-In</span>
+        </div>
+        <div>
+            <span style="background:#B2BB1C;" class="legend-color"></span>
+            <span class="legend-text">Checkout</span>
+        </div>
+    </div>
     <div class="pane">
         <h3>
             RCIs
@@ -33,17 +43,6 @@
                         <i class="material-icons edit">mode_edit</i>
                     </div>
                 </a>
-                <div class="divAddOn-vert-row">
-                    <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                        Checkout
-                    </a>
-                    @if (rci.FirstName != "Common Area")
-                    {
-                        <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
-                            Swap Furniture
-                        </a>
-                    }
-                </div>
               </div>
         }
     </div>

@@ -43,6 +43,7 @@
  * .............. a.button
  * .............. lift
  * .............. error-message
+ * .............. legend
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -70,7 +71,6 @@
 }
 
     .view-title {
-        display: none;
         flex: 1;
         padding: 0 10px;
         text-align:center;
@@ -78,7 +78,7 @@
     .logo-box {
         left: 4%;
         position: absolute;
-        width: 100px;
+        width: 80px;
     }
     .logo-box .back-button {
         margin-left: .5em;
@@ -492,6 +492,26 @@ div.icon-label {
 }
 
 
+/* Legend */
+
+.legend {
+    display: inline-block;
+}
+
+.legend > div {
+    padding: 0.1em;
+}
+.legend-color{
+    display: inline-block;
+    height: 20px;
+    vertical-align: middle;
+    width: 20px;
+}
+
+.legend-text {
+    font-weight: bold;
+}
+
 /***************************/
 /***********MISC************/
 /***************************/
@@ -534,17 +554,18 @@ div.icon-label {
 /******MEDIA QUERIES*********/
 /****************************/
 
-
-@media screen and (min-width: 768px){
+@media screen and (min-width: 375px) {
+    #header > .logo-box{
+        width: 100px;
+    }
+}
+@media screen and (min-width: 768px) {
 
     #page-container{
         margin: 0 auto;
     }
     #content {
         width: 75%;
-    }
-    .view-title {
-        display: inline-block;
     }
     button.dropdown {
         top: 27px;
