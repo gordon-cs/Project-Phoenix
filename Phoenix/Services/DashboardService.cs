@@ -416,8 +416,10 @@ namespace Phoenix.Services
         /// <summary>
         /// Get a string that represents the state of the rci.
         /// </summary>
-        public string GetRciState(Rci rci)
+        public string GetRciState(int rciID)
         {
+            var rci = db.Rci.Find(rciID);
+
             if(rci.CheckinSigRes == null)
             {
                 return Constants.RCI_UNSIGNED;
