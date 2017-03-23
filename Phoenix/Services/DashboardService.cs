@@ -42,7 +42,14 @@ namespace Phoenix.Services
                     BuildingCode = personalRCI.BuildingCode.Trim(),
                     RoomNumber = personalRCI.RoomNumber.Trim(),
                     FirstName = account.firstname,
-                    LastName = account.lastname
+                    LastName = account.lastname,
+                    RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                    CheckinSigRes = personalRCI.CheckinSigRes,
+                    CheckinSigRA = personalRCI.CheckinSigRA,
+                    CheckinSigRD = personalRCI.CheckinSigRD,
+                    CheckoutSigRes = personalRCI.CheckoutSigRes,
+                    CheckoutSigRA = personalRCI.CheckoutSigRA,
+                    CheckoutSigRD = personalRCI.CheckoutSigRD
                 };
             return RCIs;
         }
@@ -65,7 +72,14 @@ namespace Phoenix.Services
                     BuildingCode = personalRCI.BuildingCode.Trim(),
                     RoomNumber = personalRCI.RoomNumber.Trim(),
                     FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                    LastName = account.lastname == null ? "RCI" : account.lastname
+                    LastName = account.lastname == null ? "RCI" : account.lastname,
+                    RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                    CheckinSigRes = personalRCI.CheckinSigRes,
+                    CheckinSigRA = personalRCI.CheckinSigRA,
+                    CheckinSigRD = personalRCI.CheckinSigRD,
+                    CheckoutSigRes = personalRCI.CheckoutSigRes,
+                    CheckoutSigRA = personalRCI.CheckoutSigRA,
+                    CheckoutSigRD = personalRCI.CheckoutSigRD
                 };
             return buildingRCIs.OrderBy(m => m.RoomNumber);
         }
@@ -120,7 +134,14 @@ namespace Phoenix.Services
                     BuildingCode = tempCommonAreaRCI.BuildingCode,
                     RoomNumber = tempCommonAreaRCI.RoomNumber,
                     FirstName = "Common Area",
-                    LastName = "RCI"
+                    LastName = "RCI",
+                    RciStage = tempCommonAreaRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                    CheckinSigRes = tempCommonAreaRCI.CheckinSigRes,
+                    CheckinSigRA = tempCommonAreaRCI.CheckinSigRA,
+                    CheckinSigRD = tempCommonAreaRCI.CheckinSigRD,
+                    CheckoutSigRes = tempCommonAreaRCI.CheckoutSigRes,
+                    CheckoutSigRA = tempCommonAreaRCI.CheckoutSigRA,
+                    CheckoutSigRD = tempCommonAreaRCI.CheckoutSigRD
                 };
             return commonAreaRCIs;
 
