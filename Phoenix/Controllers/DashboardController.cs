@@ -5,8 +5,6 @@ using Phoenix.Filters;
 using Phoenix.Services;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Xml.Linq;
-using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
 {
@@ -149,82 +147,9 @@ namespace Phoenix.Controllers
             var state = dashboardService.GetRciState(rciID);
             var role = (string)TempData["role"];
 
-            if (state == Constants.RCI_UNSIGNED)
-            {
-                return RedirectToAction(actionName: "Index", controllerName: "RciInput", routeValues: new { id = rciID });
-            }
-             else if (state == Constants.RCI_SIGNGED_BY_RES_CHECKIN)
-            {
-                return RedirectToAction(actionName: "Index", controllerName: "RciInput", routeValues: new { id = rciID });
-            }
-            else if (state == Constants.RCI_SIGNGED_BY_RA_CHECKIN)
-            {
-                if (role == Constants.RESIDENT || role == Constants.RA)
-                {
-                    return RedirectToAction(actionName: "Index", controllerName: "RciReviewCheckin", routeValues: new { id = rciID });
-                }
-                else if (role == Constants.RD)
-                {
-                    return RedirectToAction(actionName: "Index", controllerName: "RciInput", routeValues: new { id = rciID });
-                }
-                else
-                {
-                    return new HttpStatusCodeResult(400, "That role is undefined");
-                }
-            }
-            else if (state == Constants.RCI_SIGNGED_BY_RD_CHECKIN)
-            {
-                if(role == Constants.RESIDENT)
-                {
-                    return RedirectToAction(actionName: "Index", controllerName: "RciReviewCheckin", routeValues: new { id = rciID });
-                }
-                else if (role == Constants.RA || role == Constants.RD)
-                {
-                    return RedirectToAction(actionName: "Index", controllerName: "RciCheckout", routeValues: new { id = rciID });
-                }
-                else
-                {
-                    return new HttpStatusCodeResult(400, "That role is undefined");
-                }
-            }
-            else if (state == Constants.RCI_SIGNGED_BY_RES_CHECKOUT)
-            {
-                if (role == Constants.RESIDENT)
-                {
-                    return RedirectToAction(actionName: "Index", controllerName: "RciReviewCheckout", routeValues: new { id = rciID });
-                }
-                else if (role == Constants.RA || role == Constants.RD)
-                {
-                    return RedirectToAction(actionName: "Index", controllerName: "RciCheckout", routeValues: new { id = rciID });
-                }
-                else
-                {
-                    return new HttpStatusCodeResult(400, "That role is undefined");
-                }
-            }
-            else if (state == Constants.RCI_SIGNGED_BY_RA_CHECKOUT)
-            {
-                if (role == Constants.RESIDENT || role == Constants.RA)
-                {
-                    return RedirectToAction(actionName: "Index", controllerName: "RciReviewCheckout", routeValues: new { id = rciID });
-                }
-                else if (role == Constants.RD)
-                {
-                    return RedirectToAction(actionName: "Index", controllerName: "RciCheckout", routeValues: new { id = rciID });
-                }
-                else
-                {
-                    return new HttpStatusCodeResult(400, "That role is undefined");
-                }
-            }
-            else if (state == Constants.RCI_COMPLETE)
-            {
-                return RedirectToAction(actionName: "Index", controllerName: "RciReviewCheckout", routeValues: new { id = rciID });
-            }
-            else
-            {
-                return new HttpStatusCodeResult(400, "The rci is an undefined state");
-            }
+            var routeToTake = dashboardService.GetRciRouteDictionary(rciID);
+
+            return routeToTake[state][role];
                 
         }
         [HttpGet]

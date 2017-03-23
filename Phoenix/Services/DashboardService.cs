@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Xml.Linq;
 using System.Data.SqlClient;
 using System.Web;
+using System.Web.Mvc;
+using Phoenix.Controllers;
 
 namespace Phoenix.Services
 {
@@ -452,6 +454,87 @@ namespace Phoenix.Services
             {
                 return Constants.RCI_UNDEFINED_STATE;
             }
+        }
+
+        /// <summary>
+        /// Create a route dictionary that will tell us where to go, given the rci state and the role of the user.
+        /// </summary>
+        public Dictionary<string, Dictionary<string, ActionResult>> GetRciRouteDictionary(int rciID)
+        {
+            var rciRouteDictionary = new Dictionary<string, Dictionary<string, ActionResult>>();
+
+            rciRouteDictionary.Add(Constants.RCI_UNSIGNED, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RES_CHECKIN, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RA_CHECKIN, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RD_CHECKIN, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RES_CHECKOUT, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RA_CHECKOUT, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_COMPLETE, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))}
+            });
+
+
+            return rciRouteDictionary;
         }
     }
 }
