@@ -20,9 +20,14 @@
 
     @foreach (var component in Model.RciComponent)
     {
+        var visible = "hide";
+        if (component.Damage.Any() || component.Fine.Any())
+        {
+            visible = "show";
+        }
         <div class="pane component" id="@component.RciComponentID">
             <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
-            <div class="checkout pane-content">
+            <div class="checkout pane-content @visible">
                 @if (component.RciComponentDescription != null && component.RciComponentDescription.Trim() != "")
                 {
                     <p><b>Possible places:</b> @component.RciComponentDescription</p>
