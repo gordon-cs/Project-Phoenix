@@ -381,11 +381,8 @@ namespace Phoenix.Controllers
 
                     string folderPath = "\\Content\\Images\\Damages\\" + todayProperFormat + "\\";
 
-                    // If no folder with today's date has been created yet, create one
-                    if (!Directory.Exists(Server.MapPath(folderPath)))
-                    {
-                        Directory.CreateDirectory(Server.MapPath(folderPath));
-                    }
+                    // If no folder with today's date has been created yet, create one. This will do nothing if Directory already exists
+                    Directory.CreateDirectory(Server.MapPath(folderPath));
 
                     string fullPath = folderPath + imageName + ".jpg"; // Not sure exactly where we should store them. This path can change
 
