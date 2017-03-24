@@ -193,6 +193,16 @@ namespace Phoenix.Services
             return finalSize;
         }
 
+        public void ResizeImage(Image origImg, Image newImage, Size imgSize)
+        {
+            using (Graphics gr = Graphics.FromImage(newImage))
+            {
+                gr.SmoothingMode = SmoothingMode.HighQuality;
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gr.DrawImage(origImg, new Rectangle(0, 0, imgSize.Width, imgSize.Height));
+            }
+        }
 
         public IEnumerable<string> GetCommonRooms(int id)
         {

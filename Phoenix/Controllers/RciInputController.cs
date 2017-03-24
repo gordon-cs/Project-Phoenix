@@ -372,13 +372,7 @@ namespace Phoenix.Controllers
                     // Bitmap is a subclass of Image; its constructor can take an Image and new Size, and then creates a new Image scaled to the new size
                     Image resizedImg = new Bitmap(origImg, imgSize);
 
-                    using (Graphics gr = Graphics.FromImage(resizedImg))
-                    {
-                        gr.SmoothingMode = SmoothingMode.HighQuality;
-                        gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        gr.DrawImage(origImg, new Rectangle(0, 0, imgSize.Width, imgSize.Height));
-                    }
+                    rciInputService.ResizeImage(origImg, resizedImg, imgSize);
 
                     string imageName = "RciComponentId" + rciComponentId + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
 
