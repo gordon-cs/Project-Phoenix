@@ -28,50 +28,58 @@ function uploadPhoto() {
             }
             else {
                 console.log("Photo" + i + "size: " + file.size);
-                let img = document.createElement("img");
-                img.classList.add("uploaded-img");
-                img.classList.add("thumbnail");
-                img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
-                img.onload = function () {
-                    window.URL.revokeObjectURL(this.src);
-                }
-                img.alt = "Damage Image Thumbnail";
-                
-                // Add the delete icon and wrap it in div for css purposs
-                let $deleteIcon = $("<i>close</i>");
-                $deleteIcon.addClass("material-icons");
-                $deleteIcon.addClass("delete");
-                let $deleteWrapper = $("<div></div>");
-                $deleteWrapper.addClass("delete-icon");
-                $deleteWrapper.append($deleteIcon);
-                
-                // Wrap everything in another div for css purposes
-                let $wrapperDiv = $("<div></div>");
-                $wrapperDiv.addClass("thumbnail-container");
-                $wrapperDiv.append(img);
-                $wrapperDiv.append($deleteWrapper);
-                previewArea.append($wrapperDiv);
-
-                // Now create and add the image for the modal
-                let slideImg = document.createElement("img");
-                slideImg.classList.add("uploaded-img");
-                slideImg.src = window.URL.createObjectURL(file);
-                slideImg.onload = function () {
-                    window.URL.revokeObjectURL(this.src);
-                }
-                let $newWrapperDiv = $("<div class='img-slide'></div>");
-                $newWrapperDiv.append(slideImg);
-                modalArea.append($newWrapperDiv);
-
-                var response = savePhoto(file, rciComponentId, $deleteIcon, img, $newWrapperDiv);
+                var response = savePhoto(file, rciComponentId);
                 console.log(response);
             }
         }
     }
 }
 
+// Add the photo to the DOM, including the modal and buttons
+function addPhotoToDOM(file, savedPhotoData)
+{
+    let img = document.createElement("img");
+    img.classList.add("uploaded-img");
+    img.classList.add("thumbnail");
+    img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
+    img.onload = function () {
+        window.URL.revokeObjectURL(this.src);
+    }
+    img.alt = "Damage Image Thumbnail";
+
+    // Add the delete icon and wrap it in div for css purposs
+    let $deleteIcon = $("<i>close</i>");
+    $deleteIcon.addClass("material-icons");
+    $deleteIcon.addClass("delete");
+    let $deleteWrapper = $("<div></div>");
+    $deleteWrapper.addClass("delete-icon");
+    $deleteWrapper.append($deleteIcon);
+
+    // Wrap everything in another div for css purposes
+    let $wrapperDiv = $("<div></div>");
+    $wrapperDiv.addClass("thumbnail-container");
+    $wrapperDiv.append(img);
+    $wrapperDiv.append($deleteWrapper);
+    previewArea.append($wrapperDiv);
+
+    // Now create and add the image for the modal
+    let slideImg = document.createElement("img");
+    slideImg.classList.add("uploaded-img");
+    slideImg.src = window.URL.createObjectURL(file);
+    slideImg.onload = function () {
+        window.URL.revokeObjectURL(this.src);
+    }
+    let $newWrapperDiv = $("<div class='img-slide'></div>");
+    $newWrapperDiv.append(slideImg);
+    modalArea.append($newWrapperDiv);
+
+    $deleteIcon.attr("id", savedPhotoData);
+    img.id = "thumbnail-img-" + savedPhotoData; // This looks different b/c imgElement is not passed as a jQuery obj
+    $newWrapperDiv.attr("id", "img-slide-" + savedPhotoData);
+}
+
 // Send the uploaded photo to the server via AJAX
-function savePhoto(photoFile, fileName, deleteIcon, imgElement, slideDiv) {
+function savePhoto(photoFile, fileName) {
     let formData = new FormData();
     formData.append('file', photoFile, fileName);
 
@@ -82,11 +90,9 @@ function savePhoto(photoFile, fileName, deleteIcon, imgElement, slideDiv) {
         processData: false,
         contentType: false,
     }).done(function (data) {
-        // the ajax call returns the damage id, so here we set the image's id to be its db DamageId
+        // the ajax call returns the damage id, so here we pass the image's id (as data) to be used in the DOM
         console.log(data);
-        deleteIcon.attr("id", data);
-        imgElement.id = "thumbnail-img-" + data; // This looks different b/c imgElement is not passed as a jQuery obj
-        slideDiv.attr("id", "img-slide-" + data);
+        addPhotoToDOM(photoFile, data)
     }).fail(function (jqXHR, textStatus, errorThrown) {
         alert("Oops! We were unable to save that image to the database.");
         console.log("Status: " + jqXHR.status);
@@ -107,9 +113,7 @@ function deletePhoto(damageId) {
         // Remove the image from the DOM
         console.log("Damage img: " + $("#thumbnail-img-" + damageId));
         $("#thumbnail-img-" + damageId).closest(".thumbnail-container").remove(); // Remove the thumbnail image, which was the previous element
-
         $("#img-slide-" + damageId).remove(); // Remove the slide with this image
-        //$("#" + damageId).remove();
     }).fail(function (jqXHR, textStatus, errorThrown) {
         alert("Oops! We were unable to delete that image from the database.");
         console.log("Status: " + jqXHR.status);
