@@ -76,7 +76,7 @@
             <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
         }
     }
-    else if (Model.GordonID != ViewBag.GordonID && Model.GordonID != null) // Common areas
+    else if (Model.GordonID != ViewBag.GordonID && Model.GordonID == null) // Common areas
     {
         if (Model.CheckinSigRes == null )
         {
