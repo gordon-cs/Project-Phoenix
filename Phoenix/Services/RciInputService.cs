@@ -4,6 +4,7 @@ using Phoenix.Models.ViewModels;
 using System.Drawing;
 using System.Collections.Generic;
 using System;
+using System.Drawing.Drawing2D;
 
 namespace Phoenix.Services
 {
@@ -153,13 +154,28 @@ namespace Phoenix.Services
             return username;
         }
 
+        // Save a damage to the Damage table in the db
+        // @return the resulting image path that was saved to the db
+        public void SavePhotoDamage(Damage damage, string rciComponentId)
+        {
+            db.Damage.Add(damage);
+            db.SaveChanges();
+        }
 
-        // Image resize method, taken mostly from  http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
+        // Create the correct path for a photo damage
+        public void SaveImagePath(string fullPath, Damage damage)
+        {
+            damage.DamageImagePath = fullPath;
+
+            db.SaveChanges();
+        }
+
+
+        // Get the new size for an image to be rescaled, taken mostly from  http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
         // Takes an original size, and returns proportional dimensions to be used in resizing the image
         public Size NewImageSize(Size imageSize, Size newSize)
         {
             Size finalSize;
-            //double tempval;
             int origHeight = imageSize.Height;
             int origWidth = imageSize.Width;
            
@@ -168,10 +184,6 @@ namespace Phoenix.Services
             {
                 // Calculate the resizing ratio based on whichever is bigger - original height or original width
                 decimal tempVal = origHeight > origWidth ? decimal.Divide(newSize.Height, origHeight) : decimal.Divide(newSize.Width, origWidth);
-                //if (imageSize.Height > imageSize.Width)
-                //    tempval = newSize.Height / (imageSize.Height * 1.0);
-                //else
-                //    tempval = newSize.Width / (imageSize.Width * 1.0);
 
                 finalSize = new Size((int)(tempVal * imageSize.Width), (int)(tempVal * imageSize.Height));
             }
@@ -179,6 +191,17 @@ namespace Phoenix.Services
                 finalSize = imageSize; // image is already small size
 
             return finalSize;
+        }
+
+        public void ResizeImage(Image origImg, Image newImage, Size imgSize)
+        {
+            using (Graphics gr = Graphics.FromImage(newImage))
+            {
+                gr.SmoothingMode = SmoothingMode.HighQuality;
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gr.DrawImage(origImg, new Rectangle(0, 0, imgSize.Width, imgSize.Height));
+            }
         }
 
         public IEnumerable<string> GetCommonRooms(int id)
