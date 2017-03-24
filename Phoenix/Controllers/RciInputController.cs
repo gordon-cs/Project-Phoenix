@@ -13,6 +13,7 @@ using System.Web.UI;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace Phoenix.Controllers
 {
@@ -352,22 +353,15 @@ namespace Phoenix.Controllers
                 foreach (string s in Request.Files)
                 {
                     HttpPostedFileBase photoFile = Request.Files[s];
-                    string rciComponent = photoFile.FileName;
-                    Debug.Write("Filename identified on client: " + rciComponent);
-                    //string fileExtension = photoFile.ContentType;
-                    string fileExtension = ".jpg";
+                    string rciComponentId = photoFile.FileName;
+                    Debug.Write("Filename identified on client: " + rciComponentId);
 
                     Damage newDamage = new Damage();
                     newDamage.DamageType = "IMAGE";
-                    newDamage.RciComponentID = Convert.ToInt32(rciComponent);
+                    newDamage.RciComponentID = Convert.ToInt32(rciComponentId);
 
-                    db.Damage.Add(newDamage);
-                    db.SaveChanges();
-
-                    var damageId = newDamage.DamageID;
-                    string imageName = "RciComponentId" + rciComponent + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
-                    string imagePath = "\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
-
+                    rciInputService.SavePhotoDamage(newDamage, rciComponentId );
+                    
                     // First, resize the image, using pattern here: http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
 
                     // Create an Image obj from the file
@@ -386,13 +380,25 @@ namespace Phoenix.Controllers
                         gr.DrawImage(origImg, new Rectangle(0, 0, imgSize.Width, imgSize.Height));
                     }
 
-                    resizedImg.Save(Server.MapPath(imagePath), resizedImg.RawFormat);
+                    string imageName = "RciComponentId" + rciComponentId + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
 
-                    newDamage.DamageImagePath = imagePath;
-                    
-                    db.SaveChanges();
+                    // Get today's date and format correctly for a folder name
+                    string todayProperFormat = DateTime.Today.ToShortDateString().Replace("/", "_");
 
-                    return damageId;
+                    string folderPath = "\\Content\\Images\\Damages\\" + todayProperFormat + "\\";
+
+                    // If no folder with today's date has been created yet, create one
+                    if (!Directory.Exists(Server.MapPath(folderPath)))
+                    {
+                        Directory.CreateDirectory(Server.MapPath(folderPath));
+                    }
+
+                    string fullPath = folderPath + imageName + ".jpg"; // Not sure exactly where we should store them. This path can change
+
+                    rciInputService.SaveImagePath(fullPath, newDamage);
+                    resizedImg.Save(Server.MapPath(fullPath), resizedImg.RawFormat);
+
+                    return newDamage.DamageID;
                 }
             }
             catch (Exception e)
