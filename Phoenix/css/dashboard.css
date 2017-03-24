@@ -24,4 +24,9 @@
     font-size: 0.9em;
 }
 
+.signature-alert-wrapper {
+    position: absolute;
+     right: 15px;
+    top: 15px;
+}
 

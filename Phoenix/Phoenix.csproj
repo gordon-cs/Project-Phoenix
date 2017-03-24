@@ -282,6 +282,8 @@
     <Content Include="Views\RciInput\RciReviewComponent.cshtml" />
     <Content Include="Views\RciCheckout\RciReviewCommonArea.cshtml" />
     <Content Include="Views\RciCheckout\RciReviewIndividualRoom.cshtml" />
+    <Content Include="Views\Dashboard\Legend.cshtml" />
+    <Content Include="Views\Dashboard\SignatureBlocks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />

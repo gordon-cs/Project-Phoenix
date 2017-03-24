@@ -496,14 +496,20 @@ div.icon-label {
 
 .legend {
     display: inline-block;
+    margin-bottom: 10px;
 }
 
 .legend > div {
     padding: 0.1em;
 }
 .legend-color{
+    border-radius: 2px;
+    padding: 5.5px 0 5.5px 0;
+    color: #fff;
     display: inline-block;
+    font-size: 0.5em;
     height: 20px;
+    text-align: center;
     vertical-align: middle;
     width: 20px;
 }

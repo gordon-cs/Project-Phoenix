@@ -14,17 +14,8 @@
 }
 
 <div class="view">
-    <div class="legend">
-        <div>
-            <span style ="background:#014983;" class="legend-color"></span>
-            <span class="legend-text">Check-In</span>
-        </div>
-        <div>
-            <span style ="background:#B2BB1C;" class="legend-color"></span>
-            <span class="legend-text">Checkout</span>
-        </div>
-    </div>
     <div class="pane">
+        @Html.Partial("Legend")
         <div>
             RCIs
         </div>
@@ -48,7 +39,7 @@
                             <div class="divAddOn-vert-field search-field @rciCssClass">
                                 <p>@rci.BuildingCode @rci.RoomNumber</p>
                                 <p>@rci.FirstName @rci.LastName</p>
-                                <i class="material-icons edit">mode_edit</i>
+                                @Html.Partial("SignatureBlocks", rci)
                             </div>
                             </a>
                        </div>
