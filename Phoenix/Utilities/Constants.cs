@@ -13,8 +13,6 @@
         public const string RCI_SIGNGED_BY_RES_CHECKOUT = "RCI_SIGNGED_BY_RES_CHECKOUT";
         public const string RCI_SIGNGED_BY_RA_CHECKOUT = "RCI_SIGNGED_BY_RA_CHECKOUT";
         public const string RCI_COMPLETE = "RCI_COMPLETE";
-        public const string RCI_UNDEFINED_STATE = "RCI_UNDEFINED_STATE";
-
 
         public static readonly string RCI_CHECKIN_STAGE = "CHECKIN";
         public static readonly string RCI_CHECKOUT_STAGE = "CHECKOUT";

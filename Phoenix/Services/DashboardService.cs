@@ -467,13 +467,9 @@ namespace Phoenix.Services
             {
                 return Constants.RCI_SIGNGED_BY_RA_CHECKOUT;
             }
-            else if(rci.CheckoutSigRD != null)
+            else // rci.CheckoutSigRD != null
             {
                 return Constants.RCI_COMPLETE;
-            }
-            else
-            {
-                return Constants.RCI_UNDEFINED_STATE;
             }
         }
 
