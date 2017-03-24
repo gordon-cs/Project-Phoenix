@@ -10,10 +10,10 @@ function uploadPhoto() {
     let rciComponentId = this.id.slice(10);
     let fileQuantity = photoList.length;
     let fileType = /^image\//;
-    let previewArea = $("#img-preview-" + rciComponentId);
-    let modalArea = $("#modal-" + rciComponentId).find(".modal-content");
+
     if (!fileQuantity) {
-        previewArea.innerHTML = "<p>No pictures uploaded</p>";
+        let emptyPreviewArea = $("#no-images-message-" + rciComponentId);
+        emptyPreviewArea.innerHtml = "<p>No pictures uploaded</p>";
     }
     else {
         for (let i = 0; i < fileQuantity; i++) {
@@ -36,8 +36,11 @@ function uploadPhoto() {
 }
 
 // Add the photo to the DOM, including the modal and buttons
-function addPhotoToDOM(file, savedPhotoData)
+function addPhotoToDOM(file, savedPhotoData, rciComponentId)
 {
+    let previewArea = $("#img-preview-" + rciComponentId);
+    let modalArea = $("#modal-" + rciComponentId).find(".modal-content");
+
     let img = document.createElement("img");
     img.classList.add("uploaded-img");
     img.classList.add("thumbnail");
@@ -79,9 +82,9 @@ function addPhotoToDOM(file, savedPhotoData)
 }
 
 // Send the uploaded photo to the server via AJAX
-function savePhoto(photoFile, fileName) {
+function savePhoto(photoFile, rciComponentId) {
     let formData = new FormData();
-    formData.append('file', photoFile, fileName);
+    formData.append('file', photoFile, rciComponentId);
 
     $.ajax({
         url: '/RciInput/SavePhoto',
@@ -92,7 +95,7 @@ function savePhoto(photoFile, fileName) {
     }).done(function (data) {
         // the ajax call returns the damage id, so here we pass the image's id (as data) to be used in the DOM
         console.log(data);
-        addPhotoToDOM(photoFile, data)
+        addPhotoToDOM(photoFile, data, rciComponentId)
     }).fail(function (jqXHR, textStatus, errorThrown) {
         alert("Oops! We were unable to save that image to the database.");
         console.log("Status: " + jqXHR.status);
