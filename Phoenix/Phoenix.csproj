@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44345</IISExpressSSLPort>
+    <IISExpressSSLPort>44397</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
@@ -175,6 +175,7 @@
     <Compile Include="Models\RoomChangeHistory.cs" />
     <Compile Include="Models\RoomMaster.cs" />
     <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\ViewModels\CheckinCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutIndividualRoomRciViewModel.cs" />
@@ -219,9 +220,6 @@
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Scripts\checkin-sig-ra.js" />
-    <Content Include="Scripts\checkin-sig-rd.js" />
-    <Content Include="Scripts\checkin-sig-res.js" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
@@ -275,6 +273,7 @@
     <Content Include="Views\RciCheckout\CommonArea.cshtml" />
     <Content Include="Views\RciCheckout\CommonAreaSignature.cshtml" />
     <Content Include="Views\RciInput\SignAllRD.cshtml" />
+    <Content Include="Views\RciInput\CheckinSigCommonArea.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />

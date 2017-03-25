@@ -128,6 +128,29 @@ function deletePhoto(damageId) {
 }
 
 /* Different signature submission methods, distinguished by role */
+function CommonAreaSubmit() {
+    var signature = "";
+    var rciId = $("div[id^='rci-']").first().attr("id").substring(4);
+
+    var signature = $("#rci-sig").val();
+    
+    $.ajax({
+        sync: false,
+        url: "/RciInput/SaveSigCommonArea",
+        data: { rciSig: signature, rciId: rciId },
+        method: "POST",
+        success: function (data) {
+            window.location.href = data;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $(".error-message").remove();
+            let $div = $("<div />", { "class": "error-message" });
+            $div.append("<p>" + errorThrown);
+            $div.insertBefore($("#submit-button").parent());
+        }
+
+    });
+}
 
 function ResSigSubmit() {
     var rciSig = "";
@@ -149,8 +172,10 @@ function ResSigSubmit() {
             window.location.href = data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
+            $(".error-message").remove();
+            let $div = $("<div />", { "class": "error-message" });
+            $div.append("<p>" + errorThrown);
+            $div.insertBefore($("#submit-button").parent());
         }
 
     });
@@ -180,8 +205,10 @@ function RASigSubmit() {
             window.location.href = data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
+            $(".error-message").remove();
+            let $div = $("<div />", { "class": "error-message" });
+            $div.append("<p>" + errorThrown);
+            $div.insertBefore($("#submit-button").parent());
         }
 
     });
@@ -203,8 +230,10 @@ function RDSigSubmit() {
             window.location.href = data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
+            $(".error-message").remove();
+            let $div = $("<div />", { "class": "error-message" });
+            $div.append("<p>" + errorThrown);
+            $div.insertBefore($("#submit-button").parent());
         }
 
     });
