@@ -209,7 +209,16 @@ namespace Phoenix.Services
                 rci.LifeAndConductSigRes = DateTime.Today;
             }
             db.SaveChanges();
-            return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null;
+            // If it is a common area rci, don't look for the life and conduct statment signature.
+            if(rci.GordonID == null)
+            {
+                return rci.CheckinSigRes != null  && rci.CheckinSigRA != null;
+            }
+            // If it is not a common area rci, look for the life and conduct signature.
+            else
+            {
+                return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null;
+            }
         }
 
         public bool SaveRDSigs(string rciSig, string user, int id, string gordonID)
