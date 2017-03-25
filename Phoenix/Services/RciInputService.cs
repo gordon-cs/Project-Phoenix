@@ -4,6 +4,7 @@ using Phoenix.Models.ViewModels;
 using System.Drawing;
 using System.Collections.Generic;
 using System;
+using System.Drawing.Drawing2D;
 
 namespace Phoenix.Services
 {
@@ -63,6 +64,65 @@ namespace Phoenix.Services
             return rcis;
         }*/
 
+        /// <summary>
+        /// Get the rci for a common area by id
+        /// </summary>
+        public CheckinCommonAreaRciViewModel GetCommonAreaRciById(int id)
+        {
+            var currentSession = new DashboardService().GetCurrentSession();
+
+            var query =
+                from rci in db.Rci
+                where rci.RciID == id
+                select new CheckinCommonAreaRciViewModel
+                {
+                    RciID = rci.RciID,
+                    BuildingCode = rci.BuildingCode,
+                    RoomNumber = rci.RoomNumber,
+                    RciComponent = rci.RciComponent,
+                    CommonAreaMember =
+                                        (from rm in db.RoomAssign
+                                         join acct in db.Account
+                                         on rm.ID_NUM.ToString() equals acct.ID_NUM
+                                         where rm.SESS_CDE.Trim() == currentSession
+                                         && rm.BLDG_CDE.Trim() == rci.BuildingCode
+                                         && rm.ROOM_CDE.Trim().Contains(rci.RoomNumber)
+                                         select new CommonAreaMember
+                                         {
+                                             GordonID = acct.ID_NUM,
+                                             FirstName = acct.firstname,
+                                             LastName = acct.lastname,
+                                             HasSignedCommonAreaRci =
+                                                            ((from sigs in db.CommonAreaRciSignature
+                                                              where sigs.GordonID == acct.ID_NUM
+                                                              && sigs.RciID == rci.RciID
+                                                              && sigs.SignatureType == "CHECKIN"
+                                                              select sigs).Any() == true ? true : false),
+                                             Signature =
+                                                             ((from sigs in db.CommonAreaRciSignature
+                                                               where sigs.GordonID == acct.ID_NUM
+                                                               && sigs.RciID == rci.RciID
+                                                               && sigs.SignatureType == "CHECKIN"
+                                                               select sigs).FirstOrDefault().Signature)
+                                         }).ToList(),
+                    CheckinSigRes = rci.CheckinSigRes,
+                    CheckinSigRA = rci.CheckinSigRA,
+                    CheckinSigRD = rci.CheckinSigRD,
+                    CheckinSigRAGordonID = rci.CheckinSigRAGordonID,
+                    CheckinSigRDGordonID = rci.CheckinSigRDGordonID,
+                    CheckinSigRAName =
+                                        (from acct in db.Account
+                                         where acct.ID_NUM.Equals(rci.CheckinSigRAGordonID)
+                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
+                    CheckinSigRDName =
+                                         (from acct in db.Account
+                                          where acct.ID_NUM.Equals(rci.CheckinSigRDGordonID)
+                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
+
+                };
+
+            return query.FirstOrDefault();
+        }
         public void SignRcis(string gordonID)
         {
             var rcis =
@@ -81,6 +141,39 @@ namespace Phoenix.Services
         {
             return db.Account.Where(m => m.ID_NUM == gordonID)
                     .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
+        }
+
+        public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
+        {
+            var rci = GetCommonAreaRciById(rciID);
+            if (rciSig == user)
+            {
+                var signature = new CommonAreaRciSignature
+                {
+                    RciID = rciID,
+                    GordonID = gordonID,
+                    Signature = DateTime.Now,
+                    SignatureType = "CHECKIN"
+                };
+                db.CommonAreaRciSignature.Add(signature);
+                db.SaveChanges();
+
+                rci = GetCommonAreaRciById(rciID); // Check to see if everyone has signed now.
+                if(rci.EveryoneHasSigned())
+                {
+                    var genericRci = db.Rci.Find(rciID);
+                    if(genericRci.CheckinSigRes == null)
+                    {
+                        genericRci.CheckinSigRes = DateTime.Now;
+                        db.SaveChanges();
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool SaveResSigs(string rciSig, string lacSig, string user, int id)
@@ -117,7 +210,16 @@ namespace Phoenix.Services
                 rci.LifeAndConductSigRes = DateTime.Today;
             }
             db.SaveChanges();
-            return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null;
+            // If it is a common area rci, don't look for the life and conduct statment signature.
+            if(rci.GordonID == null)
+            {
+                return rci.CheckinSigRes != null  && rci.CheckinSigRA != null;
+            }
+            // If it is not a common area rci, look for the life and conduct signature.
+            else
+            {
+                return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null;
+            }
         }
 
         public bool SaveRDSigs(string rciSig, string user, int id, string gordonID)
@@ -153,13 +255,28 @@ namespace Phoenix.Services
             return username;
         }
 
+        // Save a damage to the Damage table in the db
+        // @return the resulting image path that was saved to the db
+        public void SavePhotoDamage(Damage damage, string rciComponentId)
+        {
+            db.Damage.Add(damage);
+            db.SaveChanges();
+        }
 
-        // Image resize method, taken mostly from  http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
+        // Create the correct path for a photo damage
+        public void SaveImagePath(string fullPath, Damage damage)
+        {
+            damage.DamageImagePath = fullPath;
+
+            db.SaveChanges();
+        }
+
+
+        // Get the new size for an image to be rescaled, taken mostly from  http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
         // Takes an original size, and returns proportional dimensions to be used in resizing the image
         public Size NewImageSize(Size imageSize, Size newSize)
         {
             Size finalSize;
-            //double tempval;
             int origHeight = imageSize.Height;
             int origWidth = imageSize.Width;
            
@@ -168,10 +285,6 @@ namespace Phoenix.Services
             {
                 // Calculate the resizing ratio based on whichever is bigger - original height or original width
                 decimal tempVal = origHeight > origWidth ? decimal.Divide(newSize.Height, origHeight) : decimal.Divide(newSize.Width, origWidth);
-                //if (imageSize.Height > imageSize.Width)
-                //    tempval = newSize.Height / (imageSize.Height * 1.0);
-                //else
-                //    tempval = newSize.Width / (imageSize.Width * 1.0);
 
                 finalSize = new Size((int)(tempVal * imageSize.Width), (int)(tempVal * imageSize.Height));
             }
@@ -179,6 +292,17 @@ namespace Phoenix.Services
                 finalSize = imageSize; // image is already small size
 
             return finalSize;
+        }
+
+        public void ResizeImage(Image origImg, Image newImage, Size imgSize)
+        {
+            using (Graphics gr = Graphics.FromImage(newImage))
+            {
+                gr.SmoothingMode = SmoothingMode.HighQuality;
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gr.DrawImage(origImg, new Rectangle(0, 0, imgSize.Width, imgSize.Height));
+            }
         }
 
         public IEnumerable<string> GetCommonRooms(int id)

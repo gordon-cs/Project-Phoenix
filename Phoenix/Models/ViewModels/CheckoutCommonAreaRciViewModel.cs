@@ -5,6 +5,9 @@ using System.Web;
 
 namespace Phoenix.Models.ViewModels
 {
+    /// <summary>
+    /// Used to store information that is to be displayed during the checkout process for common area rcis.
+    /// </summary>
     public class CheckoutCommonAreaRciViewModel
     {
         public int RciID { get; set; }

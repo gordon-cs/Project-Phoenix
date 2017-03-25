@@ -4,15 +4,14 @@ using System.Web;
 using System.Web.Mvc;
 
 using Phoenix.Models;
-using Phoenix.Models.ViewModels;
 using Phoenix.Filters;
 using System.Diagnostics;
 using System;
 using Phoenix.Services;
-using System.Web.UI;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace Phoenix.Controllers
 {
@@ -55,6 +54,9 @@ namespace Phoenix.Controllers
                 ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
                 // Select rooms of common area RCIs to group the RCIs
                 ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
+                var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
+                ViewBag.CommonAreaModel = commonAreaRci;
+                ViewBag.RAIsMemberOfApartment = (role == "RA") && (commonAreaRci.CommonAreaMember.Where(m => m.GordonID == gordon_id).Any());
             }
             else
             {
@@ -65,109 +67,7 @@ namespace Phoenix.Controllers
             return View(rci);
         }
 
-        // Redirect to checkin signature page for certain roles.
-        public ActionResult CheckinSig(int id)
-        {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("CheckinSigRD", new { id = id });
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("CheckinSigRA", new { id = id });
-            }
-            else
-            {
-                return RedirectToAction("CheckinSigRes", new { id = id });
-            }
-        }
-
-        // GET: RCIInput/CheckinSigRes/1
-        public ActionResult CheckinSigRes(int id)
-        {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("CheckinSigRD", new { id = id });
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("CheckinSigRA", new { id = id });
-            }
-
-            var rci = rciInputService.GetRci(id);
-            ViewBag.User = TempData["user"];
-            return View(rci);
-        }
-
-        // GET: RCIInput/CheckinSigRA/1
-        public ActionResult CheckinSigRA(int id)
-        {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("CheckinSigRD", new { id = id });
-            }
-            else if (role.Equals("Resident"))
-            {
-                return RedirectToAction("CheckinSigRes", new { id = id });
-            }
-
-            var rci = rciInputService.GetRci(id);
-            var gordonID = (string)TempData["id"];
-            ViewBag.User = TempData["user"];
-            ViewBag.GordonID = gordonID;
-            return View(rci);
-        }
-
-        // GET: RCIInput/CheckinSigRD/1
-        public ActionResult CheckinSigRD(int id)
-        {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("CheckinSigRes", new { id = id });
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("CheckinSigRA", new { id = id });
-            }
-
-            var rci = rciInputService.GetRci(id);
-            var gordonID = (string)TempData["id"];
-            ViewBag.User = TempData["user"];
-            return View(rci);
-        }
-
+        [RD]
         public ActionResult SignAllRD()
         {
             // TempData stores object, so always cast to string.
@@ -195,6 +95,7 @@ namespace Phoenix.Controllers
             return View(buildingRcis);
         }
 
+        [RD]
         [HttpPost]
         public ActionResult SubmitSignAllRD(string rciSig)
         {
@@ -210,10 +111,47 @@ namespace Phoenix.Controllers
             return Json(Url.Action("SignAllRD"));
         }
 
+        /// <summary>
+        /// Method that accepts a resident's signature on the common area rci. 
+        /// If the signature is valid, the resident has signed the common area rci checkin and a record is inserted into 
+        /// the CommonAreaSignatures table.
+        /// If everyone has signed, CheckinSigRes column is updated.
+        /// </summary>
+        [HttpPost]
+        public ActionResult SaveSigCommonArea(int rciID, string rciSig)
+        {
+            if (rciSig == null || rciSig.Trim() == "")
+            {
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+            }
+            else
+            {
+                rciSig = rciSig.ToLower().Trim();
+            }
+
+            var gordonID = (string)TempData["id"];
+            var user = ((string)TempData["user"]).ToLower().Trim();
+
+            bool complete = rciInputService.SaveCommonAreaMemberSig(rciSig, user, gordonID, rciID);
+
+            if (complete)
+            {
+                return Json(Url.Action("Index", "Dashboard"));
+            }
+            else
+            {
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
+            }
+        }
         // Save signatures for resident
         [HttpPost]
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
         {
+            if (rciSig == null || rciSig.Trim() == "" || lacSig == null || lacSig.Trim() == "")
+            {
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+            }
+
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
             
@@ -228,14 +166,18 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return Json(Url.Action("CheckinSigRes", new { id = id }));
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
 
         // Save signatures for RA
+        [ResLifeStaff]
         [HttpPost]
         public ActionResult SaveSigRA(string rciSig, string rciSigRes, string lacSig, int id)
         {
+            // No error checking here yet because it is a bit more complex.
+            // Some parameters might be null depending on if the RA is signing his/her rci or not.
+
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             if (rciSigRes != null) rciSigRes = rciSigRes.ToLower().Trim();
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
@@ -250,7 +192,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return Json(Url.Action("CheckinSigRA", new { id = id }));
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
         
@@ -260,9 +202,14 @@ namespace Phoenix.Controllers
         /// <param name="rciSig">Signature</param>
         /// <param name="id">RCI ID</param>
         /// <returns>Redirect to dashboard if signed or checked</returns>
+        [RD]
         [HttpPost]
         public ActionResult SaveSigRD(string rciSig, int id)
         {
+            if (rciSig == null || rciSig.Trim() == "")
+            {
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+            }
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             
             var gordonID = (string)TempData["id"];
@@ -276,7 +223,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return Json(Url.Action("CheckinSigRD", new { id = id }));
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
 
@@ -288,6 +235,7 @@ namespace Phoenix.Controllers
         /// <param name="sigCheck">1: checked, 0: unchecked</param>
         /// <param name="id">RCI ID</param>
         /// <returns></returns>
+        [RD]
         [HttpPost]
         public void CheckSigRD(int sigCheck, int id)
         {
@@ -295,50 +243,6 @@ namespace Phoenix.Controllers
             var gordonID = (string)TempData["id"];
             rciInputService.CheckRcis(sigCheck, gordonID, id);
         }
-
-        /// <summary>
-        /// If an rci form was submitted, the method loops through it and creates Damage records for the damages the user entered.
-        /// If the user chose to delete some existing damages, the method loops through the damages the user wanted to delete and removes them from the dataabse.
-        /// </summary>
-        /// <param name="rci">The data sent to the method.</param>
-        /// <returns></returns>
-        [HttpPost]
-        public void SaveRci(RciForm rci)
-        {
-            // Check if anything was submitted
-            if (rci.NewDamages != null)
-            {
-                var toAdd = new List<Damage>();
-                // Save of newly added components
-                foreach (var damage in rci.NewDamages)
-                {
-                    var newDamage = new Damage { RciComponentID = damage.ComponentID, DamageDescription = damage.Damage, DamageType = "TEXT" };
-                    toAdd.Add(newDamage);
-                    //db.Damage.Add(newDamage);  
-                }
-                db.Damage.AddRange(toAdd);
-            }
-
-            // Check if any existing damages were enqueued for deletion
-            if (rci.DamagesToDelete != null)
-            {
-                var toDelete = new List<Damage>();
-                // Delete all the damages that were enqueued for deletion.
-                foreach (var damageID in rci.DamagesToDelete)
-                {
-                    var damage = db.Damage.Find(damageID);
-                    toDelete.Add(damage);
-                    //db.Damage.Remove(damage);
-                }
-                db.Damage.RemoveRange(toDelete);
-            }
-
-            // Save changes to database
-            db.SaveChanges();
-
-            return;
-        }
-
 
         /// <summary>
         /// If a photo(s) of a damage was uploaded, this method first creates a new Damage entry in db, then saves the image to the server
@@ -352,22 +256,15 @@ namespace Phoenix.Controllers
                 foreach (string s in Request.Files)
                 {
                     HttpPostedFileBase photoFile = Request.Files[s];
-                    string rciComponent = photoFile.FileName;
-                    Debug.Write("Filename identified on client: " + rciComponent);
-                    //string fileExtension = photoFile.ContentType;
-                    string fileExtension = ".jpg";
+                    string rciComponentId = photoFile.FileName;
+                    Debug.Write("Filename identified on client: " + rciComponentId);
 
                     Damage newDamage = new Damage();
                     newDamage.DamageType = "IMAGE";
-                    newDamage.RciComponentID = Convert.ToInt32(rciComponent);
+                    newDamage.RciComponentID = Convert.ToInt32(rciComponentId);
 
-                    db.Damage.Add(newDamage);
-                    db.SaveChanges();
-
-                    var damageId = newDamage.DamageID;
-                    string imageName = "RciComponentId" + rciComponent + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
-                    string imagePath = "\\Content\\Images\\Damages\\" + imageName + fileExtension; // Not sure exactly where we should store them. This path can change
-
+                    rciInputService.SavePhotoDamage(newDamage, rciComponentId );
+                    
                     // First, resize the image, using pattern here: http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
 
                     // Create an Image obj from the file
@@ -378,21 +275,24 @@ namespace Phoenix.Controllers
                     // Bitmap is a subclass of Image; its constructor can take an Image and new Size, and then creates a new Image scaled to the new size
                     Image resizedImg = new Bitmap(origImg, imgSize);
 
-                    using (Graphics gr = Graphics.FromImage(resizedImg))
-                    {
-                        gr.SmoothingMode = SmoothingMode.HighQuality;
-                        gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                        gr.DrawImage(origImg, new Rectangle(0, 0, imgSize.Width, imgSize.Height));
-                    }
+                    rciInputService.ResizeImage(origImg, resizedImg, imgSize);
 
-                    resizedImg.Save(Server.MapPath(imagePath), resizedImg.RawFormat);
+                    string imageName = "RciComponentId" + rciComponentId + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
 
-                    newDamage.DamageImagePath = imagePath;
-                    
-                    db.SaveChanges();
+                    // Get today's date and format correctly for a folder name
+                    string todayProperFormat = DateTime.Today.ToShortDateString().Replace("/", "_");
 
-                    return damageId;
+                    string folderPath = "\\Content\\Images\\Damages\\" + todayProperFormat + "\\";
+
+                    // If no folder with today's date has been created yet, create one. This will do nothing if Directory already exists
+                    Directory.CreateDirectory(Server.MapPath(folderPath));
+
+                    string fullPath = folderPath + imageName + ".jpg"; // Not sure exactly where we should store them. This path can change
+
+                    rciInputService.SaveImagePath(fullPath, newDamage);
+                    resizedImg.Save(Server.MapPath(fullPath), resizedImg.RawFormat);
+
+                    return newDamage.DamageID;
                 }
             }
             catch (Exception e)
