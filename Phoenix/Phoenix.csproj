@@ -173,7 +173,6 @@
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\RoomAssign.cs" />
     <Compile Include="Models\RoomChangeHistory.cs" />
-    <Compile Include="Models\RoomMaster.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\ViewModels\CheckinCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
