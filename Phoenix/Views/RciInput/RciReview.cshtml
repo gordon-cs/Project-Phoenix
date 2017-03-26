@@ -30,10 +30,14 @@
     {
         foreach (var room in ViewBag.commonRooms)
         {
-            <h2>@room</h2>
-            foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any() ))
+            var damageExistsInCommonRoom = Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()).Any();
+            if (damageExistsInCommonRoom)
             {
+                <h2>@room</h2>
+                foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()))
+                {
                     @Html.Partial("RciReviewComponent", component);
+                }
             }
         }
     }

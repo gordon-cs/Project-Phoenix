@@ -517,6 +517,9 @@ td, th {
     overflow-x: auto;
 }
 
+.legend {
+    display: inline-block;
+}
 .legend > div {
     padding: 0.1em;
 }
