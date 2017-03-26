@@ -498,6 +498,10 @@ td, th {
     border-bottom: 1px solid #31342b;
     padding: 0.5em;
 }
+.center-table-col{
+    vertical-align:middle; 
+    text-align:center;
+}
 
 .horizontal-scroll-wrapper {
     overflow-x: auto;

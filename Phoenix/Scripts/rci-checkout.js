@@ -22,9 +22,9 @@ function addFine(componentID) {
             .then(function (data) {
                 let row = $("<tr />");
                 row.append("<td >" + fineText + "</td>");
-                row.append("<td style='vertical-align:middle; text-align:center;'>" + (fineAmount / numberOfPeople).toFixed(2) + "</td>");
+                row.append("<td class='center-table-col'>" + (fineAmount / numberOfPeople).toFixed(2) + "</td>");
                 row.append("<td>" + $element.text() + "</td>");
-                row.append("<td style='vertical-align:middle; text-align:center;'><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
+                row.append("<td class='center-table-col'><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
                 $finesArea.append(row);
             });
         });        
@@ -34,9 +34,9 @@ function addFine(componentID) {
         .then(function (data) {
             let row = $("<tr />");
             row.append("<td >" + fineText + "</td>");
-            row.append("<td style='vertical-align:middle; text-align:center;'>" + fineAmount.toFixed(2) + "</td>");
+            row.append("<td class='center-table-col'>" + fineAmount.toFixed(2) + "</td>");
             row.append("<td>" + fineOwnerName + "</td>")
-            row.append("<td style='vertical-align:middle; text-align:center;'><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
+            row.append("<td class='center-table-col'><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
             $finesArea.append(row);
         });
     }
@@ -46,8 +46,8 @@ function addFine(componentID) {
         .then(function (data) {
             let row = $("<tr />");
             row.append("<td >" + fineText + "</td>");
-            row.append("<td style='vertical-align:middle; text-align:center;'>" + fineAmount.toFixed(2) + "</td>");
-            row.append("<td style='vertical-align:middle; text-align:center;'><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
+            row.append("<td class='center-table-col'>" + fineAmount.toFixed(2) + "</td>");
+            row.append("<td class='center-table-col''><i class='material-icons' onclick='deleteFine(event, this," + data + ");'>close</i></td>");
             $finesArea.append(row);
         });
     }
