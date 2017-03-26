@@ -30,3 +30,15 @@
     top: 15px;
 }
 
+
+.legend-color-checkin {
+    background-color: #014983;
+}
+
+.legend-color-checkout {
+    background-color: #B2BB1C;
+}
+
+.legend-color-signature-block {
+    background-color: #31342B;
+}
