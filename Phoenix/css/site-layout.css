@@ -43,6 +43,7 @@
  * .............. lift
  * .............. error-message
  * .............. table
+ * .............. horizontal scroll wrapper
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -498,7 +499,13 @@ td, th {
     padding: 0.5em;
 }
 
+.horizontal-scroll-wrapper {
+    overflow-x: auto;
+}
 
+.vertical-scroll-wrapper {
+    overflow-y: auto;
+}
 /***************************/
 /***********MISC************/
 /***************************/
