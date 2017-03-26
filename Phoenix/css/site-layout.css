@@ -43,6 +43,8 @@
  * .............. a.button
  * .............. lift
  * .............. error-message
+ * .............. table
+ * .............. horizontal scroll wrapper
  * .............. legend
  * MISC - Anything layout related, that doesn't fit above
  * 
@@ -491,12 +493,28 @@ div.icon-label {
     padding: 0.5em;
 }
 
+/* Table styling */
 
-/* Legend */
+table {
+    border-collapse: collapse;
+    min-width: 100%;
+}
 
-.legend {
-    display: inline-block;
-    margin-bottom: 10px;
+table, th, td {
+    
+}
+
+td, th {
+    border-bottom: 1px solid #31342b;
+    padding: 0.5em;
+}
+.center-table-col{
+    vertical-align:middle; 
+    text-align:center;
+}
+
+.horizontal-scroll-wrapper {
+    overflow-x: auto;
 }
 
 .legend > div {
@@ -540,19 +558,31 @@ div.icon-label {
 }
 .signature-overlay {
     display: none;
-    position:absolute;
+    height: 100%;
+    position:fixed;
     top: 0; right: 0; left: 0; bottom: 0;
+    width: 100%;
     z-index:10;
 }
 #signature-container {
     display: none;
-    margin-left: 12%;
+    margin: auto;
+    max-height: 400px;
+    overflow: auto;
+    padding: 2em 1.5em;
+    position: fixed;
+    top: 0; right: 0; left: 0; bottom: 0;
+    width: 80%;
+    z-index: 99;
+
+    /*margin-left: 12%;
+    overflow: auto;
     right: 12%;
     padding: 2em 1.5em;
     position: fixed;
     top: 90px;
     width: 75%;
-    z-index: 99;
+    z-index: 99;*/
 }
 
 

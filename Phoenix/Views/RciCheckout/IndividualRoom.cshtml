@@ -74,31 +74,32 @@
                     <p>Add Charge(s)</p>
                 </div>
                 <div class="divAddOn">
-                    <input class="divAddOn-field adding-fines" type="text" placeholder="Fine" id="text-input-@component.RciComponentID" />
-                    <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RciComponentID" />
+                    <input class="divAddOn-field adding-fines" type="text" placeholder="Charge" id="text-input-@component.RciComponentID" />
+                    <input class="divAddOn-item adding-fines" type="number" placeholder="$" id="fine-amount-input-@component.RciComponentID" />
                     <button class="divAddOn-item" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
                 </div>
-                <div class="div-list" id="fine-list-@component.RciComponentID">
-                    <div class="div-list-toggle icon-label">
-                        <i class="material-icons" aria-hidden="true">arrow_drop_down</i>
-                        <span>Hide/Show Fines</span>
-                    </div>
-                    @foreach (var fine in component.Fine)
-                    {
-                        <div class="divAddOn">
-                            <p class="divAddOn-field">@fine.Reason</p>
-                            <span class="divAddOn-item">$</span>
-                            <p class="divAddOn-item">@fine.FineAmount</p>
-                            <i class='divAddOn-item material-icons' onclick="deleteExistingFines(event, this, @fine.FineID)">delete</i>
-                        </div>
-                    }
+                <div class="horizontal-scroll-wrapper">
+                    <table class="fine-table" id="fine-list-@component.RciComponentID">
+                        <tr>
+                            <th>Charge</th>
+                            <th>Amount ($)</th>
+                            <th>Delete</th>
+                        </tr>
+                        @foreach (var fine in component.Fine)
+                        {
+                            <tr>
+                                <td>@fine.Reason</td>
+                                <td class="center-table-col">@fine.FineAmount</td>
+                                <td class="center-table-col"><i class="material-icons" onclick="deleteFine(event, this, @fine.FineID)">close</i></td>
+                            </tr>
+                        }
+                    </table>
                 </div>
+
             </div>
         </div>
     }
     <div class="distribute-evenly">
-        <button id="save-button">Save</button>
-        <a class="button" href="@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</a>
-        @*<a class="button" href="@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</a>*@
+        <button id="next-button" onclick="window.location.href = '@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })'">Next</button>
     </div>
 </div>

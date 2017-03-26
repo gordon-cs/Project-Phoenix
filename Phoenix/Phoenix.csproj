@@ -175,6 +175,7 @@
     <Compile Include="Models\RoomChangeHistory.cs" />
     <Compile Include="Models\RoomMaster.cs" />
     <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\ViewModels\CheckinCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutIndividualRoomRciViewModel.cs" />
@@ -220,15 +221,13 @@
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Scripts\checkin-sig-ra.js" />
-    <Content Include="Scripts\checkin-sig-rd.js" />
-    <Content Include="Scripts\checkin-sig-res.js" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
     <Content Include="Scripts\dom-manipulation.js" />
     <Content Include="Scripts\rci-checkout.js" />
     <Content Include="Scripts\rci-input.js" />
+    <None Include="Properties\PublishProfiles\RCIPublish_DEV.pubxml" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\sign-all-rd.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />
@@ -276,6 +275,7 @@
     <Content Include="Views\RciCheckout\CommonArea.cshtml" />
     <Content Include="Views\RciCheckout\CommonAreaSignature.cshtml" />
     <Content Include="Views\RciInput\SignAllRD.cshtml" />
+    <Content Include="Views\RciInput\CheckinSigCommonArea.cshtml" />
     <Content Include="Views\RciReviewCheckin\Index.cshtml" />
     <Content Include="Views\RciReviewCheckout\Index.cshtml" />
     <Content Include="Views\RciInput\RciReview.cshtml" />
