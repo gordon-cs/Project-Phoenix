@@ -517,8 +517,15 @@ td, th {
     overflow-x: auto;
 }
 
+.legends-wrapper {
+    margin: 0 0 20px 0;
+}
+
 .legend {
     display: inline-block;
+    margin: 0 20px 0 0;
+    vertical-align: middle;
+
 }
 .legend > div {
     padding: 0.1em;
@@ -536,6 +543,7 @@ td, th {
 }
 
 .legend-text {
+    font-size: 0.9em;
     font-weight: bold;
 }
 
