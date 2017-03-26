@@ -63,11 +63,13 @@
                         <p>Add Charge</p>
                     </div>
                     <div class="divAddOn-vert">
-                        <div class="divAddOn">
-                            <input class="divAddOn-field adding-fines" type="text" placeholder="Charge" id="text-input-@component.RciComponentID" />
-                            <input class="divAddOn-item adding-fines" type="number" placeholder="2.00" id="fine-amount-input-@component.RciComponentID" />
+                        <div class="divAddOn-vert-field">
+                            <div class="divAddOn">
+                                <input class="divAddOn-field adding-fines" type="text" placeholder="Charge" id="text-input-@component.RciComponentID" />
+                                <input class="divAddOn-item adding-fines" type="number" placeholder="$" id="fine-amount-input-@component.RciComponentID" />
+                            </div>
                         </div>
-                        <div class="divAddOn">
+                        <div class="divAddOn-vert-row">
                             <label class="divAddOn-item">Charge to:</label>
                             <select class="divAddOn-field" id="fine-owner-@component.RciComponentID">
                                 <option value="0">All - Split the charge</option>
@@ -79,17 +81,24 @@
                         </div>
                         <button class="divAddOn-vert-field" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
                     </div>
-                    <div class="div-list" id="fine-list-@component.RciComponentID">
-                        @foreach (var fine in component.Fine)
-                        {
-                            <div class="divAddOn">
-                                <p class="divAddOn-field">@fine.Reason</p>
-                                <span class="divAddOn-item">$</span>
-                                <p class="divAddOn-item">@fine.FineAmount</p>
-                                <p class="divAddOn-item">@Model.CommonAreaMember.Where(x => x.GordonID == fine.GordonID ).Select(m => m.FirstName + " " + m.LastName).FirstOrDefault()</p>
-                                <i class='divAddOn-item material-icons' onclick="deleteExistingFines(event, this, @fine.FineID)">delete</i>
-                            </div>
-                        }
+                    <div class="horizontal-scroll-wrapper">
+                        <table class="fine-table" id="fine-list-@component.RciComponentID">
+                            <tr>
+                                <th>Charge</th>
+                                <th>Amount ($)</th>
+                                <th>Charge To:</th>
+                                <th>Delete</th>
+                            </tr>
+                            @foreach (var fine in component.Fine)
+                            {
+                                <tr>
+                                    <td>@fine.Reason</td>
+                                    <td class="center-table-col">@fine.FineAmount</td>
+                                    <td>@Model.CommonAreaMember.Where(x => x.GordonID == fine.GordonID).Select(m => m.FirstName + " " + m.LastName).FirstOrDefault()</td>
+                                    <td class="center-table-col"><i class="material-icons" onclick="deleteFine(event, this, @fine.FineID)">close</i></td>
+                                </tr>
+                            }
+                        </table>
                     </div>
                 </div>
             </div>
@@ -98,7 +107,6 @@
 
 
     <div class="distribute-evenly">
-        <button id="save-button">Save</button>
-        <button id="next-button" data="@Url.Action(actionName:"CommonAreaSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })">Next</button>
+        <button id="next-button" onclick="window.location.href = '@Url.Action(actionName:"CommonAreaSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })'">Next</button>
     </div>
 </div>

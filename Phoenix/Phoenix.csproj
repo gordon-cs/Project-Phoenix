@@ -226,6 +226,7 @@
     <Content Include="Scripts\dom-manipulation.js" />
     <Content Include="Scripts\rci-checkout.js" />
     <Content Include="Scripts\rci-input.js" />
+    <None Include="Properties\PublishProfiles\RCIPublish_DEV.pubxml" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\sign-all-rd.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />

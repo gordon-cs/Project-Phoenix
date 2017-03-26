@@ -42,6 +42,8 @@
  * .............. a.button
  * .............. lift
  * .............. error-message
+ * .............. table
+ * .............. horizontal scroll wrapper
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -481,7 +483,33 @@ div.icon-label {
     padding: 0.5em;
 }
 
+/* Table styling */
 
+table {
+    border-collapse: collapse;
+    min-width: 100%;
+}
+
+table, th, td {
+    
+}
+
+td, th {
+    border-bottom: 1px solid #31342b;
+    padding: 0.5em;
+}
+.center-table-col{
+    vertical-align:middle; 
+    text-align:center;
+}
+
+.horizontal-scroll-wrapper {
+    overflow-x: auto;
+}
+
+.vertical-scroll-wrapper {
+    overflow-y: auto;
+}
 /***************************/
 /***********MISC************/
 /***************************/

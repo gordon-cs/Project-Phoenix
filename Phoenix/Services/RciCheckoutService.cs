@@ -117,12 +117,12 @@ namespace Phoenix.Services
                                              GordonID = acct.ID_NUM,
                                              FirstName = acct.firstname,
                                              LastName = acct.lastname,
-                                             HasSignedCommonAreaRci = 
+                                             HasSignedCommonAreaRci =
                                                             ((from sigs in db.CommonAreaRciSignature
-                                                             where sigs.GordonID == acct.ID_NUM
-                                                             && sigs.RciID == rci.RciID
-                                                             && sigs.SignatureType == "CHECKOUT"
-                                                             select sigs).Any() == true ? true : false),
+                                                              where sigs.GordonID == acct.ID_NUM
+                                                              && sigs.RciID == rci.RciID
+                                                              && sigs.SignatureType == "CHECKOUT"
+                                                              select sigs).Any() == true ? true : false),
                                              Signature =
                                                              ((from sigs in db.CommonAreaRciSignature
                                                                where sigs.GordonID == acct.ID_NUM
@@ -149,43 +149,25 @@ namespace Phoenix.Services
             return query.FirstOrDefault();
 
         }
-       
+
         /// <summary>
-        /// Insert fines into the database
+        /// Add a fine record to the database
         /// </summary>
-        public void AddFines(List<RciNewFineViewModel> newFines)
+        public int AddFine(RciNewFineViewModel newFine)
         {
-            if (newFines != null)
-            {
-                var toAdd = new List<Fine>();
-
-                foreach (var fine in newFines)
-                {
-                    var newFine = new Fine { RciComponentID = fine.ComponentID, Reason = fine.FineReason, FineAmount = fine.FineAmount, GordonID = fine.FineOwner };
-                    toAdd.Add(newFine);
-                }
-                db.Fine.AddRange(toAdd);
-            }
-
+            var obj = new Fine { RciComponentID = newFine.ComponentID, Reason = newFine.FineReason, FineAmount = newFine.FineAmount, GordonID = newFine.FineOwner };
+            db.Fine.Add(obj);
             db.SaveChanges();
+            return obj.FineID;
         }
 
         /// <summary>
-        /// Delete a list of fines from the database
+        /// Delete a fine from the database
         /// </summary>
-        public void RemoveFines(List<int> fineIDs)
+        public void RemoveFine(int fineID)
         {
-            if(fineIDs != null)
-            {
-                var toDelete = new List<Fine>();
-                foreach (var fineID in fineIDs)
-                {
-                    var fine = db.Fine.Find(fineID);
-                    toDelete.Add(fine);
-                }
-                db.Fine.RemoveRange(toDelete);
-            }
-
+            var fine = db.Fine.Find(fineID);
+            db.Fine.Remove(fine);
             db.SaveChanges();
         }
 
