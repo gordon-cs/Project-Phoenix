@@ -74,8 +74,13 @@ button.dropdown {
  }
 
 
- .rci-card-main {
+ .rci-card-checkin {
      background-color: #014983;
+     color: #fff;
+ }
+
+ .rci-card-checkout {
+     background-color: #b2bb1c;
      color: #fff;
  }
 
@@ -106,3 +111,7 @@ button.dropdown {
      background-color: #fff;
 }
 
+.legends-wrapper {
+        background-color: #fff;
+
+}

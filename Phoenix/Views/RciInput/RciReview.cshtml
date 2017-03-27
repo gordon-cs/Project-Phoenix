@@ -1,0 +1,45 @@
+﻿@model Phoenix.Models.Rci
+
+@{
+    ViewBag.Title = "Check-In Review";
+    ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
+    ViewBag.GordonID = TempData["id"];
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/page_specific/css/rci-input")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/rci-input")
+}
+
+<div class="view">
+    <h2>@ViewBag.ViewTitle</h2>
+    @if (ViewBag.commonRooms == null)
+    {
+
+        foreach (var component in Model.RciComponent.Where(x => x.Damage.Any()))
+        {
+                @Html.Partial("RciReviewComponent", component);
+        }
+    }
+    else
+    {
+        foreach (var room in ViewBag.commonRooms)
+        {
+            var damageExistsInCommonRoom = Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()).Any();
+            if (damageExistsInCommonRoom)
+            {
+                <h2>@room</h2>
+                foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()))
+                {
+                    @Html.Partial("RciReviewComponent", component);
+                }
+            }
+        }
+    }
+
+</div>

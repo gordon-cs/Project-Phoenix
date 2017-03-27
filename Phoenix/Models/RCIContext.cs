@@ -25,7 +25,6 @@ namespace Phoenix.Models
         public virtual DbSet<Room> Room { get; set; }
         public virtual DbSet<RoomAssign> RoomAssign { get; set; }
         public virtual DbSet<RoomChangeHistory> RoomChangeHistory { get; set; }
-        public virtual DbSet<RoomMaster> RoomMaster { get; set; }
         public virtual DbSet<Session> Session { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -110,6 +109,11 @@ namespace Phoenix.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
+                .Property(e => e.BUILDING_DESC)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Room>()
                 .Property(e => e.ROOM_CDE)
                 .IsFixedLength()
                 .IsUnicode(false);
@@ -121,6 +125,11 @@ namespace Phoenix.Models
 
             modelBuilder.Entity<Room>()
                 .Property(e => e.ROOM_TYPE)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Room>()
+                .Property(e => e.ROOM_TYPE_DESC)
                 .IsFixedLength()
                 .IsUnicode(false);
 
@@ -206,189 +215,12 @@ namespace Phoenix.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<RoomChangeHistory>()
+                .Property(e => e.ROOM_CHANGE_REASON_DESC)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<RoomChangeHistory>()
                 .Property(e => e.ROOM_CHANGE_COMMENT)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomChangeHistory>()
-                .Property(e => e.USER_NAME)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomChangeHistory>()
-                .Property(e => e.JOB_NAME)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.LOC_CDE)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.BLDG_CDE)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.ROOM_CDE)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.ROOM_DESC)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.ROOM_TYPE)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.ROOM_PHONE)
-                .HasPrecision(15, 0);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.MAIL_STOP)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.AUDIO_RESOURCES)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.VIDEO_RESOURCES)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.HANDICAP_ACCESS)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.AVAIL_FOR_CLASSES)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.LAB_CLASSROOM)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.CLASSROOM_W_WATER)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.FLOOR_TYPE)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.ROOM_DIMENSIONS)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.WINDOW_DIMENSIONS)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.COMMENT_TXT)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.RESIDENCE_ROOM)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.ROOM_GENDER)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.RM_RSTRM_AVAIL)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.RM_RENTAL)
-                .HasPrecision(11, 2);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.RM_NOTES)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.NETWORK_CONNECTION)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_1A_1)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_1A_2)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_2A_1)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_2A_2)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_3A_1)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_3A_2)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_5A_1)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_5A_2)
-                .IsFixedLength()
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_5_2_1)
-                .HasPrecision(5, 2);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.UDEF_7_2_1)
-                .HasPrecision(7, 2);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.APPROWVERSION)
-                .IsFixedLength();
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.USER_NAME)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<RoomMaster>()
-                .Property(e => e.JOB_NAME)
                 .IsUnicode(false);
 
             modelBuilder.Entity<Session>()

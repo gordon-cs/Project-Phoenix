@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRciViewModel>
 
 @{
-    ViewBag.Title = "RCI-Dashboard";
-    ViewBag.ViewTitle = "RCI Dashboard";
+    ViewBag.Title = "Dashboard";
+    ViewBag.ViewTitle = "Dashboard";
     ViewBag.MenuExists = "T";
     ViewBag.Name = TempData["user"];
     ViewBag.Role = TempData["role"];
@@ -15,6 +15,7 @@
 
 <div class="view">
     <div class="pane">
+        @Html.Partial("Legend")
         <div>
             RCIs
         </div>
@@ -24,25 +25,23 @@
         
                 @foreach (var rci in Model)
                 {
+                    var rciCssClass = "";
+                    if(rci.RciStage == "CHECKIN")
+                    {
+                        rciCssClass = "rci-card-checkin";
+                    }
+                    else
+                    {
+                        rciCssClass = "rci-card-checkout";
+                    }
                     <div class="divAddOn-vert rci-card">
-                        <a href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                            <div class="divAddOn-vert-field search-field rci-card-main">
+                        <a href="@Url.Action(actionName:"GotoRci", controllerName:"Dashboard", routeValues: new { rciID = rci.RciID })">
+                            <div class="divAddOn-vert-field search-field @rciCssClass">
                                 <p>@rci.BuildingCode @rci.RoomNumber</p>
                                 <p>@rci.FirstName @rci.LastName</p>
-                                <i class="material-icons edit">mode_edit</i>
+                                @Html.Partial("SignatureBlocks", rci)
                             </div>
                             </a>
-                            <div class="divAddOn-vert-row rci-card-links">
-                                <a href="@Url.Action(actionName:"Index", controllerName:"RciCheckout", routeValues: new { id = rci.RciID })">
-                                    Checkout
-                                </a>
-                                @if (rci.FirstName != "Common Area")
-                                {
-                                    <a href="@Url.Action(actionName: "Index", controllerName: "RciComponentReassign", routeValues: new { id = rci.RciID })">
-                                        Swap Furniture
-                                    </a>
-                                }
-                            </div>
                        </div>
                 }
     </div> 

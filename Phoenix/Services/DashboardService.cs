@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using Phoenix.Utilities;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Data.SqlClient;
 using System.Web;
+using System.Web.Mvc;
+using Phoenix.Controllers;
 
 namespace Phoenix.Services
 {
@@ -39,7 +42,14 @@ namespace Phoenix.Services
                     BuildingCode = personalRCI.BuildingCode.Trim(),
                     RoomNumber = personalRCI.RoomNumber.Trim(),
                     FirstName = account.firstname,
-                    LastName = account.lastname
+                    LastName = account.lastname,
+                    RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                    CheckinSigRes = personalRCI.CheckinSigRes,
+                    CheckinSigRA = personalRCI.CheckinSigRA,
+                    CheckinSigRD = personalRCI.CheckinSigRD,
+                    CheckoutSigRes = personalRCI.CheckoutSigRes,
+                    CheckoutSigRA = personalRCI.CheckoutSigRA,
+                    CheckoutSigRD = personalRCI.CheckoutSigRD
                 };
             return RCIs;
         }
@@ -62,7 +72,14 @@ namespace Phoenix.Services
                     BuildingCode = personalRCI.BuildingCode.Trim(),
                     RoomNumber = personalRCI.RoomNumber.Trim(),
                     FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                    LastName = account.lastname == null ? "RCI" : account.lastname
+                    LastName = account.lastname == null ? "RCI" : account.lastname,
+                    RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                    CheckinSigRes = personalRCI.CheckinSigRes,
+                    CheckinSigRA = personalRCI.CheckinSigRA,
+                    CheckinSigRD = personalRCI.CheckinSigRD,
+                    CheckoutSigRes = personalRCI.CheckoutSigRes,
+                    CheckoutSigRA = personalRCI.CheckoutSigRA,
+                    CheckoutSigRD = personalRCI.CheckoutSigRD
                 };
             return buildingRCIs.OrderBy(m => m.RoomNumber);
         }
@@ -117,7 +134,14 @@ namespace Phoenix.Services
                     BuildingCode = tempCommonAreaRCI.BuildingCode,
                     RoomNumber = tempCommonAreaRCI.RoomNumber,
                     FirstName = "Common Area",
-                    LastName = "RCI"
+                    LastName = "RCI",
+                    RciStage = tempCommonAreaRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                    CheckinSigRes = tempCommonAreaRCI.CheckinSigRes,
+                    CheckinSigRA = tempCommonAreaRCI.CheckinSigRA,
+                    CheckinSigRD = tempCommonAreaRCI.CheckinSigRD,
+                    CheckoutSigRes = tempCommonAreaRCI.CheckoutSigRes,
+                    CheckoutSigRA = tempCommonAreaRCI.CheckoutSigRA,
+                    CheckoutSigRD = tempCommonAreaRCI.CheckoutSigRD
                 };
             return commonAreaRCIs;
 
@@ -410,6 +434,124 @@ namespace Phoenix.Services
                 CreationDate = DateTime.Now
             };
             return rci;
+        }
+
+        /// <summary>
+        /// Get a string that represents the state of the rci.
+        /// </summary>
+        public string GetRciState(int rciID)
+        {
+            var rci = db.Rci.Find(rciID);
+
+            if(rci.CheckinSigRes == null)
+            {
+                return Constants.RCI_UNSIGNED;
+            }
+            else if(rci.CheckinSigRA == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RES_CHECKIN;
+            }
+            else if(rci.CheckinSigRD == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RA_CHECKIN;
+            }
+            else if(rci.CheckoutSigRes == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RD_CHECKIN;
+            }
+            else if(rci.CheckoutSigRA == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RES_CHECKOUT;
+            }
+            else if(rci.CheckoutSigRD == null)
+            {
+                return Constants.RCI_SIGNGED_BY_RA_CHECKOUT;
+            }
+            else // rci.CheckoutSigRD != null
+            {
+                return Constants.RCI_COMPLETE;
+            }
+        }
+
+        /// <summary>
+        /// Create a route dictionary that will tell us where to go, given the rci state and the role of the user.
+        /// </summary>
+        public Dictionary<string, Dictionary<string, ActionResult>> GetRciRouteDictionary(int rciID)
+        {
+            var rciRouteDictionary = new Dictionary<string, Dictionary<string, ActionResult>>();
+
+            rciRouteDictionary.Add(Constants.RCI_UNSIGNED, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RES_CHECKIN, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RA_CHECKIN, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RD_CHECKIN, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RES_CHECKOUT, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RA_CHECKOUT, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
+            });
+
+            rciRouteDictionary.Add(Constants.RCI_COMPLETE, new Dictionary<string, ActionResult>
+            {
+                {Constants.RESIDENT,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                {Constants.RA,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
+                {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))}
+            });
+
+
+            return rciRouteDictionary;
         }
     }
 }

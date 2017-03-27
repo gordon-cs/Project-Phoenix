@@ -39,15 +39,49 @@ namespace Phoenix.Controllers
             {
                 ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
                 var rci = checkoutService.GetCommonAreaRciByID(id);
+                if(rci.CheckoutSigRD != null)
+                {
+                    return RedirectToAction("RciReview");
+                }
                 return View("CommonArea", rci);
             }
             else // An individual room
             {
                 var rci = checkoutService.GetIndividualRoomRciByID(id);
+                if (rci.CheckoutSigRD != null)
+                {
+                    return RedirectToAction("RciReview");
+                }
                 return View("IndividualRoom", rci);
             }
         }
 
+        /// <summary>
+        ///  Return the checkout review view
+        /// </summary>
+        public ActionResult RciReview(int id)
+        {
+            // Redirect to other dashboards if role not correct
+            var role = (string)TempData["role"];
+            if (role == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            // Preliminary check to figure out which method to call
+            var isIndividualRci = checkoutService.IsIndividualRci(id);
+
+            if (!isIndividualRci) // A common area rci
+            {
+                ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
+                var rci = checkoutService.GetCommonAreaRciByID(id);
+                return View("RciReviewCommonArea", rci);
+            }
+            else // An individual room
+            {
+                var rci = checkoutService.GetIndividualRoomRciByID(id);
+                return View("RciReviewIndividualRoom", rci);
+            }
+        }
         /// <summary>
         /// Add a new fine and return its id
         /// </summary>

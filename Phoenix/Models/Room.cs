@@ -19,6 +19,9 @@ namespace Phoenix.Models
         [StringLength(5)]
         public string BLDG_CDE { get; set; }
 
+        [StringLength(45)]
+        public string BUILDING_DESC { get; set; }
+
         [Key]
         [Column(Order = 2)]
         [StringLength(5)]
@@ -29,6 +32,9 @@ namespace Phoenix.Models
 
         [StringLength(2)]
         public string ROOM_TYPE { get; set; }
+
+        [StringLength(60)]
+        public string ROOM_TYPE_DESC { get; set; }
 
         [Key]
         [Column(Order = 3)]

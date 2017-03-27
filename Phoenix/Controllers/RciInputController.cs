@@ -42,16 +42,20 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Index", "LoginController");
             }
 
-            Debug.WriteLine("Reached Index Method for RCIInput Controller");
+            var rci = rciInputService.GetRci(id);
+
+            //  Redirect to the review page if this is already signed by the RD
+            if(rci.CheckinSigRD != null)
+            {
+                return RedirectToAction("RciReview");
+            }
 
             // This is how we access items set in the filter.
             var gordon_id = (string)TempData["id"];
-
-            //var rci = db.RCI.Where(m => m.RCIID == id).FirstOrDefault();
-            var rci = rciInputService.GetRci(id);
+            
             if (rci.GordonID == null) // A common area rci
             {
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " Common Area";
+                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
                 // Select rooms of common area RCIs to group the RCIs
                 ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
                 var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
@@ -61,12 +65,34 @@ namespace Phoenix.Controllers
             else
             {
                 var name = rciInputService.GetName(rci.GordonID);
-                ViewBag.ViewTitle = rci.BuildingCode + rci.RoomNumber + " " + name;
+                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " " + name;
             }
 
             return View(rci);
         }
 
+        /// <summary>
+        /// Returns the checkin review view
+        /// </summary>
+        public ActionResult RciReview(int id)
+        {
+            var gordon_id = (string)TempData["id"];
+
+            var rci = rciInputService.GetRci(id);
+            if (rci.GordonID == null) // A common area rci
+            {
+                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
+                ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
+            }
+            else
+            {
+                var name = rciInputService.GetName(rci.GordonID);
+                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " " + name;
+            }
+
+            return View(rci);
+        }
+       
         [RD]
         public ActionResult SignAllRD()
         {

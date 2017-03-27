@@ -27,6 +27,7 @@
  *
  * Altering initial state of elements
  * ............. hide
+ *  ............. show
  *
  * Custom elements
  * .............. divAddOn
@@ -44,6 +45,7 @@
  * .............. error-message
  * .............. table
  * .............. horizontal scroll wrapper
+ * .............. legend
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -71,7 +73,6 @@
 }
 
     .view-title {
-        display: none;
         flex: 1;
         padding: 0 10px;
         text-align:center;
@@ -79,7 +80,7 @@
     .logo-box {
         left: 4%;
         position: absolute;
-        width: 100px;
+        width: 80px;
     }
     .logo-box .back-button {
         margin-left: .5em;
@@ -156,9 +157,6 @@
         .pane-content {
             padding: 1em;
         }
-        .input.pane-content, .checkout.pane-content {
-            display: none;
-        }
 
 /***************************/
 /**********FOOTER***********/
@@ -199,6 +197,18 @@ button, a.button {
 
 i {
     vertical-align: middle;
+}
+
+
+/**************************/
+/******INITIAL STATE****/
+
+.hide {
+    display: none;
+}
+
+.show{
+    display: block;
 }
 /***************************/
 /******CUSTOM ELEMENTS******/
@@ -507,9 +517,38 @@ td, th {
     overflow-x: auto;
 }
 
-.vertical-scroll-wrapper {
-    overflow-y: auto;
+.legends-wrapper {
+    border: 2px solid #cccccb;
+    margin: 0 0 20px 0;
+    padding: 10px 10px;
 }
+
+.legend {
+    display: inline-block;
+    margin: 0 20px 0 0;
+    vertical-align: middle;
+
+}
+.legend > div {
+    padding: 0.1em;
+}
+.legend-color{
+    border-radius: 2px;
+    padding: 5.5px 0 5.5px 0;
+    color: #fff;
+    display: inline-block;
+    font-size: 0.5em;
+    height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    width: 20px;
+}
+
+.legend-text {
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
 /***************************/
 /***********MISC************/
 /***************************/
@@ -564,17 +603,18 @@ td, th {
 /******MEDIA QUERIES*********/
 /****************************/
 
-
-@media screen and (min-width: 768px){
+@media screen and (min-width: 375px) {
+    #header > .logo-box{
+        width: 100px;
+    }
+}
+@media screen and (min-width: 768px) {
 
     #page-container{
         margin: 0 auto;
     }
     #content {
         width: 75%;
-    }
-    .view-title {
-        display: inline-block;
     }
     button.dropdown {
         top: 27px;

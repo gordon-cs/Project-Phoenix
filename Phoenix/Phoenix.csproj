@@ -173,7 +173,6 @@
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\RoomAssign.cs" />
     <Compile Include="Models\RoomChangeHistory.cs" />
-    <Compile Include="Models\RoomMaster.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\ViewModels\CheckinCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
@@ -195,6 +194,7 @@
     <Compile Include="Services\RciComponentReassignService.cs" />
     <Compile Include="Services\RciInputService.cs" />
     <Compile Include="Services\RciCheckoutService.cs" />
+    <Compile Include="Utilities\Constants.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\RoomComponents.xml" />
@@ -275,6 +275,14 @@
     <Content Include="Views\RciCheckout\CommonAreaSignature.cshtml" />
     <Content Include="Views\RciInput\SignAllRD.cshtml" />
     <Content Include="Views\RciInput\CheckinSigCommonArea.cshtml" />
+    <Content Include="Views\RciReviewCheckin\Index.cshtml" />
+    <Content Include="Views\RciReviewCheckout\Index.cshtml" />
+    <Content Include="Views\RciInput\RciReview.cshtml" />
+    <Content Include="Views\RciInput\RciReviewComponent.cshtml" />
+    <Content Include="Views\RciCheckout\RciReviewCommonArea.cshtml" />
+    <Content Include="Views\RciCheckout\RciReviewIndividualRoom.cshtml" />
+    <Content Include="Views\Dashboard\Legend.cshtml" />
+    <Content Include="Views\Dashboard\SignatureBlocks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />

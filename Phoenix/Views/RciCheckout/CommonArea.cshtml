@@ -1,8 +1,8 @@
 ﻿@model Phoenix.Models.ViewModels.CheckoutCommonAreaRciViewModel
 
 @{
-    ViewBag.Title = "RCI Checkout";
-    ViewBag.ViewTitle = "RCI Checkout: " + Model.BuildingCode + " " + Model.RoomNumber;
+    ViewBag.Title = "Checkout";
+    ViewBag.ViewTitle = "Checkout: " + Model.BuildingCode + " " + Model.RoomNumber;
     ViewBag.Name = TempData["user"];
     ViewBag.MenuExists = "T";
     ViewBag.Role = TempData["role"];
@@ -17,14 +17,20 @@
 }
 
 <div class="view">
+    <h2>@ViewBag.ViewTitle</h2>
     @foreach (var room in ViewBag.commonRooms)
     {
         <h2>@room</h2>
         foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room)))
         {
+            var visible = "hide";
+            if (component.Damage.Any() || component.Fine.Any())
+            {
+                visible = "show";
+            }
             <div class="pane component" id="@component.RciComponentID">
                 <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
-                <div class="checkout pane-content">
+                <div class="checkout pane-content @visible">
                     <div class="div-list">
                         <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
                             @foreach (var damage in component.Damage)

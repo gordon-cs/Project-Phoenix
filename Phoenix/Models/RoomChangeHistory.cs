@@ -44,15 +44,10 @@ namespace Phoenix.Models
         [StringLength(3)]
         public string ROOM_CHANGE_REASON { get; set; }
 
+        [StringLength(60)]
+        public string ROOM_CHANGE_REASON_DESC { get; set; }
+
         [StringLength(255)]
         public string ROOM_CHANGE_COMMENT { get; set; }
-
-        [StringLength(15)]
-        public string USER_NAME { get; set; }
-
-        [StringLength(30)]
-        public string JOB_NAME { get; set; }
-
-        public DateTime? JOB_TIME { get; set; }
     }
 }

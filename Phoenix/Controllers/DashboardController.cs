@@ -5,7 +5,6 @@ using Phoenix.Filters;
 using Phoenix.Services;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Xml.Linq;
 
 namespace Phoenix.Controllers
 {
@@ -143,6 +142,16 @@ namespace Phoenix.Controllers
             return View(buildingRcis);
         }
 
+        public ActionResult GotoRci(int rciID)
+        {
+            var state = dashboardService.GetRciState(rciID);
+            var role = (string)TempData["role"];
+
+            var routeToTake = dashboardService.GetRciRouteDictionary(rciID);
+
+            return routeToTake[state][role];
+                
+        }
         [HttpGet]
         public ActionResult SyncRcis()
         {

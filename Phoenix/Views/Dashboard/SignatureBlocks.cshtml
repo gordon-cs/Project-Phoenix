@@ -1,0 +1,37 @@
+﻿@model Phoenix.Models.ViewModels.HomeRciViewModel
+
+<div class="signature-alert-wrapper">
+    @if (Model.RciStage == "CHECKIN")
+    {
+        if ( Model.CheckinSigRes != null)
+        {
+            <span style="background:#31342B;" class="legend-color signature-alert">RES</span>
+        }
+        if ( Model.CheckinSigRA != null)
+        {
+            <span style="background:#31342B;" class="legend-color signature-alert">RA</span>
+        }
+        if ( Model.CheckinSigRD != null)
+        {
+            <span style="background:#31342B;" class="legend-color signature-alert">RD</span>
+        }
+    }
+    else
+    {
+        if ( Model.CheckoutSigRes != null)
+        {
+            <span style="background:#31342B;" class="legend-color signature-alert">RES</span>
+        }
+        if ( Model.CheckoutSigRA != null)
+        {
+            <span style="background:#31342B;" class="legend-color signature-alert">RA</span>
+        }
+        if ( Model.CheckoutSigRD != null)
+        {
+            <span style="background:#31342B;" class="legend-color signature-alert">RD</span>
+        }
+    }
+</div>
+
+
+
