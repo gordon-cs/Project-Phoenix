@@ -128,8 +128,8 @@ namespace Phoenix.Controllers
         [Admin]
         public ActionResult Admin()
         {
-
-            return View();
+            var rcis = dashboardService.GetRcis();
+            return View(rcis);
         }
 
         public ActionResult GotoRci(int rciID)

@@ -284,6 +284,7 @@
     <Content Include="Views\Dashboard\Legend.cshtml" />
     <Content Include="Views\Dashboard\SignatureBlocks.cshtml" />
     <Content Include="Views\Dashboard\Admin.cshtml" />
+    <Content Include="Views\Dashboard\DashboardRciButton.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />

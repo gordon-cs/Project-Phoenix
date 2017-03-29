@@ -13,5 +13,11 @@
     @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
 <div class="view">
-    <h1>Hello admin!</h1>
+    <h3>Hi @ViewBag.Name</h3>
+    <div class="rci-list">
+        @foreach (var rci in Model)
+        {
+            @Html.Partial("DashboardRciButton", rci)
+        }
+    </div>
 </div>
