@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44397</IISExpressSSLPort>
+    <IISExpressSSLPort>44398</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
@@ -153,7 +153,7 @@
     <Compile Include="Controllers\RciComponentReassignController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
-    <Compile Include="Filters\AdminAuthorizationAttribute.cs" />
+    <Compile Include="Filters\AdminAttribute.cs" />
     <Compile Include="Filters\RDAttribute.cs" />
     <Compile Include="Filters\ResLifeStaffAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -283,6 +283,7 @@
     <Content Include="Views\RciCheckout\RciReviewIndividualRoom.cshtml" />
     <Content Include="Views\Dashboard\Legend.cshtml" />
     <Content Include="Views\Dashboard\SignatureBlocks.cshtml" />
+    <Content Include="Views\Dashboard\Admin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />

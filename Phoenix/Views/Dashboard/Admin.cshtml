@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRciViewModel>
+
+@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.ViewTitle = "Dashboard";
+    ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
+    ViewBag.NeedsLogo = true;
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/page_specific/css/dashboard")
+}
+<div class="view">
+    <h1>Hello admin!</h1>
+</div>
