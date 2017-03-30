@@ -12,12 +12,45 @@
 @section Styles {
     @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
-<div class="view">
-    <h3>Hi @ViewBag.Name</h3>
-    <div class="rci-list">
-        @foreach (var rci in Model)
-        {
-            @Html.Partial("DashboardRciButton", rci)
-        }
+<div class="admin view">
+    <h3>Hi @ViewBag.Name!</h3>
+    <section class="admin-actions">
+        <button id="find-rci-button"class="divAddOn-vert-field search-field">Find RCI(s)</button>
+        <button id="update-furniture-button" class="divAddOn-vert-field search-field">Update Furniture</button>
+    </section>
+    <section id="find-rci-view">
+        <div class="pane">
+            @Html.Partial("Legend")
+            <h3>
+               Find RCIs
+            </h3>
+            <section class="filters">
+                <select class="divAddOn-field">
+                    <option value="0">Year</option>
+                    <option value="1">2016-2017</option>
+                    <option value="2">2015-2016</option>
+                </select>
+                <select class="divAddOn-field">
+                    <option value="0">Building</option>
+                    <option value="1">Wilson</option>
+                    <option value="2">Nyland</option>
+                </select>
+            </section>
+
+            <div class="divAddOn search-bar">
+                <input class="divAddOn-field" type="text" placeholder="Search..." />
+            </div>
+                @foreach (var rci in Model)
+                {
+                    @Html.Partial("DashboardRciButton", rci)
+                }
+        </div>
+      </section>
+    <section id="update-furniture-view">
+        <h3>RCI Types:</h3>
+        <button class="divAddOn-vert-field search-field">+ Add New Type</button>
+        <button class="divAddOn-vert-field search-field">HUD</button>
+        <button class="divAddOn-vert-field search-field">Ferrin/Drew</button>
+        <button class="divAddOn-vert-field search-field">Fulton/Chase</button>
+    </section>
     </div>
-</div>

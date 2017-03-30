@@ -5,6 +5,7 @@
         public static readonly string RESIDENT = "Resident";
         public static readonly string RA = "RA";
         public static readonly string RD = "RD";
+        public static readonly string Admin = "ADMIN";
 
         public const string RCI_UNSIGNED = "RCI_UNSIGNED";
         public const string RCI_SIGNGED_BY_RES_CHECKIN = "RCI_SIGNGED_BY_RES_CHECKIN";
