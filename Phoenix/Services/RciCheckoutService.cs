@@ -1,6 +1,7 @@
 ﻿using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -226,6 +227,32 @@ namespace Phoenix.Services
             rci.IsCurrent = false;
 
             db.SaveChanges();
+
+        }
+
+        /// <summary>
+        /// Send the fine email(s) associated with the corresponding rci
+        /// </summary>
+        /// <param name="rciID"></param>
+        public void SendFineEmails(int rciID)
+        {
+            var rci = db.Rci.Find(rciID);
+            var fineEmailTable = new Hashtable();
+
+            foreach (var component in rci.RciComponent)
+            {
+                foreach(var fine in component.Fine)
+                {
+                    if(fineEmailDictionary.ContainsKey(fine.GordonID))
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
 
         }
 
