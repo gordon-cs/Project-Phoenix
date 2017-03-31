@@ -65,6 +65,44 @@ namespace Phoenix.Services
         }*/
 
         /// <summary>
+        /// Get the rci for the individual by id
+        /// </summary>
+        public CheckinIndividualRoomRciViewModel GetIndividualRoomRciByID(int id)
+        {
+            var query =
+                from r in db.Rci
+                join a in db.Account on r.GordonID equals a.ID_NUM
+                where r.RciID == id
+                select new CheckinIndividualRoomRciViewModel()
+                {
+                    RciID = r.RciID,
+                    GordonID = r.GordonID,
+                    FirstName = a.firstname,
+                    LastName = a.lastname,
+                    BuildingCode = r.BuildingCode,
+                    RoomNumber = r.RoomNumber,
+                    RciComponent = r.RciComponent,
+                    CheckinSigRes = r.CheckinSigRes,
+                    CheckinSigRA = r.CheckinSigRA,
+                    CheckinSigRD = r.CheckinSigRD,
+                    CheckinSigRAGordonID = r.CheckinSigRAGordonID,
+                    CheckinSigRDGordonID = r.CheckinSigRDGordonID,
+                    CheckinSigRAName =
+                                        (from acct in db.Account
+                                         where acct.ID_NUM.Equals(r.CheckinSigRAGordonID)
+                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
+                    CheckinSigRDName =
+                                         (from acct in db.Account
+                                          where acct.ID_NUM.Equals(r.CheckinSigRDGordonID)
+                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
+
+                };
+
+            return query.FirstOrDefault();
+
+        }
+
+        /// <summary>
         /// Get the rci for a common area by id
         /// </summary>
         public CheckinCommonAreaRciViewModel GetCommonAreaRciById(int id)
