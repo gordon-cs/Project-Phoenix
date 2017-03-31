@@ -17,72 +17,87 @@
 }
 
 <div class="view">
-    @{
+    <div class="pane">
 
-    }
-    @foreach (var room in ViewBag.commonRooms)
-    {
-        var chargeOrDamageExistsInCommonRoom = Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && (x.Damage.Any() || x.Fine.Any())).Any();
-        if (chargeOrDamageExistsInCommonRoom)
+        <h2 class="pane-title">@ViewBag.ViewTitle</h2>
+
+        @if (!Model.DamagesExist() && !Model.FinesExist())
         {
-
-            <h2>@room</h2>
-            foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && (x.Damage.Any() || x.Fine.Any())))
+            <div class="nothing-placeholder">
+                <p>Nothing to see here ... </p>
+            </div>
+        }
+        @foreach (var room in ViewBag.commonRooms)
+        {
+            var chargeOrDamageExistsInCommonRoom = Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && (x.Damage.Any() || x.Fine.Any())).Any();
+            if (chargeOrDamageExistsInCommonRoom)
             {
-                <div class="pane component" id="@component.RciComponentID">
-                    <h2 class="pane-title div-list-toggle">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
-                    <div class="checkout pane-content">
-                        <h3>Recorded Damages:</h3>
-                        <div class="div-list">
-                            <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
-                                @foreach (var damage in component.Damage)
-                                {
-                                    if (damage.DamageType.Equals("IMAGE"))
-                                    {
-                                        <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div>
-                                    }
-                                }
-                            </div>
-                            <div id="modal-@component.RciComponentID" class="img-modal">
-                                <div class="modal-header"><i class="material-icons clear">clear</i></div>
-                                <div class="modal-content">
+
+                <h2>@room</h2>
+                foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && (x.Damage.Any() || x.Fine.Any())))
+                {
+                    <div class="pane component" id="@component.RciComponentID">
+                        <h2 class="pane-title div-list-toggle component-title">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
+                        <div class="checkout pane-content">
+                            <h3>Recorded Damages:</h3>
+                            <div class="div-list">
+                                <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
                                     @foreach (var damage in component.Damage)
                                     {
                                         if (damage.DamageType.Equals("IMAGE"))
                                         {
-                                            <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
+                                            <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div>
                                         }
                                     }
-                                    <i class="material-icons backward">navigate_before</i>
-                                    <i class="material-icons forward">navigate_next</i>
                                 </div>
-                            </div>
-                            @foreach (var damage in component.Damage)
+                                <div id="modal-@component.RciComponentID" class="img-modal">
+                                    <div class="modal-header"><i class="material-icons clear">clear</i></div>
+                                    <div class="modal-content">
+                                        @foreach (var damage in component.Damage)
+                                        {
+                                            if (damage.DamageType.Equals("IMAGE"))
+                                            {
+                                                <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
+                                            }
+                                        }
+                                        <i class="material-icons backward">navigate_before</i>
+                                        <i class="material-icons forward">navigate_next</i>
+                                    </div>
+                                </div>
+                                @foreach (var damage in component.Damage)
                         {
                             if (damage.DamageDescription != null)
                             {
-                                    <div class="divAddOn existing-damage-wrapper">
-                                        <p class="divAddOn-field existing-damage">@damage.DamageDescription</p>
-                                    </div>
+                                        <div class="divAddOn existing-damage-wrapper">
+                                            <p class="divAddOn-field existing-damage">@damage.DamageDescription</p>
+                                        </div>
+                                    }
                                 }
-                            }
-                        </div>
-                        <h3>Recorded Charges:</h3>
-                        <div class="div-list" id="fine-list-@component.RciComponentID">
-                            @foreach (var fine in component.Fine)
-                        {
-                                <div class="divAddOn">
-                                    <p class="divAddOn-field">@fine.Reason</p>
-                                    <span class="divAddOn-item">$</span>
-                                    <p class="divAddOn-item">@fine.FineAmount</p>
-                                    <p class="divAddOn-item">@Model.CommonAreaMember.Where(x => x.GordonID == fine.GordonID).Select(m => m.FirstName + " " + m.LastName).FirstOrDefault()</p>
-                                </div>
-                            }
+                            </div>
+                            <h3>Recorded Charges:</h3>
+                            <div class="horizontal-scroll-wrapper">
+                                <table class="fine-table" id="fine-list-@component.RciComponentID">
+                                    <tr>
+                                        <th>Charge</th>
+                                        <th>Amount ($)</th>
+                                        <th>Charge To:</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    @foreach (var fine in component.Fine)
+                                    {
+                                        <tr>
+                                            <td>@fine.Reason</td>
+                                            <td class="center-table-col">@fine.FineAmount</td>
+                                            <td>@Model.CommonAreaMember.Where(x => x.GordonID == fine.GordonID).Select(m => m.FirstName + " " + m.LastName).FirstOrDefault()</td>
+                                            <td class="center-table-col"><i class="material-icons" onclick="deleteFine(event, this, @fine.FineID)">close</i></td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             }
         }
-    }
-
+    </div>
 </div>
