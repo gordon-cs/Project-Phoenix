@@ -175,7 +175,6 @@
     <Compile Include="Models\RoomChangeHistory.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\ViewModels\CheckinCommonAreaRciViewModel.cs" />
-    <Compile Include="Models\ViewModels\CheckinIndividualRoomRciViewModel.cs" />
     <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutIndividualRoomRciViewModel.cs" />

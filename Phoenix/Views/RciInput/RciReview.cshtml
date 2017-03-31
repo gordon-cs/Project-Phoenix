@@ -17,29 +17,39 @@
 }
 
 <div class="view">
-    <h2>@ViewBag.ViewTitle</h2>
-    @if (ViewBag.commonRooms == null)
-    {
+    <div class="pane">
+        <h2 class="pane-title">@ViewBag.ViewTitle</h2>
+        @{ var damagesExistInRci = Model.RciComponent.Where(x => x.Damage.Any()).Any(); }
 
-        foreach (var component in Model.RciComponent.Where(x => x.Damage.Any()))
+        @if (!damagesExistInRci)
         {
-                @Html.Partial("RciReviewComponent", component);
+            <div class="nothing-placeholder">
+                <p>Nothing to see here ... </p>
+            </div>
         }
-    }
-    else
-    {
-        foreach (var room in ViewBag.commonRooms)
+        else if (ViewBag.commonRooms == null)
         {
-            var damageExistsInCommonRoom = Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()).Any();
-            if (damageExistsInCommonRoom)
+
+            foreach (var component in Model.RciComponent.Where(x => x.Damage.Any()))
             {
-                <h2>@room</h2>
-                foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()))
+                @Html.Partial("RciReviewComponent", component);
+            }
+        }
+        else
+        {
+            foreach (var room in ViewBag.commonRooms)
+            {
+                var damageExistsInCommonRoom = Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()).Any();
+                if (damageExistsInCommonRoom)
                 {
-                    @Html.Partial("RciReviewComponent", component);
+                    <h2>@room</h2>
+                    foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()))
+                    {
+                        @Html.Partial("RciReviewComponent", component);
+                    }
                 }
             }
         }
-    }
+    </div>
 
 </div>
