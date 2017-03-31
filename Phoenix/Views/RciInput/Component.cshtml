@@ -1,6 +1,6 @@
 ﻿@model Phoenix.Models.RciComponent
 <div class="pane component" id="@Model.RciComponentID">
-    <h2 class="pane-title div-list-toggle">@Model.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
+    <h2 class="pane-title div-list-toggle component-title">@Model.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
     @{ var visible = "hide"; }
     @if(Model.Damage.Any())
     {
