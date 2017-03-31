@@ -4,7 +4,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Phoenix.Services
 {
@@ -234,26 +236,52 @@ namespace Phoenix.Services
         /// Send the fine email(s) associated with the corresponding rci
         /// </summary>
         /// <param name="rciID"></param>
-        public void SendFineEmails(int rciID)
+        public void SendFineEmail(int rciID)
         {
             var rci = db.Rci.Find(rciID);
-            var fineEmailTable = new Hashtable();
+            var fineEmailDictionary = new Dictionary<string, Dictionary<string, string>>();
 
             foreach (var component in rci.RciComponent)
             {
-                foreach(var fine in component.Fine)
+                foreach (var fine in component.Fine)
                 {
-                    if(fineEmailDictionary.ContainsKey(fine.GordonID))
+                    if (fineEmailDictionary.ContainsKey(fine.GordonID))
                     {
-
+                        fineEmailDictionary[fine.GordonID]["body"] += "<p>" + fine.Reason + ": " + fine.FineAmount + "</p>";
+                        var total = decimal.Parse(fineEmailDictionary[fine.GordonID]["total"]);
+                        total = total + fine.FineAmount;
+                        fineEmailDictionary[fine.GordonID]["total"] = total.ToString();
                     }
                     else
                     {
+
+                        var newFineEmailContents = new Dictionary<string, string>
+                        {
+                            {"body",  "<p>" + fine.Reason + ": " + fine.FineAmount + "</p>" },
+                            {"total", fine.FineAmount.ToString() }
+                        };
+                        fineEmailDictionary.Add(fine.GordonID, newFineEmailContents);
 
                     }
                 }
             }
 
+            foreach (KeyValuePair<string, Dictionary<string, string>> entry in fineEmailDictionary)
+            {
+                var message = new MailMessage();
+                var to = db.Account.Where(r => r.ID_NUM.Equals(entry.Key)).FirstOrDefault().email;
+                var from = "ezeanyinabia.anyanwu@gordon.edu";
+                message.To.Add(new MailAddress(to));
+                message.From = new MailAddress(from);
+                message.Subject = "FINES - THIS IS A TEST";
+                message.Body = string.Format(Properties.Resources.FINE_EMAIL, entry.Value["body"], entry.Value["total"]);
+                message.IsBodyHtml = true;
+
+                using (var smtp = new SmtpClient())
+                {
+                    smtp.Send(message);
+                }
+            }
         }
 
         public IEnumerable<string> GetCommonRooms(int id)
