@@ -293,6 +293,7 @@ namespace Phoenix.Controllers
             }
 
             checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
+            checkoutService.SendFineEmail(id);
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
     }

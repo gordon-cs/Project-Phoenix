@@ -15,7 +15,7 @@
 @section Scripts{
     @Scripts.Render("~/bundles/page_specific/js/rci-checkout")
 }
-<div class="view" data-add-back-btn="@Model.GordonID">
+<div class="view" data="@Model.GordonID">
     <h2>@ViewBag.ViewTitle</h2>
 
     @foreach (var component in Model.RciComponent)

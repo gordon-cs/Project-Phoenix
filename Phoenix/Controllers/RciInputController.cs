@@ -45,14 +45,21 @@ namespace Phoenix.Controllers
             var rci = rciInputService.GetRci(id);
 
             //  Redirect to the review page if this is already signed by the RD
-            if(rci.CheckinSigRD != null)
+            if (rci.CheckinSigRD != null)
             {
                 return RedirectToAction("RciReview");
             }
 
+
             // This is how we access items set in the filter.
             var gordon_id = (string)TempData["id"];
-            
+
+            // Redirect if the rci doesn't belong to the user.
+            if (!rci.isViewableBy(gordon_id, role, (string)TempData["currentRoom"], (string)TempData["currentBuilding"]))
+            {
+                return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+            }
+
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
@@ -92,7 +99,7 @@ namespace Phoenix.Controllers
 
             return View(rci);
         }
-       
+
         [RD]
         public ActionResult SignAllRD()
         {
@@ -133,7 +140,7 @@ namespace Phoenix.Controllers
                 rciInputService.SignRcis(gordonID);
                 return Json(Url.Action("Index", "Dashboard"));
             }
-            
+
             return Json(Url.Action("SignAllRD"));
         }
 
@@ -180,7 +187,7 @@ namespace Phoenix.Controllers
 
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             if (lacSig != null) lacSig = lacSig.ToLower().Trim();
-            
+
             var gordonID = (string)TempData["id"];
             var user = ((string)TempData["user"]).ToLower().Trim();
 
@@ -211,7 +218,7 @@ namespace Phoenix.Controllers
             var user = ((string)TempData["user"]).ToLower().Trim();
 
             var complete = rciInputService.SaveRASigs(rciSig, lacSig, rciSigRes, user, id, gordonID);
-            
+
             if (complete)
             {
                 return Json(Url.Action("Index", "Dashboard"));
@@ -221,7 +228,7 @@ namespace Phoenix.Controllers
                 return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
-        
+
         /// <summary>
         /// Save signatures for RD
         /// </summary>
@@ -237,7 +244,7 @@ namespace Phoenix.Controllers
                 return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
             }
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
-            
+
             var gordonID = (string)TempData["id"];
             var user = ((string)TempData["user"]).ToLower().Trim();
 
@@ -265,7 +272,7 @@ namespace Phoenix.Controllers
         [HttpPost]
         public void CheckSigRD(int sigCheck, int id)
         {
-            
+
             var gordonID = (string)TempData["id"];
             rciInputService.CheckRcis(sigCheck, gordonID, id);
         }
@@ -289,14 +296,14 @@ namespace Phoenix.Controllers
                     newDamage.DamageType = "IMAGE";
                     newDamage.RciComponentID = Convert.ToInt32(rciComponentId);
 
-                    rciInputService.SavePhotoDamage(newDamage, rciComponentId );
-                    
+                    rciInputService.SavePhotoDamage(newDamage, rciComponentId);
+
                     // First, resize the image, using pattern here: http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
 
                     // Create an Image obj from the file
                     Image origImg = Image.FromStream(photoFile.InputStream);
-      
-                    Size imgSize = rciInputService.NewImageSize(origImg.Size, new Size(300,300));
+
+                    Size imgSize = rciInputService.NewImageSize(origImg.Size, new Size(300, 300));
 
                     // Bitmap is a subclass of Image; its constructor can take an Image and new Size, and then creates a new Image scaled to the new size
                     Image resizedImg = new Bitmap(origImg, imgSize);
@@ -347,7 +354,7 @@ namespace Phoenix.Controllers
                 System.IO.File.Delete(filePath); // Remove from server
                 return new HttpStatusCodeResult(200, "Successfully deleted!");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return new HttpStatusCodeResult(500, "Error saving photo. Error message: " + e.Message);
             }
