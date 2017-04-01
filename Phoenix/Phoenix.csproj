@@ -167,6 +167,7 @@
     <Compile Include="Models\CurrentRD.cs" />
     <Compile Include="Models\Damage.cs" />
     <Compile Include="Models\Fine.cs" />
+    <Compile Include="Models\PartialClasses\Rci.cs" />
     <Compile Include="Models\Rci.cs" />
     <Compile Include="Models\RciComponent.cs" />
     <Compile Include="Models\RCIContext.cs" />
