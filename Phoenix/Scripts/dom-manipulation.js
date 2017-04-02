@@ -91,13 +91,13 @@ $(".search-bar").keyup(function () {
 // Find RCI button
 $("#find-rci-button").click(function () {
     $("#update-furniture-view").hide();
-    $("#find-rci-view").show()
+    $("#find-rci-view").toggle()
 });
 
 // Update furniture button
 $("#update-furniture-button").click(function () {
     $("#find-rci-view").hide();
-    $("#update-furniture-view").show();
+    $("#update-furniture-view").toggle();
 });
 
 
