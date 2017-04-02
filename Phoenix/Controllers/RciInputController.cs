@@ -85,6 +85,13 @@ namespace Phoenix.Controllers
             var gordon_id = (string)TempData["id"];
 
             var rci = rciInputService.GetRci(id);
+
+            // Redirect if the rci doesn't belong to the user.
+            if (!rci.isViewableBy(gordon_id, (string)TempData["role"], (string)TempData["currentRoom"], (string)TempData["currentBuilding"]))
+            {
+                return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+            }
+
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " Common Area";

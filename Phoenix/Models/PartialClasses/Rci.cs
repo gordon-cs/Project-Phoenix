@@ -27,5 +27,10 @@ namespace Phoenix.Models
                 return false;
             }
         }
+
+        public bool IsIndividualRci()
+        {
+            return GordonID != null ? true : false;
+        }
     }
 }
