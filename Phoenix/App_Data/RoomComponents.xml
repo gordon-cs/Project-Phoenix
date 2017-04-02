@@ -109,93 +109,94 @@
   <rci roomType="individual" EVA="true" LEW="true" WIL="true">
     <components>
       <component name="Black dividers" description="Main Room" >
-        <charge description="Tack hole" approxCost="5"/>
+        <cost name="Tack hole" approxCost="5"/>
       </component>
       <component name="Bed Frame" description="Main Room">
-        <charge name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50"/>
       </component>
       <component name="Bed Mattress" description="Main Room">
-        <charge name="Replacement Cost" approxCost="125" />
+        <cost name="Replacement Cost" approxCost="125" />
       </component>
       <component name="Bed Cover" description="Main Room">
-        <charge name="Replacement Cost" approxCost="30" />
+        <cost name="Replacement Cost" approxCost="30" />
       </component>
       <component name="Bookshelf over Bed" description="Main Room">
-        <charge name="Fixing Cost" approxCost="30" />
+        <cost name="Fixing Cost" approxCost="30" />
       </component>
       <component name="Bookshelf over Desk" description="Main Room">
-        <charge name="Abusive Wear Cost" approxCost="30" />
+        <cost name="Abusive Wear Cost" approxCost="30" />
       </component>
       <component name="Carpet" description="Main Room">
-        <charge name="Minor Burn" approxCost="60" />
-        <charge name="Medium Stain" approxCost="60" />
-        <charge name="Carpet Replacement" approxCost="400" />
+        <cost name="Minor Burn" approxCost="60" />
+        <cost name="Medium Stain" approxCost="60" />
+        <cost name="Carpet Replacement" approxCost="400" />
       </component>
       <component name="Closet Door" description="Main Room">
-        <charge name="Replacement Cost" approxCost="100" />
+        <cost name="Replacement Cost" approxCost="100" />
       </component>
       <component name="Closet Drawers" description="Main Room">
-        <charge name="Replacement Cost" approxCost="30" />
+        <cost name="Replacement Cost" approxCost="30" />
       </component>
       <component name="Desk - Lamp/Light" description="Main Room">
-        <charge name="Replacement Cost" approxCost="36" />
+        <cost name="Replacement Cost" approxCost="36" />
       </component>
       <component name="Desk - Surface top" description="Main Room">
-        <charge name="Fixing Cost" approxCost="40" />
+        <cost name="Fixing Cost" approxCost="40" />
       </component>
       <component name="Desk - Drawer" description="Main Room">
-        <charge name="Fixing Cost" approxCost="20" />
+        <cost name="Fixing Cost" approxCost="20" />
       </component>
       <component name="Desk Chair" description="Main Room">
-        <charge name="Replacement Cost" approxCost="50" />
+        <cost name="Replacement Cost" approxCost="50" />
       </component>
       <component name="Door - Lock" description="Main Room">
-        <charge name="Replacement Cost" approxCost="200" />
-        <charge name="Doorstop Replacement" approxCost="20" />
-        <charge name="Lock Damage" approxCost="36" />
-        <charge name="Lockset Replacement" approxCost="144" />
+        <cost name="Replacement Cost" approxCost="200" />
+        <cost name="Doorstop Replacement" approxCost="20" />
+        <cost name="Lock Damage" approxCost="36" />
+        <cost name="Lockset Replacement" approxCost="144" />
       </component>
       <component name="Ceiling Light" description="Main Room">
-        <charge name="Replacement Cost" approxCost="60" />
+        <cost name="Replacement Cost" approxCost="60" />
       </component>
       <component name="Outlets/Switches" description="Main Room">
-        <charge name="Replacement Cost" approxCost="20" />
+        <cost name="Replacement Cost" approxCost="20" />
       </component>
       <component name="Thermostat/Heat Control" description="Main Room">
-        <charge name="Replacement Cost" approxCost="72" />
+        <cost name="Replacement Cost" approxCost="72" />
       </component>
       <component name="Mirror" description="Main Room">
-        <charge name="Broken mirror" approxCost="60" />
-        <charge name="Stickers/marks" approxCost="5" />
+        <cost name="Broken mirror" approxCost="60" />
+        <cost name="Stickers/marks" approxCost="5" />
       </component>
       <component name="Recycling Basket" description="Main Room">
-        <charge name="Replacement Cost" approxCost="20" />
+        <cost name="Replacement Cost" approxCost="20" />
       </component>
       <component name="Wall" description="Main Room">
-        <charge name="Abusive Wear Cost" approxCost="75" />
-        <charge name="Paint chips" approxCost="5" />
+        <cost name="Abusive Wear Cost" approxCost="75" />
+        <cost name="Paint chips" approxCost="5" />
       </component>
       <component name="Ceiling" description="Main Room">
-        <charge name="Abusive Wear Cost" approxCost="35" />
-        <charge name="Paint chips" approxCost="5" />
+        <cost name="Abusive Wear Cost" approxCost="35" />
+        <cost name="Paint chips" approxCost="5" />
       </component>
       <component name="Window glass" description="Main Room">
+        <cost name="Cost depends on window size" approxCost="*" />
       </component>
       <component name="Window - lock/crank/lever" description="Main Room">
-        <charge name="Replacement Cost" approxCost="50" />
+        <cost name="Replacement Cost" approxCost="50" />
       </component>
       <component name="Window - Screen" description="Main Room">
-        <charge name="Replacement Cost" approxCost="50" />
+        <cost name="Replacement Cost" approxCost="50" />
       </component>
       <component name="Window - Shade" description="Main Room">
-        <charge name="Replacement Cost" approxCost="70" />
+        <cost name="Replacement Cost" approxCost="70" />
       </component>
       <component name="Improper Checkout" description="Main Room">
-        <charge name="Flat Amount" approxCost="30" />
+        <cost name="Flat Amount" approxCost="30" />
       </component>
       <component name="Lost Key" description="Main Room">
-        <charge name="Room" approxCost="25" />
-        <charge name="Hall" approxCost="50" />
+        <cost name="Room" approxCost="25" />
+        <cost name="Hall" approxCost="50" />
       </component>
     </components>
   </rci>
