@@ -74,14 +74,12 @@
                             <tr>
                                 <th>Charge</th>
                                 <th>Amount ($)</th>
-                                <th>Delete</th>
                             </tr>
                             @foreach (var fine in component.Fine)
                             {
                                 <tr>
                                     <td>@fine.Reason</td>
                                     <td class="center-table-col">@fine.FineAmount</td>
-                                    <td class="center-table-col"><i class="material-icons" onclick="deleteFine(event, this, @fine.FineID)">close</i></td>
                                 </tr>
                             }
                         </table>

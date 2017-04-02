@@ -82,7 +82,6 @@
                                         <th>Charge</th>
                                         <th>Amount ($)</th>
                                         <th>Charge To:</th>
-                                        <th>Delete</th>
                                     </tr>
                                     @foreach (var fine in component.Fine)
                                     {
@@ -90,7 +89,6 @@
                                             <td>@fine.Reason</td>
                                             <td class="center-table-col">@fine.FineAmount</td>
                                             <td>@Model.CommonAreaMember.Where(x => x.GordonID == fine.GordonID).Select(m => m.FirstName + " " + m.LastName).FirstOrDefault()</td>
-                                            <td class="center-table-col"><i class="material-icons" onclick="deleteFine(event, this, @fine.FineID)">close</i></td>
                                         </tr>
                                     }
                                 </table>
