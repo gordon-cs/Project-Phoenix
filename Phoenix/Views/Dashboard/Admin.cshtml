@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRciViewModel>
+﻿@model Phoenix.Models.ViewModels.AdminDashboardViewModel
 
 @{
     ViewBag.Title = "Dashboard";
@@ -26,24 +26,36 @@
             </h3>
             <section class="filters">
                 <select class="divAddOn-field">
-                    <option value="0">Year</option>
-                    <option value="1">2016-2017</option>
-                    <option value="2">2015-2016</option>
+                    <option value="0">Session</option>
+                    @{
+                        int i = 1;
+                        foreach (var session in Model.Sessions)
+                        {
+                            <option value=@i>@session</option>
+                            i++;
+                        }
+                    }
                 </select>
                 <select class="divAddOn-field">
                     <option value="0">Building</option>
-                    <option value="1">Wilson</option>
-                    <option value="2">Nyland</option>
+                    @{
+                        int j = 1;
+                        foreach (var building in Model.Buildings)
+                        {
+                            <option value=@j>@building</option>
+                            j++;
+                        }
+                    }
                 </select>
             </section>
 
             <div class="divAddOn search-bar">
                 <input class="divAddOn-field" type="text" placeholder="Search..." />
             </div>
-                @foreach (var rci in Model)
+                @*@foreach (var rci in Model)
                 {
                     @Html.Partial("DashboardRciButton", rci)
-                }
+                }*@
         </div>
       </section>
     <section id="update-furniture-view">

@@ -12,7 +12,6 @@ namespace Phoenix.Controllers
     [CustomAuthentication]
     public class DashboardController : Controller
     {
-        // RCI context wrapper. It can be considered to be an object that represents the database.
         private DashboardService dashboardService;
 
         public DashboardController()
@@ -34,7 +33,7 @@ namespace Phoenix.Controllers
             }
             if (role.Equals("ADMIN"))
             {
-                return RedirectToAction("Admin");
+                return RedirectToAction("Index", "AdminDashboard");
             }
 
             else if (role.Equals("RD"))
