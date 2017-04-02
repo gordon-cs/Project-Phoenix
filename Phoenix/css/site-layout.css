@@ -565,8 +565,9 @@ td, th {
 /* Placeholder for when there are no components on the page */
 
 .nothing-placeholder {
+    font-size: 20px;
     font-weight: bold;
-    padding: 1em;
+    padding: 2em;
     text-align: center;
 }
 /***************************/
