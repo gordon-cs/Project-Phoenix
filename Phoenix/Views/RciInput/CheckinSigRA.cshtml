@@ -21,30 +21,26 @@
 
         if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
         {
-            <div class="pane">
-                @if (Model.CheckoutSigRes == null)
-                {
-                    <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as a resident.</p>
-                    <input type="text" id="rci-sig-res" value="@ViewBag.User" />
-                }
-                else
-                {
-                    <p>You've already signed your RCI. You're good to go on that front!</p>
-                }
-            </div>
+            if (Model.CheckoutSigRes == null)
+            {
+            <p>@ViewBag.User, please sign your name to confirm the entered damages.</p>
+            <input type="text" id="rci-sig-res" placeholder="@ViewBag.User" />
+            }
+            else
+            {
+                <p>You've already signed your RCI. You're good to go on that front!</p>
+            }
 
-            <div class="pane">
-                @if (Model.LifeAndConductSigRes == null)
-                {
-                    <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
-                    <p>Please sign with your name @ViewBag.User</p>
-                    <input type="text" id="lac-sig" value="@ViewBag.User" />
-                }
-                else
-                {
-                    <p>You've already signed the Life and Conduct Statement. You're all set on that!</p>
-                }
-            </div>
+            if (Model.LifeAndConductSigRes == null)
+            {
+                <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
+                <p>Please sign with your name @ViewBag.User</p>
+                <input type="text" id="lac-sig" placeholder="@ViewBag.User" />
+            }
+            else
+            {
+                <p>You've already signed the Life and Conduct Statement. You're all set on that!</p>
+            }
 
             <div class="distribute-evenly">
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
@@ -63,38 +59,35 @@
     }
     else if (Model.GordonID != ViewBag.GordonID && Model.GordonID != null)// Individual Rci that does not belong to RA
     {
-        <div class="pane">
-            @if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
-            {
-                <p>Resident hasn't signed yet. Please make sure resident has signed before signing.</p>
-            }
-            else if (Model.CheckinSigRA == null)
-            {
-                <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
-                <input type="text" id="rci-sig" value="@ViewBag.User" />
-                <div class="distribute-evenly">
-                    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-                    <button id="submit-button" onclick="RASigSubmit()">Submit</button>
-                </div>
-            }
-            else
-            {
-                <p>You've already signed this resident's RCI.</p>
+        if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
+        {
+            <p>The resident hasn't signed yet. Please make sure the resident has signed before signing.</p>
+        }
+        else if (Model.CheckinSigRA == null)
+        {
+            <p>@ViewBag.User, please sign your name  to confirm the entered damages.</p>
+            <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
+            <div class="distribute-evenly">
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-            }
-        </div>
+                <button id="submit-button" onclick="RASigSubmit()">Submit</button>
+            </div>
+        }
+        else
+        {
+            <p>You've already signed this resident's RCI.</p>
+            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        }
     }
     else if (Model.GordonID != ViewBag.GordonID && Model.GordonID == null) // Common areas
     {
-        <div class="pane">
-            @if (Model.CheckinSigRes == null)
-            {
-            <p>Residents haven't all signed yet. Please make sure residents have signed before signing.</p>
-            }
-            else if (Model.CheckinSigRA == null)
-            {
-            <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
-            <input type="text" id="rci-sig" value="@ViewBag.User" />
+        if (Model.CheckinSigRes == null )
+        {
+            <p>The residents haven't all signed yet. Please make sure the residents have signed before signing.</p>
+        }
+        else if (Model.CheckinSigRA == null)
+        {
+            <p>@ViewBag.UserPlease, sign with your name to confirm the entered damages as an AC.</p>
+            <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
             <div class="distribute-evenly">
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
                 <button id="submit-button" onclick="RASigSubmit()">Submit</button>
