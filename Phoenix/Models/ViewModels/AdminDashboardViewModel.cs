@@ -7,7 +7,7 @@ namespace Phoenix.Models.ViewModels
 {
     public class AdminDashboardViewModel
     {
-        public IEnumerable<string> Sessions { get; set; }
+        public IDictionary<string, string> Sessions { get; set; }
         public IEnumerable<string> Buildings { get; set; }
         public IEnumerable<string> RciTypes { get; set; }
     }

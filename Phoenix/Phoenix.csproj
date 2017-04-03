@@ -284,14 +284,13 @@
     <Content Include="Views\RciInput\RciReviewComponent.cshtml" />
     <Content Include="Views\RciCheckout\RciReviewCommonArea.cshtml" />
     <Content Include="Views\RciCheckout\RciReviewIndividualRoom.cshtml" />
-    <Content Include="Views\Dashboard\Legend.cshtml" />
+    <Content Include="Views\Shared\Legend.cshtml" />
     <Content Include="Views\Dashboard\SignatureBlocks.cshtml" />
-    <Content Include="Views\Dashboard\Admin.cshtml" />
+    <Content Include="Views\AdminDashboard\Index.cshtml" />
     <Content Include="Views\Dashboard\DashboardRciButton.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />
-    <Folder Include="Views\AdminDashboard\" />
     <Folder Include="Views\Logout\" />
   </ItemGroup>
   <ItemGroup>

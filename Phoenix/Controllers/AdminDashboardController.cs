@@ -24,6 +24,8 @@ namespace Phoenix.Controllers
         public ActionResult Index()
         {
             AdminDashboardViewModel viewModel = new AdminDashboardViewModel();
+            viewModel.Buildings = adminDashboardService.GetBuildingCodes();
+            viewModel.Sessions = adminDashboardService.GetSessions();
 
             return View(viewModel);
         }
