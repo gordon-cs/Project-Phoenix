@@ -549,6 +549,13 @@ td, th {
     font-weight: bold;
 }
 
+
+
+.component-cost {
+    border: 1px solid #cccccb;
+    font-size: 0.7em;
+    padding: 0.5em;
+}
 /***************************/
 /***********MISC************/
 /***************************/
