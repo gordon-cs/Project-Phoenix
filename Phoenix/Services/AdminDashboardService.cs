@@ -33,11 +33,12 @@ namespace Phoenix.Services
             DateTime fourYearsAgo = DateTime.Today.AddYears(-4);
 
             var sessions = from entry in db.Session
-                           where fourYearsAgo.CompareTo(entry.SESS_BEGN_DTE) >= 0
                            select entry;
+            // now filter out only recent sessions
+            sessions = sessions.Where(x => fourYearsAgo.CompareTo(x.SESS_BEGN_DTE.Value) <= 0);
 
             // Convert query result to a dictionary of <key=Session Code, value=Session Description>
-            IDictionary<string, string> sessionDictionary = sessions.ToDictionary(s => s.SESS_CDE, s => s.SESS_DESC);
+            IDictionary<string, string> sessionDictionary = sessions.ToDictionary(s => s.SESS_CDE.Trim(), s => s.SESS_DESC.Trim());
 
             return sessionDictionary;
         }

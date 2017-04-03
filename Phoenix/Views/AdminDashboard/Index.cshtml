@@ -31,7 +31,7 @@
                         int i = 1;
                         foreach (var session in Model.Sessions)
                         {
-                            <option value=@i id="@session.Value">@session.Key</option>
+                            <option value=@i id="@session.Key">@session.Value</option>
                             i++;
                         }
                     }
