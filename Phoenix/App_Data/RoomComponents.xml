@@ -1,7 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <rciTypes>
   <rci roomType="common" BRO="true" TAV="true">
     <components>
+      <component name="test" description="kkk" approxCost="350" costType="R" />
       <component name="Sofa" description="Living room" approxCost="350" costType="R" />
       <component name="Chair" description="Living room" approxCost="250" costType="R" />
       <component name="Coffee table" description="Living room" approxCost="150" costType="R" />
@@ -140,8 +141,7 @@
       </lostKey>
     </otherCharges>
   </rci>
-  <rci roomType="individual" NYL="true" CHA="true" FUL="true">
-    <!-- CHASE and FULTON just for testing purpose because data is not given -->
+  <rci roomType="individual" NYL="true">
     <components>
       <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
       <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
@@ -170,8 +170,38 @@
       </community>
     </otherCharges>
   </rci>
-  <rci roomType="individual" TAV="true" BRO="true">
-    <!-- BROMLEY just for testing purpose because data is not given -->
+  <rci roomType="individual" FUL="true" CHA="true">
+    <components>
+      <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
+      <component name="Carpet" description="Minor burn, medium stain" approxCost="80,60" costType="A,A" />
+      <component name="Dresser" description="Surface, drawer" approxCost="30,50" costType="F,F" />
+      <component name="Desks" description="Lamp/light/carrel, surface top, desk chair, drawer" approxCost="50,50,50,50" costType="R,F,R,F" />
+      <component name="Door" description="Replace, doorstop, lock damage, lockset replacement" approxCost="250,20,200,400" costType="R,R,F,R" />
+      <component name="Electrical" description="Ceiling light, outlets/switches, thermostat - heat control" approxCost="100,25,100" costType="R,R,R" />
+      <component name="Mirror" description="Broken, stickers/marks" approxCost="60,5ea" costType="R,A" />
+      <component name="Wall/ceiling" description="Repaint walls, repaint ceiling, paint chip, repair hole" approxCost="75,50,5ea,75" costType="A,A,A,A" />
+      <component name="Wardrobe" description="" approxCost="100" costType="A" />
+      <component name="Recycling basket" description="" approxCost="20" costType="R" />
+      <component name="Baseboard heat cover" description="" approxCost="25" costType="R" />
+      <component name="Outlets" description="" approxCost="75" costType="R" />
+      <component name="Bathroom area" description="Sink unit, damages" approxCost="50,TBD" costType="A,A" />
+      <component name="Window" description="Glass, lock/crank/lever, screen, blind slats, cord/pulley" approxCost="*,50,50,3ea,50" costType="*,R,R,R,A" />
+    </components>
+    <otherCharges>
+      <cleaning>
+        <component name="General" approxCost="75" costType="A" />
+        <component name="Floor only" approxCost="40" costType="A" />
+        <component name="Furnishings" approxCost="35" costType="A" />
+        <component name="Walls/door/ceiling" approxCost="25" costType="A" />
+        <component name="Bathroom" approxCost="50" costType="A" />
+      </cleaning>
+      <community>
+        <component name="Floor/hall" />
+        <component name="Improper check-out" approxCost="30" />
+      </community>
+    </otherCharges>
+  </rci>
+  <rci roomType="individual" TAV="true">
     <components>
       <component name="Beds" description="Frames, mattress, cover" approxCost="50,125,30" costType="F,R,R" />
       <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
@@ -197,6 +227,39 @@
         <component name="Floor/hall" />
         <component name="Improper check-out" approxCost="30" />
       </community>
+    </otherCharges>
+  </rci>
+  <rci roomType="individual" BRO="true">
+    <components>
+      <component name="Air conditioner" description="knobs" approxCost="12" costType="R" />
+      <component name="Beds" description="Frames, mattress, cover, spring" approxCost="100,125,30,15" costType="F,R,R,F" />
+      <component name="Carpet" description="Minor burn, medium stain, carpet replacement" approxCost="60,60,400" costType="A,A,R" />
+      <component name="Closets" description="Doors, shelves" approxCost="100,25" costType="R,F" />
+      <component name="Dresser" description="Surface, drawer" approxCost="15,35" costType="F,F" />
+      <component name="Desks" description="Light/carrel, surface top, drawer, desk chair" approxCost="36,40,20,50" costType="R,F,R,R" />
+      <component name="Door" description="Replace, lock damage" approxCost="155,36" costType="R,F" />
+      <component name="Electrical" description="Ceiling light, outlets/switches, thermostat - heat control" approxCost="60,20,100" costType="R,R,R" />
+      <component name="Mirror" description="Broken, stickers/marks" approxCost="60,5ea" costType="R,A" />
+      <component name="Wall/ceiling" description="Repaint walls, repaint ceiling, paint chip, repair small hole" approxCost="75,45,5ea,50" costType="A,A,A,A" />
+      <component name="Outlets" description="Telephone, computer" approxCost="50,50" costType="R,R" />
+      <component name="Window" description="Glass, lock, screen, shades" approxCost="*,30,50,70" costType="*,R,R,R" />
+      <component name="Recycling basket" description="" approxCost="20" costType="R" />
+    </components>
+    <otherCharges>
+      <cleaning>
+        <component name="General" approxCost="100" costType="A" />
+        <component name="Floor only" approxCost="50" costType="A" />
+        <component name="Furnishings" approxCost="50" costType="A" />
+        <component name="Walls/door/ceiling" approxCost="50" costType="A" />
+      </cleaning>
+      <community>
+        <component name="Floor/hall" />
+        <component name="Improper check-out" approxCost="30" />
+      </community>
+      <lostKey>
+        <component name="Room" approxCost="25" costType="R" />
+        <component name="Hall" approxCost="50" costType="R" />
+      </lostKey>
     </otherCharges>
   </rci>
   <rci roomType="individual" GED="true" CON="true" GRA="true" HIL="true" MCI="true" RID="true">

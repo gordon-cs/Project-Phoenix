@@ -1,0 +1,51 @@
+﻿@model System.Xml.Linq.XElement
+
+@{
+    ViewBag.Title = "Manage RCI Components";
+    ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
+    ViewBag.GordonID = TempData["id"];
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/page_specific/css/rci-input")
+    @Styles.Render("~/css/manage-rci-component.css")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/rci-input")
+    @Scripts.Render("~/Scripts/manage-rci-component.js")
+}
+
+<div class="view">
+    <h2 id="rci-@ViewBag.RciID">@ViewBag.Title</h2>
+    <p id="buildings">
+        <b>Buildings: </b>
+        @foreach (var name in Model.Attributes().Select(x => x.Name).Where(x => (x != "roomType" && x != "id"))) {
+            <span class="building-name" onclick="deleteBuilding(this)">@name.ToString()<i class="material-icons">clear</i></span>
+        }
+        <i id="start-add-building" class="material-icons" onclick="startAddBuilding(this)">add</i>
+        <input id="input-add-building" type="text" />
+        <i class="material-icons" id="save-add-building" onclick="saveAddBuilding(this)">done</i>
+        <i class="material-icons" id="cancel-add-building" onclick="cancelAddBuilding(this)">clear</i>
+    </p>
+    @foreach (var component in Model.Element("components").Elements("component"))
+        {
+            <div class="pane component" id='@((string)component.Attribute("name"))'>
+                <h2 class="pane-title div-list-toggle">@((string)component.Attribute("name"))<i class="material-icons">arrow_drop_down</i></h2>
+                <div class="input pane-content">
+                    <i class="material-icons delete-component" onclick="deleteComponent(this)">clear</i>
+                    <p>
+                        <b>Room:</b> 
+                        <span>@((string)component.Attribute("description"))</span>
+                        <i class="material-icons start-edit-description" onclick="startEdit(this)">create</i>
+                        <input class="input-edit-description" type="text" value="@((string)component.Attribute("description"))" />
+                        <i class="material-icons save-edit-description" onclick="saveEdit(this)">done</i>
+                        <i class="material-icons cancel-edit-description" onclick="cancelEdit(this)">clear</i>
+                    </p>
+                    
+                </div>
+            </div>
+        }
+</div>
