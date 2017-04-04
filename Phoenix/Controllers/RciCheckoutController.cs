@@ -295,7 +295,7 @@ namespace Phoenix.Controllers
                 return View(rci);
             }
 
-            //checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
+            checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
             checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
