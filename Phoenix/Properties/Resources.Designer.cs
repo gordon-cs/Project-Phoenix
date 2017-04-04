@@ -61,15 +61,15 @@ namespace Phoenix.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;h2&gt;May 22, 2013&lt;/h2&gt;
+        ///   Looks up a localized string similar to &lt;p&gt;{0}&lt;/p&gt;
         /// 
-        ///&lt;p&gt;Dear Abinidab,&lt;/p&gt;
+        ///&lt;p&gt;Dear {1},&lt;/p&gt;
         ///
         ///&lt;p&gt;At the bottom of the &quot;Room Condition Inventory&quot; (R.C.I.) sheet is the following statement: &lt;/p&gt;
         ///
-        ///&lt;p&gt;**Check-out is not completed until the Resident Director has signed the Room Condition Inventory.Resident Directors may assess fines for damages not recorded by the R.A.&lt;/p&gt;
+        ///&lt;p&gt;**Check-out is not completed until the Resident Director has signed the Room Condition Inventory. Resident Directors may assess fines for damages not recorded by the R.A.&lt;/p&gt;
         ///
-        ///&lt;p&gt;After the halls have closed, the Resident Director and the R.A.go through each room carefully, and sometimes notice damages that were not noticed by the R.A.during the initial  [rest of string was truncated]&quot;;.
+        ///&lt;p&gt;After the halls have closed, the Resident Director and the R.A.go through each room carefully, and sometimes notice damages that were not noticed by the R.A. during the initial check-out with [rest of string was truncated]&quot;;.
         /// </summary>
         public static string FINE_EMAIL {
             get {

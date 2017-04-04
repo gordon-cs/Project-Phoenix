@@ -236,7 +236,7 @@ namespace Phoenix.Services
         /// Send the fine email(s) associated with the corresponding rci
         /// </summary>
         /// <param name="rciID"></param>
-        public void SendFineEmail(int rciID)
+        public void SendFineEmail(int rciID, string emailAddress, string password)
         {
             var rci = db.Rci.Find(rciID);
             var fineEmailDictionary = new Dictionary<string, Dictionary<string, string>>();
@@ -269,16 +269,32 @@ namespace Phoenix.Services
             foreach (KeyValuePair<string, Dictionary<string, string>> entry in fineEmailDictionary)
             {
                 var message = new MailMessage();
-                var to = db.Account.Where(r => r.ID_NUM.Equals(entry.Key)).FirstOrDefault().email;
-                var from = "ezeanyinabia.anyanwu@gordon.edu";
+                var recepientAccount = db.Account.Where(r => r.ID_NUM.Equals(entry.Key)).FirstOrDefault();
+                var to = recepientAccount.email;
+                var from = emailAddress;
+                var today = DateTime.Now.ToLongDateString();
+                var recepientName = recepientAccount.firstname; 
                 message.To.Add(new MailAddress(to));
                 message.From = new MailAddress(from);
                 message.Subject = "FINES - THIS IS A TEST";
-                message.Body = string.Format(Properties.Resources.FINE_EMAIL, entry.Value["body"], entry.Value["total"]);
+                message.Body = string.Format(Properties.Resources.FINE_EMAIL, 
+                    today, 
+                    recepientName, 
+                    entry.Value["body"], 
+                    entry.Value["total"]);
                 message.IsBodyHtml = true;
 
                 using (var smtp = new SmtpClient())
                 {
+                    var credential = new NetworkCredential
+                    {
+                        UserName = emailAddress,
+                        Password = password
+                    };
+                    smtp.Credentials = credential;
+                    smtp.Host = "smtp.office365.com";
+                    smtp.Port = 587;
+                    smtp.EnableSsl = true;
                     smtp.Send(message);
                 }
             }

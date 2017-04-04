@@ -118,32 +118,26 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FINE_EMAIL" xml:space="preserve">
-    <value>&lt;h2&gt;May 22, 2013&lt;/h2&gt;
+    <value>&lt;p&gt;{0}&lt;/p&gt;
  
-&lt;p&gt;Dear Abinidab,&lt;/p&gt;
+&lt;p&gt;Dear {1},&lt;/p&gt;
 
 &lt;p&gt;At the bottom of the "Room Condition Inventory" (R.C.I.) sheet is the following statement: &lt;/p&gt;
 
-&lt;p&gt;**Check-out is not completed until the Resident Director has signed the Room Condition Inventory.Resident Directors may assess fines for damages not recorded by the R.A.&lt;/p&gt;
+&lt;p&gt;**Check-out is not completed until the Resident Director has signed the Room Condition Inventory. Resident Directors may assess fines for damages not recorded by the R.A.&lt;/p&gt;
 
-&lt;p&gt;After the halls have closed, the Resident Director and the R.A.go through each room carefully, and sometimes notice damages that were not noticed by the R.A.during the initial check-out with the resident.If these damages were not recorded on the R.C.I. in August (or January), and by their appearance are clearly new, then you are deemed responsible.&lt;/p&gt;
+&lt;p&gt;After the halls have closed, the Resident Director and the R.A.go through each room carefully, and sometimes notice damages that were not noticed by the R.A. during the initial check-out with the resident.If these damages were not recorded on the R.C.I. in August (or January), and by their appearance are clearly new, then you are deemed responsible.&lt;/p&gt;
 
 &lt;p&gt;Unfortunately, the following damage was found in your room:&lt;/p&gt;
 
-{0}
+{2}
 
 &lt;p&gt;The fine and/or cost to repair this damage is:&lt;p&gt;
 
-{1}
+{3}
 
 &lt;p&gt;This amount will appear on your bill through Student Financial Services.&lt;/p&gt;
 
-&lt;p&gt;Thank you for your cooperation in this matter.Please feel free to contact me if you have any questions.&lt;/p&gt;
-
-&lt;p&gt;Sincerely,&lt;/p&gt;
-
-
-&lt;p&gt;Resident Advisor&lt;/p&gt;
-&lt;p&gt;Gordon College&lt;/p&gt;</value>
+&lt;p&gt;Thank you for your cooperation in this matter.Please feel free to contact me if you have any questions.&lt;/p&gt;</value>
   </data>
 </root>
