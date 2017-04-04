@@ -10,7 +10,7 @@
         <div class="component-cost">
             @foreach (var fineString in ViewBag.CostDictionary[Model.RciComponentName])
             {
-                <p>@fineString</p>
+                <span>| @fineString |</span>
             }
         </div>
         <div class="divAddOn">

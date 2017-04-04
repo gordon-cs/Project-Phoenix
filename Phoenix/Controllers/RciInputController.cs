@@ -63,6 +63,7 @@ namespace Phoenix.Controllers
                 var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
                 ViewBag.CommonAreaModel = commonAreaRci;
                 ViewBag.RAIsMemberOfApartment = (role == "RA") && (commonAreaRci.CommonAreaMember.Where(m => m.GordonID == gordon_id).Any());
+                ViewBag.CostDictionary = componentService.GetCostDictionary("common", rci.BuildingCode);
             }
             else
             {
