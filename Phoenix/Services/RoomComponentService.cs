@@ -14,9 +14,16 @@ namespace Phoenix.Services
             document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
 
-        public Dictionary<string, List<string>> GetCostDictionary(string roomType, string buildingCode)
+        /// <summary>
+        /// Compile a dictionary of rci components and associated costs. The list of components is retrieved from
+        /// the RoomComponents.xml file.
+        /// If two components have the same name and have different costs in the xml file, the costs are joined.
+        /// E.g - In a common area, the two Wall components will display the same cost string, which will be the the collection 
+        /// of the individual costs indicated in the xml. A HashSet is used to remove duplicates.
+        /// </summary>
+        public Dictionary<string, HashSet<string>> GetCostDictionary(string roomType, string buildingCode)
         {
-            var costDictionary = new Dictionary<string, List<string>>();
+            var costDictionary = new Dictionary<string, HashSet<string>>();
 
             // Get the correct rci template
             var rciTemplate =
@@ -31,7 +38,17 @@ namespace Phoenix.Services
             {
                 var costs = component.Elements("cost").Select(s => s.Attribute("name").Value + " -  $" + s.Attribute("approxCost").Value).ToList();
                 var componentName = component.Attribute("name").Value;
-                costDictionary.Add(componentName, costs);
+                if(costDictionary.ContainsKey(componentName))
+                {
+                    foreach(var cost in costs)
+                    {
+                        costDictionary[componentName].Add(cost);
+                    }
+                }
+                else
+                {
+                    costDictionary.Add(componentName, new HashSet<string>(costs));
+                }
 
             }
 
