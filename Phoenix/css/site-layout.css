@@ -151,7 +151,7 @@
 
         .pane-title {
             border-radius: 4px;
-            padding: .45em;
+            padding: .25em;
             text-align: center;
         }
         .pane-content {
@@ -549,12 +549,12 @@ td, th {
     font-weight: bold;
 }
 
-
-
 .component-cost {
-    border: 1px solid #cccccb;
     font-size: 0.7em;
-    padding: 0.5em;
+}
+.component-cost > p,
+.component-cost > span {
+    margin: 0.5em 0;
 }
 /***************************/
 /***********MISC************/
