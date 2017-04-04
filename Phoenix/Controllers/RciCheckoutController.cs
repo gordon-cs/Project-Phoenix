@@ -291,7 +291,7 @@ namespace Phoenix.Controllers
             if (!isValidLogin) // If this is not a valid user.
             {
                 ViewBag.ExpectedUsername = username;
-                ViewBag.ErrorMessage = "It seems that the password provided is invalid. Please try again.";
+                ViewBag.ErrorMessage = "It looks like the credentials provided are invalid. Please try again.";
                 return View(rci);
             }
 

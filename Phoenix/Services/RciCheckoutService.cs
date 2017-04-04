@@ -226,7 +226,6 @@ namespace Phoenix.Services
 
             rci.CheckoutSigRD = System.DateTime.Today;
             rci.CheckoutSigRDGordonID = rdGordonID;
-            rci.IsCurrent = false;
 
             db.SaveChanges();
 
@@ -276,7 +275,7 @@ namespace Phoenix.Services
                 var recepientName = recepientAccount.firstname; 
                 message.To.Add(new MailAddress(to));
                 message.From = new MailAddress(from);
-                message.Subject = "FINES - THIS IS A TEST";
+                message.Subject = "Checkout Fines - THIS IS A TEST";
                 message.Body = string.Format(Properties.Resources.FINE_EMAIL, 
                     today, 
                     recepientName, 
