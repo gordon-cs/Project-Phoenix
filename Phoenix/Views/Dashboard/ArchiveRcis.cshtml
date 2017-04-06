@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRciViewModel>
+
+@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.ViewTitle = "Archive Rcis";
+    ViewBag.MenuExists = "T";
+    ViewBag.NeedsLogo = true;
+}
+
+<div class="view">
+    <div class="pane">
+        @using (Html.BeginForm(actionName: "ArchiveRcis", controllerName: "Dashboard", method: FormMethod.Post))
+        {
+            foreach (var rci in Model)
+            {
+                var rciCssClass = "";
+                if (rci.RciStage == "CHECKIN")
+                {
+                    rciCssClass = "rci-card-checkin";
+                }
+                else
+                {
+                    rciCssClass = "rci-card-checkout";
+                }
+                <div class="divAddOn rci-card">
+                    <div class="divAddOn-item check-box"><input type="checkbox" name="rciComponent" value="@rci.RciID" /></div>
+                    <div class="divAddOn-field @rciCssClass">
+                        <p>@rci.BuildingCode @rci.RoomNumber @rci.FirstName @rci.LastName</p>
+                        @Html.Partial("SignatureBlocks", rci)
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

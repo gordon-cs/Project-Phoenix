@@ -288,6 +288,7 @@
     <Content Include="Views\RciCheckout\RciReviewIndividualRoom.cshtml" />
     <Content Include="Views\Dashboard\Legend.cshtml" />
     <Content Include="Views\Dashboard\SignatureBlocks.cshtml" />
+    <Content Include="Views\Dashboard\ArchiveRcis.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />
