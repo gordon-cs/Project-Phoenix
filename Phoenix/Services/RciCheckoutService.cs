@@ -275,7 +275,7 @@ namespace Phoenix.Services
                 var recepientName = recepientAccount.firstname; 
                 message.To.Add(new MailAddress(to));
                 message.From = new MailAddress(from);
-                message.Subject = "Checkout Fines - THIS IS A TEST";
+                message.Subject = "Checkout Fines - " + rci.BuildingCode + " " + rci.RoomNumber;
                 message.Body = string.Format(Properties.Resources.FINE_EMAIL, 
                     today, 
                     recepientName, 

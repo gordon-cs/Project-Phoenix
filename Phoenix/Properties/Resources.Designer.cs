@@ -69,7 +69,7 @@ namespace Phoenix.Properties {
         ///
         ///&lt;p&gt;**Check-out is not completed until the Resident Director has signed the Room Condition Inventory. Resident Directors may assess fines for damages not recorded by the R.A.&lt;/p&gt;
         ///
-        ///&lt;p&gt;After the halls have closed, the Resident Director and the R.A.go through each room carefully, and sometimes notice damages that were not noticed by the R.A. during the initial check-out with [rest of string was truncated]&quot;;.
+        ///&lt;p&gt;After the halls have closed, the Resident Director and the R.A. go through each room carefully, and sometimes notice damages that were not noticed by the R.A. during the initial check-out wit [rest of string was truncated]&quot;;.
         /// </summary>
         public static string FINE_EMAIL {
             get {

@@ -85,7 +85,7 @@
         }
         else if (Model.CheckinSigRA == null)
         {
-            <p>@ViewBag.User please, sign with your name to confirm the entered damages as an AC.</p>
+            <p>@ViewBag.User, please sign with your name to confirm the entered damages as an AC.</p>
             <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
             <div class="distribute-evenly">
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
