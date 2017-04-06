@@ -246,7 +246,7 @@ namespace Phoenix.Services
                 {
                     if (fineEmailDictionary.ContainsKey(fine.GordonID))
                     {
-                        fineEmailDictionary[fine.GordonID]["body"] += "<p>" + fine.Reason + ": " + fine.FineAmount + "</p>";
+                        fineEmailDictionary[fine.GordonID]["body"] += "<p>" + component.RciComponentName + " - " + fine.Reason + ": $" + fine.FineAmount + "</p>";
                         var total = decimal.Parse(fineEmailDictionary[fine.GordonID]["total"]);
                         total = total + fine.FineAmount;
                         fineEmailDictionary[fine.GordonID]["total"] = total.ToString();
@@ -256,7 +256,7 @@ namespace Phoenix.Services
 
                         var newFineEmailContents = new Dictionary<string, string>
                         {
-                            {"body",  "<p>" + fine.Reason + ": " + fine.FineAmount + "</p>" },
+                            {"body",  "<p>" + component.RciComponentName + " - " + fine.Reason + ": $" + fine.FineAmount + "</p>" },
                             {"total", fine.FineAmount.ToString() }
                         };
                         fineEmailDictionary.Add(fine.GordonID, newFineEmailContents);
@@ -280,7 +280,7 @@ namespace Phoenix.Services
                     today, 
                     recepientName, 
                     entry.Value["body"], 
-                    entry.Value["total"]);
+                    "$" + entry.Value["total"]);
                 message.IsBodyHtml = true;
 
                 using (var smtp = new SmtpClient())
