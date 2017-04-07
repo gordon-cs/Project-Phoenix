@@ -5,6 +5,7 @@
  * 2.................. Drawer Menu
  * 3.................. Damage Image Slides Modal
  * 4.................. Signature overlay
+ * 5.................. Select all
  *
 /***********************************************/
 
@@ -164,4 +165,19 @@ $(".material-icons.clear").click(function () {
     let modalID = $(this).closest(".img-modal").attr("id");
     console.log(modalID);
     closeModal(modalID);
+});
+
+
+/* Select all checkboxes */
+
+$(".select-all").click(function () {
+    $this = $(this);
+    if ($this.text() === "Select all") {
+        $this.text("Unselect all");
+        $("input[type=checkbox]").prop("checked", true);
+    }
+    else {
+        $this.text("Select all");
+        $("input[type=checkbox]").prop("checked", false);
+    }
 });
