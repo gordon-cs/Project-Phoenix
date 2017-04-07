@@ -11,6 +11,12 @@
     <div class="pane">
         @using (Html.BeginForm(actionName: "ArchiveRcis", controllerName: "Dashboard", method: FormMethod.Post))
         {
+            <div class="divAddOn">
+                <input class="divAddOn-field" type="submit" value="OK" />
+            </div>
+
+            <p class="fake-link select-all">Select all</p>
+
             foreach (var rci in Model)
             {
                 var rciCssClass = "";

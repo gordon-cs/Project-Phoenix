@@ -46,6 +46,7 @@
  * .............. table
  * .............. horizontal scroll wrapper
  * .............. legend
+ * .............. pseudo-link
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -547,6 +548,10 @@ td, th {
 .legend-text {
     font-size: 0.9em;
     font-weight: bold;
+}
+
+.fake-link {
+    text-decoration: underline;
 }
 
 /***************************/

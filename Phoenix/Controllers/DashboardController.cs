@@ -152,6 +152,18 @@ namespace Phoenix.Controllers
             return routeToTake[state][role];
                 
         }
+
+        [RD]
+        public ActionResult ArchiveRcis()
+        {
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
+
+            var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
+
+            return View(buildingRcis);
+        }
+
         [HttpGet]
         public ActionResult SyncRcis()
         {
