@@ -419,6 +419,9 @@ namespace Phoenix.Services
             }
         }
 
+        /// <summary>
+        /// Set the IsCurrent column for a bunch of rcis to false.
+        /// </summary>
         public void ArchiveRcis(List<int> rciIds)
         {
             var rcis = db.Rci.Where(r => rciIds.Contains(r.RciID));

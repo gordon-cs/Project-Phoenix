@@ -153,7 +153,11 @@ namespace Phoenix.Controllers
                 
         }
 
+        /// <summary>
+        /// Return the ArchiveRcis View to user.
+        /// </summary>
         [RD]
+        [HttpGet]
         public ActionResult ArchiveRcis()
         {
             var temp = (JArray)TempData["kingdom"];
@@ -164,6 +168,9 @@ namespace Phoenix.Controllers
             return View(buildingRcis);
         }
 
+        /// <summary>
+        /// Receives a list of rcis and sets their IsCurrent column to false.
+        /// </summary>
         [RD]
         [HttpPost]
         public ActionResult ArchiveRcis(List<int> rciID)
@@ -182,6 +189,7 @@ namespace Phoenix.Controllers
             dashboardService.SyncCommonAreaRcisFor(kingdom);
             return RedirectToAction("Index");
         }
+
         // Potentially later: admin option that can view all RCI's for all buildings
 
         // Maybe use an authorization filter here to only allow an RD to access this method?
