@@ -419,6 +419,16 @@ namespace Phoenix.Services
             }
         }
 
+        public void ArchiveRcis(List<int> rciIds)
+        {
+            var rcis = db.Rci.Where(r => rciIds.Contains(r.RciID));
+            foreach(var rci in rcis)
+            {
+                rci.IsCurrent = false;
+            }
+            db.SaveChanges();
+        }
+
         /// <summary>
         /// Helper method to create and return an Rci Object. Makes no calls to the database
         /// </summary>

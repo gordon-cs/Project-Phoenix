@@ -164,6 +164,14 @@ namespace Phoenix.Controllers
             return View(buildingRcis);
         }
 
+        [RD]
+        [HttpPost]
+        public ActionResult ArchiveRcis(List<int> rciID)
+        {
+            dashboardService.ArchiveRcis(rciID);
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         public ActionResult SyncRcis()
         {

@@ -29,7 +29,7 @@
                     rciCssClass = "rci-card-checkout";
                 }
                 <div class="divAddOn rci-card">
-                    <div class="divAddOn-item check-box"><input type="checkbox" name="rciComponent" value="@rci.RciID" /></div>
+                    <div class="divAddOn-item check-box"><input type="checkbox" name="rciID" value="@rci.RciID" /></div>
                     <div class="divAddOn-field @rciCssClass">
                         <p>@rci.BuildingCode @rci.RoomNumber @rci.FirstName @rci.LastName</p>
                         @Html.Partial("SignatureBlocks", rci)
