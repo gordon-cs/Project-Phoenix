@@ -39,8 +39,6 @@ namespace Phoenix
 
             bundles.Add(new StyleBundle("~/bundles/page_specific/css/rci-checkout").Include(
                         "~/css/rci-checkout.css"));
-            bundles.Add(new StyleBundle("~/bundles/page_specific/css/rci-component-reassign").Include(
-                        "~/css/rci-component-reassign.css"));
 
             // Page specific js
             bundles.Add(new ScriptBundle("~/bundles/page_specific/js/landing_page").Include(
