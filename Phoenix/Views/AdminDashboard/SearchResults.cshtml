@@ -1,0 +1,13 @@
+﻿@model Phoenix.Models.ViewModels.SearchResultsViewModel
+
+@if (Model.RciSearchResult != null)
+{
+    foreach (var rci in Model.RciSearchResult)
+    {
+        @Html.Partial("DashboardRciButton", rci)
+    }
+}
+else
+{
+    <p>We're ready for your search query.</p>
+}

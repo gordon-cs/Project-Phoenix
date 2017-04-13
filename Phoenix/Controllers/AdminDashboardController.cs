@@ -20,14 +20,28 @@ namespace Phoenix.Controllers
         {
             adminDashboardService = new AdminDashboardService();
         }
+
         // GET: AdminDashboard
         public ActionResult Index()
         {
             AdminDashboardViewModel viewModel = new AdminDashboardViewModel();
+            SearchResultsViewModel searchViewModel = new SearchResultsViewModel();
             viewModel.Buildings = adminDashboardService.GetBuildingCodes();
             viewModel.Sessions = adminDashboardService.GetSessions();
+            viewModel.SearchResults = searchViewModel;
 
             return View(viewModel);
+        }
+
+        // GET: Search
+        public PartialViewResult SearchRcis(string building = null, 
+            string session = null, string keyword = null)
+        {
+            SearchResultsViewModel viewModel = new SearchResultsViewModel();
+            viewModel.RciSearchResult = adminDashboardService.Search(building, session, keyword);
+
+            // Note js still needs to add this partial bit of html to the DOM
+            return PartialView(viewModel);
         }
     }
 }

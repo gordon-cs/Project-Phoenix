@@ -52,10 +52,8 @@
             <div class="divAddOn search-bar">
                 <input class="divAddOn-field" type="text" placeholder="Search..." />
             </div>
-                @*@foreach (var rci in Model)
-                {
-                    @Html.Partial("DashboardRciButton", rci)
-                }*@
+             @Html.Partial("SearchResults", Model.SearchResults)
+               
         </div>
       </section>
     <section id="update-furniture-view">
