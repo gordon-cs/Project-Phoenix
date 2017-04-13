@@ -12,6 +12,9 @@
 @section Styles {
     @Styles.Render("~/bundles/page_specific/css/dashboard")
 }
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/admin")
+}
 <div class="admin view">
     <h3>Hi @ViewBag.Name!</h3>
     <section class="admin-actions">
@@ -25,7 +28,7 @@
                Find RCIs
             </h3>
             <section class="filters">
-                <select class="divAddOn-field">
+                <select id="session-select" class="divAddOn-field">
                     <option value="0">Session</option>
                     @{
                         int i = 1;
@@ -36,7 +39,7 @@
                         }
                     }
                 </select>
-                <select class="divAddOn-field">
+                <select id="building-select" class="divAddOn-field">
                     <option value="0">Building</option>
                     @{
                         int j = 1;
@@ -49,10 +52,11 @@
                 </select>
             </section>
 
-            <div class="divAddOn search-bar">
-                <input class="divAddOn-field" type="text" placeholder="Search..." />
+            <div class="divAddOn">
+                <input id="search-bar-input" class="divAddOn-field" type="text" placeholder="Search..." />
             </div>
-             @Html.Partial("SearchResults", Model.SearchResults)
+            <button id="search-button">Search</button>
+            <section id="search-results-section">@Html.Partial("SearchResults", Model.SearchResults)</section>
                
         </div>
       </section>

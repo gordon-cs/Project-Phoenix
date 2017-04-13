@@ -48,12 +48,14 @@ namespace Phoenix.Services
          */
         public IEnumerable<HomeRciViewModel> Search(string building = null, string session = null, string keyword = null)
         {
+            // Note: These queries are not quite right yet. Maybe I can try refining them in SQL server
             
             if (keyword != null && session != null && building != null)
             {
                 var results = from rci in db.Rci
                               join account in db.Account on rci.GordonID equals account.ID_NUM 
-                              where rci.SessionCode == session && rci.BuildingCode == building
+                              join sess in db.Session on rci.SessionCode equals sess.SESS_CDE
+                              where sess.SESS_DESC == session && rci.BuildingCode == building
                               && (keyword.Contains(rci.GordonID) || keyword.Contains(rci.BuildingCode)
                               || keyword.Contains(rci.SessionCode) || keyword.Contains(rci.RoomNumber)
                               || keyword.Contains(account.firstname) || keyword.Contains(account.lastname))
