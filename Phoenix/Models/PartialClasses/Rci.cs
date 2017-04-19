@@ -1,8 +1,4 @@
 ﻿using Phoenix.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace Phoenix.Models
 {
@@ -30,7 +26,7 @@ namespace Phoenix.Models
 
         public bool IsIndividualRci()
         {
-            return GordonID != null ? true : false;
+            return GordonID != null;
         }
     }
 }
