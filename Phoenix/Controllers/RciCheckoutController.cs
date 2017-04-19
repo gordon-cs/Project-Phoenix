@@ -11,10 +11,12 @@ namespace Phoenix.Controllers
     public class RciCheckoutController : Controller
     {
         private RciCheckoutService checkoutService;
+        private RoomComponentService componentService;
 
         public RciCheckoutController()
         {
             checkoutService = new RciCheckoutService();
+            componentService = new RoomComponentService();
         }
 
         // GET: RCICheckout
@@ -39,7 +41,8 @@ namespace Phoenix.Controllers
             {
                 ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
                 var rci = checkoutService.GetCommonAreaRciByID(id);
-                if(rci.CheckoutSigRD != null)
+                ViewBag.CostDictionary = componentService.GetCostDictionary("common", rci.BuildingCode);
+                if (rci.CheckoutSigRD != null)
                 {
                     return RedirectToAction("RciReview");
                 }
@@ -48,6 +51,7 @@ namespace Phoenix.Controllers
             else // An individual room
             {
                 var rci = checkoutService.GetIndividualRoomRciByID(id);
+                ViewBag.CostDictionary = componentService.GetCostDictionary("individual", rci.BuildingCode);
                 if (rci.CheckoutSigRD != null)
                 {
                     return RedirectToAction("RciReview");

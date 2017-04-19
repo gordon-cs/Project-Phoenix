@@ -21,6 +21,7 @@ namespace Phoenix.Controllers
         // RCI context wrapper. It can be considered to be an object that represents the database.
         private RCIContext db;
         private RciInputService rciInputService;
+        private RoomComponentService componentService;
 
         // This list is static so it will persist across actions.
         private static List<int> damagesToDelete = new List<int>();
@@ -30,6 +31,7 @@ namespace Phoenix.Controllers
             Debug.WriteLine("Initialize RCIInput Controller");
             db = new Models.RCIContext();
             rciInputService = new RciInputService();
+            componentService = new RoomComponentService();
         }
 
         public ActionResult Index(int id)
@@ -61,10 +63,12 @@ namespace Phoenix.Controllers
                 var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
                 ViewBag.CommonAreaModel = commonAreaRci;
                 ViewBag.RAIsMemberOfApartment = (role == "RA") && (commonAreaRci.CommonAreaMember.Where(m => m.GordonID == gordon_id).Any());
+                ViewBag.CostDictionary = componentService.GetCostDictionary("common", rci.BuildingCode);
             }
             else
             {
                 var name = rciInputService.GetName(rci.GordonID);
+                ViewBag.CostDictionary = componentService.GetCostDictionary("individual", rci.BuildingCode);
                 ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " " + name;
             }
 

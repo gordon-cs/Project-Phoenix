@@ -562,6 +562,14 @@ td, th {
     border-radius: 4px;
 }
 
+.component-cost {
+    font-size: 0.7em;
+}
+.component-cost > p,
+.component-cost > span {
+    margin: 0.5em 0;
+}
+
 /* Placeholder for when there are no components on the page */
 
 .nothing-placeholder {
@@ -570,6 +578,7 @@ td, th {
     padding: 2em;
     text-align: center;
 }
+
 /***************************/
 /***********MISC************/
 /***************************/
