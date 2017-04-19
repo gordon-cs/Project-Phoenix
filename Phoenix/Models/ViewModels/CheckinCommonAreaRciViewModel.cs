@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Phoenix.Models.ViewModels
 {
@@ -20,6 +21,11 @@ namespace Phoenix.Models.ViewModels
         public string CheckinSigRAGordonID { get; set; }
         public string CheckinSigRDName { get; set; }
         public string CheckinSigRDGordonID { get; set; }
+
+        public bool DamagesExist()
+        {
+            return RciComponent.Where(x => x.Damage.Any()).Any();
+        }
 
         public bool EveryoneHasSigned()
         {

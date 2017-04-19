@@ -13,7 +13,7 @@
 
 <h2 id="rci-@Model.RciID">Signature</h2>
 
-        <div>
+<div class="pane">
 
     @if (Model.GordonID == ViewBag.GordonID) // Normal individual rci that belongs to the RA
     {
@@ -49,13 +49,15 @@
         }
         else
         {
-            <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
-            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"Dashboard")'">Back to Dashboard</button>
+            <div class="pane">
+                <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
+                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"Dashboard")'">Back to Dashboard</button>
+            </div>
         }
 
 
     }
-    else if(Model.GordonID != ViewBag.GordonID && Model.GordonID != null)// Individual Rci that does not belong to RA 
+    else if (Model.GordonID != ViewBag.GordonID && Model.GordonID != null)// Individual Rci that does not belong to RA
     {
         if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
         {
@@ -90,13 +92,14 @@
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
                 <button id="submit-button" onclick="RASigSubmit()">Submit</button>
             </div>
-        }
-        else
-        {
+            }
+            else
+            {
             <p>You've already signed this resident's RCI.</p>
             <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-        }
+            }
+        </div>
     }
 
-        </div>
+</div>
 
