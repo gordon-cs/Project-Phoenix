@@ -152,7 +152,7 @@ namespace Phoenix.Controllers
         {
             if (rciSig == null || rciSig.Trim() == "")
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
             else
             {
@@ -177,9 +177,10 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
         {
-            if (rciSig == null || rciSig.Trim() == "" || lacSig == null || lacSig.Trim() == "")
+            // Both can't be null when submitting.
+            if ((rciSig == null || rciSig.Trim() == "") && (lacSig == null || lacSig.Trim() == ""))
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
 
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
@@ -238,7 +239,7 @@ namespace Phoenix.Controllers
         {
             if (rciSig == null || rciSig.Trim() == "")
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             

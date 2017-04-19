@@ -14,35 +14,35 @@
 
 <h2 id="rci-@Model.RciID">Signature</h2>
 
-<div>
+<div class="pane">
 
 
     @if ((Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null) && Model.GordonID != null) // Individual rci not signed by resident
             {
-        <p>Resident hasn't signed yet. Please make sure resident and RA have signed before signing.</p>
-                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        <p>The resident hasn't signed yet. Please make sure the resident and RA have signed before signing.</p>
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
     else if (Model.CheckinSigRes == null && Model.GordonID == null) // Common area rci not signed by resident
     {
-        <p>Residents haven't signed yet. Please make sure residents and RA have signed before signing.</p>
+        <p>The residents haven't signed yet. Please make sure the residents and AC have signed before signing.</p>
         <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
     else if (Model.CheckinSigRA == null)
     {
-        <p>RA hasn't signed yet. Please make sure RA has signed before signing.</p>
-                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-                }
-                else if (Model.CheckinSigRD == null)
-                {
-        <p>Please sign with your name @ViewBag.User to confirm the entered existing damages.</p>
-                <input type="text" id="rci-sig" />
-                <p>OR</p>
-                    if (Model.CheckinSigRDGordonID == null)
-                    {
+        <p>The RA/AC hasn't signed yet. Please make sure the RA/AC has signed before signing.</p>
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+    }
+    else if (Model.CheckinSigRD == null)
+    {
+        <p>@ViewBag.User, please sign with your name to confirm the entered damages.</p>
+        <input type="text" id="rci-sig" />
+        <p>OR</p>
+        if (Model.CheckinSigRDGordonID == null)
+        {
             <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Queue for signing later</label>
         }
-                    else
-                    {
+        else
+        {
             <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Queue for signing later</label>
         }
         <div class="distribute-evenly">
@@ -53,7 +53,7 @@
     else
     {
         <p>You've already signed! You're all set.</p>
-                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
     }
 
 </div>

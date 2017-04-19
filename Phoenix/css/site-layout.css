@@ -46,6 +46,8 @@
  * .............. table
  * .............. horizontal scroll wrapper
  * .............. legend
+ * .............. component
+ * .............. nothing-placeholder
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -150,8 +152,7 @@
      }
 
         .pane-title {
-            border-radius: 4px;
-            padding: .25em;
+            padding: .45em;
             text-align: center;
         }
         .pane-content {
@@ -549,6 +550,18 @@ td, th {
     font-weight: bold;
 }
 
+/* We use the component layout a lot, so I created classes for it. Let's not get these styles mixed up with the
+  * more generic "pane" class.
+*/
+
+.component {
+    margin: 14px 0;
+    padding: 0;
+}
+.component-title {
+    border-radius: 4px;
+}
+
 .component-cost {
     font-size: 0.7em;
 }
@@ -556,6 +569,16 @@ td, th {
 .component-cost > span {
     margin: 0.5em 0;
 }
+
+/* Placeholder for when there are no components on the page */
+
+.nothing-placeholder {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 2em;
+    text-align: center;
+}
+
 /***************************/
 /***********MISC************/
 /***************************/
