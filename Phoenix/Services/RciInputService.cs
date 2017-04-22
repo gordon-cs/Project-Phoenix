@@ -64,6 +64,8 @@ namespace Phoenix.Services
             return rcis;
         }*/
 
+       
+
         /// <summary>
         /// Get the rci for a common area by id
         /// </summary>

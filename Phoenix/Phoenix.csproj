@@ -195,6 +195,7 @@
     <Compile Include="Services\RciComponentReassignService.cs" />
     <Compile Include="Services\RciInputService.cs" />
     <Compile Include="Services\RciCheckoutService.cs" />
+    <Compile Include="Services\RoomComponentService.cs" />
     <Compile Include="Utilities\Constants.cs" />
   </ItemGroup>
   <ItemGroup>

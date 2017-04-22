@@ -1,16 +1,18 @@
 ﻿@model Phoenix.Models.RciComponent
 <div class="pane component" id="@Model.RciComponentID">
-    <h2 class="pane-title div-list-toggle">@Model.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
+    <h2 class="pane-title div-list-toggle component-title">@Model.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
     @{ var visible = "hide"; }
     @if(Model.Damage.Any())
     {
         visible = "show";
     }
     <div class="input pane-content @visible">
-        @if (Model.Rci.GordonID != null && Model.RciComponentDescription != null && Model.RciComponentDescription.Trim() != "")
-        {
-            <p><b>Possible places:</b> @Model.RciComponentDescription</p>
-        }
+        <div class="component-cost">
+            @foreach (var fineString in ViewBag.CostDictionary[Model.RciComponentName])
+            {
+                <span>| @fineString |</span>
+            }
+        </div>
         <div class="divAddOn">
             <label class="file-input-label divAddOn-field" for="dmg-input-@Model.RciComponentID">
                 <i class="material-icons">add_a_photo</i>
