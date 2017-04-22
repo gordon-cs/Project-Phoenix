@@ -36,7 +36,7 @@ namespace Phoenix.Services
             var sessions = from entry in db.Session
                            select entry;
             // now filter out only recent sessions
-            sessions = sessions.Where(x => fourYearsAgo.CompareTo(x.SESS_BEGN_DTE.Value) <= 0);
+            sessions = sessions.Where(x => fourYearsAgo.CompareTo(x.SESS_BEGN_DTE.Value) <= 0).OrderByDescending(m => m.SESS_BEGN_DTE);
 
             // Convert query result to a dictionary of <key=Session Code, value=Session Description>
             IDictionary<string, string> sessionDictionary = sessions.ToDictionary(s => s.SESS_CDE.Trim(), s => s.SESS_DESC.Trim());
@@ -46,19 +46,17 @@ namespace Phoenix.Services
 
         /* Search the RCI db for RCI's that match specified search criteria 
          */
-        public IEnumerable<HomeRciViewModel> Search(string building = null, string session = null, string keyword = null)
+        public IEnumerable<HomeRciViewModel> Search(IEnumerable<string> sessions, IEnumerable<string> buildings, string keyword)
         {
             // Note: These queries are not quite right yet. Maybe I can try refining them in SQL server
-            
-            if (keyword != null && session != null && building != null)
-            {
+           
                 var results = from rci in db.Rci
                               join account in db.Account on rci.GordonID equals account.ID_NUM 
                               join sess in db.Session on rci.SessionCode equals sess.SESS_CDE
-                              where sess.SESS_DESC == session && rci.BuildingCode == building
-                              && (keyword.Contains(rci.GordonID) || keyword.Contains(rci.BuildingCode)
+                              where sessions.Contains(sess.SESS_CDE) && buildings.Contains(rci.BuildingCode)
+                              &&( keyword.Contains(rci.GordonID) || keyword.Contains(rci.BuildingCode)
                               || keyword.Contains(rci.SessionCode) || keyword.Contains(rci.RoomNumber)
-                              || keyword.Contains(account.firstname) || keyword.Contains(account.lastname))
+                              || (account.firstname + " " + account.lastname).Contains(keyword))
                               select new HomeRciViewModel
                               {
                                   RciID = rci.RciID,
@@ -74,153 +72,9 @@ namespace Phoenix.Services
                                   CheckoutSigRA = rci.CheckoutSigRA,
                                   CheckoutSigRD = rci.CheckoutSigRD
                               };
+
                 return results;
-            }
-            else if (keyword != null && building != null)
-            {
-                var results = from rci in db.Rci
-                              join account in db.Account on rci.GordonID equals account.ID_NUM
-                              where rci.BuildingCode == building
-                              && (keyword.Contains(rci.GordonID) || keyword.Contains(rci.BuildingCode)
-                              || keyword.Contains(rci.SessionCode) || keyword.Contains(rci.RoomNumber)
-                              || keyword.Contains(account.firstname) || keyword.Contains(account.lastname))
-                              select new HomeRciViewModel
-                              {
-                                  RciID = rci.RciID,
-                                  BuildingCode = rci.BuildingCode.Trim(),
-                                  RoomNumber = rci.RoomNumber.Trim(),
-                                  FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                                  LastName = account.lastname == null ? "RCI" : account.lastname,
-                                  RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                                  CheckinSigRes = rci.CheckinSigRes,
-                                  CheckinSigRA = rci.CheckinSigRA,
-                                  CheckinSigRD = rci.CheckinSigRD,
-                                  CheckoutSigRes = rci.CheckoutSigRes,
-                                  CheckoutSigRA = rci.CheckoutSigRA,
-                                  CheckoutSigRD = rci.CheckoutSigRD
-                              };
-                return results;
-            }
-            else if (keyword != null && session != null)
-            {
-                var results = from rci in db.Rci
-                              join account in db.Account on rci.GordonID equals account.ID_NUM
-                              where rci.SessionCode == session
-                              && (keyword.Contains(rci.GordonID) || keyword.Contains(rci.BuildingCode)
-                              || keyword.Contains(rci.SessionCode) || keyword.Contains(rci.RoomNumber)
-                              || keyword.Contains(account.firstname) || keyword.Contains(account.lastname))
-                              select new HomeRciViewModel
-                              {
-                                  RciID = rci.RciID,
-                                  BuildingCode = rci.BuildingCode.Trim(),
-                                  RoomNumber = rci.RoomNumber.Trim(),
-                                  FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                                  LastName = account.lastname == null ? "RCI" : account.lastname,
-                                  RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                                  CheckinSigRes = rci.CheckinSigRes,
-                                  CheckinSigRA = rci.CheckinSigRA,
-                                  CheckinSigRD = rci.CheckinSigRD,
-                                  CheckoutSigRes = rci.CheckoutSigRes,
-                                  CheckoutSigRA = rci.CheckoutSigRA,
-                                  CheckoutSigRD = rci.CheckoutSigRD
-                              };
-                return results;
-            }
-            else if (building != null && session != null)
-            {
-                var results = from rci in db.Rci
-                              join account in db.Account on rci.GordonID equals account.ID_NUM
-                              where rci.SessionCode == session && rci.BuildingCode == building
-                              select new HomeRciViewModel
-                              {
-                                  RciID = rci.RciID,
-                                  BuildingCode = rci.BuildingCode.Trim(),
-                                  RoomNumber = rci.RoomNumber.Trim(),
-                                  FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                                  LastName = account.lastname == null ? "RCI" : account.lastname,
-                                  RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                                  CheckinSigRes = rci.CheckinSigRes,
-                                  CheckinSigRA = rci.CheckinSigRA,
-                                  CheckinSigRD = rci.CheckinSigRD,
-                                  CheckoutSigRes = rci.CheckoutSigRes,
-                                  CheckoutSigRA = rci.CheckoutSigRA,
-                                  CheckoutSigRD = rci.CheckoutSigRD
-                              };
-                return results;
-            }
-            else if (keyword != null)
-            {
-                var results = from rci in db.Rci
-                              join account in db.Account on rci.GordonID equals account.ID_NUM
-                              where (keyword.Contains(rci.GordonID) || keyword.Contains(rci.BuildingCode)
-                              || keyword.Contains(rci.SessionCode) || keyword.Contains(rci.RoomNumber)
-                              || keyword.Contains(account.firstname) || keyword.Contains(account.lastname))
-                              select new HomeRciViewModel
-                              {
-                                  RciID = rci.RciID,
-                                  BuildingCode = rci.BuildingCode.Trim(),
-                                  RoomNumber = rci.RoomNumber.Trim(),
-                                  FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                                  LastName = account.lastname == null ? "RCI" : account.lastname,
-                                  RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                                  CheckinSigRes = rci.CheckinSigRes,
-                                  CheckinSigRA = rci.CheckinSigRA,
-                                  CheckinSigRD = rci.CheckinSigRD,
-                                  CheckoutSigRes = rci.CheckoutSigRes,
-                                  CheckoutSigRA = rci.CheckoutSigRA,
-                                  CheckoutSigRD = rci.CheckoutSigRD
-                              };
-                return results;
-            }
-            else if (session != null)
-            {
-                var results = from rci in db.Rci
-                              join account in db.Account on rci.GordonID equals account.ID_NUM
-                              where rci.SessionCode == session
-                              select new HomeRciViewModel
-                              {
-                                  RciID = rci.RciID,
-                                  BuildingCode = rci.BuildingCode.Trim(),
-                                  RoomNumber = rci.RoomNumber.Trim(),
-                                  FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                                  LastName = account.lastname == null ? "RCI" : account.lastname,
-                                  RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                                  CheckinSigRes = rci.CheckinSigRes,
-                                  CheckinSigRA = rci.CheckinSigRA,
-                                  CheckinSigRD = rci.CheckinSigRD,
-                                  CheckoutSigRes = rci.CheckoutSigRes,
-                                  CheckoutSigRA = rci.CheckoutSigRA,
-                                  CheckoutSigRD = rci.CheckoutSigRD
-                              };
-                return results;
-            }
-            else if (building != null)
-            {
-                var results = from rci in db.Rci
-                              join account in db.Account on rci.GordonID equals account.ID_NUM
-                              where rci.BuildingCode == building
-                              select new HomeRciViewModel
-                              {
-                                  RciID = rci.RciID,
-                                  BuildingCode = rci.BuildingCode.Trim(),
-                                  RoomNumber = rci.RoomNumber.Trim(),
-                                  FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                                  LastName = account.lastname == null ? "RCI" : account.lastname,
-                                  RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                                  CheckinSigRes = rci.CheckinSigRes,
-                                  CheckinSigRA = rci.CheckinSigRA,
-                                  CheckinSigRD = rci.CheckinSigRD,
-                                  CheckoutSigRes = rci.CheckoutSigRes,
-                                  CheckoutSigRA = rci.CheckoutSigRA,
-                                  CheckoutSigRD = rci.CheckoutSigRD
-                              };
-                return results;
-            }
-            else // all values are null
-            {
-                // only bother searching if at least one value is given
-                throw new System.ArgumentException("Not all parameters can be null");
-            }
+ 
         }
 
     }

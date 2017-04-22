@@ -1,26 +1,55 @@
 ﻿/* Send a search query to the database
 */
 function sendSearch() {
-    let sessionCode = $("#session-select option:selected").text();
-    if (sessionCode === "Session")
-        sessionCode = null; // attempt to handle no option selected. This passes an empty string
-    let buildingCode = $("#building-select option:selected").text();
-    if (buildingCode === "Building")
-        buildingCode = null; // attempt to handle no option selected. This passes an empty string
+    let sessionsSelected = [];
+    let buildingsSelected = [];
+    let sessionCode = $("#session-select option:selected");
+    if (sessionCode.text() === "All Sessions")
+    {
+        $("#session-select").children().each(function (index, element) {
+            if (index == 0)
+            { return; }
+
+            console.log($(element));
+            sessionsSelected.push($(element).attr("id"));
+        });
+    }
+    else
+    {
+        sessionsSelected.push(sessionCode.attr("id"));
+    }
+    console.log("Session code: " + sessionCode);
+    let buildingCode = $("#building-select option:selected");
+    if (buildingCode.text() === "All Buildings") {
+        $("#building-select").children().each(function (index, element) {
+            if (index == 0)
+            { return; }
+
+            console.log($(element));
+            buildingsSelected.push($(element).text());
+        });
+    }
+    else {
+        buildingsSelected.push(buildingCode.text());
+    }
+
     let keyword = $("#search-bar-input").val();
 
-    let searchResults = $.ajax(
+    $.ajax(
         {
-            method: "GET",
+            method: "POST",
             url: "/AdminDashboard/SearchRcis",
-            data: { building: buildingCode, session: sessionCode, keyword: keyword}
-        });
+            data: { sessions: sessionsSelected, buildings: buildingsSelected, keyword: keyword }
+        })
+    .then(function (result) {
+        // first clear out an old search results
+        $("#search-results-section").empty();
 
-    // first clear out an old search results
-    $("#search-results-section").empty();
+        // searchResults will be a partial view, which is a chunk of HTML we now want to insert into the DOM
+        $("#search-results-section").append(result);
+    });
 
-    // searchResults will be a partial view, which is a chunk of HTML we now want to insert into the DOM
-    $("#search-results-section").append(searchResults);
+    
 
 }
 

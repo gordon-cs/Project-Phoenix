@@ -29,7 +29,7 @@
             </h3>
             <section class="filters">
                 <select id="session-select" class="divAddOn-field">
-                    <option value="0">Session</option>
+                    <option value="0">All Sessions</option>
                     @{
                         int i = 1;
                         foreach (var session in Model.Sessions)
@@ -38,9 +38,9 @@
                             i++;
                         }
                     }
-                </select>
+                </select>        
                 <select id="building-select" class="divAddOn-field">
-                    <option value="0">Building</option>
+                    <option value="0">All Buildings</option>
                     @{
                         int j = 1;
                         foreach (var building in Model.Buildings)
@@ -56,7 +56,7 @@
                 <input id="search-bar-input" class="divAddOn-field" type="text" placeholder="Search..." />
             </div>
             <button id="search-button">Search</button>
-            <section id="search-results-section">@Html.Partial("SearchResults", Model.SearchResults)</section>
+            <section id="search-results-section">@Html.Partial("SearchRcis", Model.SearchResults)</section>
                
         </div>
       </section>

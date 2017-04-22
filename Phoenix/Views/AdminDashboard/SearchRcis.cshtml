@@ -4,7 +4,7 @@
 {
     foreach (var rci in Model.RciSearchResult)
     {
-        @Html.Partial("DashboardRciButton", rci)
+        @Html.Partial("~/Views/Dashboard/DashboardRciButton.cshtml", rci)
     }
 }
 else

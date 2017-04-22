@@ -34,11 +34,10 @@ namespace Phoenix.Controllers
         }
 
         // GET: Search
-        public PartialViewResult SearchRcis(string building = null, 
-            string session = null, string keyword = null)
+        public PartialViewResult SearchRcis(IEnumerable<string> sessions, IEnumerable<string> buildings, string keyword)
         {
             SearchResultsViewModel viewModel = new SearchResultsViewModel();
-            viewModel.RciSearchResult = adminDashboardService.Search(building, session, keyword);
+            viewModel.RciSearchResult = adminDashboardService.Search(sessions, buildings, keyword);
 
             // Note js still needs to add this partial bit of html to the DOM
             return PartialView(viewModel);

@@ -290,7 +290,8 @@
     <Content Include="Views\Dashboard\SignatureBlocks.cshtml" />
     <Content Include="Views\AdminDashboard\Index.cshtml" />
     <Content Include="Views\Dashboard\DashboardRciButton.cshtml" />
-    <Content Include="Views\AdminDashboard\SearchResults.cshtml" />
+    <Content Include="Views\AdminDashboard\SearchRcis.cshtml" />
+    <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />
