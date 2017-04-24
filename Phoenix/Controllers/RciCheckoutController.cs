@@ -34,8 +34,11 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
+
+            var temp = checkoutService.GetBareRciByID(id);
+
             // Preliminary check to figure out which method to call
-            var isIndividualRci = checkoutService.IsIndividualRci(id);
+            var isIndividualRci = temp.IsIndividualRci();
 
             if (!isIndividualRci) // A common area rci
             {
@@ -71,8 +74,18 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            // Preliminary check to figure out which method to call
-            var isIndividualRci = checkoutService.IsIndividualRci(id);
+
+            var temp = checkoutService.GetBareRciByID(id);
+
+            // Check to figure out if this RCI can be viewed by the logged in user
+            var isViewable = temp.isViewableBy((string)TempData["id"], role, (string)TempData["currentRoom"], (string)TempData["currentBuilding"]);
+            if(!isViewable)
+            {
+                return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+            }
+
+            // Check to figure out which method to call
+            var isIndividualRci = temp.IsIndividualRci();
 
             if (!isIndividualRci) // A common area rci
             {

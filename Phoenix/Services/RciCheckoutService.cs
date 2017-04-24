@@ -15,10 +15,12 @@ namespace Phoenix.Services
             db = new RCIContext();
         }
 
-        public bool IsIndividualRci(int rciID)
+        /// <summary>
+        /// Fetch the rci straight from the db without mapping it to a model.
+        /// </summary>
+        public Rci GetBareRciByID(int id)
         {
-            var rci = db.Rci.Find(rciID);
-            return rci.GordonID != null ? true : false;
+            return db.Rci.Find(id);
         }
         /// <summary>
         /// Get a generic checkout rci view model.
