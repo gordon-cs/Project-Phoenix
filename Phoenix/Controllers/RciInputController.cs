@@ -21,6 +21,7 @@ namespace Phoenix.Controllers
         // RCI context wrapper. It can be considered to be an object that represents the database.
         private RCIContext db;
         private RciInputService rciInputService;
+        private RoomComponentService componentService;
 
         // This list is static so it will persist across actions.
         private static List<int> damagesToDelete = new List<int>();
@@ -30,6 +31,7 @@ namespace Phoenix.Controllers
             Debug.WriteLine("Initialize RCIInput Controller");
             db = new Models.RCIContext();
             rciInputService = new RciInputService();
+            componentService = new RoomComponentService();
         }
 
         public ActionResult Index(int id)
@@ -52,7 +54,13 @@ namespace Phoenix.Controllers
 
             // This is how we access items set in the filter.
             var gordon_id = (string)TempData["id"];
-            
+
+            // Redirect if the rci doesn't belong to the user.
+            if (!rci.isViewableBy(gordon_id, role, (string)TempData["currentRoom"], (string)TempData["currentBuilding"]))
+            {
+                return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+            }
+
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
@@ -61,10 +69,12 @@ namespace Phoenix.Controllers
                 var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
                 ViewBag.CommonAreaModel = commonAreaRci;
                 ViewBag.RAIsMemberOfApartment = (role == "RA") && (commonAreaRci.CommonAreaMember.Where(m => m.GordonID == gordon_id).Any());
+                ViewBag.CostDictionary = componentService.GetCostDictionary("common", rci.BuildingCode);
             }
             else
             {
                 var name = rciInputService.GetName(rci.GordonID);
+                ViewBag.CostDictionary = componentService.GetCostDictionary("individual", rci.BuildingCode);
                 ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " " + name;
             }
 
@@ -79,6 +89,13 @@ namespace Phoenix.Controllers
             var gordon_id = (string)TempData["id"];
 
             var rci = rciInputService.GetRci(id);
+
+            // Redirect if the rci doesn't belong to the user.
+            if (!rci.isViewableBy(gordon_id, (string)TempData["role"], (string)TempData["currentRoom"], (string)TempData["currentBuilding"]))
+            {
+                return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+            }
+
             if (rci.GordonID == null) // A common area rci
             {
                 ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
@@ -148,7 +165,7 @@ namespace Phoenix.Controllers
         {
             if (rciSig == null || rciSig.Trim() == "")
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
             else
             {
@@ -173,9 +190,10 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
         {
-            if (rciSig == null || rciSig.Trim() == "" || lacSig == null || lacSig.Trim() == "")
+            // Both can't be null when submitting.
+            if ((rciSig == null || rciSig.Trim() == "") && (lacSig == null || lacSig.Trim() == ""))
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
 
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
@@ -234,7 +252,7 @@ namespace Phoenix.Controllers
         {
             if (rciSig == null || rciSig.Trim() == "")
             {
-                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you can navigate away from the modal. If you have not,  please sign as it appears in the text box.");
+                return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
             
