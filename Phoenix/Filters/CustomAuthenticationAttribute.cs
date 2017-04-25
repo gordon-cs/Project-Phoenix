@@ -66,8 +66,9 @@ namespace Phoenix.Filters
             filterContext.Controller.TempData["currentRoom"] = decodedJson["currentRoom"].ToString();
             filterContext.Controller.TempData["currentRoomAssignDate"] = decodedJson["currentRoomAssignDate"];
             filterContext.Controller.TempData["kingdom"] = decodedJson["kingdom"];
+            filterContext.Controller.TempData["login_username"] = decodedJson["sub"].ToString();
 
-           
+
             Debug.WriteLine(decodedJson.ToString());
            
 

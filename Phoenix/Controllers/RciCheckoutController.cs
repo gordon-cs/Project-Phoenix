@@ -12,10 +12,12 @@ namespace Phoenix.Controllers
     {
         private RciCheckoutService checkoutService;
         private RoomComponentService componentService;
+        private LoginService loginService;
 
         public RciCheckoutController()
         {
             checkoutService = new RciCheckoutService();
+            loginService = new LoginService();
             componentService = new RoomComponentService();
         }
 
@@ -290,8 +292,11 @@ namespace Phoenix.Controllers
         [RD]
         public ActionResult RDSignature(int id)
         {
-            var rdName = (string)TempData["user"];
-            ViewBag.ExpectedSignature = rdName;
+            var name = (string)TempData["user"];
+            ViewBag.ExpectedSignature = name;
+
+            var userName = (string)TempData["login_username"];
+            ViewBag.ExpectedUsername = userName;
             var rci = checkoutService.GetGenericCheckoutRciByID(id);
             return View(rci);
         }
@@ -301,23 +306,30 @@ namespace Phoenix.Controllers
         /// </summary>
         [HttpPost]
         [RD]
-        public ActionResult RDSignature(int id, string signature)
+        public ActionResult RDSignature(int id, string password, string username)
         {
+
+            if (username.EndsWith("@gordon.edu"))
+            {
+                username = username.Remove(username.IndexOf('@'));
+            }
+
             var rci = checkoutService.GetGenericCheckoutRciByID(id);
             if (rci.CheckoutSigRD != null) // Already signed
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            var signatureMatch = (((string)TempData["user"]).ToLower()).Equals(signature.ToLower());
-            if (!signatureMatch) // Signature provided doesn't match
+            var isValidLogin = loginService.IsValidUser(username, password, loginService.ConnectToADServer());
+            if (!isValidLogin) // If this is not a valid user.
             {
-                ViewBag.ExpectedSignature = (string)TempData["user"];
-                ViewBag.ErrorMessage = "The Signatures did not match! The signature should match the name indicated.";
+                ViewBag.ExpectedUsername = username;
+                ViewBag.ErrorMessage = "It looks like the credentials provided are invalid. Please try again.";
                 return View(rci);
             }
 
             checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
+            checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
     }
