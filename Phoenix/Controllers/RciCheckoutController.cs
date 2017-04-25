@@ -293,7 +293,7 @@ namespace Phoenix.Controllers
         public ActionResult RDSignature(int id)
         {
             var name = (string)TempData["user"];
-            ViewBag.ExpextedSignature = name;
+            ViewBag.ExpectedSignature = name;
 
             var userName = (string)TempData["login_username"];
             ViewBag.ExpectedUsername = userName;
@@ -308,6 +308,11 @@ namespace Phoenix.Controllers
         [RD]
         public ActionResult RDSignature(int id, string password, string username)
         {
+
+            if (username.EndsWith("@gordon.edu"))
+            {
+                username = username.Remove(username.IndexOf('@'));
+            }
 
             var rci = checkoutService.GetGenericCheckoutRciByID(id);
             if (rci.CheckoutSigRD != null) // Already signed
