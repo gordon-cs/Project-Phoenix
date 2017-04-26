@@ -14,7 +14,7 @@
 
 <h2 id="rci-@Model.RciID">Signature</h2>
 
-        <div>
+<div class="pane">
 
     @if (Model.GordonID == ViewBag.GordonID) // Normal individual rci that belongs to the RA
     {
@@ -24,8 +24,8 @@
         {
             if (Model.CheckoutSigRes == null)
             {
-            <p>@ViewBag.User, please sign your name to confirm the entered damages.</p>
-            <input type="text" id="rci-sig-res" placeholder="@ViewBag.User" />
+                <p>@ViewBag.User, please sign your name to confirm the entered damages.</p>
+                <input type="text" id="rci-sig-res" placeholder="@ViewBag.User" />
             }
             else
             {
@@ -50,13 +50,15 @@
         }
         else
         {
-            <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
-            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"Dashboard")'">Back to Dashboard</button>
+            <div class="pane">
+                <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
+                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"Dashboard")'">Back to Dashboard</button>
+            </div>
         }
 
 
     }
-    else if(Model.GordonID != ViewBag.GordonID && Model.GordonID != null)// Individual Rci that does not belong to RA 
+    else if (Model.GordonID != ViewBag.GordonID && Model.GordonID != null)// Individual Rci that does not belong to RA
     {
         if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
         {
@@ -79,7 +81,7 @@
     }
     else if (Model.GordonID != ViewBag.GordonID && Model.GordonID == null) // Common areas
     {
-        if (Model.CheckinSigRes == null )
+        if (Model.CheckinSigRes == null)
         {
             <p>The residents haven't all signed yet. Please make sure the residents have signed before signing.</p>
         }
@@ -99,5 +101,5 @@
         }
     }
 
-        </div>
+</div>
 

@@ -15,36 +15,43 @@
 
 <h2 id="rci-@Model.RciID">Signature</h2>
 
-<div>
+<div class="pane">
 
-    @if (Model.CheckinSigRes == null)
-            {
+    @if (Model.CheckinSigRes == null && Model.LifeAndConductSigRes == null)
+    {
         <p>@ViewBag.User, please sign with your Gordon username to confirm the entered damages.</p>
-                <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
-    }
-    else
-    {
-        <p>You've already signed your RCI. You're all set on that front!</p>
-    }
+        <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
 
-</div>
-
-<div>
-
-    @if (Model.LifeAndConductSigRes == null)
-            {
         <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
-                <p>Please sign with your Gordon username @ViewBag.User</p>
-                <input type="text" id="lac-sig" placeholder="@ViewBag.User" />
-                <div class="distribute-evenly">
-                    <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-                    <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
-                </div>
+        <p>Please sign with your Gordon username @ViewBag.User</p>
+        <input type="text" id="lac-sig" />
+
+        <div class="distribute-evenly">
+            <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
+        </div>
+    }
+    else if (Model.CheckinSigRes != null && Model.LifeAndConductSigRes == null)
+    {
+        <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
+        <p>Please sign with your Gordon username @ViewBag.User</p>
+        <input type="text" id="lac-sig" />
+
+        <div class="distribute-evenly">
+            <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
+        </div>
+    }
+    else if (Model.CheckinSigRes == null && Model.LifeAndConductSigRes != null)
+    {
+        <p>@ViewBag.User, please sign with your Gordon username to confirm the entered damages.</p>
+        <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
+
+        <div class="distribute-evenly">
+            <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
+        </div>
     }
     else
     {
-        <p>You've already signed the Life and Conduct Statement. You're good to go here!</p>
-                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
     }
 
 </div>

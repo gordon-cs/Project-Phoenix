@@ -167,6 +167,7 @@
     <Compile Include="Models\CurrentRD.cs" />
     <Compile Include="Models\Damage.cs" />
     <Compile Include="Models\Fine.cs" />
+    <Compile Include="Models\PartialClasses\Rci.cs" />
     <Compile Include="Models\Rci.cs" />
     <Compile Include="Models\RciComponent.cs" />
     <Compile Include="Models\RCIContext.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Services\RciComponentReassignService.cs" />
     <Compile Include="Services\RciInputService.cs" />
     <Compile Include="Services\RciCheckoutService.cs" />
+    <Compile Include="Services\RoomComponentService.cs" />
     <Compile Include="Utilities\Constants.cs" />
   </ItemGroup>
   <ItemGroup>

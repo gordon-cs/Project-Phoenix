@@ -63,7 +63,7 @@ button.dropdown {
 .search-bar input {
      background-color: #fff;
  }
- .pane-title {
+ .component-title {
      background-color: #014983;
      color: #fff;
  }
@@ -122,4 +122,8 @@ button.dropdown {
 
 .check-box {
     background-color: #fff;
+}
+
+.nothing-placeholder {
+    color: #00AEEF;
 }

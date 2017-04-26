@@ -105,7 +105,7 @@ namespace Phoenix.Controllers
 
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
-
+            dashboardService.SyncRoomRcisFor(kingdom);
             var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom);
 
             return View(buildingRCIs);
@@ -136,7 +136,7 @@ namespace Phoenix.Controllers
             // RD is not in RoomAssign, so there will be nothing under currentRoomNumber and currentBuilding.
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
-
+            dashboardService.SyncRoomRcisFor(kingdom);
             var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
             
             return View(buildingRcis);
