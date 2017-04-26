@@ -166,7 +166,7 @@ namespace Phoenix.Services
                 join component in db.RciComponent on rci.RciID equals component.RciID
                 join fine in db.Fine on component.RciComponentID equals fine.RciComponentID
                 join account in db.Account on fine.GordonID equals account.ID_NUM
-                where buildingCodes.Contains(rci.BuildingCode) && rci.SessionCode.Equals(currentSession)
+                where buildingCodes.Contains(rci.BuildingCode) && rci.IsCurrent.Value == true
                 select new
                 {
                     RoomNumber = rci.RoomNumber,
