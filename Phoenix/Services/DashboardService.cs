@@ -527,7 +527,7 @@ namespace Phoenix.Services
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
                 {Constants.RD,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
-                 {Constants.Admin,
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -539,7 +539,7 @@ namespace Phoenix.Services
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
                 {Constants.RD,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
-                 {Constants.Admin,
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -551,7 +551,7 @@ namespace Phoenix.Services
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
                 {Constants.RD,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
-                 {Constants.Admin,
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -563,7 +563,7 @@ namespace Phoenix.Services
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
-                 {Constants.Admin,
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
@@ -575,7 +575,7 @@ namespace Phoenix.Services
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
-                {Constants.Admin,
+                {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
@@ -587,7 +587,7 @@ namespace Phoenix.Services
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
-                {Constants.Admin,
+                {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
@@ -599,7 +599,7 @@ namespace Phoenix.Services
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
-                {Constants.Admin,
+                {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
