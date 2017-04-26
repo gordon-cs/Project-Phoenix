@@ -6,6 +6,7 @@ using Phoenix.Services;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
+using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
 {
@@ -31,16 +32,16 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            if (role.Equals("ADMIN"))
+            if (role.Equals(Constants.Admin))
             {
                 return RedirectToAction("Index", "AdminDashboard");
             }
 
-            else if (role.Equals("RD"))
+            else if (role.Equals(Constants.RD))
             {
                 return RedirectToAction("RD");
             }
-            else if (role.Equals("RA"))
+            else if (role.Equals(Constants.RA))
             {
                 return RedirectToAction("RA");
             }
