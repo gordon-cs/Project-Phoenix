@@ -5,6 +5,7 @@
     ViewBag.ViewTitle = "Checkin: RA Signature";
     ViewBag.MenuExists = "T";
     ViewBag.Role = TempData["role"];
+    ViewBag.User = TempData["user"];
 }
 
 @section Scripts{
@@ -13,7 +14,7 @@
 
 <h2 id="rci-@Model.RciID">Signature</h2>
 
-        <div>
+<div class="pane">
 
     @if (Model.GordonID == ViewBag.GordonID) // Normal individual rci that belongs to the RA
     {
@@ -23,8 +24,8 @@
         {
             if (Model.CheckoutSigRes == null)
             {
-            <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as a resident.</p>
-            <input type="text" id="rci-sig-res" value="@ViewBag.User" />
+                <p>@ViewBag.User, please sign your name to confirm the entered damages.</p>
+                <input type="text" id="rci-sig-res" placeholder="@ViewBag.User" />
             }
             else
             {
@@ -35,7 +36,7 @@
             {
                 <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
                 <p>Please sign with your name @ViewBag.User</p>
-                <input type="text" id="lac-sig" value="@ViewBag.User" />
+                <input type="text" id="lac-sig" placeholder="@ViewBag.User" />
             }
             else
             {
@@ -49,22 +50,24 @@
         }
         else
         {
-            <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
-            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"Dashboard")'">Back to Dashboard</button>
+            <div class="pane">
+                <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
+                <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"Dashboard")'">Back to Dashboard</button>
+            </div>
         }
 
 
     }
-    else if(Model.GordonID != ViewBag.GordonID && Model.GordonID != null)// Individual Rci that does not belong to RA 
+    else if (Model.GordonID != ViewBag.GordonID && Model.GordonID != null)// Individual Rci that does not belong to RA
     {
         if (Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null)
         {
-            <p>Resident hasn't signed yet. Please make sure resident has signed before signing.</p>
+            <p>The resident hasn't signed yet. Please make sure the resident has signed before signing.</p>
         }
         else if (Model.CheckinSigRA == null)
         {
-            <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
-            <input type="text" id="rci-sig" value="@ViewBag.User" />
+            <p>@ViewBag.User, please sign your name  to confirm the entered damages.</p>
+            <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
             <div class="distribute-evenly">
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
                 <button id="submit-button" onclick="RASigSubmit()">Submit</button>
@@ -78,14 +81,14 @@
     }
     else if (Model.GordonID != ViewBag.GordonID && Model.GordonID == null) // Common areas
     {
-        if (Model.CheckinSigRes == null )
+        if (Model.CheckinSigRes == null)
         {
-            <p>Residents haven't all signed yet. Please make sure residents have signed before signing.</p>
+            <p>The residents haven't all signed yet. Please make sure the residents have signed before signing.</p>
         }
         else if (Model.CheckinSigRA == null)
         {
-            <p>Please sign with your name @ViewBag.User to confirm the entered existing damages as an RA.</p>
-            <input type="text" id="rci-sig" value="@ViewBag.User" />
+            <p>@ViewBag.User, please sign with your name to confirm the entered damages as an AC.</p>
+            <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
             <div class="distribute-evenly">
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
                 <button id="submit-button" onclick="RASigSubmit()">Submit</button>
@@ -98,5 +101,5 @@
         }
     }
 
-        </div>
+</div>
 

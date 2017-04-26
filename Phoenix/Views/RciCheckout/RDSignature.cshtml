@@ -23,16 +23,19 @@
                 <div>
                     @if (Model.CheckoutSigRD == null)
                     {
-                        <p>I, @ViewBag.ExpectedSignature, hereby agree to the fines assessed by the RA.</p>
+                        <p>I, @ViewBag.ExpectedSignature, hereby agree to all of the fines and charges that have been recorded.</p>
+                        <p>I understand that by entering my username and password below, I give the system permission to send a fine email to the resident(s) if any fines/charges were assessed.</p>
                         <div class="divAddOn">
-                            <input class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />
+                            <input class="divAddOn-field" name="username" type="text" value="@ViewBag.ExpectedUsername" />
+                        </div>
+                        <div class="divAddOn">
+                            <input class="divAddOn-field" name="password" type="password" placeholder="Please enter your password" />
                         </div>
                     }
                     else
                     {
                         <p>This RCI has been signed by the Resident Director</p>
                         <div class="divAddOn">
-                            <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.CheckoutSigRDName" />
                             <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRD" />
                         </div>
                     }

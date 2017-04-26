@@ -8,14 +8,17 @@ using System.Web.Mvc;
 namespace Phoenix.Controllers
 {
     [CustomAuthentication]
-    [ResLifeStaff]
     public class RciCheckoutController : Controller
     {
         private RciCheckoutService checkoutService;
+        private RoomComponentService componentService;
+        private LoginService loginService;
 
         public RciCheckoutController()
         {
             checkoutService = new RciCheckoutService();
+            loginService = new LoginService();
+            componentService = new RoomComponentService();
         }
 
         // GET: RCICheckout
@@ -24,6 +27,7 @@ namespace Phoenix.Controllers
         /// </summary>
         /// <param name="id">RCI identifier</param>
         /// <returns></returns>
+        [ResLifeStaff]
         public ActionResult Index(int id)
         {
             // Redirect to other dashboards if role not correct
@@ -32,14 +36,18 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
+
+            var temp = checkoutService.GetBareRciByID(id);
+
             // Preliminary check to figure out which method to call
-            var isIndividualRci = checkoutService.IsIndividualRci(id);
+            var isIndividualRci = temp.IsIndividualRci();
 
             if (!isIndividualRci) // A common area rci
             {
                 ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
                 var rci = checkoutService.GetCommonAreaRciByID(id);
-                if(rci.CheckoutSigRD != null)
+                ViewBag.CostDictionary = componentService.GetCostDictionary("common", rci.BuildingCode);
+                if (rci.CheckoutSigRD != null)
                 {
                     return RedirectToAction("RciReview");
                 }
@@ -48,6 +56,7 @@ namespace Phoenix.Controllers
             else // An individual room
             {
                 var rci = checkoutService.GetIndividualRoomRciByID(id);
+                ViewBag.CostDictionary = componentService.GetCostDictionary("individual", rci.BuildingCode);
                 if (rci.CheckoutSigRD != null)
                 {
                     return RedirectToAction("RciReview");
@@ -67,8 +76,18 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            // Preliminary check to figure out which method to call
-            var isIndividualRci = checkoutService.IsIndividualRci(id);
+
+            var temp = checkoutService.GetBareRciByID(id);
+
+            // Check to figure out if this RCI can be viewed by the logged in user
+            var isViewable = temp.isViewableBy((string)TempData["id"], role, (string)TempData["currentRoom"], (string)TempData["currentBuilding"]);
+            if(!isViewable)
+            {
+                return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+            }
+
+            // Check to figure out which method to call
+            var isIndividualRci = temp.IsIndividualRci();
 
             if (!isIndividualRci) // A common area rci
             {
@@ -85,6 +104,7 @@ namespace Phoenix.Controllers
         /// <summary>
         /// Add a new fine and return its id
         /// </summary>
+        [ResLifeStaff]
         public int AddFine(RciNewFineViewModel fine)
         {
             var fineID = checkoutService.AddFine(fine);
@@ -94,6 +114,7 @@ namespace Phoenix.Controllers
         /// <summary>
         /// Delete an existing fine and return a status code
         /// </summary>
+        [ResLifeStaff]
         public ActionResult RemoveFine(int fineID)
         {
             checkoutService.RemoveFine(fineID);
@@ -104,6 +125,7 @@ namespace Phoenix.Controllers
         /// Return the html view where residents can sign their common area rci
         /// </summary>
         [HttpGet]
+        [ResLifeStaff]
         public ActionResult CommonAreaSignature(int id)
         {
             // TempData stores object, so always cast to string.
@@ -123,6 +145,7 @@ namespace Phoenix.Controllers
         /// Once everyone has signed, the CheckoutSigRes column is filled.
         /// </summary>
         [HttpPost]
+        [ResLifeStaff]
         public ActionResult CommonAreaSignature(int id, string[] signature)
         {
             var  signatures = new List<string>(signature);
@@ -188,6 +211,7 @@ namespace Phoenix.Controllers
         /// Return the html view where a resident can sign to checkout
         /// </summary>
         [HttpGet]
+        [ResLifeStaff]
         public ActionResult ResidentSignature(int id)
         {
             var rci = checkoutService.GetIndividualRoomRciByID(id);
@@ -198,6 +222,7 @@ namespace Phoenix.Controllers
         /// Verify the resident's signature.
         /// </summary>
         [HttpPost]
+        [ResLifeStaff]
         public ActionResult ResidentSignature(int id, string signature)
         {
             var rci = checkoutService.GetIndividualRoomRciByID(id);
@@ -224,6 +249,7 @@ namespace Phoenix.Controllers
         /// Return the html view where an RA can sign to checkout a resident.
         /// </summary>
         [HttpGet]
+        [ResLifeStaff]
         public ActionResult RASignature(int id)
         {
             var raName = (string)TempData["user"];
@@ -236,6 +262,7 @@ namespace Phoenix.Controllers
         /// Verify the RA's signature
         /// </summary>
         [HttpPost]
+        [ResLifeStaff]
         public ActionResult RASignature(int id, string signature)
         {
             var role = (string)TempData["role"];
@@ -265,8 +292,11 @@ namespace Phoenix.Controllers
         [RD]
         public ActionResult RDSignature(int id)
         {
-            var rdName = (string)TempData["user"];
-            ViewBag.ExpectedSignature = rdName;
+            var name = (string)TempData["user"];
+            ViewBag.ExpectedSignature = name;
+
+            var userName = (string)TempData["login_username"];
+            ViewBag.ExpectedUsername = userName;
             var rci = checkoutService.GetGenericCheckoutRciByID(id);
             return View(rci);
         }
@@ -276,23 +306,30 @@ namespace Phoenix.Controllers
         /// </summary>
         [HttpPost]
         [RD]
-        public ActionResult RDSignature(int id, string signature)
+        public ActionResult RDSignature(int id, string password, string username)
         {
+
+            if (username.EndsWith("@gordon.edu"))
+            {
+                username = username.Remove(username.IndexOf('@'));
+            }
+
             var rci = checkoutService.GetGenericCheckoutRciByID(id);
             if (rci.CheckoutSigRD != null) // Already signed
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            var signatureMatch = (((string)TempData["user"]).ToLower()).Equals(signature.ToLower());
-            if (!signatureMatch) // Signature provided doesn't match
+            var isValidLogin = loginService.IsValidUser(username, password, loginService.ConnectToADServer());
+            if (!isValidLogin) // If this is not a valid user.
             {
-                ViewBag.ExpectedSignature = (string)TempData["user"];
-                ViewBag.ErrorMessage = "The Signatures did not match! The signature should match the name indicated.";
+                ViewBag.ExpectedUsername = username;
+                ViewBag.ErrorMessage = "It looks like the credentials provided are invalid. Please try again.";
                 return View(rci);
             }
 
             checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
+            checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
     }

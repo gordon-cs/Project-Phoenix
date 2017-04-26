@@ -95,7 +95,7 @@ namespace Phoenix.Controllers
 
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
-
+            dashboardService.SyncRoomRcisFor(kingdom);
             var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom);
 
             return View(buildingRCIs);
@@ -118,7 +118,7 @@ namespace Phoenix.Controllers
             // RD is not in RoomAssign, so there will be nothing under currentRoomNumber and currentBuilding.
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
-
+            dashboardService.SyncRoomRcisFor(kingdom);
             var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
             
             return View(buildingRcis);
@@ -142,16 +142,7 @@ namespace Phoenix.Controllers
             return routeToTake[state][role];
                 
         }
-        [HttpGet]
-        public ActionResult SyncRcis()
-        {
-            var temp = (JArray)TempData["kingdom"];
-            List<string> kingdom = temp.ToObject<List<string>>();
-
-            dashboardService.SyncRoomRcisFor(kingdom);
-            dashboardService.SyncCommonAreaRcisFor(kingdom);
-            return RedirectToAction("Index");
-        }
+        
         // Potentially later: admin option that can view all RCI's for all buildings
 
         // Maybe use an authorization filter here to only allow an RD to access this method?

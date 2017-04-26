@@ -23,6 +23,16 @@ namespace Phoenix.Models.ViewModels
         public string CheckoutSigRDName { get; set; }
         public string CheckoutSigRDGordonID { get; set; }
 
+        public bool DamagesExist()
+        {
+            return RciComponent.Where(x => x.Damage.Any()).Any();
+        }
+
+        public bool FinesExist()
+        {
+            return RciComponent.Where(x => x.Fine.Any()).Any();
+        }
+
         public bool EveryoneHasSigned()
         {
             var everyoneHasSigned = true;

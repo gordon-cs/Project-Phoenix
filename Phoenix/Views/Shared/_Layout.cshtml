@@ -37,10 +37,6 @@
                     <i class="material-icons hamburger">menu</i>    
                 </button>
                 <ul class="dropdown-menu">
-                    @if (ViewBag.Role == "RD" || ViewBag.Role == "RA" || ViewBag.Role == "ADMIN")
-                    {
-                        <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "SyncRcis", controllerName: "Dashboard")"><i class="material-icons">sync</i>Sync Rcis</a></li>
-                    }
                     @if (ViewBag.Role == "RD" || ViewBag.Role == "ADMIN")
                     {
                         <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "SignAllRD", controllerName: "RciInput")">Batch Sign RCI Checkins</a></li>
