@@ -32,7 +32,7 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            if (role.Equals(Constants.Admin))
+            if (role.Equals(Constants.ADMIN))
             {
                 return RedirectToAction("Index", "AdminDashboard");
             }
