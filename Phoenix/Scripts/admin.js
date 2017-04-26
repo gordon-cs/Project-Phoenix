@@ -55,3 +55,11 @@ function sendSearch() {
 
 /**** Register event handlers ****/
 $("#search-button").click(sendSearch);
+
+$("#search-bar-input").on("keypress", function (e) {
+    var key = e.keyCode || e.which;
+    if (key == 13) {
+        e.preventDefault();
+        sendSearch();
+    }
+});
