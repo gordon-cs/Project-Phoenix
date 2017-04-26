@@ -2,12 +2,20 @@
 
 @if (Model.RciSearchResult != null)
 {
-    foreach (var rci in Model.RciSearchResult)
+    if (Model.RciSearchResult.Any())
     {
-        @Html.Partial("~/Views/Dashboard/DashboardRciButton.cshtml", rci)
+        foreach (var rci in Model.RciSearchResult)
+        {
+            @Html.Partial("~/Views/Dashboard/DashboardRciButton.cshtml", rci)
+        }
     }
+    else
+    {
+        <p class="no-results-msg">Oops! It looks like nothing matched your search.</p>
+    }
+
 }
-else
+@*else
 {
     <p>We're ready for your search query.</p>
-}
+}*@
