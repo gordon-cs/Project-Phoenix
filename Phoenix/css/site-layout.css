@@ -584,13 +584,13 @@ td, th {
 }
 #signature-container {
     display: none;
-    margin: auto;
+    margin: 40px auto;
     max-height: 400px;
     overflow: auto;
     padding: 2em 1.5em;
     position: fixed;
-    top: 0; right: 0; left: 0; bottom: 0;
-    width: 80%;
+    top: 0; right: 0; left: 0;
+    width: 90%;
     z-index: 99;
 
     /*margin-left: 12%;

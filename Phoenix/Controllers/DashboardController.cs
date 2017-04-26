@@ -173,10 +173,9 @@ namespace Phoenix.Controllers
         /// </summary>
         [RD]
         [HttpPost]
-        public ActionResult ArchiveRcis(List<int> rciID)
+        public void ArchiveRcis(List<int> rciID)
         {
             dashboardService.ArchiveRcis(rciID);
-            return RedirectToAction("Index");
         }
 
         [HttpGet]

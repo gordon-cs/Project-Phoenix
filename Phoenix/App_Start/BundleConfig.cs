@@ -40,6 +40,9 @@ namespace Phoenix
             bundles.Add(new StyleBundle("~/bundles/page_specific/css/rci-checkout").Include(
                         "~/css/rci-checkout.css"));
 
+            bundles.Add(new StyleBundle("~/bundles/page_specific/css/rci-archive").Include(
+                        "~/css/rci-archive.css"));
+
             // Page specific js
             bundles.Add(new ScriptBundle("~/bundles/page_specific/js/landing_page").Include(
                         "~/Scripts/countdown_timer.js"));
@@ -50,6 +53,8 @@ namespace Phoenix
             bundles.Add(new ScriptBundle("~/bundles/page_specific/js/rci-checkout").Include(
                         "~/Scripts/rci-checkout.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/page_specific/js/rci-archive").Include(
+                        "~/Scripts/rci-archive.js"));
 
             //Uncomment the line below to start minifying and bundling.
             //BundleTable.EnableOptimizations = true;

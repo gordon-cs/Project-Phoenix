@@ -143,6 +143,11 @@ $(".signature-overlay").click(function () {
     $("#signature-container").toggle();
 });
 
+$(".signature-overlay-cancel").click(function () {
+    $(".signature-overlay").hide();
+    $("#signature-container").toggle();
+});
+
 
 /********* Register handlers **********/
 

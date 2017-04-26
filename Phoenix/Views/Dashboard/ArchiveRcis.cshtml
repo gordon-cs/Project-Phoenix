@@ -5,19 +5,25 @@
     ViewBag.ViewTitle = "Archive Rcis";
     ViewBag.MenuExists = "T";
     ViewBag.NeedsLogo = true;
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/rci-archive") 
+}
+
+@section Styles{
+    @Styles.Render("~/bundles/page_specific/css/rci-archive")
 }
 
 <div class="view">
     <div class="pane">
-        @using (Html.BeginForm(actionName: "ArchiveRcis", controllerName: "Dashboard", method: FormMethod.Post))
-        {
-            <div class="divAddOn">
-                <input class="divAddOn-field" type="submit" value="OK" />
-            </div>
+        <div class="archive-button divAddOn">
+            <button class="divAddOn-field" id="next-button" >Archive Selected Rcis</button>
+        </div>
 
-            <p class="fake-link select-all">Select all</p>
-
-            foreach (var rci in Model)
+        @foreach (var rci in Model)
             {
                 var rciCssClass = "";
                 if (rci.RciStage == "CHECKIN")
@@ -35,7 +41,20 @@
                         @Html.Partial("SignatureBlocks", rci)
                     </div>
                 </div>
-            }
         }
     </div>
+</div>
+
+<div class="signature-overlay">
+
+</div>
+
+<div id="signature-container">
+        <div>
+            <p>Are you sure you want to archive the selected Rci(s) ?</p>
+        </div>
+        <div class="distribute-evenly">
+            <button class="rci-archive-button">Yes</button>
+            <button class="signature-overlay-cancel">Cancel</button>
+        </div>
 </div>

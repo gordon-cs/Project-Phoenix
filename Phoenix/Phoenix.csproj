@@ -210,6 +210,7 @@
     <Content Include="Content\Images\gordon-logo-vertical-white.svg" />
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
+    <Content Include="css\rci-archive.css" />
     <Content Include="css\rci-checkout.css" />
     <Content Include="css\rci-input.css" />
     <Content Include="css\site-colors.css" />
@@ -224,6 +225,7 @@
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Scripts\rci-archive.js" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
