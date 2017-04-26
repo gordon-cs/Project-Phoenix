@@ -12,7 +12,7 @@ namespace Phoenix.Filters
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             var role = (string)filterContext.Controller.TempData["role"];
-            Debug.WriteLine("Role:" + role);
+
             var isAdmin = role == "ADMIN";
             // String comparison doesn't seem as good as bool comparison, but I wasn't sure how 
             // to parse out a bool from the decoded JSON object
@@ -24,7 +24,6 @@ namespace Phoenix.Filters
                 return;
             }
 
-           Debug.WriteLine("User is admin");
         }
 
     }
