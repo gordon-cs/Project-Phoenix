@@ -52,6 +52,9 @@ namespace Phoenix
             bundles.Add(new ScriptBundle("~/bundles/page_specific/js/rci-checkout").Include(
                         "~/Scripts/rci-checkout.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/page_specific/js/admin").Include(
+                        "~/Scripts/admin.js"));
+
 
             //Uncomment the line below to start minifying and bundling.
             //BundleTable.EnableOptimizations = true;

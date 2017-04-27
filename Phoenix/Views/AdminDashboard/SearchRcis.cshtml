@@ -1,0 +1,21 @@
+﻿@model Phoenix.Models.ViewModels.SearchResultsViewModel
+
+@if (Model.RciSearchResult != null)
+{
+    if (Model.RciSearchResult.Any())
+    {
+        foreach (var rci in Model.RciSearchResult)
+        {
+            @Html.Partial("~/Views/Dashboard/DashboardRciButton.cshtml", rci)
+        }
+    }
+    else
+    {
+        <p class="no-results-msg">Oops! It looks like nothing matched your search.</p>
+    }
+
+}
+@*else
+{
+    <p>We're ready for your search query.</p>
+}*@

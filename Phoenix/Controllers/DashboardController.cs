@@ -5,13 +5,14 @@ using Phoenix.Filters;
 using Phoenix.Services;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
+using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
 {
     [CustomAuthentication]
     public class DashboardController : Controller
     {
-        // RCI context wrapper. It can be considered to be an object that represents the database.
         private DashboardService dashboardService;
 
         public DashboardController()
@@ -25,17 +26,22 @@ namespace Phoenix.Controllers
         {
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
+            Debug.WriteLine("Role: " + role);
 
             if (role == null)
             {
                 return RedirectToAction("Index", "Login");
             }
+            if (role.Equals(Constants.ADMIN))
+            {
+                return RedirectToAction("Index", "AdminDashboard");
+            }
 
-            if (role.Equals("RD"))
+            else if (role.Equals(Constants.RD))
             {
                 return RedirectToAction("RD");
             }
-            else if (role.Equals("RA"))
+            else if (role.Equals(Constants.RA))
             {
                 return RedirectToAction("RA");
             }
@@ -58,14 +64,6 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("RD");
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("RA");
-            }
 
             // TempData stores object, so always cast to string.
             var strID = (string)TempData["id"];
@@ -84,6 +82,7 @@ namespace Phoenix.Controllers
         }
 
         // GET: Home/RA
+        [ResLifeStaff]
         public ActionResult RA()
         {
             // Redirect to other dashboards if role not correct
@@ -91,16 +90,7 @@ namespace Phoenix.Controllers
 
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("RD");
-            }
-            else if (role.Equals("Resident"))
-            {
-                return RedirectToAction("Resident");
+                return RedirectToAction("Index", "Login");
             }
 
             var temp = (JArray)TempData["kingdom"];
@@ -112,6 +102,7 @@ namespace Phoenix.Controllers
         }
 
         // GET: Home/RD
+        [RD]
         public ActionResult RD()
         {
             // Redirect to other dashboards if role not correct
@@ -119,16 +110,7 @@ namespace Phoenix.Controllers
 
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("Resident");
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("RA");
+                return RedirectToAction("Index", "Login");
             }
 
             // Display all RCI's for the corresponding building
@@ -140,6 +122,14 @@ namespace Phoenix.Controllers
             var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
             
             return View(buildingRcis);
+        }
+
+        // GET: Home/Admin
+        [Admin]
+        public ActionResult Admin()
+        {
+            var rcis = dashboardService.GetRcis();
+            return View(rcis);
         }
 
         public ActionResult GotoRci(int rciID)
