@@ -22,6 +22,45 @@ namespace Phoenix.Services
         }
 
         /*
+         * Get a set of RCI's, depending on certain parameters, such as building, year, etc.
+         * This method is used in admin Find RCIs tool
+         * If no params are specified, returns all
+         * 
+         * @params: building - a building specified to get rci's for
+         *          year - a session specificed to get rci's for
+         * @returns: A collection of RCI View Models
+         */
+        public IEnumerable<HomeRciViewModel> GetRcis(string building = null, string year = null)
+        {
+            if (building != null)
+            {
+                return GetRcisForBuilding(new List<string> { building });
+            }
+            else 
+            {
+                // Return all RCI's
+                var RCIs = from personalRCI in db.Rci
+                           join account in db.Account on personalRCI.GordonID equals account.ID_NUM
+                           select new HomeRciViewModel
+                           {
+                               RciID = personalRCI.RciID,
+                               BuildingCode = personalRCI.BuildingCode.Trim(),
+                               RoomNumber = personalRCI.RoomNumber.Trim(),
+                               FirstName = account.firstname,
+                               LastName = account.lastname,
+                               RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                               CheckinSigRes = personalRCI.CheckinSigRes,
+                               CheckinSigRA = personalRCI.CheckinSigRA,
+                               CheckinSigRD = personalRCI.CheckinSigRD,
+                               CheckoutSigRes = personalRCI.CheckoutSigRes,
+                               CheckoutSigRA = personalRCI.CheckoutSigRA,
+                               CheckoutSigRD = personalRCI.CheckoutSigRD
+                           };
+                return RCIs;
+            }
+        }
+
+        /*
          * Get the RCI for an individual resident
          * @params: id - resident's Gordon id
          * @return: A collection of RCI View Models (which should contain only 1)
@@ -500,6 +539,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -510,6 +551,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -520,6 +563,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -530,6 +575,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
@@ -540,6 +587,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
@@ -550,6 +599,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
@@ -560,7 +611,9 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
-                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))}
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
+                {Constants.ADMIN,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
 

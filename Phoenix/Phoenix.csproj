@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44397</IISExpressSSLPort>
+    <IISExpressSSLPort>44351</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
@@ -145,6 +145,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminDashboardController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LogoutController.cs" />
@@ -153,7 +154,7 @@
     <Compile Include="Controllers\RciComponentReassignController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
-    <Compile Include="Filters\AdminAuthorizationAttribute.cs" />
+    <Compile Include="Filters\AdminAttribute.cs" />
     <Compile Include="Filters\RDAttribute.cs" />
     <Compile Include="Filters\ResLifeStaffAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -175,6 +176,7 @@
     <Compile Include="Models\RoomAssign.cs" />
     <Compile Include="Models\RoomChangeHistory.cs" />
     <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckinCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutCommonAreaRciViewModel.cs" />
@@ -188,6 +190,7 @@
     <Compile Include="Models\ViewModels\RciNewDamageViewModel.cs" />
     <Compile Include="Models\ViewModels\RciNewFineViewModel.cs" />
     <Compile Include="Models\ViewModels\RciReassignViewModel.cs" />
+    <Compile Include="Models\ViewModels\SearchResultsViewModel.cs" />
     <Compile Include="Models\ViewModels\SignAllRDViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -195,6 +198,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\AdminDashboardService.cs" />
     <Compile Include="Services\DashboardService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\RciComponentReassignService.cs" />
@@ -228,6 +232,7 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Scripts\rci-archive.js" />
+    <Content Include="Scripts\admin.js" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
@@ -286,8 +291,12 @@
     <Content Include="Views\RciInput\RciReviewComponent.cshtml" />
     <Content Include="Views\RciCheckout\RciReviewCommonArea.cshtml" />
     <Content Include="Views\RciCheckout\RciReviewIndividualRoom.cshtml" />
-    <Content Include="Views\Dashboard\Legend.cshtml" />
+    <Content Include="Views\Shared\Legend.cshtml" />
     <Content Include="Views\Dashboard\SignatureBlocks.cshtml" />
+    <Content Include="Views\AdminDashboard\Index.cshtml" />
+    <Content Include="Views\Dashboard\DashboardRciButton.cshtml" />
+    <Content Include="Views\AdminDashboard\SearchRcis.cshtml" />
+    <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
     <Content Include="Views\Dashboard\ArchiveRcis.cshtml" />
   </ItemGroup>
   <ItemGroup>

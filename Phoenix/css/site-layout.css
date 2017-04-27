@@ -494,6 +494,10 @@ div.icon-label {
 .error-message  p {
     padding: 0.5em;
 }
+.no-results-msg {
+    font-style: italic;
+    margin-top: 1em;
+}
 
 /* Table styling */
 

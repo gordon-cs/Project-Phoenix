@@ -149,16 +149,24 @@ namespace Phoenix.Services
                 return null;
             }
 
+            var AdminEntry = db.Admin.Where(m => m.GordonID == id);
+            if (AdminEntry.Any())
+            {
+                return "ADMIN";
+            }
+
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
             {
                 return "RD";
             }
+
             var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
             if (RAentry != null)
             {
                 return "RA";
             }
+
             return "Resident";
 
         }

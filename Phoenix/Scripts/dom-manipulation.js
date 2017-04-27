@@ -87,6 +87,19 @@ $(".search-bar").keyup(function () {
     }).parent().parent().hide()
 });
 
+/*** Admin dashboard DOM manipulation **/
+
+// Find RCI button
+$("#find-rci-button").click(function () {
+    $("#update-furniture-view").hide();
+    $("#find-rci-view").toggle()
+});
+
+// Update furniture button
+$("#update-furniture-button").click(function () {
+    $("#find-rci-view").hide();
+    $("#update-furniture-view").toggle();
+});
 
 
 /*

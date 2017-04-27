@@ -37,7 +37,7 @@
                     <i class="material-icons hamburger">menu</i>    
                 </button>
                 <ul class="dropdown-menu">
-                    @if (ViewBag.Role == "RD")
+                    @if (ViewBag.Role == "RD" || ViewBag.Role == "ADMIN")
                     {
                         <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "SignAllRD", controllerName: "RciInput")">Batch Sign RCI Checkins</a></li>
                         <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "ExportFines", controllerName: "Dashboard")">Export Fines</a></li>
