@@ -91,7 +91,6 @@ namespace Phoenix.Services
             {
                 var buildings = e.Attributes().Select(x => x.Name).Where(x => (x != "roomType" && x != "id"));
 
-                Debug.WriteLine("Room type attr = " + e.Attribute("roomType").Value);
                 // If there are multiple buildings accounted for by a certain element <rciType>, we have to give it some overarching label
                 // e.g. HUD
                 if (buildings.Count()  > 1 )
@@ -117,6 +116,13 @@ namespace Phoenix.Services
                         result.Add("Chase/Fulton");
                     }
                 }
+
+                // Needs thought: all those hard-coded checks above ^^ seem like they will make the system very brittle
+                // In order to change which buildings are associated, it will require a source code change. And it will not
+                // be possible for a new rci type to be added for multiple buildings in the future.
+                // What I am thinking: Maybe we should make it a one-for-one relationship between buildings and RCI types
+                // Yes, it will be some duplication, but it allows the user more power/customization when we are gone.
+                // #maintainability
                 
                 else if (e.Attribute("roomType").Value.Equals("common"))
                 {
