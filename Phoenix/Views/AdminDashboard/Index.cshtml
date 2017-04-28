@@ -66,7 +66,9 @@
         @{
             foreach (var type in Model.RciTypes)
             {
-                <button class="divAddOn-vert-field search-field">@type</button>
+               
+                <button  class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponentController", routeValues: new { id =1 })'">@type</button>
+
             }
         }
     </section>
