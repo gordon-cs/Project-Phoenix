@@ -3,6 +3,7 @@ using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -90,16 +91,36 @@ namespace Phoenix.Services
             {
                 var buildings = e.Attributes().Select(x => x.Name).Where(x => (x != "roomType" && x != "id"));
 
+                Debug.WriteLine("Room type attr = " + e.Attribute("roomType").Value);
+                // If there are multiple buildings accounted for by a certain element <rciType>, we have to give it some overarching label
+                // e.g. HUD
                 if (buildings.Count()  > 1 )
                 {
+                    // Check if HUD - originally I was not going to check all options, because if the rciType has one HUD, it has them all
+                    // But I thought that might be risky in case one HUD gets removed. (BECAUSE LEWIS... you're days are numbered >.<)
                     if (buildings.Contains("WIL") || buildings.Contains("LEW") || buildings.Contains("EVA")) {
                         result.Add("HUD");
                     }
+                    // Check if Road halls
                     else if (buildings.Contains("DEX") || buildings.Contains("GED") || buildings.Contains("GRA") || buildings.Contains("CON")
                         || buildings.Contains("HIL") || buildings.Contains("MCI") || buildings.Contains("RID"))
                     {
                         result.Add("Road Halls");
                     }
+                    // Check for Ferrin/Drew
+                    else if (buildings.Contains("FER") || buildings.Contains("DRE"))
+                    {
+                        result.Add("Ferrin/Drew");
+                    }
+                    else if (buildings.Contains("CHA") || buildings.Contains("FUL"))
+                    {
+                        result.Add("Chase/Fulton");
+                    }
+                }
+                
+                else if (e.Attribute("roomType").Value.Equals("common"))
+                {
+                    result.Add(buildings.First().ToString() + " - Common Area");
                 }
                 else
                 {
