@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Phoenix.Services;
+using System.Xml.Linq;
 
 namespace Phoenix.Controllers
 {
@@ -30,6 +31,10 @@ namespace Phoenix.Controllers
             viewModel.Sessions = adminDashboardService.GetSessions();
             viewModel.SearchResults = searchViewModel;
 
+            // Load the RCI types from the XML
+            XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
+            viewModel.RciTypes = adminDashboardService.GetRciTypes(document);
+
             return View(viewModel);
         }
 
@@ -42,5 +47,6 @@ namespace Phoenix.Controllers
             // Note js still needs to add this partial bit of html to the DOM
             return PartialView(viewModel);
         }
+
     }
 }

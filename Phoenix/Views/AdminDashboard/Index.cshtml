@@ -63,8 +63,11 @@
     <section id="update-furniture-view">
         <h3>RCI Types:</h3>
         <button class="divAddOn-vert-field search-field">+ Add New Type</button>
-        <button class="divAddOn-vert-field search-field">HUD</button>
-        <button class="divAddOn-vert-field search-field">Ferrin/Drew</button>
-        <button class="divAddOn-vert-field search-field">Fulton/Chase</button>
+        @{
+            foreach (var type in Model.RciTypes)
+            {
+                <button class="divAddOn-vert-field search-field">@type</button>
+            }
+        }
     </section>
     </div>

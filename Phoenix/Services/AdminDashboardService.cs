@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using System.Xml.Linq;
 
 namespace Phoenix.Services
 {
@@ -76,6 +78,40 @@ namespace Phoenix.Services
                 return results;
  
         }
+
+        // Load all the different types of RCIs from the RoomComponents.xml doc 
+        public IEnumerable<string> GetRciTypes(XDocument document)
+        {
+            IEnumerable<XElement> rciTypes = document.Root.Elements("rci");
+
+            List<string> result = new List<string>();
+
+            foreach (var e in rciTypes)
+            {
+                var buildings = e.Attributes().Select(x => x.Name).Where(x => (x != "roomType" && x != "id"));
+
+                if (buildings.Count()  > 1 )
+                {
+                    if (buildings.Contains("WIL") || buildings.Contains("LEW") || buildings.Contains("EVA")) {
+                        result.Add("HUD");
+                    }
+                    else if (buildings.Contains("DEX") || buildings.Contains("GED") || buildings.Contains("GRA") || buildings.Contains("CON")
+                        || buildings.Contains("HIL") || buildings.Contains("MCI") || buildings.Contains("RID"))
+                    {
+                        result.Add("Road Halls");
+                    }
+                }
+                else
+                {
+                    result.Add(buildings.First().ToString());
+                }
+
+            }
+
+            return result;
+                       
+           
+    }
 
     }
 }
