@@ -632,6 +632,12 @@ td, th {
     z-index: 99;*/
 }
 
+.rci-types-flex {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 
 /****************************/
 /******MEDIA QUERIES*********/

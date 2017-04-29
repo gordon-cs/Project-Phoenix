@@ -62,14 +62,17 @@
       </section>
     <section id="update-furniture-view">
         <h3>RCI Types:</h3>
-        <button class="divAddOn-vert-field search-field">+ Add New Type</button>
-        @{
-            foreach (var type in Model.RciTypes)
-            {
-               
-                <button  class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponentController", routeValues: new { id =1 })'">@type</button>
+        <div class="rci-types-flex">
+            @{
+                foreach (var type in Model.RciTypes)
+                {
 
+                    <button class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponentController", routeValues: new { id = type })'">@type</button>
+
+                }
             }
-        }
+            <button class="divAddOn-vert-field search-field" onclick="location.href='@Url.Action(actionName:"SaveAddBuilding", controllerName:"ManageRciComponentController", routeValues: new { id =1 })>+ Add New Type</button>
+        </div>
+
     </section>
     </div>
