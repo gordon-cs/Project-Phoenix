@@ -2,7 +2,14 @@
     margin: 1.5em 0;
 }
 
+#archive-notice {
+    border: 1px solid #ccc;
+    padding: 1em;
+}
 
+.select-completed-rcis > button {
+    background: #b2bb1c;
+}
 .rci-card {
     margin: 1em 0;
 }
