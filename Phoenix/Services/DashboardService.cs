@@ -582,7 +582,7 @@ namespace Phoenix.Services
             rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RA_CHECKOUT, new Dictionary<string, ActionResult>
             {
                 {Constants.RESIDENT,
-                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
@@ -594,7 +594,7 @@ namespace Phoenix.Services
             rciRouteDictionary.Add(Constants.RCI_COMPLETE, new Dictionary<string, ActionResult>
             {
                 {Constants.RESIDENT,
-                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
