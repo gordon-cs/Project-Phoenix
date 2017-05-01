@@ -66,8 +66,15 @@
             @{
                 foreach (var type in Model.RciTypes)
                 {
+                    if (type.Item2.Equals("common"))
+                    {
+                        <button class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponent", routeValues: new { buildingCode = type.Item1, roomType = type.Item2 })'">@type.Item1 - Common Area</button>
+                    }
+                    else
+                    {
+                        <button class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponent", routeValues: new { buildingCode = type.Item1, roomType = type.Item2 })'">@type.Item1</button>
 
-                    <button class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponentController", routeValues: new { id = type, isCommonArea = false })'">@type</button>
+                    }
 
                 }
             }

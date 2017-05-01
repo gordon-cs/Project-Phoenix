@@ -80,16 +80,21 @@ namespace Phoenix.Services
  
         }
 
-        // Load all the different types of RCIs from the RoomComponents.xml doc 
-        public IEnumerable<string> GetRciTypes(XDocument document)
+        // Load all the different types of RCIs from the RoomComponents.xml doc
+        // Returns a tuple of strings representing each type of RCI, 
+        //where Item 1 is the building code and Item 2 is the room type (either common (area) or individual)
+        public IEnumerable<Tuple<string, string>> GetRciTypes(XDocument document)
         {
             IEnumerable<XElement> rciTypes = document.Root.Elements("rci");
 
-            List<string> result = new List<string>();
+            List<Tuple<string, string>> result = new List<Tuple<string, string>>();
 
             foreach (var e in rciTypes)
             {
-                var buildings = e.Attributes().Select(x => x.Name).Where(x => (x != "roomType" && x != "id"));
+                //var buildingCode = e.Attributes().Select(x => x.Name).Where(x => (x != "roomType" && x != "id"));
+
+                var buildingCode = e.Attribute("buildingCode").Value;
+                string dormStyle;
 
                 // If there are multiple buildings accounted for by a certain element <rciType>, we have to give it some overarching label
                 // e.g. HUD
@@ -126,12 +131,14 @@ namespace Phoenix.Services
                 
                 if (e.Attribute("roomType").Value.Equals("common"))
                 {
-                    result.Add(buildings.First().ToString() + " - Common Area");
+                    dormStyle = "common";
                 }
                 else
                 {
-                    result.Add(buildings.First().ToString());
+                    dormStyle = "individual";
                 }
+
+                result.Add(new Tuple<string, string>(buildingCode, dormStyle));
 
             }
 
