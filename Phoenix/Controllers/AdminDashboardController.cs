@@ -64,12 +64,15 @@ namespace Phoenix.Controllers
             XAttribute roomTypeAttribute = new XAttribute("roomType", roomType);
             newType.Add(roomTypeAttribute);
 
+            XElement componentsHolder = new XElement("components");
+            newType.Add(componentsHolder);
+
             rciTypes.Add(newType);
 
             document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
 
 
-            return RedirectToAction("Index", "ManageRciComponents", new { buildingCode = buildingCode, roomType = roomType });
+            return RedirectToAction("Index", "ManageRciComponent", new { buildingCode = buildingCode, roomType = roomType });
         }
     }
 }

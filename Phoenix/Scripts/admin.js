@@ -53,6 +53,21 @@ function sendSearch() {
 
 }
 
+//Create a new type of RCI in the XML doc
+function createNewType(buildingCode, roomType) {
+    console.log("About to create new type");
+
+    $.ajax(
+        {
+            method: "POST",
+            url: "/AdminDashboard/AddNewRciType",
+            data: { buildingCode: buildingCode, roomType: roomType }
+        })
+    .then(function(result) {
+        console.log("Success");});
+}
+
+
 /**** Register event handlers ****/
 $("#search-button").click(sendSearch);
 
@@ -73,4 +88,12 @@ $("#add-type-button").click(function () {
 $("#cancel-add-type").click(function () {
     $(".signature-overlay").hide();
     $("#signature-container").toggle();
+});
+
+$("#create-new-type").click(function () {
+    let buildingCode = $("#new-building-code-input").val();
+    console.log(buildingCode);
+    let roomType = $("#room-type-select option:selected").text().toLocaleLowerCase();
+    console.log("Room type: " + roomType);
+    createNewType(buildingCode, roomType);
 });
