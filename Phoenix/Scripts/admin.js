@@ -63,3 +63,14 @@ $("#search-bar-input").on("keypress", function (e) {
         sendSearch();
     }
 });
+
+
+$("#add-type-button").click(function () {
+    $(".signature-overlay").show();
+    $("#signature-container").toggle();
+});
+
+$("#cancel-add-type").click(function () {
+    $(".signature-overlay").hide();
+    $("#signature-container").toggle();
+});
