@@ -111,12 +111,10 @@
 
 .dropdown-menu {
     /*box-shadow: 0 0 5px 0 #ddd;*/
-    border: solid 1px #cccccb;
+   border: solid 1px #cccccb;
     display:none;
-    margin: 0 auto;
     position: absolute;
-    top: 80px;
-    width: 100%;
+    top: 80px; left: 5px; right: 5px;
     z-index: 200;
 }
 .dropdown-menu-item {
@@ -667,9 +665,8 @@ td, th {
     .dropdown-menu {
     /*box-shadow: 0 0 5px 0 #ddd;*/
     display:none;
-    margin: 0 auto;
     position: absolute;
-    right: 4%;
+    right: 4%; left:unset;
     top: 55px;
     width: 150px;
     z-index: 200;
