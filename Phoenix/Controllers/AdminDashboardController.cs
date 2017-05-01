@@ -48,5 +48,28 @@ namespace Phoenix.Controllers
             return PartialView(viewModel);
         }
 
+        // POST: Create a new type of RCI
+        // This will involve adding a new <rciType> to the XML
+        // If a prexisting RCI has been selected to copy from, copy from that, else just create empty XML element for <components>
+        // Once the new type has been created, we want to redirect user to this new page
+        public ActionResult AddNewRciType(string buildingCode, string roomType, string copyOption = null)
+        {
+            XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
+            XElement rciTypes = document.Root;
+            XElement newType = new XElement("rciType");
+
+            XAttribute buildingCodeAttribute = new XAttribute("buildingCode", buildingCode);
+            newType.Add(buildingCodeAttribute);
+
+            XAttribute roomTypeAttribute = new XAttribute("roomType", roomType);
+            newType.Add(roomTypeAttribute);
+
+            rciTypes.Add(newType);
+
+            document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
+
+
+            return RedirectToAction("Index", "ManageRciComponents", new { buildingCode = buildingCode, roomType = roomType });
+        }
     }
 }
