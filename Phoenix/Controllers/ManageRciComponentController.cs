@@ -10,19 +10,15 @@ namespace Phoenix.Controllers
     public class ManageRciComponentController : Controller
     {
         // GET: ManageRciComponent
-        public ActionResult Index(int id)
+        public ActionResult Index(string buildingCode, string roomType)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement selectedRci =
-                rciTypes.Elements("rci").Select((rci, index) =>
-                    new XElement("rci",
-                        new XAttribute("id", index),
-                        rci.Attributes(),
-                        rci.Elements()))
-                    .ElementAt(id);
-            ViewBag.RciID = id;
-            return View(selectedRci);
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            return View(rci);
         }
 
         [HttpPost]
