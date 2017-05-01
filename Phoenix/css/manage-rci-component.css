@@ -1,4 +1,8 @@
-﻿.input-edit-description, .save-edit-description, .cancel-edit-description, #input-add-building, #save-add-building, #cancel-add-building {
+﻿.input-edit-description, .save-edit-description, .cancel-edit-description, 
+#input-add-building, #save-add-building, #cancel-add-building,
+.input-edit-name, .input-edit-approxCost, .save-edit-cost, .cancel-edit-cost,
+.input-edit-component, .save-edit-component, .cancel-edit-component,
+#input-add-component-name, #input-add-component-description, #save-add-component-name, #cancel-add-component-name {
     display: none !important;
 }
 
@@ -19,4 +23,12 @@
 
 .building-name {
     cursor: pointer;
+}
+
+.possible-costs, #add-component {
+    margin-top: 1em !important;
+}
+
+.possible-costs h3 {
+    display: inline;
 }
