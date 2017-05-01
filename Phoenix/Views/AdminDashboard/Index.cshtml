@@ -18,8 +18,8 @@
 <div class="admin view">
     <h3>Hi @ViewBag.Name!</h3>
     <section class="admin-actions">
-        <button id="find-rci-button"class="divAddOn-vert-field search-field">Find RCI(s)</button>
-        <button id="update-furniture-button" class="divAddOn-vert-field search-field">Update Furniture</button>
+        <button id="find-rci-button"class="divAddOn-vert-field">Find RCI(s)</button>
+        <button id="update-furniture-button" class="divAddOn-vert-field">Update Furniture</button>
     </section>
     <section id="find-rci-view">
         <div class="pane">
@@ -67,11 +67,11 @@
                 foreach (var type in Model.RciTypes)
                 {
 
-                    <button class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponentController", routeValues: new { id = type })'">@type</button>
+                    <button class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponentController", routeValues: new { id = type, isCommonArea = false })'">@type</button>
 
                 }
             }
-            <button class="divAddOn-vert-field search-field" onclick="location.href='@Url.Action(actionName:"SaveAddBuilding", controllerName:"ManageRciComponentController", routeValues: new { id =1 })>+ Add New Type</button>
+            <button class="divAddOn-vert-field search-field" onclick="location.href='@Url.Action(actionName:"SaveAddBuilding", controllerName:"ManageRciComponentController", routeValues: new { id =1 })'">+ Add New Type</button>
         </div>
 
     </section>

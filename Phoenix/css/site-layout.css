@@ -632,10 +632,14 @@ td, th {
     z-index: 99;*/
 }
 
-.rci-types-flex {
+.admin-actions, .rci-types-flex {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
+}
+
+.admin-actions button, .rci-types-flex button {
+    width: 30%;
 }
 
 
