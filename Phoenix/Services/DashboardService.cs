@@ -459,6 +459,19 @@ namespace Phoenix.Services
         }
 
         /// <summary>
+        /// Set the IsCurrent column for a bunch of rcis to false.
+        /// </summary>
+        public void ArchiveRcis(List<int> rciIds)
+        {
+            var rcis = db.Rci.Where(r => rciIds.Contains(r.RciID));
+            foreach(var rci in rcis)
+            {
+                rci.IsCurrent = false;
+            }
+            db.SaveChanges();
+        }
+
+        /// <summary>
         /// Helper method to create and return an Rci Object. Makes no calls to the database
         /// </summary>
         public Rci CreateRciObject(string buildingCode, string roomNumber, string sessionCode, string idNumber = null)

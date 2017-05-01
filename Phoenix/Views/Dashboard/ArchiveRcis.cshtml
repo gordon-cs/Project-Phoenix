@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRciViewModel>
+
+@{
+    ViewBag.Title = "Archive Rcis";
+    ViewBag.ViewTitle = "Archive Rcis";
+    ViewBag.MenuExists = "T";
+    ViewBag.NeedsLogo = true;
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/rci-archive")
+}
+
+@section Styles{
+    @Styles.Render("~/bundles/page_specific/css/rci-archive")
+}
+
+<div class="view">
+    <div class="pane">
+        <div class="archive-button divAddOn">
+            <button class="divAddOn-field" id="next-button">Archive Selected Rcis</button>
+        </div>
+
+        <div class="legends-wrapper" id="archive-notice">
+            <p>Please select the Rci(s) you would like to archive, the click on the button above. An archived rci will no longer be visible to you, the resident or the RA/AC.</p>
+        </div>
+
+        <div class="select-completed-rcis">
+            <button class="unselected">Select All Completed Rcis</button>
+        </div>
+        @foreach (var rci in Model)
+            {
+                var rciCssClass = "";
+                if (rci.RciStage == "CHECKIN")
+                {
+                    rciCssClass = "rci-card-checkin";
+                }
+                else
+                {
+                    rciCssClass = "rci-card-checkout";
+                }
+                <div class="divAddOn rci-card">
+                    <div class="divAddOn-item check-box"><input type="checkbox" name="rciID" value="@rci.RciID" /></div>
+                    <div class="divAddOn-field @rciCssClass">
+                        <p>@rci.BuildingCode @rci.RoomNumber @rci.FirstName @rci.LastName</p>
+                        @Html.Partial("SignatureBlocks", rci)
+                    </div>
+                </div>
+        }
+    </div>
+</div>
+
+<div class="signature-overlay">
+
+</div>
+
+<div id="signature-container">
+    <div class="center-content">
+        <div>
+            <p>Are you sure you want to archive the selected Rci(s) ?</p>
+            <p>If no Rcis were selected, nothing will change.</p>
+        </div>
+    </div>
+    <div class="distribute-evenly">
+        <button class="rci-archive-button">Yes</button>
+        <button class="signature-overlay-cancel">Cancel</button>
+    </div>
+</div>

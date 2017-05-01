@@ -142,7 +142,43 @@ namespace Phoenix.Controllers
             return routeToTake[state][role];
                 
         }
-        
+
+        /// <summary>
+        /// Return the ArchiveRcis View to user.
+        /// </summary>
+        [RD]
+        [HttpGet]
+        public ActionResult ArchiveRcis()
+        {
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
+
+            var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
+
+            return View(buildingRcis);
+        }
+
+        /// <summary>
+        /// Receives a list of rcis and sets their IsCurrent column to false.
+        /// </summary>
+        [RD]
+        [HttpPost]
+        public void ArchiveRcis(List<int> rciID)
+        {
+            dashboardService.ArchiveRcis(rciID);
+        }
+
+        [HttpGet]
+        public ActionResult SyncRcis()
+        {
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
+
+            dashboardService.SyncRoomRcisFor(kingdom);
+            dashboardService.SyncCommonAreaRcisFor(kingdom);
+            return RedirectToAction("Index");
+        }
+
         // Potentially later: admin option that can view all RCI's for all buildings
 
         // Maybe use an authorization filter here to only allow an RD to access this method?
