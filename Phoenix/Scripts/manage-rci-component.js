@@ -11,11 +11,20 @@ function saveEdit(element) {
     var parentElement = $(element).parent();
     var component = $(parentElement).parent().parent();
     var componentID = $(".component").index(component);
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
+    var componentName = $($($(component).children("h2")[0]).children("span")[0]).html();
+    var componentDescription = $($(parentElement).children("span")[0]).html();
     var newDescription = $($(parentElement).children("input")[0]).val();
     $.ajax({
         url: '/ManageRciComponent/EditComponentDescription',
-        data: { componentID: componentID, rciID: rciID, newDescription: newDescription },
+        data: {
+            buildingCode: buildingCode,
+            roomType: roomType,
+            componentName: componentName,
+            componentDescription: componentDescription,
+            newDescription: newDescription
+        },
         method: "POST"
     }).done(function () {
         $($(parentElement).children("span")[0]).html(newDescription);
@@ -43,63 +52,54 @@ function cancelEdit(element) {
     $($(parentElement).children("i")[2]).hide();
 }
 
-function startAddBuilding(element) {
+function startEditBuildingCode(element) {
     var parentElement = $(element).parent();
     $($(parentElement).children("i")[0]).hide();
+    $($(parentElement).children("span")[0]).hide();
     $($(parentElement).children("input")[0]).attr("style", "display: inline !important");
     $($(parentElement).children("i")[1]).attr("style", "display: inline !important");
     $($(parentElement).children("i")[2]).attr("style", "display: inline !important");
 }
 
-function saveAddBuilding(element) {
+function saveEditBuildingCode(element) {
     var parentElement = $(element).parent();
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
-    var newBuilding = $($(parentElement).children("input")[0]).val();
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
+    var newBuildingCode = $($(parentElement).children("input")[0]).val();
     $.ajax({
-        url: '/ManageRciComponent/SaveAddBuilding',
-        data: { rciID: rciID, newBuilding: newBuilding },
+        url: '/ManageRciComponent/EditBuildingCode',
+        data: {
+            buildingCode: buildingCode,
+            roomType: roomType,
+            newBuildingCode: newBuildingCode
+        },
         method: "POST"
     }).done(function () {
-        $('<span class="building-name">' + newBuilding.toUpperCase() + '<i class="material-icons">clear</i></span>').insertBefore("#start-add-building");
+        window.history.pushState("", "Online RCI - Manage RCI Components", "/ManageRciComponent/Index/?buildingCode=" + newBuildingCode + "&roomType=" + roomType);
+        $("#building-code").html(newBuildingCode);
+        $($(parentElement).children("span")[0]).attr("style", "display: inline !important");
+        $($(parentElement).children("i")[0]).attr("style", "display: inline !important");
+        $($(parentElement).children("input")[0]).hide();
+        $($(parentElement).children("i")[1]).hide();
+        $($(parentElement).children("i")[2]).hide();
     }).fail(function (jqXHR, textStatus, errorThrown) {
-        alert("Oops! We were unable to edit that furniture's description.");
+        alert("Oops! We were unable to edit that building code");
         console.log("Status: " + jqXHR.status);
         console.log("Response Text: " + jqXHR.responseText);
         console.log(textStatus);
         console.log(errorThrown);
     });
-    $($(parentElement).children("input")[0]).val("");
-    $($(parentElement).children("i")[0]).attr("style", "display: inline !important");
-    $($(parentElement).children("input")[0]).hide();
-    $($(parentElement).children("i")[1]).hide();
-    $($(parentElement).children("i")[2]).hide();
 }
 
-function cancelAddBuilding(element) {
+function cancelEditBuildingCode(element) {
     var parentElement = $(element).parent();
-    $($(parentElement).children("input")[0]).val("");
+    var oldBuildingCode = $($(parentElement).children("span")[0]).html();
+    $($(parentElement).children("input")[0]).val(oldBuildingCode);
+    $($(parentElement).children("span")[0]).attr("style", "display: inline !important");
     $($(parentElement).children("i")[0]).attr("style", "display: inline !important");
     $($(parentElement).children("input")[0]).hide();
     $($(parentElement).children("i")[1]).hide();
     $($(parentElement).children("i")[2]).hide();
-}
-
-function deleteBuilding(element) {
-    var building = $(element).ignore("i").text();
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
-    $.ajax({
-        url: '/ManageRciComponent/DeleteBuilding',
-        data: { rciID: rciID, building: building },
-        method: "POST"
-    }).done(function () {
-        $(element).remove();
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        alert("Oops! We were unable to delete that furniture.");
-        console.log("Status: " + jqXHR.status);
-        console.log("Response Text: " + jqXHR.responseText);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
 }
 
 function startEditCost(element) {
@@ -117,8 +117,10 @@ function startEditCost(element) {
 function saveEditCost(element) {
     var parentElement = $(element).parent();
     var component = $(parentElement).parent().parent().parent();
-    var componentID = $(".component").index(component);
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
+    var componentName = $($($(component).children("h2")[0]).children("span")[0]).html();
+    var componentDescription = $($(parentElement).children("span")[0]).html();
     var oldCostName = $($(parentElement).children("b")[0]).html();
     var oldCostApproxCost = $($(parentElement).children("span")[0]).html();
     var newCostName = $($(parentElement).children("input")[0]).val();
@@ -126,8 +128,10 @@ function saveEditCost(element) {
     $.ajax({
         url: '/ManageRciComponent/EditCost',
         data: {
-            componentID: componentID,
-            rciID: rciID,
+            buildingCode: buildingCode,
+            roomType: roomType,
+            componentName: componentName,
+            componentDescription: componentDescription,
             oldCostName: oldCostName,
             oldCostApproxCost: oldCostApproxCost,
             newCostName: newCostName,
@@ -171,15 +175,19 @@ function cancelEditCost(element) {
 function deleteCost(element) {
     var parentElement = $(element).parent();
     var component = $(parentElement).parent().parent().parent();
-    var componentID = $(".component").index(component);
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
+    var componentName = $($($(component).children("h2")[0]).children("span")[0]).html();
+    var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
     var name = $($(parentElement).children("b")[0]).html();
     var approxCost = $($(parentElement).children("span")[0]).html();
     $.ajax({
         url: '/ManageRciComponent/DeleteCost',
         data: {
-            componentID: componentID,
-            rciID: rciID,
+            buildingCode: buildingCode,
+            roomType: roomType,
+            componentName: componentName,
+            componentDescription: componentDescription,
             name: name,
             approxCost: approxCost
         },
@@ -211,16 +219,20 @@ function startAddCost(element) {
 function saveAddCost(element) {
     var parentElement = $(element).parent();
     var component = $(parentElement).parent().parent().parent();
-    var componentID = $(".component").index(component);
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
+    var componentName = $($($(component).children("h2")[0]).children("span")[0]).html();
+    var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
     var newCostName = $($(parentElement).children("input")[0]).val();
     var newCostApproxCost = $($(parentElement).children("input")[1]).val();
     if (newCostName != "" && newCostApproxCost != "") {
         $.ajax({
             url: '/ManageRciComponent/AddCost',
             data: {
-                componentID: componentID,
-                rciID: rciID,
+                buildingCode: buildingCode,
+                roomType: roomType,
+                componentName: componentName,
+                componentDescription: componentDescription,
                 newCostName: newCostName,
                 newCostApproxCost: newCostApproxCost
             },
@@ -280,14 +292,16 @@ function startEditComponentName(element) {
 function saveEditComponentName(element) {
     var parentElement = $(element).parent();
     var component = $(parentElement).parent();
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
     var oldComponentName = $($(parentElement).children("span")[0]).html();
     var oldComponentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
     var newComponentName = $($(parentElement).children("input")[0]).val();
     $.ajax({
         url: '/ManageRciComponent/EditComponentName',
         data: {
-            rciID: rciID,
+            buildingCode: buildingCode,
+            roomType: roomType,
             oldComponentName: oldComponentName,
             oldComponentDescription: oldComponentDescription,
             newComponentName: newComponentName
@@ -332,14 +346,16 @@ function startAddComponent(element) {
 
 function saveAddComponent(element) {
     var parentElement = $(element).parent();
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
     var newComponentName = $($(parentElement).children("input")[0]).val();
     var newComponentDescription = $($(parentElement).children("input")[1]).val();
     if (newComponentName != "" && newComponentDescription != "") {
         $.ajax({
             url: '/ManageRciComponent/AddComponent',
             data: {
-                rciID: rciID,
+                buildingCode: buildingCode,
+                roomType: roomType,
                 newComponentName: newComponentName,
                 newComponentDescription: newComponentDescription
             },
@@ -401,13 +417,15 @@ function cancelAddComponent(element) {
 function deleteComponent(element) {
     var parentElement = $(element).parent();
     var component = $(parentElement).parent();
-    var rciID = parseInt($("h2[id^='rci-']").attr("id").substring(4), 10);
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
     var componentName = $($(parentElement).children("span")[0]).html();
     var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
     $.ajax({
         url: '/ManageRciComponent/DeleteComponent',
         data: {
-            rciID: rciID,
+            buildingCode: buildingCode,
+            roomType: roomType,
             componentName: componentName,
             componentDescription: componentDescription
         },
@@ -421,6 +439,51 @@ function deleteComponent(element) {
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function startEditRoomType() {
+    $("#select-edit-room-type").attr("style", "display: inline !important");
+    $("#save-edit-room-type").attr("style", "display: inline !important");
+    $("#cancel-edit-room-type").attr("style", "display: inline !important");
+    $("#start-edit-room-type").hide();
+    $("#room-type").hide();
+}
+
+function saveEditRoomType() {
+    var buildingCode = $("#building-code").html();
+    var roomType = $("#room-type").html();
+    var newRoomType = $("#select-edit-room-type").find(":selected").text();
+    $.ajax({
+        url: '/ManageRciComponent/EditRoomType',
+        data: {
+            buildingCode: buildingCode,
+            roomType: roomType,
+            newRoomType: newRoomType
+        },
+        method: "POST"
+    }).done(function () {
+        window.history.pushState("", "Online RCI - Manage RCI Components", "/ManageRciComponent/Index/?buildingCode=" + buildingCode + "&roomType=" + newRoomType);
+        $("#room-type").html(newRoomType);
+        $("#select-edit-room-type").hide();
+        $("#save-edit-room-type").hide();
+        $("#cancel-edit-room-type").hide();
+        $("#start-edit-room-type").attr("style", "display: inline !important");
+        $("#room-type").attr("style", "display: inline !important");
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        alert("Oops! We were unable to edit that building code");
+        console.log("Status: " + jqXHR.status);
+        console.log("Response Text: " + jqXHR.responseText);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function cancelEditRoomType() {
+    $("#select-edit-room-type").hide();
+    $("#save-edit-room-type").hide();
+    $("#cancel-edit-room-type").hide();
+    $("#start-edit-room-type").attr("style", "display: inline !important");
+    $("#room-type").attr("style", "display: inline !important");
 }
 
 $.fn.ignore = function (sel) {
