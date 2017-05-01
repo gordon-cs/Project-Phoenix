@@ -389,6 +389,8 @@ function saveAddComponent(element) {
             $($(parentElement).children("input")[1]).hide();
             $($(parentElement).children("i")[0]).hide();
             $($(parentElement).children("i")[1]).hide();
+            $($(parentElement).children("input")[0]).val("");
+            $($(parentElement).children("input")[1]).val("");
             alert("The new component is added to the end among all components.");
         }).fail(function (jqXHR, textStatus, errorThrown) {
             alert("Oops! We were unable to edit that cost.");
@@ -412,6 +414,8 @@ function cancelAddComponent(element) {
     $($(parentElement).children("input")[1]).hide();
     $($(parentElement).children("i")[0]).hide();
     $($(parentElement).children("i")[1]).hide();
+    $($(parentElement).children("input")[0]).val("");
+    $($(parentElement).children("input")[1]).val("");
 }
 
 function deleteComponent(element) {
