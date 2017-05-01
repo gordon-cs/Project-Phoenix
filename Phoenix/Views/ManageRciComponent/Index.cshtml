@@ -1,0 +1,89 @@
+﻿@model System.Xml.Linq.XElement
+
+@{
+    ViewBag.Title = "Manage RCI Components";
+    ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
+    ViewBag.GordonID = TempData["id"];
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/page_specific/css/rci-input")
+    @Styles.Render("~/css/manage-rci-component.css")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/rci-input")
+    @Scripts.Render("~/Scripts/manage-rci-component.js")
+}
+
+<div class="view">
+    <h2 id="rci-@ViewBag.RciID">@ViewBag.Title</h2>
+    <p id="buildings">
+        <b>Buildings: </b>
+        @foreach (var name in Model.Attributes().Select(x => x.Name).Where(x => (x != "roomType" && x != "id"))) {
+            <span class="building-name" onclick="deleteBuilding(this)">@name.ToString()<i class="material-icons">clear</i></span>
+        }
+        <i id="start-add-building" class="material-icons" onclick="startAddBuilding(this)">add</i>
+        <input id="input-add-building" type="text" />
+        <i class="material-icons" id="save-add-building" onclick="saveAddBuilding(this)">done</i>
+        <i class="material-icons" id="cancel-add-building" onclick="cancelAddBuilding(this)">clear</i>
+    </p>
+
+    <div id="add-component">
+        <h3>Add Component<i id="start-add-component" class="material-icons" onclick="startAddComponent(this)">add</i></h3>
+        <p>
+            <input id="input-add-component-name" type="text" placeholder="Component Name" />
+            <input id="input-add-component-description" type="text" placeholder="Description" />
+            <i class="material-icons" id="save-add-component-name" onclick="saveAddComponent(this)">done</i>
+            <i class="material-icons" id="cancel-add-component-name" onclick="cancelAddComponent(this)">clear</i>
+        </p>
+    </div>
+    @foreach (var component in Model.Element("components").Elements("component"))
+    {
+    <div class="pane component" id='@((string)component.Attribute("name"))'>
+        <h2 class="pane-title">
+            <span>@((string)component.Attribute("name"))</span>
+            <i class="material-icons start-edit-component" onclick="startEditComponentName(this)">create</i>
+            <input class="input-edit-component" type="text" value="@((string)component.Attribute("name"))"/>
+            <i class="material-icons save-edit-component" onclick="saveEditComponentName(this)">done</i>
+            <i class="material-icons cancel-edit-component" onclick="cancelEditComponentName(this)">clear</i>
+            <i class="material-icons delete-component" onclick="deleteComponent(this)">delete</i>
+        </h2>
+        <div class="input pane-content">
+            <p>
+                <b>Description:</b> 
+                <span>@((string)component.Attribute("description"))</span>
+                <i class="material-icons start-edit-description" onclick="startEdit(this)">create</i>
+                <input class="input-edit-description" type="text" value="@((string)component.Attribute("description"))" />
+                <i class="material-icons save-edit-description" onclick="saveEdit(this)">done</i>
+                <i class="material-icons cancel-edit-description" onclick="cancelEdit(this)">clear</i>
+            </p>
+            <div class="possible-costs">
+                <div><h3>Possible Costs:</h3> <i class="material-icons" onclick="startAddCost(this)">add</i></div>
+                <p>
+                    <input class="input-edit-name" type="text" placeholder="Name of Cost"/>
+                    <input class="input-edit-approxCost" type="text" placeholder="Approximate Cost" />
+                    <i class="material-icons save-edit-cost" onclick="saveAddCost(this)">done</i>
+                    <i class="material-icons cancel-edit-cost" onclick="cancelAddCost(this)">clear</i>
+                </p>
+                @foreach (var cost in component.Elements("cost"))
+                {
+                <p>
+                    <b>@((string)cost.Attribute("name"))</b>
+                    <span>@((string)cost.Attribute("approxCost"))</span>
+                    <i class="material-icons start-edit-cost" onclick="startEditCost(this)">create</i>
+                    <i class="material-icons delete-cost" onclick="deleteCost(this)">delete</i>
+                    <input class="input-edit-name" type="text" value="@((string)cost.Attribute("name"))" />
+                    <input class="input-edit-approxCost" type="text" value="@((string)cost.Attribute("approxCost"))" />
+                    <i class="material-icons save-edit-cost" onclick="saveEditCost(this)">done</i>
+                    <i class="material-icons cancel-edit-cost" onclick="cancelEditCost(this)">clear</i>
+                </p>
+                }
+            </div>
+                    
+        </div>
+    </div>
+    }
+</div>

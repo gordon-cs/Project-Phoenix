@@ -149,6 +149,7 @@
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LogoutController.cs" />
+    <Compile Include="Controllers\ManageRciComponentController.cs" />
     <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RciCheckoutController.cs" />
     <Compile Include="Controllers\RciComponentReassignController.cs" />
@@ -208,7 +209,9 @@
     <Compile Include="Utilities\Constants.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\RoomComponents.xml" />
+    <Content Include="App_Data\RoomComponents.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Content\Images\Damages\HelloWorld.xml" />
     <Content Include="Content\Images\gordon-logo-horizontal.svg" />
     <Content Include="Content\Images\gordon-logo-vertical-white.jpg" />
@@ -216,6 +219,7 @@
     <Content Include="Content\Images\gordon-logo-vertical-white.svg" />
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
+    <Content Include="css\manage-rci-component.css" />
     <Content Include="css\rci-checkout.css" />
     <Content Include="css\rci-component-reassign.css" />
     <Content Include="css\rci-input.css" />
@@ -236,6 +240,7 @@
     <Content Include="Scripts\login.js" />
     <Content Include="Scripts\logout.js" />
     <Content Include="Scripts\dom-manipulation.js" />
+    <Content Include="Scripts\manage-rci-component.js" />
     <Content Include="Scripts\rci-checkout.js" />
     <Content Include="Scripts\rci-input.js" />
     <None Include="Properties\PublishProfiles\RCIPublish_DEV.pubxml" />
@@ -299,6 +304,7 @@
     <Content Include="Views\Dashboard\DashboardRciButton.cshtml" />
     <Content Include="Views\AdminDashboard\SearchRcis.cshtml" />
     <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
+    <Content Include="Views\ManageRciComponent\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />

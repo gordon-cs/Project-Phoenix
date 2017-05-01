@@ -1,254 +1,240 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <rciTypes>
-
-
-
-  <rci roomType="common" BRO ="true" >
+  <rci roomType="common" BRO="true" buildingCode ="BRO">
     <components>
-      <component name ="Sofa" description="Living Room">
+      <component name="Sofa" description="Living Room">
         <cost name="Replacement Cost" approxCost="350" />
       </component>
-      <component name ="Chair" description="Living Room">
+      <component name="Chair" description="Living Room">
         <cost name="Replacement Cost" approxCost="250" />
       </component>
-      <component name ="Coffee Table" description="Living Room">
+      <component name="Coffee Table" description="Living Room">
         <cost name="Replacement Cost" approxCost="150" />
       </component>
-      <component name ="Carpet" description="Living Room">
+      <component name="Carpet" description="Living Room">
         <cost name="Replacement Cost" approxCost="500" />
       </component>
-      <component name ="Walls" description="Living Room">
+      <component name="Walls" description="Living Room">
         <cost name="Replacement Cost" approxCost="100" />
       </component>
-      <component name ="Wireless Router" description="Living Room">
+      <component name="Wireless Router" description="Living Room">
         <cost name="Replacement Cost" approxCost="600" />
       </component>
-      <component name ="Closet" description="Kitchen">
+      <component name="Closet" description="Kitchen">
         <cost name="Fixing Cost" approxCost="50" />
       </component>
-      <component name ="Table" description="Kitchen">
+      <component name="Table" description="Kitchen">
         <cost name="Replacement Cost" approxCost="150" />
       </component>
-      <component name ="Chairs" description="Kitchen">
+      <component name="Chairs" description="Kitchen">
         <cost name="Replacement Cost" approxCost="50" />
       </component>
-      <component name ="Refrigerator" description="Kitchen">
+      <component name="Refrigerator" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Cabinets/Countertops" description="Kitchen">
+      <component name="Cabinets/Countertops" description="Kitchen">
         <cost name="Fixing Cost" approxCost="75" />
       </component>
-      <component name ="Outlets" description="Kitchen">
+      <component name="Outlets" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Stove" description="Kitchen">
+      <component name="Stove" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Floor" description="Kitchen">
+      <component name="Floor" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Walls" description="Kitchen">
+      <component name="Walls" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="20" />
       </component>
-      <component name ="Lights" description="Kitchen">
+      <component name="Lights" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Recycling Basket" description="Kitchen">
+      <component name="Recycling Basket" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Shower" description="Bathroom">
+      <component name="Shower" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Floor" description="Bathroom">
+      <component name="Floor" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Cabinets" description="Bathroom">
+      <component name="Cabinets" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Mirror" description="Bathroom">
+      <component name="Mirror" description="Bathroom">
         <cost name="Replacement Cost" approxCost="60" />
       </component>
-      <component name ="Walls" description="Bathroom">
+      <component name="Walls" description="Bathroom">
         <cost name="Abusive Wear Cost" approxCost="75" />
       </component>
-      <component name ="Light" description="Bathroom">
+      <component name="Light" description="Bathroom">
         <cost name="Replacement Cost" approxCost="50" />
       </component>
-      <component name ="Toilet" description="Bathroom">
+      <component name="Toilet" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="15" />
       </component>
-      <component name ="Towel bar" description="Bathroom">
+      <component name="Towel bar" description="Bathroom">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
     </components>
   </rci>
-  
-  
-  
-  
-  <rci roomType="common" TAV="true">
+  <rci roomType="common" TAV="true" buildingCode ="TAV">
     <components>
-      <component name ="Sofa" description="Living Room">
+      <component name="Sofa" description="Living Room">
         <cost name="Replacement Cost" approxCost="350" />
       </component>
-      <component name ="Chair" description="Living Room">
+      <component name="Chair" description="Living Room">
         <cost name="Replacement Cost" approxCost="250" />
       </component>
-      <component name ="Coffee Table" description="Living Room">
+      <component name="Coffee Table" description="Living Room">
         <cost name="Replacement Cost" approxCost="150" />
       </component>
-      <component name ="Carpet" description="Living Room">
+      <component name="Carpet" description="Living Room">
         <cost name="Replacement Cost" approxCost="500" />
       </component>
-      <component name ="Walls" description="Living Room">
+      <component name="Walls" description="Living Room">
         <cost name="Replacement Cost" approxCost="100" />
       </component>
-      <component name ="Wireless Router" description="Living Room">
+      <component name="Wireless Router" description="Living Room">
         <cost name="Replacement Cost" approxCost="600" />
       </component>
-      <component name ="Closet" description="Kitchen">
+      <component name="Closet" description="Kitchen">
         <cost name="Fixing Cost" approxCost="50" />
       </component>
-      <component name ="Table" description="Kitchen">
+      <component name="Table" description="Kitchen">
         <cost name="Replacement Cost" approxCost="150" />
       </component>
-      <component name ="Chairs" description="Kitchen">
+      <component name="Chairs" description="Kitchen">
         <cost name="Replacement Cost" approxCost="50" />
       </component>
-      <component name ="Refrigerator" description="Kitchen">
+      <component name="Refrigerator" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Cabinets/Countertops" description="Kitchen">
+      <component name="Cabinets/Countertops" description="Kitchen">
         <cost name="Fixing Cost" approxCost="75" />
       </component>
-      <component name ="Outlets" description="Kitchen">
+      <component name="Outlets" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Stove" description="Kitchen">
+      <component name="Stove" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Floor" description="Kitchen">
+      <component name="Floor" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Walls" description="Kitchen">
+      <component name="Walls" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="20" />
       </component>
-      <component name ="Lights" description="Kitchen">
+      <component name="Lights" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Recycling Basket" description="Kitchen">
+      <component name="Recycling Basket" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Shower" description="Bathroom">
+      <component name="Shower" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Floor" description="Bathroom">
+      <component name="Floor" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Cabinets" description="Bathroom">
+      <component name="Cabinets" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Mirror" description="Bathroom">
+      <component name="Mirror" description="Bathroom">
         <cost name="Replacement Cost" approxCost="60" />
       </component>
-      <component name ="Walls" description="Bathroom">
+      <component name="Walls" description="Bathroom">
         <cost name="Abusive Wear Cost" approxCost="75" />
       </component>
-      <component name ="Light" description="Bathroom">
+      <component name="Light" description="Bathroom">
         <cost name="Replacement Cost" approxCost="50" />
       </component>
-      <component name ="Toilet" description="Bathroom">
+      <component name="Toilet" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="15" />
       </component>
-      <component name ="Towel bar" description="Bathroom">
+      <component name="Towel bar" description="Bathroom">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
     </components>
   </rci>
-  
-  
-  
-  
-  <rci roomType="common" FER="true">
+  <rci roomType="common" FER="true" buildingCode ="FER">
     <components>
-      <component name ="Sofa" description="Living Room">
+      <component name="Sofa" description="Living Room">
         <cost name="Replacement Cost" approxCost="350" />
       </component>
-      <component name ="Chair" description="Living Room">
+      <component name="Chair" description="Living Room">
         <cost name="Replacement Cost" approxCost="250" />
       </component>
-      <component name ="Coffee Table" description="Living Room">
+      <component name="Coffee Table" description="Living Room">
         <cost name="Replacement Cost" approxCost="150" />
       </component>
-      <component name ="Carpet" description="Living Room">
+      <component name="Carpet" description="Living Room">
         <cost name="Replacement Cost" approxCost="500" />
       </component>
-      <component name ="Walls" description="Living Room">
+      <component name="Walls" description="Living Room">
         <cost name="Replacement Cost" approxCost="100" />
       </component>
-      <component name ="Closet" description="Kitchen">
+      <component name="Closet" description="Kitchen">
         <cost name="Fixing Cost" approxCost="50" />
       </component>
-      <component name ="Table" description="Kitchen">
+      <component name="Table" description="Kitchen">
         <cost name="Replacement Cost" approxCost="150" />
       </component>
-      <component name ="Chairs" description="Kitchen">
+      <component name="Chairs" description="Kitchen">
         <cost name="Replacement Cost" approxCost="50" />
       </component>
-      <component name ="Refrigerator" description="Kitchen">
+      <component name="Refrigerator" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Cabinets" description="Kitchen">
+      <component name="Cabinets" description="Kitchen">
         <cost name="Fixing Cost" approxCost="75" />
       </component>
-      <component name ="Outlets" description="Kitchen">
+      <component name="Outlets" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Stove" description="Kitchen">
+      <component name="Stove" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Floor" description="Kitchen">
+      <component name="Floor" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Walls" description="Kitchen">
+      <component name="Walls" description="Kitchen">
         <cost name="Cleaning Cost" approxCost="20" />
       </component>
-      <component name ="Lights" description="Kitchen">
+      <component name="Lights" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Recycling Basket" description="Kitchen">
+      <component name="Recycling Basket" description="Kitchen">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
-      <component name ="Shower" description="Bathroom">
+      <component name="Shower" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="25" />
       </component>
-      <component name ="Floor" description="Bathroom">
+      <component name="Floor" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Cabinets" description="Bathroom">
+      <component name="Cabinets" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="10" />
       </component>
-      <component name ="Mirror" description="Bathroom">
+      <component name="Mirror" description="Bathroom">
         <cost name="Replacement Cost" approxCost="60" />
       </component>
-      <component name ="Walls" description="Bathroom">
+      <component name="Walls" description="Bathroom">
         <cost name="Abusive Wear Cost" approxCost="75" />
       </component>
-      <component name ="Light" description="Bathroom">
+      <component name="Light" description="Bathroom">
         <cost name="Replacement Cost" approxCost="50" />
       </component>
-      <component name ="Toilet" description="Bathroom">
+      <component name="Toilet" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="15" />
       </component>
     </components>
   </rci>
-  
-  
-  
-  <rci roomType="individual" FER="true">
+  <rci roomType="individual" FER="true" buildingCode ="FER">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -342,8 +328,7 @@
       <component name="Window - Shades" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -353,11 +338,10 @@
       </component>
     </components>
   </rci>
-
-  <rci roomType="individual" DRE="true">
+  <rci roomType="individual" DRE="true" buildingCode ="DRE">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -451,8 +435,7 @@
       <component name="Window - Shades" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -462,14 +445,13 @@
       </component>
     </components>
   </rci>
-
-  <rci roomType="individual" EVA="true">
+  <rci roomType="individual" EVA="true" buildingCode ="EVA">
     <components>
-      <component name="Black dividers" description="Main Room" >
-        <cost name="Tack hole" approxCost="5"/>
+      <component name="Black dividers" description="Main Room">
+        <cost name="Tack hole" approxCost="5" />
       </component>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -548,8 +530,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -559,14 +540,13 @@
       </component>
     </components>
   </rci>
-  
-    <rci roomType="individual" LEW="true">
+  <rci roomType="individual" LEW="true" buildingCode ="LEW">
     <components>
-      <component name="Black dividers" description="Main Room" >
-        <cost name="Tack hole" approxCost="5"/>
+      <component name="Black dividers" description="Main Room">
+        <cost name="Tack hole" approxCost="5" />
       </component>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -645,8 +625,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -656,14 +635,13 @@
       </component>
     </components>
   </rci>
-  
-    <rci roomType="individual" WIL="true">
+  <rci roomType="individual" WIL="true" buildingCode ="WIL">
     <components>
-      <component name="Black dividers" description="Main Room" >
-        <cost name="Tack hole" approxCost="5"/>
+      <component name="Black dividers" description="Main Room">
+        <cost name="Tack hole" approxCost="5" />
       </component>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -742,8 +720,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -753,12 +730,10 @@
       </component>
     </components>
   </rci>
-
-
-  <rci roomType="individual" CHA="true" >
+  <rci roomType="individual" CHA="true" buildingCode ="CHA">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -848,20 +823,17 @@
       <component name="Sink Unit" description="Main Room">
         <cost name="Abusive Wear Cost" approxCost="50" />
       </component>
-      <component name="Other Damages In Bathroom Area" description="Main Room">
-      </component>
-      <component name="Other" description="Main Room">
-      </component>
+      <component name="Other Damages In Bathroom Area" description="Main Room"></component>
+      <component name="Other" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
     </components>
   </rci>
-  
-  <rci roomType="individual" FUL="true" >
+  <rci roomType="individual" FUL="true" buildingCode ="FUL">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -951,21 +923,17 @@
       <component name="Sink Unit" description="Main Room">
         <cost name="Abusive Wear Cost" approxCost="50" />
       </component>
-      <component name="Other Damages In Bathroom Area" description="Main Room">
-      </component>
-      <component name="Other" description="Main Room">
-      </component>
+      <component name="Other Damages In Bathroom Area" description="Main Room"></component>
+      <component name="Other" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
     </components>
   </rci>
-
-
-  <rci roomType="individual" NYL="true">
+  <rci roomType="individual" NYL="true" buildingCode ="NYL">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1057,19 +1025,16 @@
       <component name="Window - Cord/Pulley" description="Main Room">
         <cost name="Abusive Wear Cost" approxCost="50" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
     </components>
   </rci>
-
-
-  <rci roomType="individual" TAV="true" >
+  <rci roomType="individual" TAV="true" buildingCode ="TAV">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1156,22 +1121,19 @@
       <component name="Baseboard Heat Cover" description="Main Room">
         <cost name="Replacement Cost" approxCost="25" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
     </components>
   </rci>
-
-
-  <rci roomType="individual" BRO="true" >
+  <rci roomType="individual" BRO="true" buildingCode ="BRO">
     <components>
       <component name="Air Conditioner Knobs" description="Main Room">
-        <cost name="Replacement Cost" approxCost="12"/>
+        <cost name="Replacement Cost" approxCost="12" />
       </component>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="100"/>
+        <cost name="Fixing Cost" approxCost="100" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1258,8 +1220,7 @@
       <component name="Recycling Basket" description="Main Room">
         <cost name="Replacement Cost" approxCost="0" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -1269,12 +1230,10 @@
       </component>
     </components>
   </rci>
-
-
-  <rci roomType="individual" DEX="true">
+  <rci roomType="individual" DEX="true" buildingCode ="DEX">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1363,8 +1322,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -1374,11 +1332,10 @@
       </component>
     </components>
   </rci>
-  
-  <rci roomType="individual" GED="true">
+  <rci roomType="individual" GED="true" buildingCode ="GED">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1467,8 +1424,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -1478,11 +1434,10 @@
       </component>
     </components>
   </rci>
-  
-<rci roomType="individual" CON="true">
+  <rci roomType="individual" CON="true" buildingCode ="CON">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1571,8 +1526,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -1582,11 +1536,10 @@
       </component>
     </components>
   </rci>
-  
-<rci roomType="individual" GRA="true">
+  <rci roomType="individual" GRA="true" buildingCode ="GRA">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1675,8 +1628,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -1686,11 +1638,10 @@
       </component>
     </components>
   </rci>
-  
-<rci roomType="individual" HIL="true">
+  <rci roomType="individual" HIL="true" buildingCode ="HIL">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1779,8 +1730,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -1790,11 +1740,10 @@
       </component>
     </components>
   </rci>
-  
-<rci roomType="individual" MCI="true">
+  <rci roomType="individual" MCI="true" buildingCode ="MCI">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1883,8 +1832,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -1894,11 +1842,10 @@
       </component>
     </components>
   </rci>
-  
-<rci roomType="individual" RID="true">
+  <rci roomType="individual" RID="true" buildingCode ="RID">
     <components>
       <component name="Bed Frame" description="Main Room">
-        <cost name="Fixing Cost" approxCost="50"/>
+        <cost name="Fixing Cost" approxCost="50" />
       </component>
       <component name="Bed Mattress" description="Main Room">
         <cost name="Replacement Cost" approxCost="125" />
@@ -1987,8 +1934,7 @@
       <component name="Window - Shade" description="Main Room">
         <cost name="Replacement Cost" approxCost="70" />
       </component>
-      <component name="Other Damages" description="Main Room">
-      </component>
+      <component name="Other Damages" description="Main Room"></component>
       <component name="Improper Checkout" description="Fine">
         <cost name="Flat Amount" approxCost="30" />
       </component>
@@ -1998,5 +1944,4 @@
       </component>
     </components>
   </rci>
-  
 </rciTypes>

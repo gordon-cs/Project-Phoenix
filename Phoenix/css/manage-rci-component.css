@@ -1,0 +1,34 @@
+﻿.input-edit-description, .save-edit-description, .cancel-edit-description, 
+#input-add-building, #save-add-building, #cancel-add-building,
+.input-edit-name, .input-edit-approxCost, .save-edit-cost, .cancel-edit-cost,
+.input-edit-component, .save-edit-component, .cancel-edit-component,
+#input-add-component-name, #input-add-component-description, #save-add-component-name, #cancel-add-component-name {
+    display: none !important;
+}
+
+.building-name {
+    border: 1px solid #808080 !important;
+    font-size: smaller;
+    padding: 0.3em;
+    border-radius: 0.2em;
+}
+
+.building-name i {
+    font-size: smaller;
+}
+
+#buildings {
+    margin-top: 1em !important;
+}
+
+.building-name {
+    cursor: pointer;
+}
+
+.possible-costs, #add-component {
+    margin-top: 1em !important;
+}
+
+.possible-costs h3 {
+    display: inline;
+}
