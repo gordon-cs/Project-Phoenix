@@ -306,18 +306,17 @@ namespace Phoenix.Controllers
         /// </summary>
         [HttpPost]
         [RD]
-        public ActionResult RDSignature(int id, string password, string username)
+        public ActionResult RDSignature(int id, string password, string username, List<string> workRequest)
         {
-
-            if (username.EndsWith("@gordon.edu"))
-            {
-                username = username.Remove(username.IndexOf('@'));
-            }
-
             var rci = checkoutService.GetGenericCheckoutRciByID(id);
             if (rci.CheckoutSigRD != null) // Already signed
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
+            }
+
+            if (username.EndsWith("@gordon.edu"))
+            {
+                username = username.Remove(username.IndexOf('@'));
             }
 
             var isValidLogin = loginService.IsValidUser(username, password, loginService.ConnectToADServer());
@@ -329,7 +328,9 @@ namespace Phoenix.Controllers
             }
 
             checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
-            checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
+            //checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
+            checkoutService.WorkRequestDamages(workRequest, username, password, id);
+
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
     }
