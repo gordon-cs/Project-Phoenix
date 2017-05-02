@@ -98,7 +98,7 @@ namespace Phoenix.Services
             XElement rciTypes = document.Root;
             IEnumerable<XElement> componentElements =
                 from rci in rciTypes.Elements("rci")
-                where ((string)rci.Attribute("roomType")).Equals(roomType) && rci.Attribute(buildingCode) != null
+                where ((string)rci.Attribute("roomType")).Equals(roomType) && (string) rci.Attribute("buildingCode") == buildingCode
                 from component in rci.Element("components").Elements("component")
                 select component;
 
