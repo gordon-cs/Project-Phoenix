@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <rciTypes>
-  <rci roomType="common" BRO="true" buildingCode ="BRO">
+  <rci roomType="common" BRO="true" buildingCode="BRO">
     <components>
       <component name="Sofa" description="Living Room">
         <cost name="Replacement Cost" approxCost="350" />
@@ -79,7 +79,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="common" TAV="true" buildingCode ="TAV">
+  <rci roomType="common" TAV="true" buildingCode="TAV">
     <components>
       <component name="Sofa" description="Living Room">
         <cost name="Replacement Cost" approxCost="350" />
@@ -158,7 +158,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="common" FER="true" buildingCode ="FER">
+  <rci roomType="common" FER="true" buildingCode="FER">
     <components>
       <component name="Sofa" description="Living Room">
         <cost name="Replacement Cost" approxCost="350" />
@@ -231,7 +231,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" FER="true" buildingCode ="FER">
+  <rci roomType="individual" FER="true" buildingCode="FER">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -338,7 +338,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" DRE="true" buildingCode ="DRE">
+  <rci roomType="individual" DRE="true" buildingCode="DRE">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -445,7 +445,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" EVA="true" buildingCode ="EVA">
+  <rci roomType="individual" EVA="true" buildingCode="EVA">
     <components>
       <component name="Black dividers" description="Main Room">
         <cost name="Tack hole" approxCost="5" />
@@ -540,7 +540,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" LEW="true" buildingCode ="LEW">
+  <rci roomType="individual" LEW="true" buildingCode="LEW">
     <components>
       <component name="Black dividers" description="Main Room">
         <cost name="Tack hole" approxCost="5" />
@@ -635,7 +635,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" WIL="true" buildingCode ="WIL">
+  <rci roomType="individual" WIL="true" buildingCode="WIL">
     <components>
       <component name="Black dividers" description="Main Room">
         <cost name="Tack hole" approxCost="5" />
@@ -730,7 +730,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" CHA="true" buildingCode ="CHA">
+  <rci roomType="individual" CHA="true" buildingCode="CHA">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -830,7 +830,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" FUL="true" buildingCode ="FUL">
+  <rci roomType="individual" FUL="true" buildingCode="FUL">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -930,7 +930,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" NYL="true" buildingCode ="NYL">
+  <rci roomType="individual" NYL="true" buildingCode="NYL">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -1031,7 +1031,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" TAV="true" buildingCode ="TAV">
+  <rci roomType="individual" TAV="true" buildingCode="TAV">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -1127,7 +1127,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" BRO="true" buildingCode ="BRO">
+  <rci roomType="individual" BRO="true" buildingCode="BRO">
     <components>
       <component name="Air Conditioner Knobs" description="Main Room">
         <cost name="Replacement Cost" approxCost="12" />
@@ -1230,7 +1230,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" DEX="true" buildingCode ="DEX">
+  <rci roomType="individual" DEX="true" buildingCode="DEX">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -1332,7 +1332,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" GED="true" buildingCode ="GED">
+  <rci roomType="individual" GED="true" buildingCode="GED">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -1434,7 +1434,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" CON="true" buildingCode ="CON">
+  <rci roomType="individual" CON="true" buildingCode="CON">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -1536,7 +1536,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" GRA="true" buildingCode ="GRA">
+  <rci roomType="individual" GRA="true" buildingCode="GRA">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -1638,7 +1638,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" HIL="true" buildingCode ="HIL">
+  <rci roomType="individual" HIL="true" buildingCode="HIL">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -1740,7 +1740,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" MCI="true" buildingCode ="MCI">
+  <rci roomType="individual" MCI="true" buildingCode="MCI">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
@@ -1842,7 +1842,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" RID="true" buildingCode ="RID">
+  <rci roomType="individual" RID="true" buildingCode="RID">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />

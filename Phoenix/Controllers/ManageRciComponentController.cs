@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Phoenix.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,47 +19,54 @@ namespace Phoenix.Controllers
                 .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
                 .Where(x => (string)x.Attribute("roomType") == roomType)
                 .FirstOrDefault();
+            ViewBag.RCI_TYPE_COMMON = Constants.RCI_TYPE_COMMON;
+            ViewBag.RCI_TYPE_INDIVIDUAL = Constants.RCI_TYPE_INDIVIDUAL;
             return View(rci);
         }
 
         [HttpPost]
-        public void EditComponentDescription(int componentID, int rciID, string newDescription)
+        public void EditComponentDescription(string buildingCode, string roomType, string componentName, string componentDescription, string newDescription)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement component = rciTypes.Elements("rci").ElementAt(rciID).Element("components").Elements("component").ElementAt(componentID);
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            XElement component = rci.Element("components").Elements("component")
+                .Where(x => (string)x.Attribute("name") == componentName)
+                .Where(x => (string)x.Attribute("description") == componentDescription)
+                .FirstOrDefault();
             component.Attribute("description").SetValue(newDescription);
             document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
 
         [HttpPost]
-        public void SaveAddBuilding(int rciID, string newBuilding)
+        public void EditBuildingCode(string buildingCode, string roomType, string newBuildingCode)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement rci = rciTypes.Elements("rci").ElementAt(rciID);
-            XAttribute newAttribute = new XAttribute(newBuilding.ToUpper(), "true");
-            rci.Add(newAttribute);
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            rci.Attribute("buildingCode").SetValue(newBuildingCode);
             document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
 
         [HttpPost]
-        public void DeleteBuilding(int rciID, string building)
+        public void EditCost(string buildingCode, string roomType, string componentName, string componentDescription, string oldCostName, string oldCostApproxCost, string newCostName, string newCostApproxCost)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement rci = rciTypes.Elements("rci").ElementAt(rciID);
-            rci.Attribute(building).Remove();
-            document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
-        }
-
-        [HttpPost]
-        public void EditCost(int componentID, int rciID, string oldCostName, string oldCostApproxCost, string newCostName, string newCostApproxCost)
-        {
-            XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
-            XElement rciTypes = document.Root;
-            XElement rci = rciTypes.Elements("rci").ElementAt(rciID);
-            XElement component = rciTypes.Elements("rci").ElementAt(rciID).Element("components").Elements("component").ElementAt(componentID);
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            XElement component = rci.Element("components").Elements("component")
+                .Where(x => (string)x.Attribute("name") == componentName)
+                .Where(x => (string)x.Attribute("description") == componentDescription)
+                .FirstOrDefault();
             XElement cost = component.Descendants("cost")
                 .Where(x => (string)x.Attribute("name") == oldCostName)
                 .Where(x => (string)x.Attribute("approxCost") == oldCostApproxCost)
@@ -69,12 +77,18 @@ namespace Phoenix.Controllers
         }
 
         [HttpPost]
-        public void AddCost(int componentID, int rciID, string newCostName, string newCostApproxCost)
+        public void AddCost(string buildingCode, string roomType, string componentName, string componentDescription, string newCostName, string newCostApproxCost)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement rci = rciTypes.Elements("rci").ElementAt(rciID);
-            XElement component = rciTypes.Elements("rci").ElementAt(rciID).Element("components").Elements("component").ElementAt(componentID);
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            XElement component = rci.Element("components").Elements("component")
+                .Where(x => (string)x.Attribute("name") == componentName)
+                .Where(x => (string)x.Attribute("description") == componentDescription)
+                .FirstOrDefault();
             XElement newCost = new XElement("cost");
             XAttribute costName = new XAttribute("name", newCostName);
             XAttribute costApproxCost = new XAttribute("approxCost", newCostApproxCost);
@@ -85,12 +99,18 @@ namespace Phoenix.Controllers
         }
 
         [HttpPost]
-        public void DeleteCost(int componentID, int rciID, string name, string approxCost)
+        public void DeleteCost(string buildingCode, string roomType, string componentName, string componentDescription, string name, string approxCost)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement rci = rciTypes.Elements("rci").ElementAt(rciID);
-            XElement component = rciTypes.Elements("rci").ElementAt(rciID).Element("components").Elements("component").ElementAt(componentID);
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            XElement component = rci.Element("components").Elements("component")
+                .Where(x => (string)x.Attribute("name") == componentName)
+                .Where(x => (string)x.Attribute("description") == componentDescription)
+                .FirstOrDefault();
             XElement cost = component.Descendants("cost")
                 .Where(x => (string)x.Attribute("name") == name)
                 .Where(x => (string)x.Attribute("approxCost") == approxCost)
@@ -100,12 +120,15 @@ namespace Phoenix.Controllers
         }
 
         [HttpPost]
-        public void EditComponentName(int rciID, string oldComponentName, string oldComponentDescription, string newComponentName)
+        public void EditComponentName(string buildingCode, string roomType, string oldComponentName, string oldComponentDescription, string newComponentName)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement rci = rciTypes.Elements("rci").ElementAt(rciID);
-            XElement component = rciTypes.Elements("rci").ElementAt(rciID).Element("components").Elements("component")
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            XElement component = rci.Element("components").Elements("component")
                 .Where(x => (string)x.Attribute("name") == oldComponentName)
                 .Where(x => (string)x.Attribute("description") == oldComponentDescription)
                 .FirstOrDefault();
@@ -114,11 +137,14 @@ namespace Phoenix.Controllers
         }
 
         [HttpPost]
-        public void AddComponent(int rciID, string newComponentName, string newComponentDescription)
+        public void AddComponent(string buildingCode, string roomType, string newComponentName, string newComponentDescription)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement rci = rciTypes.Elements("rci").ElementAt(rciID);
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
             XElement components = rci.Element("components");
             XElement component = new XElement("component");
             XAttribute name = new XAttribute("name", newComponentName);
@@ -130,16 +156,32 @@ namespace Phoenix.Controllers
         }
 
         [HttpPost]
-        public void DeleteComponent(int rciID, string componentName, string componentDescription)
+        public void DeleteComponent(string buildingCode, string roomType, string componentName, string componentDescription)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement rci = rciTypes.Elements("rci").ElementAt(rciID);
-            XElement component = rciTypes.Elements("rci").ElementAt(rciID).Element("components").Elements("component")
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            XElement component = rci.Element("components").Elements("component")
                 .Where(x => (string)x.Attribute("name") == componentName)
                 .Where(x => (string)x.Attribute("description") == componentDescription)
                 .FirstOrDefault();
             component.Remove();
+            document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
+        }
+
+        [HttpPost]
+        public void EditRoomType(string buildingCode, string roomType, string newRoomType)
+        {
+            XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
+            XElement rciTypes = document.Root;
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            rci.Attribute("roomType").SetValue(newRoomType);
             document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
     }

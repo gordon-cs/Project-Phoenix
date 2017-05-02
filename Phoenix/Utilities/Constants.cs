@@ -18,5 +18,7 @@
         public static readonly string RCI_CHECKIN_STAGE = "CHECKIN";
         public static readonly string RCI_CHECKOUT_STAGE = "CHECKOUT";
 
+        public const string RCI_TYPE_COMMON = "common";
+        public const string RCI_TYPE_INDIVIDUAL = "individual";
     }
 }

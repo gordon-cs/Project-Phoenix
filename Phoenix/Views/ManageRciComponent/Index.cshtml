@@ -18,17 +18,34 @@
     @Scripts.Render("~/Scripts/manage-rci-component.js")
 }
 
-<div class="view">
-    <h2 id="rci-@ViewBag.RciID">@ViewBag.Title</h2>
-    <p id="buildings">
-        <b>Buildings: </b>
-        @foreach (var name in Model.Attributes().Select(x => x.Name).Where(x => (x != "roomType" && x != "id"))) {
-            <span class="building-name" onclick="deleteBuilding(this)">@name.ToString()<i class="material-icons">clear</i></span>
-        }
-        <i id="start-add-building" class="material-icons" onclick="startAddBuilding(this)">add</i>
-        <input id="input-add-building" type="text" />
-        <i class="material-icons" id="save-add-building" onclick="saveAddBuilding(this)">done</i>
-        <i class="material-icons" id="cancel-add-building" onclick="cancelAddBuilding(this)">clear</i>
+<div class="view" id="rci-root">
+    <h2 id="rci">@ViewBag.Title</h2>
+    <p id="building-code-block">
+        <b>Building code: </b>
+        <span id="building-code">@(Model.Attribute("buildingCode").Value)</span>
+        <i id="start-add-building" class="material-icons" onclick="startEditBuildingCode(this)">create</i>
+        <input id="input-add-building" type="text" value="@(Model.Attribute("buildingCode").Value)" />
+        <i class="material-icons" id="save-add-building" onclick="saveEditBuildingCode(this)">done</i>
+        <i class="material-icons" id="cancel-add-building" onclick="cancelEditBuildingCode(this)">clear</i>
+    </p>
+    <p id="room-type-block">
+        <b>Room type: </b>
+        <span id="room-type">@(Model.Attribute("roomType").Value)</span>
+        <i class="material-icons" id="start-edit-room-type" onclick="startEditRoomType()">create</i>
+        <select id="select-edit-room-type">
+            @if (Model.Attribute("roomType").Value == ViewBag.RCI_TYPE_INDIVIDUAL)
+            {
+                <option value="@ViewBag.RCI_TYPE_INDIVIDUAL" selected="selected">@ViewBag.RCI_TYPE_INDIVIDUAL</option>
+                <option value="@ViewBag.RCI_TYPE_COMMON">@ViewBag.RCI_TYPE_COMMON</option>
+            }
+            else
+            {
+                <option value="@ViewBag.RCI_TYPE_INDIVIDUAL">@ViewBag.RCI_TYPE_INDIVIDUAL</option>
+                <option value="@ViewBag.RCI_TYPE_COMMON" selected="selected">@ViewBag.RCI_TYPE_COMMON</option>
+            }
+        </select>
+        <i class="material-icons" id="save-edit-room-type" onclick="saveEditRoomType()">done</i>
+        <i class="material-icons" id="cancel-edit-room-type" onclick="cancelEditRoomType()">clear</i>
     </p>
 
     <div id="add-component">
@@ -42,7 +59,7 @@
     </div>
     @foreach (var component in Model.Element("components").Elements("component"))
     {
-    <div class="pane component" id='@((string)component.Attribute("name"))'>
+    <div class="pane component">
         <h2 class="pane-title">
             <span>@((string)component.Attribute("name"))</span>
             <i class="material-icons start-edit-component" onclick="startEditComponentName(this)">create</i>
