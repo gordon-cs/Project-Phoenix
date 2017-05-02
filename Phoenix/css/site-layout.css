@@ -641,6 +641,9 @@ td, th {
 .admin-actions button, .rci-types-flex button {
     width: 30%;
 }
+.rci-types-flex button {
+    max-width: 30%;
+}
 .add-type-dialog-box > * {
     margin: 0.5em;
 }
