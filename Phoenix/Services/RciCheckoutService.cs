@@ -1,9 +1,12 @@
 ﻿using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Net;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Phoenix.Services
 {
@@ -15,10 +18,12 @@ namespace Phoenix.Services
             db = new RCIContext();
         }
 
-        public bool IsIndividualRci(int rciID)
+        /// <summary>
+        /// Fetch the rci straight from the db without mapping it to a model.
+        /// </summary>
+        public Rci GetBareRciByID(int id)
         {
-            var rci = db.Rci.Find(rciID);
-            return rci.GordonID != null ? true : false;
+            return db.Rci.Find(id);
         }
         /// <summary>
         /// Get a generic checkout rci view model.
@@ -223,10 +228,77 @@ namespace Phoenix.Services
 
             rci.CheckoutSigRD = System.DateTime.Today;
             rci.CheckoutSigRDGordonID = rdGordonID;
-            rci.IsCurrent = false;
 
             db.SaveChanges();
 
+        }
+
+        /// <summary>
+        /// Send the fine email(s) associated with the corresponding rci
+        /// </summary>
+        /// <param name="rciID"></param>
+        public void SendFineEmail(int rciID, string emailAddress, string password)
+        {
+            var rci = db.Rci.Find(rciID);
+            var fineEmailDictionary = new Dictionary<string, Dictionary<string, string>>();
+
+            foreach (var component in rci.RciComponent)
+            {
+                foreach (var fine in component.Fine)
+                {
+                    if (fineEmailDictionary.ContainsKey(fine.GordonID))
+                    {
+                        fineEmailDictionary[fine.GordonID]["body"] += "<p>" + component.RciComponentName + " - " + fine.Reason + ": $" + fine.FineAmount + "</p>";
+                        var total = decimal.Parse(fineEmailDictionary[fine.GordonID]["total"]);
+                        total = total + fine.FineAmount;
+                        fineEmailDictionary[fine.GordonID]["total"] = total.ToString();
+                    }
+                    else
+                    {
+
+                        var newFineEmailContents = new Dictionary<string, string>
+                        {
+                            {"body",  "<p>" + component.RciComponentName + " - " + fine.Reason + ": $" + fine.FineAmount + "</p>" },
+                            {"total", fine.FineAmount.ToString() }
+                        };
+                        fineEmailDictionary.Add(fine.GordonID, newFineEmailContents);
+
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<string, Dictionary<string, string>> entry in fineEmailDictionary)
+            {
+                var message = new MailMessage();
+                var recepientAccount = db.Account.Where(r => r.ID_NUM.Equals(entry.Key)).FirstOrDefault();
+                var to = recepientAccount.email;
+                var from = emailAddress;
+                var today = DateTime.Now.ToLongDateString();
+                var recepientName = recepientAccount.firstname; 
+                message.To.Add(new MailAddress(to));
+                message.From = new MailAddress(from);
+                message.Subject = "Checkout Fines - " + rci.BuildingCode + " " + rci.RoomNumber;
+                message.Body = string.Format(Properties.Resources.FINE_EMAIL, 
+                    today, 
+                    recepientName, 
+                    entry.Value["body"], 
+                    "$" + entry.Value["total"]);
+                message.IsBodyHtml = true;
+
+                using (var smtp = new SmtpClient())
+                {
+                    var credential = new NetworkCredential
+                    {
+                        UserName = emailAddress,
+                        Password = password
+                    };
+                    smtp.Credentials = credential;
+                    smtp.Host = "smtp.office365.com";
+                    smtp.Port = 587;
+                    smtp.EnableSsl = true;
+                    smtp.Send(message);
+                }
+            }
         }
 
         public IEnumerable<string> GetCommonRooms(int id)

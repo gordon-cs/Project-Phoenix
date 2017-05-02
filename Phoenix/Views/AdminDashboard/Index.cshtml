@@ -1,0 +1,70 @@
+﻿@model Phoenix.Models.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewBag.Title = "Dashboard";
+    ViewBag.ViewTitle = "Dashboard";
+    ViewBag.MenuExists = "T";
+    ViewBag.Name = TempData["user"];
+    ViewBag.Role = TempData["role"];
+    ViewBag.NeedsLogo = true;
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/page_specific/css/dashboard")
+}
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/admin")
+}
+<div class="admin view">
+    <h3>Hi @ViewBag.Name!</h3>
+    <section class="admin-actions">
+        <button id="find-rci-button"class="divAddOn-vert-field search-field">Find RCI(s)</button>
+        <button id="update-furniture-button" class="divAddOn-vert-field search-field">Update Furniture</button>
+    </section>
+    <section id="find-rci-view">
+        <div class="pane">
+            @Html.Partial("Legend")
+            <h3>
+               Find RCIs
+            </h3>
+            <section class="filters">
+                <select id="session-select" class="divAddOn-field">
+                    <option value="0">All Sessions</option>
+                    @{
+                        int i = 1;
+                        foreach (var session in Model.Sessions)
+                        {
+                            <option value=@i id="@session.Key">@session.Value</option>
+                            i++;
+                        }
+                    }
+                </select>        
+                <select id="building-select" class="divAddOn-field">
+                    <option value="0">All Buildings</option>
+                    @{
+                        int j = 1;
+                        foreach (var building in Model.Buildings)
+                        {
+                            <option value=@j>@building</option>
+                            j++;
+                        }
+                    }
+                </select>
+            </section>
+
+            <div class="divAddOn">
+                <input id="search-bar-input" class="divAddOn-field" type="text" placeholder="Search..." />
+            </div>
+            <button id="search-button">Search</button>
+            <section id="search-results-section">@Html.Partial("SearchRcis", Model.SearchResults)</section>
+               
+        </div>
+      </section>
+    <section id="update-furniture-view">
+        <h3>RCI Types:</h3>
+        <button class="divAddOn-vert-field search-field">+ Add New Type</button>
+        <button class="divAddOn-vert-field search-field">HUD</button>
+        <button class="divAddOn-vert-field search-field">Ferrin/Drew</button>
+        <button class="divAddOn-vert-field search-field">Fulton/Chase</button>
+    </section>
+    </div>

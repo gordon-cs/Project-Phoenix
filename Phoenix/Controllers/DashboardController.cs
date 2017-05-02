@@ -5,13 +5,14 @@ using Phoenix.Filters;
 using Phoenix.Services;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Diagnostics;
+using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
 {
     [CustomAuthentication]
     public class DashboardController : Controller
     {
-        // RCI context wrapper. It can be considered to be an object that represents the database.
         private DashboardService dashboardService;
 
         public DashboardController()
@@ -25,17 +26,22 @@ namespace Phoenix.Controllers
         {
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
+            Debug.WriteLine("Role: " + role);
 
             if (role == null)
             {
                 return RedirectToAction("Index", "Login");
             }
+            if (role.Equals(Constants.ADMIN))
+            {
+                return RedirectToAction("Index", "AdminDashboard");
+            }
 
-            if (role.Equals("RD"))
+            else if (role.Equals(Constants.RD))
             {
                 return RedirectToAction("RD");
             }
-            else if (role.Equals("RA"))
+            else if (role.Equals(Constants.RA))
             {
                 return RedirectToAction("RA");
             }
@@ -58,14 +64,6 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("RD");
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("RA");
-            }
 
             // TempData stores object, so always cast to string.
             var strID = (string)TempData["id"];
@@ -84,6 +82,7 @@ namespace Phoenix.Controllers
         }
 
         // GET: Home/RA
+        [ResLifeStaff]
         public ActionResult RA()
         {
             // Redirect to other dashboards if role not correct
@@ -91,16 +90,7 @@ namespace Phoenix.Controllers
 
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("RD"))
-            {
-                return RedirectToAction("RD");
-            }
-            else if (role.Equals("Resident"))
-            {
-                return RedirectToAction("Resident");
+                return RedirectToAction("Index", "Login");
             }
 
             var temp = (JArray)TempData["kingdom"];
@@ -112,6 +102,7 @@ namespace Phoenix.Controllers
         }
 
         // GET: Home/RD
+        [RD]
         public ActionResult RD()
         {
             // Redirect to other dashboards if role not correct
@@ -119,16 +110,7 @@ namespace Phoenix.Controllers
 
             if (role == null)
             {
-                return RedirectToAction("Index", "LoginController");
-            }
-
-            if (role.Equals("Resident"))
-            {
-                return RedirectToAction("Resident");
-            }
-            else if (role.Equals("RA"))
-            {
-                return RedirectToAction("RA");
+                return RedirectToAction("Index", "Login");
             }
 
             // Display all RCI's for the corresponding building
@@ -142,6 +124,14 @@ namespace Phoenix.Controllers
             return View(buildingRcis);
         }
 
+        // GET: Home/Admin
+        [Admin]
+        public ActionResult Admin()
+        {
+            var rcis = dashboardService.GetRcis();
+            return View(rcis);
+        }
+
         public ActionResult GotoRci(int rciID)
         {
             var state = dashboardService.GetRciState(rciID);
@@ -152,7 +142,43 @@ namespace Phoenix.Controllers
             return routeToTake[state][role];
                 
         }
-        
+
+        /// <summary>
+        /// Return the ArchiveRcis View to user.
+        /// </summary>
+        [RD]
+        [HttpGet]
+        public ActionResult ArchiveRcis()
+        {
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
+
+            var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
+
+            return View(buildingRcis);
+        }
+
+        /// <summary>
+        /// Receives a list of rcis and sets their IsCurrent column to false.
+        /// </summary>
+        [RD]
+        [HttpPost]
+        public void ArchiveRcis(List<int> rciID)
+        {
+            dashboardService.ArchiveRcis(rciID);
+        }
+
+        [HttpGet]
+        public ActionResult SyncRcis()
+        {
+            var temp = (JArray)TempData["kingdom"];
+            List<string> kingdom = temp.ToObject<List<string>>();
+
+            dashboardService.SyncRoomRcisFor(kingdom);
+            dashboardService.SyncCommonAreaRcisFor(kingdom);
+            return RedirectToAction("Index");
+        }
+
         // Potentially later: admin option that can view all RCI's for all buildings
 
         // Maybe use an authorization filter here to only allow an RD to access this method?

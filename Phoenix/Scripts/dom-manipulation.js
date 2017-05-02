@@ -5,6 +5,7 @@
  * 2.................. Drawer Menu
  * 3.................. Damage Image Slides Modal
  * 4.................. Signature overlay
+ * 5.................. Select all
  *
 /***********************************************/
 
@@ -86,6 +87,19 @@ $(".search-bar").keyup(function () {
     }).parent().parent().hide()
 });
 
+/*** Admin dashboard DOM manipulation **/
+
+// Find RCI button
+$("#find-rci-button").click(function () {
+    $("#update-furniture-view").hide();
+    $("#find-rci-view").toggle()
+});
+
+// Update furniture button
+$("#update-furniture-button").click(function () {
+    $("#find-rci-view").hide();
+    $("#update-furniture-view").toggle();
+});
 
 
 /*
@@ -142,6 +156,11 @@ $(".signature-overlay").click(function () {
     $("#signature-container").toggle();
 });
 
+$(".signature-overlay-cancel").click(function () {
+    $(".signature-overlay").hide();
+    $("#signature-container").toggle();
+});
+
 
 /********* Register handlers **********/
 
@@ -164,4 +183,19 @@ $(".material-icons.clear").click(function () {
     let modalID = $(this).closest(".img-modal").attr("id");
     console.log(modalID);
     closeModal(modalID);
+});
+
+
+/* Select all checkboxes */
+
+$(".select-all").click(function () {
+    $this = $(this);
+    if ($this.text() === "Select all") {
+        $this.text("Unselect all");
+        $("input[type=checkbox]").prop("checked", true);
+    }
+    else {
+        $this.text("Select all");
+        $("input[type=checkbox]").prop("checked", false);
+    }
 });

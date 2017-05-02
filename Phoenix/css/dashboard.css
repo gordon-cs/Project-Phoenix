@@ -42,3 +42,25 @@
 .legend-color-signature-block {
     background-color: #31342B;
 }
+
+/* Admin view */
+.admin-actions {
+    margin: 15px;
+}
+.admin-actions button {
+    margin-bottom: 10px;
+    width: 100%;
+}
+#find-rci-view, #update-furniture-view {
+    display: none;
+}
+.filters {
+    margin-bottom: 15px;
+    margin-top:15px;
+}
+.filters select {
+    margin: 5px 0;
+}
+#update-furniture-view .divAddOn-vert-field {
+    margin: 15px 10px;
+}
