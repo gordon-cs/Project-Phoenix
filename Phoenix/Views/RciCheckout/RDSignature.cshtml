@@ -8,6 +8,15 @@
     ViewBag.Role = TempData["role"];
 }
 
+@section Styles{
+    @Styles.Render("~/bundles/page_specific/css/rci-checkout")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/rci-checkout")
+}
+
+
 <h2>@ViewBag.ViewTitle</h2>
 <div class="view">
     <div class="pane">
@@ -15,7 +24,7 @@
             @if (ViewBag.ErrorMessage != null)
             {
                 <div class="error-message">
-                        <p>@ViewBag.ErrorMessage</p>
+                    <p>@ViewBag.ErrorMessage</p>
                 </div>
             }
             @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
@@ -24,7 +33,29 @@
                     @if (Model.CheckoutSigRD == null)
                     {
                         <p>I, @ViewBag.ExpectedSignature, hereby agree to all of the fines and charges that have been recorded.</p>
-                        <p>I understand that by entering my username and password below, I give the system permission to send a fine email to the resident(s) if any fines/charges were assessed.</p>
+                        <p>I understand that by entering my username and password below, I give the system permission to send fine emails to the resident(s) if any fines/charges were assessed.</p>
+                        <p>I understand that by entering my username and password below, I give the system permission to submit the work requests displayed below.</p>
+                        
+                        <div id="work-requests-wrapper">
+                            <h4>Work Requests to be submitted:</h4>
+                            @foreach (var component in Model.RciComponent)
+                            {
+                                foreach (var fine in component.Fine)
+                                {
+                                    <div class="divAddOn">
+                                        <input class="divAddOn-field" type="text" name="workRequest" value="@component.RciComponentName - @fine.Reason">
+                                        <div class="divAddOn-item"><i class="material-icons" onclick="removeWorkRequest(event, this);">close</i></div>
+                                    </div>
+                                }
+                            }
+                            <div class="divAddOn">
+                                <input class="divAddOn-field" type="text"  placeholder="Add a new Work Request" onclick="addWorkRequest(event, this)">
+                            </div>
+                        </div>
+
+                        <div>
+                            <p>Please re-enter your Gordon username and password below:</p>
+                        </div>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="username" type="text" value="@ViewBag.ExpectedUsername" />
                         </div>
