@@ -99,3 +99,28 @@ $("#next-button").click(function () {
     $("#signature-container").toggle();
 });
 
+
+/* Javascript for dealing with the work requests */
+
+function removeWorkRequest(event, element) {
+    $(element).parent().parent().remove();
+}
+
+function addWorkRequest(event, element) {
+    $(element).removeAttr("placeholder");
+    $(element).removeAttr("onclick");
+    $(element).attr("name","workRequest");
+
+    let $workRequestWrapper = $("#work-requests-wrapper");
+
+    let $deleteButton = $("<div />");
+    $deleteButton.addClass("divAddOn-item");
+    $deleteButton.append("<i class='material-icons' onclick='removeWorkRequest(event, this);'>close</i>");
+    $deleteButton.insertAfter($(element));
+
+    let $newPlaceHolderDiv = $("<div />");
+    $newPlaceHolderDiv.addClass("divAddOn");
+    $newPlaceHolderDiv.append("<input class='divAddOn-field' type='text'  placeholder='Add a new Work Request' onclick='addWorkRequest(event, this)'>");
+    $workRequestWrapper.append($newPlaceHolderDiv);
+
+}
