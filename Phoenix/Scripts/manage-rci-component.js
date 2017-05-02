@@ -491,6 +491,82 @@ function cancelEditRoomType() {
     $("#room-type").attr("style", "display: inline !important");
 }
 
+function moveUp(element) {
+    var parentElement = $(element).parent();
+    var component = $(parentElement).parent();
+    if ($(".component").index($(component)) == 0) {
+        alert("This is already the first component. Can't move up any more.");
+    }
+    else {
+        var buildingCode = $("#building-code").html();
+        var roomType = $("#room-type").html();
+        var componentName = $($(parentElement).children("span")[0]).html();
+        var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
+        var prevComponent = $(component).prev();
+        var prevComponentName = $($($(prevComponent).children("h2")[0]).children("span")[0]).html();
+        var prevComponentDescription = $($($($(prevComponent).children("div")[0]).children("p")[0]).children("span")[0]).html();
+
+        $.ajax({
+            url: '/ManageRciComponent/SwapComponents',
+            data: {
+                buildingCode: buildingCode,
+                roomType: roomType,
+                componentName1: componentName,
+                componentDescription1: componentDescription,
+                componentName2: prevComponentName,
+                componentDescription2: prevComponentDescription
+            },
+            method: "POST"
+        }).done(function () {
+            $(prevComponent).before(component);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            alert("Oops! We were unable to move that component up.");
+            console.log("Status: " + jqXHR.status);
+            console.log("Response Text: " + jqXHR.responseText);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
+function moveDown(element) {
+    var parentElement = $(element).parent();
+    var component = $(parentElement).parent();
+    if ($(component).is(":last-child")) {
+        alert("This is already the last component. Can't move down any more.");
+    }
+    else {
+        var buildingCode = $("#building-code").html();
+        var roomType = $("#room-type").html();
+        var componentName = $($(parentElement).children("span")[0]).html();
+        var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
+        var nextComponent = $(component).next();
+        var nextComponentName = $($($(nextComponent).children("h2")[0]).children("span")[0]).html();
+        var nextComponentDescription = $($($($(nextComponent).children("div")[0]).children("p")[0]).children("span")[0]).html();
+
+        $.ajax({
+            url: '/ManageRciComponent/SwapComponents',
+            data: {
+                buildingCode: buildingCode,
+                roomType: roomType,
+                componentName1: componentName,
+                componentDescription1: componentDescription,
+                componentName2: nextComponentName,
+                componentDescription2: nextComponentDescription
+            },
+            method: "POST"
+        }).done(function () {
+            $(nextComponent).after(component);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            alert("Oops! We were unable to move that component up.");
+            console.log("Status: " + jqXHR.status);
+            console.log("Response Text: " + jqXHR.responseText);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
 $.fn.ignore = function (sel) {
     return this.clone().find(sel || ">*").remove().end();
 }

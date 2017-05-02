@@ -173,6 +173,28 @@ namespace Phoenix.Controllers
         }
 
         [HttpPost]
+        public void SwapComponents(string buildingCode, string roomType, string componentName1, string componentDescription1, string componentName2, string componentDescription2)
+        {
+            XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
+            XElement rciTypes = document.Root;
+            XElement rci = rciTypes.Elements("rci")
+                .Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+            XElement component1 = rci.Element("components").Elements("component")
+                .Where(x => (string)x.Attribute("name") == componentName1)
+                .Where(x => (string)x.Attribute("description") == componentDescription1)
+                .FirstOrDefault();
+            XElement component2 = rci.Element("components").Elements("component")
+                .Where(x => (string)x.Attribute("name") == componentName2)
+                .Where(x => (string)x.Attribute("description") == componentDescription2)
+                .FirstOrDefault();
+            component1.ReplaceWith(component2);
+            component2.ReplaceWith(component1);
+            document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
+        }
+
+        [HttpPost]
         public void EditRoomType(string buildingCode, string roomType, string newRoomType)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
