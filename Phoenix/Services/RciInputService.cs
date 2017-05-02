@@ -307,6 +307,54 @@ namespace Phoenix.Services
             }
         }
 
+        /// <summary>
+        /// Respect EXIF orientation metadata and apply it to the image.
+        /// References:
+        /// EXIF: http://www.impulseadventure.com/photo/exif-orientation.html 
+        /// Modifying an image to reflext EXIF data: http://stackoverflow.com/questions/6222053/problem-reading-jpeg-metadata-orientation#23400751
+        /// Extra :p http://www.daveperrett.com/articles/2012/07/28/exif-orientation-handling-is-a-ghetto/
+        /// </summary>
+        public void ApplyExifData(Image image)
+        {
+            if(!image.PropertyIdList.Contains(274))
+            {
+                return;
+            }
+            var orientation = image.GetPropertyItem(274).Value[0];
+            switch (orientation)
+            {
+                case 1:
+                    // No rotation required.
+                    break;
+                case 2:
+                    image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    break;
+                case 3:
+                    image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    break;
+                case 4:
+                    image.RotateFlip(RotateFlipType.Rotate180FlipX);
+                    break;
+                case 5:
+                    image.RotateFlip(RotateFlipType.Rotate90FlipX);
+                    break;
+                case 6:
+                    image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    break;
+                case 7:
+                    image.RotateFlip(RotateFlipType.Rotate270FlipX);
+                    break;
+                case 8:
+                    image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    break;
+            }
+
+            // Now that we have the image rotated correctly, remove the exif information so that
+            // other programs don't try to adjust the image again based on the exif data.
+            image.RemovePropertyItem(274);
+
+        } 
+
         public IEnumerable<string> GetCommonRooms(int id)
         {
             var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
