@@ -14,7 +14,7 @@ function saveEdit(element) {
     var buildingCode = $("#building-code").html();
     var roomType = $("#room-type").html();
     var componentName = $($($(component).children("h2")[0]).children("span")[0]).html();
-    var componentDescription = $($(parentElement).children("span")[0]).html();
+    var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
     var newDescription = $($(parentElement).children("input")[0]).val();
     $.ajax({
         url: '/ManageRciComponent/EditComponentDescription',
@@ -120,7 +120,7 @@ function saveEditCost(element) {
     var buildingCode = $("#building-code").html();
     var roomType = $("#room-type").html();
     var componentName = $($($(component).children("h2")[0]).children("span")[0]).html();
-    var componentDescription = $($(parentElement).children("span")[0]).html();
+    var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
     var oldCostName = $($(parentElement).children("b")[0]).html();
     var oldCostApproxCost = $($(parentElement).children("span")[0]).html();
     var newCostName = $($(parentElement).children("input")[0]).val();
@@ -254,6 +254,7 @@ function saveAddCost(element) {
             $($(parentElement).children("input")[1]).hide();
             $($(parentElement).children("i")[0]).hide();
             $($(parentElement).children("i")[1]).hide();
+            alert("The new cost has been added to the end of all costs of component " + componentName);
         }).fail(function (jqXHR, textStatus, errorThrown) {
             alert("Oops! We were unable to edit that cost.");
             console.log("Status: " + jqXHR.status);

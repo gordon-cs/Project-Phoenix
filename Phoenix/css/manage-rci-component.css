@@ -7,15 +7,8 @@
     display: none !important;
 }
 
-.building-name {
-    border: 1px solid #808080 !important;
-    font-size: smaller;
-    padding: 0.3em;
-    border-radius: 0.2em;
-}
-
-.building-name i {
-    font-size: smaller;
+#add-component h3 {
+    margin-bottom: 0.5em;
 }
 
 #building-code-block {
@@ -23,13 +16,33 @@
 }
 
 .building-name {
+    border: 1px solid #808080 !important;
+    font-size: smaller;
+    padding: 0.3em;
+    border-radius: 0.2em;
     cursor: pointer;
+}
+
+.building-name i {
+    font-size: smaller;
 }
 
 .possible-costs, #add-component {
     margin-top: 1em !important;
 }
 
+.possible-costs button {
+    display: inline;
+    margin-left: 0.5em !important;
+}
+
 .possible-costs h3 {
     display: inline;
 }
+
+.possible-costs-header {
+    border-bottom: 1px solid lightgrey;
+    padding-bottom: 0.2em !important;
+    margin-bottom: 0.5em !important;
+}
+
