@@ -52,11 +52,12 @@ namespace Phoenix.Controllers
         // This will involve adding a new <rciType> to the XML
         // If a prexisting RCI has been selected to copy from, copy from that, else just create empty XML element for <components>
         // Once the new type has been created, we want to redirect user to this new page
-        public ActionResult AddNewRciType(string buildingCode, string roomType, string copyOption = null)
+        [HttpPost]
+        public JsonResult AddNewRciType(string buildingCode, string roomType, string copyOption = null)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement newType = new XElement("rciType");
+            XElement newType = new XElement("rci");
 
             XAttribute buildingCodeAttribute = new XAttribute("buildingCode", buildingCode);
             newType.Add(buildingCodeAttribute);
@@ -72,7 +73,9 @@ namespace Phoenix.Controllers
             document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
 
 
-            return RedirectToAction("Index", "ManageRciComponent", new { buildingCode = buildingCode, roomType = roomType });
+           // return RedirectToAction(actionName: "Index", controllerName: "ManageRciComponent", routeValues: new { buildingCode = buildingCode, roomType = roomType });
+
+           return Json(Url.Action("Index", "ManageRciComponent", routeValues: new { buildingCode = buildingCode, roomType = roomType }));
         }
     }
 }

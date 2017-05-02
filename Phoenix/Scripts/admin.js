@@ -64,7 +64,9 @@ function createNewType(buildingCode, roomType) {
             data: { buildingCode: buildingCode, roomType: roomType }
         })
     .then(function(result) {
-        console.log("Success");});
+        console.log("Success");
+        window.location.href = result;
+    });
 }
 
 
