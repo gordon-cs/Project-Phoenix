@@ -48,10 +48,15 @@ namespace Phoenix.Controllers
             return PartialView(viewModel);
         }
 
-        // POST: Create a new type of RCI
-        // This will involve adding a new <rciType> to the XML
-        // If a prexisting RCI has been selected to copy from, copy from that, else just create empty XML element for <components>
-        // Once the new type has been created, we want to redirect user to this new page
+        /* POST: Create a new type of RCI
+          This will involve adding a new <rciType> to the XML
+          If a prexisting RCI has been selected to copy from, copy from that, else just create empty XML element for <components>
+          Once the new type has been created, we want to redirect user to this new page
+          Params: buildingCode: the code for the building this RCI will be used for (e.g. WIL)
+                  roomType: the type of dorm room (either "common" or "individual")
+                  copyOption: the prexisting RCI type that the user wants to copy over to create a new one. Could be "none"
+                              if user wants to start from scratch
+        */          
         [HttpPost]
         public JsonResult AddNewRciType(string buildingCode, string roomType, string copyOption)
         {
@@ -103,5 +108,25 @@ namespace Phoenix.Controllers
 
            return Json(Url.Action("Index", "ManageRciComponent", routeValues: new { buildingCode = buildingCode, roomType = roomType }));
         }
+
+        /* DELETE: Delete a certain rci type (i.e. building)L
+           Params: buildingCode: the code for the building this RCI was used for (e.g.WIL)
+                  roomType: the type of dorm room(either "common" or "individual")
+        */  
+        [HttpDelete]
+        public ActionResult DeleteRciType(string buildingCode, string roomType)
+        {
+            XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
+            XElement toRemove = document.Root.Elements("rci").Where(x => (string)x.Attribute("buildingCode") == buildingCode)
+                .Where(x => (string)x.Attribute("roomType") == roomType)
+                .FirstOrDefault();
+
+            toRemove.Remove();
+
+            document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
+
+            return new HttpStatusCodeResult(200);
+        } 
+
     }
 }

@@ -71,6 +71,21 @@ function createNewType(buildingCode, roomType, buildingCopy) {
     });
 }
 
+// Delete a certain rci type
+function deleteRciType(buildingCode, roomType) {
+    console.log("About to delete " + buildingCode + roomType);
+
+    $.ajax(
+        {
+            method: "DELETE",
+            url: "/AdminDashboard/DeleteRciType",
+            data: {buildingCode: buildingCode, roomType: roomType}
+        })
+    .then(function () {
+        alert("Successfully delete: " + buildingCode + roomType);
+    })
+}
+
 
 /**** Register event handlers ****/
 $("#search-button").click(sendSearch);
@@ -104,4 +119,18 @@ $("#create-new-type").click(function () {
     let buildingCopy = $("#copy-building-select option:selected").text();
 
     createNewType(buildingCode, roomType, buildingCopy);
+});
+
+// Handler for deleting photos
+$(".rci-types-flex").on("click", ".delete", function () {
+    console.log($(this));
+
+    
+    // The delete button has an id of the form "delete-WIL-common", so we split it up to get building code and room type
+    let splitArray = $(this).attr("id").split("-");
+    
+    let buildingCode = splitArray[1];
+    let roomType = splitArray[2];
+
+    deleteRciType(buildingCode, roomType);
 });
