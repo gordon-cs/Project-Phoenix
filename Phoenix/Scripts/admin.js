@@ -49,8 +49,6 @@ function sendSearch() {
         $("#search-results-section").append(result);
     });
 
-    
-
 }
 
 //Create a new type of RCI in the XML doc
@@ -66,6 +64,10 @@ function createNewType(buildingCode, roomType, buildingCopy) {
     .then(function(result) {
         console.log("Success");
         window.location.href = result;
+    })
+    .fail(function () {
+        console.log("fail");
+        alert("It looks like there is no " + roomType + " RCI for the building " + copyOption + ". Are you sure you picked the right options?");
     });
 }
 

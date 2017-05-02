@@ -81,14 +81,15 @@ namespace Phoenix.Controllers
                             .Where(x => (string)x.Attribute("buildingCode") == copyOption && (string)x.Attribute("roomType") == roomType)
                             .FirstOrDefault();
 
+                if (toCopy == null)
+                {
+                    throw new ArgumentException("Copy not found");
+                }
+
                 newType = new XElement(toCopy);
 
                 // set attributes for new rci type accordingly
                 newType.Attribute("buildingCode").SetValue(buildingCode);
-
-                //newType.Attribute(copyOption).Remove();
-                //XAttribute buildingBool = new XAttribute(buildingCode, true);
-                //newType.Add(buildingBool);
 
                 newType.Attribute("roomType").SetValue(roomType);
             }
