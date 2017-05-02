@@ -54,14 +54,14 @@ function sendSearch() {
 }
 
 //Create a new type of RCI in the XML doc
-function createNewType(buildingCode, roomType) {
+function createNewType(buildingCode, roomType, buildingCopy) {
     console.log("About to create new type");
 
     $.ajax(
         {
             method: "POST",
             url: "/AdminDashboard/AddNewRciType",
-            data: { buildingCode: buildingCode, roomType: roomType }
+            data: { buildingCode: buildingCode, roomType: roomType, copyOption: buildingCopy }
         })
     .then(function(result) {
         console.log("Success");
@@ -95,7 +95,11 @@ $("#cancel-add-type").click(function () {
 $("#create-new-type").click(function () {
     let buildingCode = $("#new-building-code-input").val();
     console.log(buildingCode);
+
     let roomType = $("#room-type-select option:selected").text().toLocaleLowerCase();
     console.log("Room type: " + roomType);
-    createNewType(buildingCode, roomType);
+
+    let buildingCopy = $("#copy-building-select option:selected").text();
+
+    createNewType(buildingCode, roomType, buildingCopy);
 });

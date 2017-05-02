@@ -53,20 +53,45 @@ namespace Phoenix.Controllers
         // If a prexisting RCI has been selected to copy from, copy from that, else just create empty XML element for <components>
         // Once the new type has been created, we want to redirect user to this new page
         [HttpPost]
-        public JsonResult AddNewRciType(string buildingCode, string roomType, string copyOption = null)
+        public JsonResult AddNewRciType(string buildingCode, string roomType, string copyOption)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement rciTypes = document.Root;
-            XElement newType = new XElement("rci");
 
-            XAttribute buildingCodeAttribute = new XAttribute("buildingCode", buildingCode);
-            newType.Add(buildingCodeAttribute);
+            XElement newType;
 
-            XAttribute roomTypeAttribute = new XAttribute("roomType", roomType);
-            newType.Add(roomTypeAttribute);
+            if (copyOption.Equals("None"))
+            {
+                // If the user did not select a pre-existing RCI to copy from, then create a new one
+                newType = new XElement("rci");
 
-            XElement componentsHolder = new XElement("components");
-            newType.Add(componentsHolder);
+                XAttribute buildingCodeAttribute = new XAttribute("buildingCode", buildingCode);
+                newType.Add(buildingCodeAttribute);
+
+                XAttribute roomTypeAttribute = new XAttribute("roomType", roomType);
+                newType.Add(roomTypeAttribute);
+
+                XElement componentsHolder = new XElement("components");
+                newType.Add(componentsHolder);
+            }
+            else
+            {
+                // Find the prexisting rci type for the selected building, and then make a copy of it to modify and save as our new type
+                XElement toCopy = rciTypes.Elements("rci")
+                            .Where(x => (string)x.Attribute("buildingCode") == copyOption && (string)x.Attribute("roomType") == roomType)
+                            .FirstOrDefault();
+
+                newType = new XElement(toCopy);
+
+                // set attributes for new rci type accordingly
+                newType.Attribute("buildingCode").SetValue(buildingCode);
+
+                //newType.Attribute(copyOption).Remove();
+                //XAttribute buildingBool = new XAttribute(buildingCode, true);
+                //newType.Add(buildingBool);
+
+                newType.Attribute("roomType").SetValue(roomType);
+            }
 
             rciTypes.Add(newType);
 
