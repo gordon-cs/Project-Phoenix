@@ -640,8 +640,7 @@ td, th {
     display: flex;
     flex-wrap: wrap;
 }
-
-.admin-actions button, .rci-types-flex button {
+ .rci-types-flex button {
     width: 30%;
 }
 .rci-types-flex button {
@@ -651,10 +650,14 @@ td, th {
     margin: 0.25em;
     margin-bottom: 0.75em;
 }
+.admin-actions button {
+    width: 45%;
+}
 .rci-types-flex .delete {
     cursor: pointer;
     margin-left: -8px;
     margin-right: 5px;
+    padding: 2px;
 }
 
 /****************************/
@@ -684,14 +687,20 @@ td, th {
         display: inline;
     }
     .dropdown-menu {
-    /*box-shadow: 0 0 5px 0 #ddd;*/
-    display:none;
-    position: absolute;
-    right: 4%; left:unset;
-    top: 55px;
-    width: 150px;
-    z-index: 200;
-}
+        /*box-shadow: 0 0 5px 0 #ddd;*/
+        display:none;
+        position: absolute;
+        right: 4%; left:unset;
+        top: 55px;
+        width: 150px;
+        z-index: 200;
+    }
+    .rci-types-flex button {
+        max-width:25%;
+    }
+    .admin-actions button {
+        width: 35%;
+    }
 }
 
 @media only screen and (min-width: 980px) {
