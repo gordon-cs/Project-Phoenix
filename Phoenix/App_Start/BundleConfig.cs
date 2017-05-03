@@ -53,6 +53,9 @@ namespace Phoenix
             bundles.Add(new ScriptBundle("~/bundles/page_specific/js/rci-checkout").Include(
                         "~/Scripts/rci-checkout.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/page_specific/js/manage-rci-component").Include(
+                        "~/Scripts/manage-rci-component.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/page_specific/js/admin").Include(
                         "~/Scripts/admin.js"));
 
