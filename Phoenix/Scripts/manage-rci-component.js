@@ -231,16 +231,16 @@ function saveAddCost(element) {
             },
             method: "POST"
         }).done(function () {
-            let $wrapperP = $("<p></p>");
-            $wrapperP.append("<b>" + newCostName + "</b>");
-            $wrapperP.append('<input class="input-edit-name" type="text" value="' + newCostName + '" />');
-            $wrapperP.append('$');
-            $wrapperP.append("<span>" + newCostApproxCost + "</span>");
-            $wrapperP.append('<input class="input-edit-approxCost" type="text" value="' + newCostApproxCost + '" />');
-            $wrapperP.append('<i class="material-icons start-edit-cost" onclick="startEditCost(this)">create</i>');
-            $wrapperP.append('<i class="material-icons delete-cost" onclick="deleteCost(this)">delete</i>');
-            $wrapperP.append('<i class="material-icons save-edit-cost" onclick="saveEditCost(this)">done</i>');
-            $wrapperP.append('<i class="material-icons cancel-edit-cost" onclick="cancelEditCost(this)">clear</i>');
+            let $wrapperP = $("<p></p> ");
+            $wrapperP.append("<b>" + newCostName + "</b> ");
+            $wrapperP.append('<input class="input-edit-name" type="text" value="' + newCostName + '" /> ');
+            $wrapperP.append(' $ ');
+            $wrapperP.append("<span>" + newCostApproxCost + "</span> ");
+            $wrapperP.append('<input class="input-edit-approxCost" type="text" value="' + newCostApproxCost + '" /> ');
+            $wrapperP.append('<i class="material-icons start-edit-cost" onclick="startEditCost(this)">create</i> ');
+            $wrapperP.append('<i class="material-icons delete-cost" onclick="deleteCost(this)">delete</i> ');
+            $wrapperP.append('<i class="material-icons save-edit-cost" onclick="saveEditCost(this)">done</i> ');
+            $wrapperP.append('<i class="material-icons cancel-edit-cost" onclick="cancelEditCost(this)">clear</i> ');
             $(parentElement).parent().append($wrapperP);
             $($(parentElement).children("input")[0]).val("");
             $($(parentElement).children("input")[1]).val("");
@@ -349,29 +349,29 @@ function saveAddComponent(element) {
             },
             method: "POST"
         }).done(function () {
-            let $wrapperDiv = $('<div class="pane component"></div>');
-            let $wrapperH2 = $('<h2 class="pane-title"></h2>');
-            $wrapperH2.append('<span>' + newComponentName + '</span>');
-            $wrapperH2.append('<i class="material-icons start-edit-component" onclick="startEditComponentName(this)">create</i>');
-            $wrapperH2.append('<input class="input-edit-component" type="text" value="' + newComponentName + '"/>');
-            $wrapperH2.append('<i class="material-icons save-edit-component" onclick="saveEditComponentName(this)">done</i>');
-            $wrapperH2.append('<i class="material-icons cancel-edit-component" onclick="cancelEditComponentName(this)">clear</i>');
-            $wrapperH2.append('<i class="material-icons delete-component" onclick="deleteComponent(this)">delete</i>');
-            $wrapperH2.append('<i class="material-icons move-up" onclick="moveUp(this)">keyboard_arrow_up</i>');
-            $wrapperH2.append('<i class="material-icons move-down" onclick="moveDown(this)">keyboard_arrow_down</i>');
+            let $wrapperDiv = $('<div class="pane component"></div> ');
+            let $wrapperH2 = $('<h2 class="pane-title"></h2> ');
+            $wrapperH2.append('<span>' + newComponentName + '</span> ');
+            $wrapperH2.append('<i class="material-icons start-edit-component" onclick="startEditComponentName(this)">create</i> ');
+            $wrapperH2.append('<input class="input-edit-component" type="text" value="' + newComponentName + '"/> ');
+            $wrapperH2.append('<i class="material-icons save-edit-component" onclick="saveEditComponentName(this)">done</i> ');
+            $wrapperH2.append('<i class="material-icons cancel-edit-component" onclick="cancelEditComponentName(this)">clear</i> ');
+            $wrapperH2.append('<i class="material-icons delete-component" onclick="deleteComponent(this)">delete</i> ');
+            $wrapperH2.append('<i class="material-icons move-up" onclick="moveUp(this)">keyboard_arrow_up</i> ');
+            $wrapperH2.append('<i class="material-icons move-down" onclick="moveDown(this)">keyboard_arrow_down</i> ');
             $wrapperDiv.append($wrapperH2);
-            let $wrapperDivPaneContent = $('<div class="input pane-content"></div>');
-            let $wrapperP = $('<p></p>');
-            $wrapperP.append('<b>Description:</b>');
-            $wrapperP.append('<span>' + newComponentDescription + '</span>');
-            $wrapperP.append('<i class="material-icons start-edit-description" onclick="startEdit(this)">create</i>');
-            $wrapperP.append('<input class="input-edit-description" type="text" value="' + newComponentDescription + '" />');
-            $wrapperP.append('<i class="material-icons save-edit-description" onclick="saveEdit(this)">done</i>');
-            $wrapperP.append('<i class="material-icons cancel-edit-description" onclick="cancelEdit(this)">clear</i>');
+            let $wrapperDivPaneContent = $('<div class="input pane-content"></div> ');
+            let $wrapperP = $('<p></p> ');
+            $wrapperP.append('<b>Description:</b> ');
+            $wrapperP.append('<span>' + newComponentDescription + '</span> ');
+            $wrapperP.append('<i class="material-icons start-edit-description" onclick="startEdit(this)">create</i> ');
+            $wrapperP.append('<input class="input-edit-description" type="text" value="' + newComponentDescription + '" /> ');
+            $wrapperP.append('<i class="material-icons save-edit-description" onclick="saveEdit(this)">done</i> ');
+            $wrapperP.append('<i class="material-icons cancel-edit-description" onclick="cancelEdit(this)">clear</i> ');
             $wrapperDivPaneContent.append($wrapperP);
-            let $wrapperDivPossibleCosts = $('<div class="possible-costs"></div>');
-            $wrapperDivPossibleCosts.append('<div class="possible-costs-header"><h3>Possible Costs:</h3><button onclick="startAddCost(this)">Add</button></div>');
-            $wrapperDivPossibleCosts.append('<p class="add-cost"><input type="text" placeholder="Name of Cost"/>$<input type="text" placeholder="Approximate Cost" /><i class="material-icons" onclick="saveAddCost(this)">done</i><i class="material-icons" onclick="cancelAddCost(this)">clear</i></p>');
+            let $wrapperDivPossibleCosts = $('<div class="possible-costs"></div> ');
+            $wrapperDivPossibleCosts.append('<div class="possible-costs-header"><h3>Possible Costs:</h3> <button onclick="startAddCost(this)">Add</button></div>');
+            $wrapperDivPossibleCosts.append('<p class="add-cost"> <input type="text" placeholder="Name of Cost"/> $ <input type="text" placeholder="Approximate Cost" /> <i class="material-icons" onclick="saveAddCost(this)">done</i> <i class="material-icons" onclick="cancelAddCost(this)">clear</i> </p> ');
             $wrapperDivPaneContent.append($wrapperDivPossibleCosts);
             $wrapperDiv.append($wrapperDivPaneContent);
             $(parentElement).parent().after($wrapperDiv);
