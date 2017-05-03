@@ -48,6 +48,7 @@
  * .............. legend
  * .............. component
  * .............. nothing-placeholder
+ * .............. pseudo-link
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -110,12 +111,10 @@
 
 .dropdown-menu {
     /*box-shadow: 0 0 5px 0 #ddd;*/
-    border: solid 1px #cccccb;
+   border: solid 1px #cccccb;
     display:none;
-    margin: 0 auto;
     position: absolute;
-    top: 80px;
-    width: 100%;
+    top: 80px; left: 5px; right: 5px;
     z-index: 200;
 }
 .dropdown-menu-item {
@@ -583,6 +582,10 @@ td, th {
     text-align: center;
 }
 
+.fake-link {
+    text-decoration: underline;
+}
+
 /***************************/
 /***********MISC************/
 /***************************/
@@ -613,13 +616,13 @@ td, th {
 }
 #signature-container {
     display: none;
-    margin: auto;
+    margin: 40px auto;
     max-height: 400px;
     overflow: auto;
     padding: 2em 1.5em;
     position: fixed;
-    top: 0; right: 0; left: 0; bottom: 0;
-    width: 80%;
+    top: 0; right: 0; left: 0;
+    width: 90%;
     z-index: 99;
 
     /*margin-left: 12%;
@@ -683,9 +686,8 @@ td, th {
     .dropdown-menu {
     /*box-shadow: 0 0 5px 0 #ddd;*/
     display:none;
-    margin: 0 auto;
     position: absolute;
-    right: 4%;
+    right: 4%; left:unset;
     top: 55px;
     width: 150px;
     z-index: 200;

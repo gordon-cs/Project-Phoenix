@@ -219,9 +219,9 @@
     <Content Include="Content\Images\gordon-logo-vertical-white.svg" />
     <Content Include="css\dashboard.css" />
     <Content Include="css\default-styles.css" />
+    <Content Include="css\rci-archive.css" />
     <Content Include="css\manage-rci-component.css" />
     <Content Include="css\rci-checkout.css" />
-    <Content Include="css\rci-component-reassign.css" />
     <Content Include="css\rci-input.css" />
     <Content Include="css\site-colors.css" />
     <Content Include="css\site-layout.css" />
@@ -235,6 +235,7 @@
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Scripts\rci-archive.js" />
     <Content Include="Scripts\admin.js" />
     <Content Include="Scripts\countdown_timer.js" />
     <Content Include="Scripts\login.js" />
@@ -285,15 +286,12 @@
     <Content Include="Views\RciCheckout\IndividualRoom.cshtml" />
     <Content Include="Views\RciCheckout\ResidentSignature.cshtml" />
     <Content Include="Views\RciCheckout\RASignature.cshtml" />
-    <Content Include="Views\RciComponentReassign\Index.cshtml" />
     <Content Include="Views\RciCheckout\RDSignature.cshtml" />
     <Content Include="Views\RciInput\Component.cshtml" />
     <Content Include="Views\RciCheckout\CommonArea.cshtml" />
     <Content Include="Views\RciCheckout\CommonAreaSignature.cshtml" />
     <Content Include="Views\RciInput\SignAllRD.cshtml" />
     <Content Include="Views\RciInput\CheckinSigCommonArea.cshtml" />
-    <Content Include="Views\RciReviewCheckin\Index.cshtml" />
-    <Content Include="Views\RciReviewCheckout\Index.cshtml" />
     <Content Include="Views\RciInput\RciReview.cshtml" />
     <Content Include="Views\RciInput\RciReviewComponent.cshtml" />
     <Content Include="Views\RciCheckout\RciReviewCommonArea.cshtml" />
@@ -304,6 +302,7 @@
     <Content Include="Views\Dashboard\DashboardRciButton.cshtml" />
     <Content Include="Views\AdminDashboard\SearchRcis.cshtml" />
     <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
+    <Content Include="Views\Dashboard\ArchiveRcis.cshtml" />
     <Content Include="Views\ManageRciComponent\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

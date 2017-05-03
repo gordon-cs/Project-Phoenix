@@ -120,6 +120,14 @@ button.dropdown {
 
 }
 
+.fake-link {
+    color: #00aeef;
+}
+
+.check-box {
+    background-color: #fff;
+}
+
 .nothing-placeholder {
     color: #00AEEF;
 }

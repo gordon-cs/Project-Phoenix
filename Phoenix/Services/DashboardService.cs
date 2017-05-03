@@ -459,6 +459,19 @@ namespace Phoenix.Services
         }
 
         /// <summary>
+        /// Set the IsCurrent column for a bunch of rcis to false.
+        /// </summary>
+        public void ArchiveRcis(List<int> rciIds)
+        {
+            var rcis = db.Rci.Where(r => rciIds.Contains(r.RciID));
+            foreach(var rci in rcis)
+            {
+                rci.IsCurrent = false;
+            }
+            db.SaveChanges();
+        }
+
+        /// <summary>
         /// Helper method to create and return an Rci Object. Makes no calls to the database
         /// </summary>
         public Rci CreateRciObject(string buildingCode, string roomNumber, string sessionCode, string idNumber = null)
@@ -582,7 +595,7 @@ namespace Phoenix.Services
             rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RA_CHECKOUT, new Dictionary<string, ActionResult>
             {
                 {Constants.RESIDENT,
-                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
@@ -594,7 +607,7 @@ namespace Phoenix.Services
             rciRouteDictionary.Add(Constants.RCI_COMPLETE, new Dictionary<string, ActionResult>
             {
                 {Constants.RESIDENT,
-                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
