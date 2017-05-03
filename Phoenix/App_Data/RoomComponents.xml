@@ -80,6 +80,7 @@
       <component name ="Towel bar" description="Bathroom">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
+      <component name ="Other" description="Other" />
     </components>
   </rci>
   
@@ -163,6 +164,7 @@
       <component name ="Towel bar" description="Bathroom">
         <cost name="Replacement Cost" approxCost="20" />
       </component>
+      <component name ="Other" description="Other" />
     </components>
   </rci>
   
@@ -240,6 +242,7 @@
       <component name ="Toilet" description="Bathroom">
         <cost name="Cleaning Cost" approxCost="15" />
       </component>
+      <component name ="Other" description="Other" />
     </components>
   </rci>
   
