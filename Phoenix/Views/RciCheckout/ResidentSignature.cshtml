@@ -8,6 +8,17 @@
     ViewBag.Role = TempData["role"];
 }
 
+@{ 
+    var sum = 0M;
+    foreach(var component in Model.RciComponent)
+    {
+        foreach(var fine in component.Fine)
+        {
+            sum += fine.FineAmount;
+        }
+    }
+}
+
 <h2>@ViewBag.ViewTitle</h2>
 
 <div class="view">
@@ -24,14 +35,15 @@
                 <div>
                     @if (Model.CheckoutSigRes == null)
                     {
-                        <p>I, @Model.FirstName @Model.LastName, hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
+                        <p class="padded-paragraph-vertical">I, @Model.FirstName @Model.LastName, hereby agree to the preliminary fines that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
+                        <p class="padded-paragraph-vertical">Total Charges: $@sum</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@Model.FirstName @Model.LastName" />
                         </div>
                     }
                     else
                     {
-                        <p>This RCI has been signed by the resident @Model.FirstName @Model.LastName</p>
+                        <p class="padded-paragraph-vertical">This RCI has been signed by the resident @Model.FirstName @Model.LastName</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.FirstName @Model.LastName" />
                             <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRes" />

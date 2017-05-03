@@ -23,8 +23,8 @@
                 <div>
                     @if (Model.CheckoutSigRD == null)
                     {
-                        <p>I, @ViewBag.ExpectedSignature, hereby agree to all of the fines and charges that have been recorded.</p>
-                        <p>I understand that by entering my username and password below, I give the system permission to send a fine email to the resident(s) if any fines/charges were assessed.</p>
+                        <p class="padded-paragraph-vertical">I, @ViewBag.ExpectedSignature, hereby agree to all of the fines and charges that have been recorded.</p>
+                        <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to send a fine email to the resident(s) if any fines/charges were assessed.</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="username" type="text" value="@ViewBag.ExpectedUsername" />
                         </div>

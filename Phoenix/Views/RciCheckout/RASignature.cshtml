@@ -23,14 +23,14 @@
                 <div>
                     @if (Model.CheckoutSigRA == null)
                     {
-                        <p>I, @ViewBag.ExpectedSignature, hereby agree that I have assessed preliminary fines to the best of my ability. I understand that these fines are subject to change at the discretion of the Resident Director.</p>
+                        <p class="padded-paragraph-vertical">I, @ViewBag.ExpectedSignature, hereby agree that I have assessed preliminary fines to the best of my ability. I understand that these fines are subject to change at the discretion of the Resident Director.</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />
                         </div>
                     }
                     else
                     {
-                        <p>This RCI has been signed by the Resident Advisor/Apartment Coordinator</p>
+                        <p class="padded-paragraph-vertical">This RCI has been signed by the Resident Advisor/Apartment Coordinator</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.CheckoutSigRAName" />
                             <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRA" />
