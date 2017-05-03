@@ -18,5 +18,6 @@
         public static readonly string RCI_CHECKIN_STAGE = "CHECKIN";
         public static readonly string RCI_CHECKOUT_STAGE = "CHECKOUT";
 
+        public static readonly string FINE = "Fine";
     }
 }

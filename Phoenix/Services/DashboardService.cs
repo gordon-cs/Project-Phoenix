@@ -196,7 +196,7 @@ namespace Phoenix.Services
          public string GenerateFinesSpreadsheet(List<string> buildingCodes)
         {
             var currentSession = GetCurrentSession();
-            var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Fine Amount\n";
+            var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Charge Amount, Fine\n";
 
             // ***** This does not handle common areas! *****
             // We should talk to MC about how he wants common area fine assignment to be handled in the system
@@ -206,6 +206,8 @@ namespace Phoenix.Services
                 join fine in db.Fine on component.RciComponentID equals fine.RciComponentID
                 join account in db.Account on fine.GordonID equals account.ID_NUM
                 where buildingCodes.Contains(rci.BuildingCode) && rci.SessionCode.Equals(currentSession)
+                && fine.FineAmount > 0 // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
+                // charge the resident for it e.g. Window blinds need to be replaced.
                 select new
                 {
                     RoomNumber = rci.RoomNumber,
@@ -215,7 +217,8 @@ namespace Phoenix.Services
                     Id = rci.GordonID,
                     ComponentName = component.RciComponentName,
                     DetailedReason = fine.Reason,
-                    FineAmount = fine.FineAmount
+                    FineAmount = fine.FineAmount,
+                    IsFine = component.RciComponentDescription.Equals(Constants.FINE) ? "YES" : "NO"
                 };
 
             foreach (var fine in fineQueries)
@@ -224,18 +227,11 @@ namespace Phoenix.Services
                 csvString += fine.BuildingCode + ",";
                 csvString += fine.FirstName + " " + fine.LastName + ",";
                 csvString += fine.Id + ",";
-                if (fine.ComponentName != null)
-                {
-                    csvString += fine.ComponentName + ": " + fine.DetailedReason + ",";
-                }
-                else
-                {
-                    csvString += "Improper checkout: " + fine.DetailedReason + ",";
-                }
-                csvString += fine.FineAmount + "\n";
+                csvString += fine.ComponentName + ": " + fine.DetailedReason + ",";
+                csvString += fine.FineAmount + ",";
+                csvString += fine.IsFine + "\n";
             }
 
-            Debug.Write(csvString);
             return csvString;
         } 
 
