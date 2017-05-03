@@ -109,17 +109,23 @@ namespace Phoenix.Controllers
            return Json(Url.Action("Index", "ManageRciComponent", routeValues: new { buildingCode = buildingCode, roomType = roomType }));
         }
 
-        /* DELETE: Delete a certain rci type (i.e. building)L
+        /* POST: Delete a certain rci type (i.e. building)L
            Params: buildingCode: the code for the building this RCI was used for (e.g.WIL)
                   roomType: the type of dorm room(either "common" or "individual")
         */  
-        [HttpDelete]
+        
         public ActionResult DeleteRciType(string buildingCode, string roomType)
         {
             XDocument document = XDocument.Load(Server.MapPath("~/App_Data/RoomComponents.xml"));
             XElement toRemove = document.Root.Elements("rci").Where(x => (string)x.Attribute("buildingCode") == buildingCode)
                 .Where(x => (string)x.Attribute("roomType") == roomType)
                 .FirstOrDefault();
+
+            if (toRemove == null)
+            {
+                //throw new ArgumentException("Cannot find rci type where building code = " + buildingCode + " and room type = " + roomType);
+                return new HttpStatusCodeResult(500, "Cannot find rci type where building code = " + buildingCode + " and room type = " + roomType);
+            }
 
             toRemove.Remove();
 

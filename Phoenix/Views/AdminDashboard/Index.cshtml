@@ -88,24 +88,26 @@
 </div>
 <div id="signature-container" class="add-type-dialog-box">
     <h3>Create New RCI Type</h3>
-    <label for="new-building-code-input">Building:</label><input id="new-building-code-input" placeholder="Building Code" />
-    <br />
-    <select id="room-type-select" class="divAddOn-field">
-        <option>Individual</option>
-        <option>Common</option>
-    </select>
-    <p>Select an existing RCI from which to copy. If you select none, you will begin with an empty RCI, with no furniture, etc.</p>
-    <select id="copy-building-select" class="divAddOn-field">
-        <option value="0">None</option>
-        @{
-            j = 1;
-            foreach (var building in Model.Buildings)
-            {
-                <option value=@j>@building</option>
-                j++;
+    <section class="rci-info-fields">
+        <label for="new-building-code-input">Building:</label><input id="new-building-code-input" placeholder="Building Code" />
+        <br />
+        <select id="room-type-select" class="divAddOn-field">
+            <option>Individual</option>
+            <option>Common</option>
+        </select>
+        <p>Select an existing RCI from which to copy. If you select none, you will begin with an empty RCI, with no furniture, etc.</p>
+        <select id="copy-building-select" class="divAddOn-field">
+            <option value="0">None</option>
+            @{
+                j = 1;
+                foreach (var building in Model.Buildings)
+                {
+                    <option value=@j>@building</option>
+                    j++;
+                }
             }
-        }
-    </select>
+        </select>
+    </section>
     <div class="admin-actions">
         <button id="create-new-type">Create New RCI Type</button>
         <button id="cancel-add-type">Cancel</button>

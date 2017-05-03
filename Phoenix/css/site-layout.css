@@ -644,8 +644,14 @@ td, th {
 .rci-types-flex button {
     max-width: 30%;
 }
-.add-type-dialog-box > * {
-    margin: 0.5em;
+.add-type-dialog-box * {
+    margin: 0.25em;
+    margin-bottom: 0.75em;
+}
+.rci-types-flex .delete {
+    cursor: pointer;
+    margin-left: -8px;
+    margin-right: 5px;
 }
 
 /****************************/
