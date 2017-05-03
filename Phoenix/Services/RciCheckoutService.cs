@@ -323,27 +323,36 @@ namespace Phoenix.Services
             {
                 client.BaseAddress = new Uri(Constants.GO_GORDON_URL);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authenticationInfo);
+                client.DefaultRequestHeaders.ExpectContinue = false;
+                client.DefaultRequestHeaders.ConnectionClose = false;
 
                 foreach (var request in workRequests)
                 {
-                    PostWorkRequest(client, request, buildingName, acct, rci);
+                    PostWorkRequest(client, request, acct.AD_Username, buildingName, rci.RoomNumber, "9789272300", acct.firstname, acct.lastname, acct.ID_NUM);
                 }
             }
         }
 
-        public HttpStatusCode PostWorkRequest(HttpClient client, string workRequest, string fullBuildingName, Account acct, Rci rci)
+        public HttpStatusCode PostWorkRequest(HttpClient client, 
+                                                                        string workRequest, 
+                                                                        string ADUsername, 
+                                                                        string fullBuildingName, 
+                                                                        string roomNumber,
+                                                                        string phoneNumber, 
+                                                                        string firstname,
+                                                                        string lastname,
+                                                                        string gordonID)
         {
-
             var data = new List<KeyValuePair<string, string>>();
-            data.Add(new KeyValuePair<string, string>("submitted_by", acct.AD_Username));
-            data.Add(new KeyValuePair<string, string>("ad_username", acct.AD_Username));
+            data.Add(new KeyValuePair<string, string>("submitted_by", ADUsername));
+            data.Add(new KeyValuePair<string, string>("ad_username", ADUsername));
             data.Add(new KeyValuePair<string, string>("building", fullBuildingName));
-            data.Add(new KeyValuePair<string, string>("location", "Room" + rci.RoomNumber));
+            data.Add(new KeyValuePair<string, string>("location", "Room " + roomNumber));
             data.Add(new KeyValuePair<string, string>("strdescription", workRequest));
-            data.Add(new KeyValuePair<string, string>("phone", "9789272300"));
-            data.Add(new KeyValuePair<string, string>("fname", acct.firstname));
-            data.Add(new KeyValuePair<string, string>("lname", acct.lastname));
-            data.Add(new KeyValuePair<string, string>("gordon_id", acct.ID_NUM));
+            data.Add(new KeyValuePair<string, string>("phone", phoneNumber));
+            data.Add(new KeyValuePair<string, string>("fname", firstname));
+            data.Add(new KeyValuePair<string, string>("lname", lastname));
+            data.Add(new KeyValuePair<string, string>("gordon_id", gordonID));
             data.Add(new KeyValuePair<string, string>("m_date_needed", "1"));
             data.Add(new KeyValuePair<string, string>("d_date_needed", "1"));
             data.Add(new KeyValuePair<string, string>("y_date_needed", "1900"));
@@ -363,6 +372,7 @@ namespace Phoenix.Services
             var statusCode = response.StatusCode;
 
             Debug.WriteLine("This task yeilded a " + statusCode + " status code");
+            Debug.WriteLine(response.Content.ReadAsStringAsync().Result);
 
             return statusCode;
         }
