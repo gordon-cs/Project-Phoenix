@@ -81,11 +81,12 @@
             </p>
             <div class="possible-costs">
                 <div class="possible-costs-header"><h3>Possible Costs:</h3> <button onclick="startAddCost(this)">Add</button></div>
-                <p>
-                    <input class="input-edit-name" type="text" placeholder="Name of Cost"/>
-                    <input class="input-edit-approxCost" type="text" placeholder="Approximate Cost" />
-                    <i class="material-icons save-edit-cost" onclick="saveAddCost(this)">done</i>
-                    <i class="material-icons cancel-edit-cost" onclick="cancelAddCost(this)">clear</i>
+                <p class="add-cost">
+                    <input type="text" placeholder="Name of Cost"/>
+                    $
+                    <input type="text" placeholder="Approximate Cost" />
+                    <i class="material-icons" onclick="saveAddCost(this)">done</i>
+                    <i class="material-icons" onclick="cancelAddCost(this)">clear</i>
                 </p>
                 @foreach (var cost in component.Elements("cost"))
                 {

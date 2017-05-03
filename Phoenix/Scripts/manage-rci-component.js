@@ -204,16 +204,9 @@ function deleteCost(element) {
 }
 
 function startAddCost(element) {
-    console.log(element);
     var parentElement = $(element).parent().parent();
-    console.log(parentElement);
     var addCostElement = $(parentElement).children("p")[0];
-    console.log(addCostElement);
-    console.log($(addCostElement).children("input")[0]);
-    $($(addCostElement).children("input")[0]).attr("style", "display: inline !important");
-    $($(addCostElement).children("input")[1]).attr("style", "display: inline !important");
-    $($(addCostElement).children("i")[0]).attr("style", "display: inline !important");
-    $($(addCostElement).children("i")[1]).attr("style", "display: inline !important");
+    $(addCostElement).attr("style", "display: inline !important");
 }
 
 function saveAddCost(element) {
@@ -240,21 +233,18 @@ function saveAddCost(element) {
         }).done(function () {
             let $wrapperP = $("<p></p>");
             $wrapperP.append("<b>" + newCostName + "</b>");
+            $wrapperP.append('<input class="input-edit-name" type="text" value="' + newCostName + '" />');
+            $wrapperP.append('$');
             $wrapperP.append("<span>" + newCostApproxCost + "</span>");
+            $wrapperP.append('<input class="input-edit-approxCost" type="text" value="' + newCostApproxCost + '" />');
             $wrapperP.append('<i class="material-icons start-edit-cost" onclick="startEditCost(this)">create</i>');
             $wrapperP.append('<i class="material-icons delete-cost" onclick="deleteCost(this)">delete</i>');
-            $wrapperP.append('<input class="input-edit-name" type="text" value="' + newCostName + '" />');
-            $wrapperP.append('<input class="input-edit-approxCost" type="text" value="' + newCostApproxCost + '" />');
             $wrapperP.append('<i class="material-icons save-edit-cost" onclick="saveEditCost(this)">done</i>');
             $wrapperP.append('<i class="material-icons cancel-edit-cost" onclick="cancelEditCost(this)">clear</i>');
             $(parentElement).parent().append($wrapperP);
-            $($(parentElement).children("input")[0]).html("");
-            $($(parentElement).children("input")[1]).html("");
-            $($(parentElement).children("input")[0]).hide();
-            $($(parentElement).children("input")[1]).hide();
-            $($(parentElement).children("i")[0]).hide();
-            $($(parentElement).children("i")[1]).hide();
-            alert("The new cost has been added to the end of all costs of component " + componentName);
+            $($(parentElement).children("input")[0]).val("");
+            $($(parentElement).children("input")[1]).val("");
+            $(parentElement).hide();
         }).fail(function (jqXHR, textStatus, errorThrown) {
             alert("Oops! We were unable to edit that cost.");
             console.log("Status: " + jqXHR.status);
@@ -273,10 +263,7 @@ function saveAddCost(element) {
 
 function cancelAddCost(element) {
     var parentElement = $(element).parent();
-    $($(parentElement).children("input")[0]).hide();
-    $($(parentElement).children("input")[1]).hide();
-    $($(parentElement).children("i")[0]).hide();
-    $($(parentElement).children("i")[1]).hide();
+    $(parentElement).hide();
 }
 
 function startEditComponentName(element) {
@@ -370,6 +357,8 @@ function saveAddComponent(element) {
             $wrapperH2.append('<i class="material-icons save-edit-component" onclick="saveEditComponentName(this)">done</i>');
             $wrapperH2.append('<i class="material-icons cancel-edit-component" onclick="cancelEditComponentName(this)">clear</i>');
             $wrapperH2.append('<i class="material-icons delete-component" onclick="deleteComponent(this)">delete</i>');
+            $wrapperH2.append('<i class="material-icons move-up" onclick="moveUp(this)">keyboard_arrow_up</i>');
+            $wrapperH2.append('<i class="material-icons move-down" onclick="moveDown(this)">keyboard_arrow_down</i>');
             $wrapperDiv.append($wrapperH2);
             let $wrapperDivPaneContent = $('<div class="input pane-content"></div>');
             let $wrapperP = $('<p></p>');
@@ -381,20 +370,19 @@ function saveAddComponent(element) {
             $wrapperP.append('<i class="material-icons cancel-edit-description" onclick="cancelEdit(this)">clear</i>');
             $wrapperDivPaneContent.append($wrapperP);
             let $wrapperDivPossibleCosts = $('<div class="possible-costs"></div>');
-            $wrapperDivPossibleCosts.append('<div><h3>Possible Costs:</h3> <i class="material-icons" onclick="startAddCost(this)">add</i></div>');
-            $wrapperDivPossibleCosts.append('<p><input class="input-edit-name" type="text" placeholder="Name of Cost"/><input class="input-edit-approxCost" type="text" placeholder="Approximate Cost" /><i class="material-icons save-edit-cost" onclick="saveAddCost(this)">done</i><i class="material-icons cancel-edit-cost" onclick="cancelAddCost(this)">clear</i></p>');
+            $wrapperDivPossibleCosts.append('<div class="possible-costs-header"><h3>Possible Costs:</h3><button onclick="startAddCost(this)">Add</button></div>');
+            $wrapperDivPossibleCosts.append('<p class="add-cost"><input type="text" placeholder="Name of Cost"/>$<input type="text" placeholder="Approximate Cost" /><i class="material-icons" onclick="saveAddCost(this)">done</i><i class="material-icons" onclick="cancelAddCost(this)">clear</i></p>');
             $wrapperDivPaneContent.append($wrapperDivPossibleCosts);
             $wrapperDiv.append($wrapperDivPaneContent);
-            $(parentElement).parent().parent().append($wrapperDiv);
+            $(parentElement).parent().after($wrapperDiv);
             $($(parentElement).children("input")[0]).hide();
             $($(parentElement).children("input")[1]).hide();
             $($(parentElement).children("i")[0]).hide();
             $($(parentElement).children("i")[1]).hide();
             $($(parentElement).children("input")[0]).val("");
             $($(parentElement).children("input")[1]).val("");
-            alert("The new component is added to the end among all components.");
         }).fail(function (jqXHR, textStatus, errorThrown) {
-            alert("Oops! We were unable to edit that cost.");
+            alert("Oops! We were unable to add this component.");
             console.log("Status: " + jqXHR.status);
             console.log("Response Text: " + jqXHR.responseText);
             console.log(textStatus);

@@ -3,12 +3,17 @@
 .input-edit-name, .input-edit-approxCost, .save-edit-cost, .cancel-edit-cost,
 .input-edit-component, .save-edit-component, .cancel-edit-component,
 #input-add-component-name, #input-add-component-description, #save-add-component-name, #cancel-add-component-name,
-#select-edit-room-type, #save-edit-room-type, #cancel-edit-room-type {
+#select-edit-room-type, #save-edit-room-type, #cancel-edit-room-type,
+.add-cost {
     display: none !important;
 }
 
 #add-component h3 {
     margin-bottom: 0.5em;
+}
+
+.add-cost input, .add-cost i {
+    display: inline;
 }
 
 #building-code-block {
@@ -45,4 +50,3 @@
     padding-bottom: 0.2em !important;
     margin-bottom: 0.5em !important;
 }
-

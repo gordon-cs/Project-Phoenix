@@ -151,7 +151,7 @@ namespace Phoenix.Controllers
             XAttribute description = new XAttribute("description", newComponentDescription);
             component.Add(name);
             component.Add(description);
-            components.Add(component);
+            components.AddFirst(component);
             document.Save(Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
 
