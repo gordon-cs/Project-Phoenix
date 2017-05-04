@@ -448,7 +448,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" EVA="true" buildingCode="EVA">
+  <rci roomType="individual" EVN="true" buildingCode="EVN">
     <components>
       <component name="Black dividers" description="Main Room">
         <cost name="Tack hole" approxCost="5" />
