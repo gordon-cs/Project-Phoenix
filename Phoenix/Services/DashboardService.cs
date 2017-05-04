@@ -196,7 +196,7 @@ namespace Phoenix.Services
          public string GenerateFinesSpreadsheet(List<string> buildingCodes)
         {
             var currentSession = GetCurrentSession();
-            var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Charge Amount, Fine\n";
+            var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Charge Amount,Behavioral Fine\n";
 
             // ***** This does not handle common areas! *****
             // We should talk to MC about how he wants common area fine assignment to be handled in the system
