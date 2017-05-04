@@ -214,7 +214,7 @@ namespace Phoenix.Services
                     BuildingCode = rci.BuildingCode,
                     FirstName = account.firstname,
                     LastName = account.lastname,
-                    Id = rci.GordonID,
+                    Id = fine.GordonID,
                     ComponentName = component.RciComponentName,
                     DetailedReason = fine.Reason,
                     FineAmount = fine.FineAmount,
