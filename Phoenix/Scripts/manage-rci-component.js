@@ -236,7 +236,7 @@ function saveAddCost(element) {
             $wrapperP.append('<input class="input-edit-name" type="text" value="' + newCostName + '" /> ');
             $wrapperP.append(' $ ');
             $wrapperP.append("<span>" + newCostApproxCost + "</span> ");
-            $wrapperP.append('<input class="input-edit-approxCost" type="text" value="' + newCostApproxCost + '" /> ');
+            $wrapperP.append('<input class="input-edit-approxCost" type="number" value="' + newCostApproxCost + '" /> ');
             $wrapperP.append('<i class="material-icons start-edit-cost" onclick="startEditCost(this)">create</i> ');
             $wrapperP.append('<i class="material-icons delete-cost" onclick="deleteCost(this)">delete</i> ');
             $wrapperP.append('<i class="material-icons save-edit-cost" onclick="saveEditCost(this)">done</i> ');
@@ -371,7 +371,7 @@ function saveAddComponent(element) {
             $wrapperDivPaneContent.append($wrapperP);
             let $wrapperDivPossibleCosts = $('<div class="possible-costs"></div> ');
             $wrapperDivPossibleCosts.append('<div class="possible-costs-header"><h3>Possible Costs:</h3> <button onclick="startAddCost(this)">Add</button></div>');
-            $wrapperDivPossibleCosts.append('<p class="add-cost"> <input type="text" placeholder="Name of Cost"/> $ <input type="text" placeholder="Approximate Cost" /> <i class="material-icons" onclick="saveAddCost(this)">done</i> <i class="material-icons" onclick="cancelAddCost(this)">clear</i> </p> ');
+            $wrapperDivPossibleCosts.append('<p class="add-cost"> <input type="text" placeholder="Name of Cost"/> $ <input type="number" placeholder="Approximate Cost" /> <i class="material-icons" onclick="saveAddCost(this)">done</i> <i class="material-icons" onclick="cancelAddCost(this)">clear</i> </p> ');
             $wrapperDivPaneContent.append($wrapperDivPossibleCosts);
             $wrapperDiv.append($wrapperDivPaneContent);
             $(parentElement).parent().after($wrapperDiv);

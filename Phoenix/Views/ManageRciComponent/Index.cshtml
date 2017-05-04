@@ -84,7 +84,7 @@
                 <p class="add-cost">
                     <input type="text" placeholder="Name of Cost"/>
                     $
-                    <input type="text" placeholder="Approximate Cost" />
+                    <input type="number" placeholder="Approximate Cost" />
                     <i class="material-icons" onclick="saveAddCost(this)">done</i>
                     <i class="material-icons" onclick="cancelAddCost(this)">clear</i>
                 </p>
@@ -95,7 +95,7 @@
                     <input class="input-edit-name" type="text" value="@((string)cost.Attribute("name"))" />
                     $
                     <span>@((string)cost.Attribute("approxCost"))</span>
-                    <input class="input-edit-approxCost" type="text" value="@((string)cost.Attribute("approxCost"))" />
+                    <input class="input-edit-approxCost" type="number" value="@((string)cost.Attribute("approxCost"))" />
                     <i class="material-icons start-edit-cost" onclick="startEditCost(this)">create</i>
                     <i class="material-icons delete-cost" onclick="deleteCost(this)">delete</i>
                     <i class="material-icons save-edit-cost" onclick="saveEditCost(this)">done</i>
