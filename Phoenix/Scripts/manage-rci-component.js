@@ -14,7 +14,7 @@ function saveEdit(element) {
     var buildingCode = $("#building-code").html();
     var roomType = $("#room-type").html();
     var componentName = $($($(component).children("h2")[0]).children("span")[0]).html();
-    var componentDescription = $($(parentElement).children("span")[0]).html();
+    var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
     var newDescription = $($(parentElement).children("input")[0]).val();
     $.ajax({
         url: '/ManageRciComponent/EditComponentDescription',
@@ -120,7 +120,7 @@ function saveEditCost(element) {
     var buildingCode = $("#building-code").html();
     var roomType = $("#room-type").html();
     var componentName = $($($(component).children("h2")[0]).children("span")[0]).html();
-    var componentDescription = $($(parentElement).children("span")[0]).html();
+    var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
     var oldCostName = $($(parentElement).children("b")[0]).html();
     var oldCostApproxCost = $($(parentElement).children("span")[0]).html();
     var newCostName = $($(parentElement).children("input")[0]).val();
@@ -204,16 +204,9 @@ function deleteCost(element) {
 }
 
 function startAddCost(element) {
-    console.log(element);
     var parentElement = $(element).parent().parent();
-    console.log(parentElement);
     var addCostElement = $(parentElement).children("p")[0];
-    console.log(addCostElement);
-    console.log($(addCostElement).children("input")[0]);
-    $($(addCostElement).children("input")[0]).attr("style", "display: inline !important");
-    $($(addCostElement).children("input")[1]).attr("style", "display: inline !important");
-    $($(addCostElement).children("i")[0]).attr("style", "display: inline !important");
-    $($(addCostElement).children("i")[1]).attr("style", "display: inline !important");
+    $(addCostElement).attr("style", "display: inline !important");
 }
 
 function saveAddCost(element) {
@@ -238,22 +231,20 @@ function saveAddCost(element) {
             },
             method: "POST"
         }).done(function () {
-            let $wrapperP = $("<p></p>");
-            $wrapperP.append("<b>" + newCostName + "</b>");
-            $wrapperP.append("<span>" + newCostApproxCost + "</span>");
-            $wrapperP.append('<i class="material-icons start-edit-cost" onclick="startEditCost(this)">create</i>');
-            $wrapperP.append('<i class="material-icons delete-cost" onclick="deleteCost(this)">delete</i>');
-            $wrapperP.append('<input class="input-edit-name" type="text" value="' + newCostName + '" />');
-            $wrapperP.append('<input class="input-edit-approxCost" type="text" value="' + newCostApproxCost + '" />');
-            $wrapperP.append('<i class="material-icons save-edit-cost" onclick="saveEditCost(this)">done</i>');
-            $wrapperP.append('<i class="material-icons cancel-edit-cost" onclick="cancelEditCost(this)">clear</i>');
+            let $wrapperP = $("<p></p> ");
+            $wrapperP.append("<b>" + newCostName + "</b> ");
+            $wrapperP.append('<input class="input-edit-name" type="text" value="' + newCostName + '" /> ');
+            $wrapperP.append(' $ ');
+            $wrapperP.append("<span>" + newCostApproxCost + "</span> ");
+            $wrapperP.append('<input class="input-edit-approxCost" type="number" value="' + newCostApproxCost + '" /> ');
+            $wrapperP.append('<i class="material-icons start-edit-cost" onclick="startEditCost(this)">create</i> ');
+            $wrapperP.append('<i class="material-icons delete-cost" onclick="deleteCost(this)">delete</i> ');
+            $wrapperP.append('<i class="material-icons save-edit-cost" onclick="saveEditCost(this)">done</i> ');
+            $wrapperP.append('<i class="material-icons cancel-edit-cost" onclick="cancelEditCost(this)">clear</i> ');
             $(parentElement).parent().append($wrapperP);
-            $($(parentElement).children("input")[0]).html("");
-            $($(parentElement).children("input")[1]).html("");
-            $($(parentElement).children("input")[0]).hide();
-            $($(parentElement).children("input")[1]).hide();
-            $($(parentElement).children("i")[0]).hide();
-            $($(parentElement).children("i")[1]).hide();
+            $($(parentElement).children("input")[0]).val("");
+            $($(parentElement).children("input")[1]).val("");
+            $(parentElement).hide();
         }).fail(function (jqXHR, textStatus, errorThrown) {
             alert("Oops! We were unable to edit that cost.");
             console.log("Status: " + jqXHR.status);
@@ -272,10 +263,7 @@ function saveAddCost(element) {
 
 function cancelAddCost(element) {
     var parentElement = $(element).parent();
-    $($(parentElement).children("input")[0]).hide();
-    $($(parentElement).children("input")[1]).hide();
-    $($(parentElement).children("i")[0]).hide();
-    $($(parentElement).children("i")[1]).hide();
+    $(parentElement).hide();
 }
 
 function startEditComponentName(element) {
@@ -361,39 +349,40 @@ function saveAddComponent(element) {
             },
             method: "POST"
         }).done(function () {
-            let $wrapperDiv = $('<div class="pane component"></div>');
-            let $wrapperH2 = $('<h2 class="pane-title"></h2>');
-            $wrapperH2.append('<span>' + newComponentName + '</span>');
-            $wrapperH2.append('<i class="material-icons start-edit-component" onclick="startEditComponentName(this)">create</i>');
-            $wrapperH2.append('<input class="input-edit-component" type="text" value="' + newComponentName + '"/>');
-            $wrapperH2.append('<i class="material-icons save-edit-component" onclick="saveEditComponentName(this)">done</i>');
-            $wrapperH2.append('<i class="material-icons cancel-edit-component" onclick="cancelEditComponentName(this)">clear</i>');
-            $wrapperH2.append('<i class="material-icons delete-component" onclick="deleteComponent(this)">delete</i>');
+            let $wrapperDiv = $('<div class="pane component"></div> ');
+            let $wrapperH2 = $('<h2 class="pane-title"></h2> ');
+            $wrapperH2.append('<span>' + newComponentName + '</span> ');
+            $wrapperH2.append('<i class="material-icons start-edit-component" onclick="startEditComponentName(this)">create</i> ');
+            $wrapperH2.append('<input class="input-edit-component" type="text" value="' + newComponentName + '"/> ');
+            $wrapperH2.append('<i class="material-icons save-edit-component" onclick="saveEditComponentName(this)">done</i> ');
+            $wrapperH2.append('<i class="material-icons cancel-edit-component" onclick="cancelEditComponentName(this)">clear</i> ');
+            $wrapperH2.append('<i class="material-icons delete-component" onclick="deleteComponent(this)">delete</i> ');
+            $wrapperH2.append('<i class="material-icons move-up" onclick="moveUp(this)">keyboard_arrow_up</i> ');
+            $wrapperH2.append('<i class="material-icons move-down" onclick="moveDown(this)">keyboard_arrow_down</i> ');
             $wrapperDiv.append($wrapperH2);
-            let $wrapperDivPaneContent = $('<div class="input pane-content"></div>');
-            let $wrapperP = $('<p></p>');
-            $wrapperP.append('<b>Description:</b>');
-            $wrapperP.append('<span>' + newComponentDescription + '</span>');
-            $wrapperP.append('<i class="material-icons start-edit-description" onclick="startEdit(this)">create</i>');
-            $wrapperP.append('<input class="input-edit-description" type="text" value="' + newComponentDescription + '" />');
-            $wrapperP.append('<i class="material-icons save-edit-description" onclick="saveEdit(this)">done</i>');
-            $wrapperP.append('<i class="material-icons cancel-edit-description" onclick="cancelEdit(this)">clear</i>');
+            let $wrapperDivPaneContent = $('<div class="input pane-content"></div> ');
+            let $wrapperP = $('<p></p> ');
+            $wrapperP.append('<b>Description:</b> ');
+            $wrapperP.append('<span>' + newComponentDescription + '</span> ');
+            $wrapperP.append('<i class="material-icons start-edit-description" onclick="startEdit(this)">create</i> ');
+            $wrapperP.append('<input class="input-edit-description" type="text" value="' + newComponentDescription + '" /> ');
+            $wrapperP.append('<i class="material-icons save-edit-description" onclick="saveEdit(this)">done</i> ');
+            $wrapperP.append('<i class="material-icons cancel-edit-description" onclick="cancelEdit(this)">clear</i> ');
             $wrapperDivPaneContent.append($wrapperP);
-            let $wrapperDivPossibleCosts = $('<div class="possible-costs"></div>');
-            $wrapperDivPossibleCosts.append('<div><h3>Possible Costs:</h3> <i class="material-icons" onclick="startAddCost(this)">add</i></div>');
-            $wrapperDivPossibleCosts.append('<p><input class="input-edit-name" type="text" placeholder="Name of Cost"/><input class="input-edit-approxCost" type="text" placeholder="Approximate Cost" /><i class="material-icons save-edit-cost" onclick="saveAddCost(this)">done</i><i class="material-icons cancel-edit-cost" onclick="cancelAddCost(this)">clear</i></p>');
+            let $wrapperDivPossibleCosts = $('<div class="possible-costs"></div> ');
+            $wrapperDivPossibleCosts.append('<div class="possible-costs-header"><h3>Possible Costs:</h3> <button onclick="startAddCost(this)">Add</button></div>');
+            $wrapperDivPossibleCosts.append('<p class="add-cost"> <input type="text" placeholder="Name of Cost"/> $ <input type="number" placeholder="Approximate Cost" /> <i class="material-icons" onclick="saveAddCost(this)">done</i> <i class="material-icons" onclick="cancelAddCost(this)">clear</i> </p> ');
             $wrapperDivPaneContent.append($wrapperDivPossibleCosts);
             $wrapperDiv.append($wrapperDivPaneContent);
-            $(parentElement).parent().parent().append($wrapperDiv);
+            $(parentElement).parent().after($wrapperDiv);
             $($(parentElement).children("input")[0]).hide();
             $($(parentElement).children("input")[1]).hide();
             $($(parentElement).children("i")[0]).hide();
             $($(parentElement).children("i")[1]).hide();
             $($(parentElement).children("input")[0]).val("");
             $($(parentElement).children("input")[1]).val("");
-            alert("The new component is added to the end among all components.");
         }).fail(function (jqXHR, textStatus, errorThrown) {
-            alert("Oops! We were unable to edit that cost.");
+            alert("Oops! We were unable to add this component.");
             console.log("Status: " + jqXHR.status);
             console.log("Response Text: " + jqXHR.responseText);
             console.log(textStatus);
@@ -488,6 +477,82 @@ function cancelEditRoomType() {
     $("#cancel-edit-room-type").hide();
     $("#start-edit-room-type").attr("style", "display: inline !important");
     $("#room-type").attr("style", "display: inline !important");
+}
+
+function moveUp(element) {
+    var parentElement = $(element).parent();
+    var component = $(parentElement).parent();
+    if ($(".component").index($(component)) == 0) {
+        alert("This is already the first component. Can't move up any more.");
+    }
+    else {
+        var buildingCode = $("#building-code").html();
+        var roomType = $("#room-type").html();
+        var componentName = $($(parentElement).children("span")[0]).html();
+        var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
+        var prevComponent = $(component).prev();
+        var prevComponentName = $($($(prevComponent).children("h2")[0]).children("span")[0]).html();
+        var prevComponentDescription = $($($($(prevComponent).children("div")[0]).children("p")[0]).children("span")[0]).html();
+
+        $.ajax({
+            url: '/ManageRciComponent/SwapComponents',
+            data: {
+                buildingCode: buildingCode,
+                roomType: roomType,
+                componentName1: componentName,
+                componentDescription1: componentDescription,
+                componentName2: prevComponentName,
+                componentDescription2: prevComponentDescription
+            },
+            method: "POST"
+        }).done(function () {
+            $(prevComponent).before(component);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            alert("Oops! We were unable to move that component up.");
+            console.log("Status: " + jqXHR.status);
+            console.log("Response Text: " + jqXHR.responseText);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
+function moveDown(element) {
+    var parentElement = $(element).parent();
+    var component = $(parentElement).parent();
+    if ($(component).is(":last-child")) {
+        alert("This is already the last component. Can't move down any more.");
+    }
+    else {
+        var buildingCode = $("#building-code").html();
+        var roomType = $("#room-type").html();
+        var componentName = $($(parentElement).children("span")[0]).html();
+        var componentDescription = $($($($(component).children("div")[0]).children("p")[0]).children("span")[0]).html();
+        var nextComponent = $(component).next();
+        var nextComponentName = $($($(nextComponent).children("h2")[0]).children("span")[0]).html();
+        var nextComponentDescription = $($($($(nextComponent).children("div")[0]).children("p")[0]).children("span")[0]).html();
+
+        $.ajax({
+            url: '/ManageRciComponent/SwapComponents',
+            data: {
+                buildingCode: buildingCode,
+                roomType: roomType,
+                componentName1: componentName,
+                componentDescription1: componentDescription,
+                componentName2: nextComponentName,
+                componentDescription2: nextComponentDescription
+            },
+            method: "POST"
+        }).done(function () {
+            $(nextComponent).after(component);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            alert("Oops! We were unable to move that component up.");
+            console.log("Status: " + jqXHR.status);
+            console.log("Response Text: " + jqXHR.responseText);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }
 
 $.fn.ignore = function (sel) {
