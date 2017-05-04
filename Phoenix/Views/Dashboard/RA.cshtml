@@ -25,24 +25,7 @@
         
                 @foreach (var rci in Model)
                 {
-                    var rciCssClass = "";
-                    if(rci.RciStage == "CHECKIN")
-                    {
-                        rciCssClass = "rci-card-checkin";
-                    }
-                    else
-                    {
-                        rciCssClass = "rci-card-checkout";
-                    }
-                    <div class="divAddOn-vert rci-card">
-                        <a href="@Url.Action(actionName:"GotoRci", controllerName:"Dashboard", routeValues: new { rciID = rci.RciID })">
-                            <div class="divAddOn-vert-field search-field @rciCssClass">
-                                <p>@rci.BuildingCode @rci.RoomNumber</p>
-                                <p>@rci.FirstName @rci.LastName</p>
-                                @Html.Partial("SignatureBlocks", rci)
-                            </div>
-                            </a>
-                       </div>
+                    @Html.Partial("DashboardRciButton", rci)
                 }
     </div> 
 </div>

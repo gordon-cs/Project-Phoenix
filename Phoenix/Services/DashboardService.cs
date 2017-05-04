@@ -22,6 +22,45 @@ namespace Phoenix.Services
         }
 
         /*
+         * Get a set of RCI's, depending on certain parameters, such as building, year, etc.
+         * This method is used in admin Find RCIs tool
+         * If no params are specified, returns all
+         * 
+         * @params: building - a building specified to get rci's for
+         *          year - a session specificed to get rci's for
+         * @returns: A collection of RCI View Models
+         */
+        public IEnumerable<HomeRciViewModel> GetRcis(string building = null, string year = null)
+        {
+            if (building != null)
+            {
+                return GetRcisForBuilding(new List<string> { building });
+            }
+            else 
+            {
+                // Return all RCI's
+                var RCIs = from personalRCI in db.Rci
+                           join account in db.Account on personalRCI.GordonID equals account.ID_NUM
+                           select new HomeRciViewModel
+                           {
+                               RciID = personalRCI.RciID,
+                               BuildingCode = personalRCI.BuildingCode.Trim(),
+                               RoomNumber = personalRCI.RoomNumber.Trim(),
+                               FirstName = account.firstname,
+                               LastName = account.lastname,
+                               RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                               CheckinSigRes = personalRCI.CheckinSigRes,
+                               CheckinSigRA = personalRCI.CheckinSigRA,
+                               CheckinSigRD = personalRCI.CheckinSigRD,
+                               CheckoutSigRes = personalRCI.CheckoutSigRes,
+                               CheckoutSigRA = personalRCI.CheckoutSigRA,
+                               CheckoutSigRD = personalRCI.CheckoutSigRD
+                           };
+                return RCIs;
+            }
+        }
+
+        /*
          * Get the RCI for an individual resident
          * @params: id - resident's Gordon id
          * @return: A collection of RCI View Models (which should contain only 1)
@@ -98,7 +137,7 @@ namespace Phoenix.Services
             XElement rciTypes = document.Root;
             IEnumerable<XElement> componentElements =
                 from rci in rciTypes.Elements("rci")
-                where ((string)rci.Attribute("roomType")).Equals(roomType) && rci.Attribute(buildingCode) != null
+                where ((string)rci.Attribute("roomType")).Equals(roomType) && (string) rci.Attribute("buildingCode") == buildingCode
                 from component in rci.Element("components").Elements("component")
                 select component;
 
@@ -157,7 +196,7 @@ namespace Phoenix.Services
          public string GenerateFinesSpreadsheet(List<string> buildingCodes)
         {
             var currentSession = GetCurrentSession();
-            var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Fine Amount\n";
+            var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Charge Amount,Behavioral Fine\n";
 
             // ***** This does not handle common areas! *****
             // We should talk to MC about how he wants common area fine assignment to be handled in the system
@@ -167,6 +206,8 @@ namespace Phoenix.Services
                 join fine in db.Fine on component.RciComponentID equals fine.RciComponentID
                 join account in db.Account on fine.GordonID equals account.ID_NUM
                 where buildingCodes.Contains(rci.BuildingCode) && rci.IsCurrent.Value == true
+                && fine.FineAmount > 0 // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
+                // charge the resident for it e.g. Window blinds need to be replaced.
                 select new
                 {
                     RoomNumber = rci.RoomNumber,
@@ -176,7 +217,8 @@ namespace Phoenix.Services
                     Id = rci.GordonID,
                     ComponentName = component.RciComponentName,
                     DetailedReason = fine.Reason,
-                    FineAmount = fine.FineAmount
+                    FineAmount = fine.FineAmount,
+                    IsFine = component.RciComponentDescription.Equals(Constants.FINE) ? "YES" : "NO"
                 };
 
             foreach (var fine in fineQueries)
@@ -185,18 +227,11 @@ namespace Phoenix.Services
                 csvString += fine.BuildingCode + ",";
                 csvString += fine.FirstName + " " + fine.LastName + ",";
                 csvString += fine.Id + ",";
-                if (fine.ComponentName != null)
-                {
-                    csvString += fine.ComponentName + ": " + fine.DetailedReason + ",";
-                }
-                else
-                {
-                    csvString += "Improper checkout: " + fine.DetailedReason + ",";
-                }
-                csvString += fine.FineAmount + "\n";
+                csvString += fine.ComponentName + ": " + fine.DetailedReason + ",";
+                csvString += fine.FineAmount + ",";
+                csvString += fine.IsFine + "\n";
             }
 
-            Debug.Write(csvString);
             return csvString;
         } 
 
@@ -420,6 +455,19 @@ namespace Phoenix.Services
         }
 
         /// <summary>
+        /// Set the IsCurrent column for a bunch of rcis to false.
+        /// </summary>
+        public void ArchiveRcis(List<int> rciIds)
+        {
+            var rcis = db.Rci.Where(r => rciIds.Contains(r.RciID));
+            foreach(var rci in rcis)
+            {
+                rci.IsCurrent = false;
+            }
+            db.SaveChanges();
+        }
+
+        /// <summary>
         /// Helper method to create and return an Rci Object. Makes no calls to the database
         /// </summary>
         public Rci CreateRciObject(string buildingCode, string roomNumber, string sessionCode, string idNumber = null)
@@ -487,6 +535,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -497,6 +547,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -507,6 +559,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))},
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciInput", id = rciID }))}
             });
 
@@ -517,6 +571,8 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                 {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
@@ -527,27 +583,33 @@ namespace Phoenix.Services
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
             rciRouteDictionary.Add(Constants.RCI_SIGNGED_BY_RA_CHECKOUT, new Dictionary<string, ActionResult>
             {
                 {Constants.RESIDENT,
-                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))},
+                {Constants.ADMIN,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
             rciRouteDictionary.Add(Constants.RCI_COMPLETE, new Dictionary<string, ActionResult>
             {
                 {Constants.RESIDENT,
-                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciInput", id = rciID }))},
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RA,
                     new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
                 {Constants.RD,
-                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))}
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "RciReview", controller="RciCheckout", id = rciID }))},
+                {Constants.ADMIN,
+                    new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { action = "Index", controller="RciCheckout", id = rciID }))}
             });
 
 

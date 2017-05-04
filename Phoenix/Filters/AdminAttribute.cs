@@ -7,19 +7,23 @@ using System.Diagnostics;
 
 namespace Phoenix.Filters
 {
-    public class AdminAuthorizationAttribute : ActionFilterAttribute, IAuthorizationFilter
+    public class AdminAttribute : ActionFilterAttribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationContext filterContext)
         {
-            var isAdmin = filterContext.Controller.TempData["admin"];
+            var role = (string)filterContext.Controller.TempData["role"];
+
+            var isAdmin = role == "ADMIN";
             // String comparison doesn't seem as good as bool comparison, but I wasn't sure how 
             // to parse out a bool from the decoded JSON object
-           if (isAdmin.Equals("False"))
+           if (!isAdmin)
             {
-                filterContext.Result = new HttpUnauthorizedResult();
+                filterContext.Result = new RedirectToRouteResult(
+                   new System.Web.Routing.RouteValueDictionary(
+                       new { controller = "Dashboard", action = "Index" }));
+                return;
             }
 
-           Debug.WriteLine("User is admin");
         }
 
     }
