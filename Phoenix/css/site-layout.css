@@ -49,6 +49,7 @@
  * .............. component
  * .............. nothing-placeholder
  * .............. pseudo-link
+ * .............. spaced out paragraph
  * MISC - Anything layout related, that doesn't fit above
  * 
  * MEDIA QUERIES
@@ -586,6 +587,13 @@ td, th {
     text-decoration: underline;
 }
 
+.padded-paragraph-vertical {
+    padding: 1em 0;
+}
+
+padded-paragraph-horizontal {
+    padding: 0 1em;
+}
 /***************************/
 /***********MISC************/
 /***************************/
