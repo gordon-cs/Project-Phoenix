@@ -81,3 +81,18 @@ material-icons.clear:focus {
 .forward {
     left: 25px;
 }
+
+.life-and-conduct {
+    padding: 1em;
+    margin: 1em;
+    background-color: rgba(235,234, 234, 0.9);
+}
+
+.life-and-conduct h4 {
+    text-align: center;
+    margin: 0.5em;
+}
+
+.life-and-conduct ul {
+    list-style-type: inherit;
+}

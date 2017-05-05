@@ -19,12 +19,42 @@
 
     @if (Model.CheckinSigRes == null && Model.LifeAndConductSigRes == null)
     {
-        <p>@ViewBag.User, please sign with your Gordon username to confirm the entered damages.</p>
+        <p>@ViewBag.User, please sign with your name to confirm the entered damages.</p>
         <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
 
-        <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
-        <p>Please sign with your Gordon username @ViewBag.User</p>
-        <input type="text" id="lac-sig" />
+        <div class="life-and-conduct">
+            <h4>Residence Hall License and Life and Conduct Agreement</h4>
+            <p>THIS IS A LEGAL DOCUMENT AFFECTING YOUR RIGHTS.  PLEASE READ CAREFULLY.</p>
+            <p>
+                I, the undersigned student, understand and agree that, by signing this license agreement, I am accepting a license,
+                granted by Gordon College, to occupy a room within a residence hall for the full 2016-2017 academic year while enrolled
+                as a student at Gordon College upon the following terms and conditions.
+            </p>
+            <ul>
+                <li>
+                    I acknowledge that I have read and am responsible for the information in the Gordon College Academic Catalog 2016-2017
+                    and the 2016-2017 Student Handbook, either in hardcopy or through online access at <a>www.gordon.edu/studenthandbook.</a>
+                </li>
+                <li>
+                    I agree to comply with all terms, conditions, policies and procedures governing and relating to occupancy of College residences
+                    which are contained in the aforementioned catalog and handbook including but not limited to provisions for and related to payment
+                    of room charges and residence hall fees for the full 2016-2017 academic year.
+                </li>
+                <li>
+                    I agree to comply with the statements, principles and assumptions relating to life and conduct.
+                </li>
+                <li>
+                    I understand and agree that a violation of any of these terms, conditions, policies or procedures may result in the immediate revocation of the license
+                    granted to me under this agreement and/or disciplinary action. I understand and agree that the only interest created by this license agreement is status as
+                    a licensee in a residence space within a College residence for the full 2016-2017 academic year, and that this license agreement does not constitute an
+                    assignment to any particular residence accommodation.
+                </li>
+            </ul>
+            <b> I have read, understood and agree to comply with all of the terms and conditions established in this license agreement.</b>
+
+        </div>
+        <p>Please sign with your name @ViewBag.User</p>
+        <input type="text" id="lac-sig" placeholder="@ViewBag.User" />
 
         <div class="distribute-evenly">
             <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
@@ -32,9 +62,39 @@
     }
     else if (Model.CheckinSigRes != null && Model.LifeAndConductSigRes == null)
     {
-        <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
-        <p>Please sign with your Gordon username @ViewBag.User</p>
-        <input type="text" id="lac-sig" />
+        <div class="life-and-conduct">
+            <h4>Residence Hall License and Life and Conduct Agreement</h4>
+            <p>THIS IS A LEGAL DOCUMENT AFFECTING YOUR RIGHTS.  PLEASE READ CAREFULLY.</p>
+            <p>
+                I, the undersigned student, understand and agree that, by signing this license agreement, I am accepting a license,
+                granted by Gordon College, to occupy a room within a residence hall for the full 2016-2017 academic year while enrolled
+                as a student at Gordon College upon the following terms and conditions.
+            </p>
+            <ul>
+                <li>
+                    I acknowledge that I have read and am responsible for the information in the Gordon College Academic Catalog 2016-2017
+                    and the 2016-2017 Student Handbook, either in hardcopy or through online access at <a>www.gordon.edu/studenthandbook.</a>
+                </li>
+                <li>
+                    I agree to comply with all terms, conditions, policies and procedures governing and relating to occupancy of College residences
+                    which are contained in the aforementioned catalog and handbook including but not limited to provisions for and related to payment
+                    of room charges and residence hall fees for the full 2016-2017 academic year.
+                </li>
+                <li>
+                    I agree to comply with the statements, principles and assumptions relating to life and conduct.
+                </li>
+                <li>
+                    I understand and agree that a violation of any of these terms, conditions, policies or procedures may result in the immediate revocation of the license
+                    granted to me under this agreement and/or disciplinary action. I understand and agree that the only interest created by this license agreement is status as
+                    a licensee in a residence space within a College residence for the full 2016-2017 academic year, and that this license agreement does not constitute an
+                    assignment to any particular residence accommodation.
+                </li>
+            </ul>
+            <b> I have read, understood and agree to comply with all of the terms and conditions established in this license agreement.</b>
+
+        </div>
+        <p>Please sign with your name @ViewBag.User</p>
+        <input type="text" id="lac-sig" placeholder="@ViewBag.User" />
 
         <div class="distribute-evenly">
             <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
