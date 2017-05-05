@@ -20,19 +20,18 @@
 <h2>@ViewBag.ViewTitle</h2>
 <div class="view">
     <div class="pane">
-        <div class="pane-content">
-            @if (ViewBag.ErrorMessage != null)
+        @if (ViewBag.ErrorMessage != null)
             {
-                <div class="error-message">
-                    <p>@ViewBag.ErrorMessage</p>
-                </div>
-            }
-            @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
+            <div class="error-message">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
+        }
+        @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
-                <div>
-                    @if (Model.CheckoutSigRD == null)
-                    {
-                        <p class="padded-paragraph-vertical">I, @ViewBag.RDName, hereby agree to all of the fines and charges that have been recorded.</p>
+            <div>
+                @if (Model.CheckoutSigRD == null)
+                {
+                    <p class="padded-paragraph-vertical">I, @ViewBag.RDName, hereby agree to all of the fines and charges that have been recorded.</p>
                         <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to send fine emails to the resident(s) if any fines/charges were assessed.</p>
                         <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to submit the work requests displayed below.</p>
 
@@ -67,7 +66,7 @@
                         </div>
 
                         <div>
-                            <p>Please re-enter your Gordon username and password below:</p>
+                            <p>Please enter your Gordon username and password below. If you are submitting any work requests, also provide your phone number</p>
                         </div>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="username" type="text" value="@ViewBag.ExpectedUsername" />
@@ -75,20 +74,22 @@
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="password" type="password" placeholder="Please enter your password" />
                         </div>
-                    }
-                    else
-                    {
-                        <p>This RCI has been signed by the Resident Director</p>
+                        <div class="divAddOn">
+                            <input class="divAddOn-field" name="phonenumber" type="tel" placeholder="Phone Number (for work requests)" />
+                        </div>
+                }
+                else
+                {
+                    <p>This RCI has been signed by the Resident Director</p>
                         <div class="divAddOn">
                             <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRD" />
                         </div>
-                    }
-                </div>
+                }
+            </div>
                 <div class="distribute-evenly">
                     <button type="submit">Finish</button>
                 </div>
-            }
-        </div>
-
+        }
     </div>
+
 </div>
