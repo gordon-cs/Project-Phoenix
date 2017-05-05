@@ -306,7 +306,7 @@ namespace Phoenix.Controllers
         /// </summary>
         [HttpPost]
         [RD]
-        public ActionResult RDSignature(int id, string password, string username, List<string> workRequest)
+        public ActionResult RDSignature(int id, string password, string username,  string phoneNumber, List<string> workRequest)
         {
             var rci = checkoutService.GetGenericCheckoutRciByID(id);
             if (rci.CheckoutSigRD != null) // Already signed
@@ -324,14 +324,39 @@ namespace Phoenix.Controllers
             {
                 ViewBag.RDName = (string)TempData["user"]; ;
                 ViewBag.ExpectedUsername = username;
-                ViewBag.ErrorMessage = "It looks like the credentials provided are invalid. Please try again.";
+                ViewBag.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
                 ViewBag.WorkRequests = workRequest == null ? new List<string>() : workRequest ; // Send back the list of work requests they wanted.
                 return View(rci);
             }
 
-            checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
-            //checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
-            checkoutService.WorkRequestDamages(workRequest, username, password, id);
+            // If they are submitting work requests, check to see that they provided a phone number
+            if(workRequest != null && workRequest.Count > 0 && (phoneNumber == null || phoneNumber.Trim().Equals("")) )
+            {
+                ViewBag.RDName = (string)TempData["user"]; ;
+                ViewBag.ExpectedUsername = username;
+                ViewBag.ErrorMessage = "You are submitting work requests, but have not provided a phone number. Please enter a phone number.";
+                ViewBag.WorkRequests = workRequest; // Send back the list of work requests they wanted.
+                return View(rci);
+            }
+
+            var rciSigned = false;
+
+            rciSigned = checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
+
+            if (rciSigned) // Only do the rest if the rci was successfully signed.
+            {
+                 checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
+                 checkoutService.WorkRequestDamages(workRequest, username, password, id, phoneNumber);
+            }
+            else
+            {
+                ViewBag.RDName = (string)TempData["user"];
+                ViewBag.ExpectedUsername = username;
+                ViewBag.WorkRequests = workRequest == null ? new List<string>() : workRequest;
+                ViewBag.ErrorMessage = "There was a problem signing this rci. No emails or work requests have been sent. Please try again.";
+
+                return View(rci);
+            }
 
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }
