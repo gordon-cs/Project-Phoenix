@@ -21,5 +21,8 @@
         public static string WORK_REQUEST_ENDPOINT = "/departments/physicalplant/ppwos/add_reqform.cfm";
         public static string GO_GORDON_URL = "https://go.gordon.edu";
 
+        public static readonly string FINE = "Fine";
+        public const string RCI_TYPE_COMMON = "common";
+        public const string RCI_TYPE_INDIVIDUAL = "individual";
     }
 }

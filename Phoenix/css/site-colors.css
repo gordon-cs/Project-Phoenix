@@ -53,6 +53,10 @@ button.dropdown {
      color: #fff;
  }
 
+ .rci-types-flex button {
+     background-color: #014983;
+ }
+
  .dashboard-rci-list-header {
      letter-spacing: .05em;
     font-weight: normal;

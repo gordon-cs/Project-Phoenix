@@ -28,7 +28,7 @@ namespace Phoenix.Services
             // Get the correct rci template
             var rciTemplate =
                 (from rci in document.Root.Elements("rci")
-                where ((string)rci.Attribute("roomType")).Equals(roomType) && rci.Attribute(buildingCode) != null
+                where ((string)rci.Attribute("roomType")).Equals(roomType) && (string) rci.Attribute("buildingCode") == buildingCode
                 select rci).FirstOrDefault();
 
             // Get the components
