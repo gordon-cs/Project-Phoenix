@@ -32,24 +32,37 @@
                 <div>
                     @if (Model.CheckoutSigRD == null)
                     {
-                        <p class="padded-paragraph-vertical">I, @ViewBag.ExpectedSignature, hereby agree to all of the fines and charges that have been recorded.</p>
+                        <p class="padded-paragraph-vertical">I, @ViewBag.RDName, hereby agree to all of the fines and charges that have been recorded.</p>
                         <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to send fine emails to the resident(s) if any fines/charges were assessed.</p>
                         <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to submit the work requests displayed below.</p>
-                        
+
                         <div id="work-requests-wrapper">
                             <h4>Work Requests to be submitted:</h4>
-                            @foreach (var component in Model.RciComponent)
+                            @if (ViewBag.ErrorMessage != null) // e.g. the RD enters the wrong password and the page reloads. We don't want to make them re-edit the work requests.
                             {
-                                foreach (var fine in component.Fine)
+                                foreach (var fineString in ViewBag.WorkRequests)
                                 {
                                     <div class="divAddOn">
-                                        <input class="divAddOn-field" type="text" name="workRequest" value="@component.RciComponentName - @fine.Reason">
+                                        <input class="divAddOn-field" type="text" name="workRequest" value="@fineString">
                                         <div class="divAddOn-item"><i class="material-icons" onclick="removeWorkRequest(event, this);">close</i></div>
                                     </div>
                                 }
                             }
+                            else
+                            {
+                                foreach (var component in Model.RciComponent)
+                                {
+                                    foreach (var fine in component.Fine)
+                                    {
+                                        <div class="divAddOn">
+                                            <input class="divAddOn-field" type="text" name="workRequest" value="@component.RciComponentName - @fine.Reason">
+                                            <div class="divAddOn-item"><i class="material-icons" onclick="removeWorkRequest(event, this);">close</i></div>
+                                        </div>
+                                    }
+                                }
+                            }
                             <div class="divAddOn">
-                                <input class="divAddOn-field" type="text"  placeholder="Add a new Work Request" onclick="addWorkRequest(event, this)">
+                                <input class="divAddOn-field" type="text" placeholder="Add a new Work Request" onclick="addWorkRequest(event, this)">
                             </div>
                         </div>
 

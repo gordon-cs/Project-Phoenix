@@ -293,7 +293,7 @@ namespace Phoenix.Controllers
         public ActionResult RDSignature(int id)
         {
             var name = (string)TempData["user"];
-            ViewBag.ExpectedSignature = name;
+            ViewBag.RDName = name;
 
             var userName = (string)TempData["login_username"];
             ViewBag.ExpectedUsername = userName;
@@ -322,8 +322,10 @@ namespace Phoenix.Controllers
             var isValidLogin = loginService.IsValidUser(username, password, loginService.ConnectToADServer());
             if (!isValidLogin) // If this is not a valid user.
             {
+                ViewBag.RDName = (string)TempData["user"]; ;
                 ViewBag.ExpectedUsername = username;
                 ViewBag.ErrorMessage = "It looks like the credentials provided are invalid. Please try again.";
+                ViewBag.WorkRequests = workRequest == null ? new List<string>() : workRequest ; // Send back the list of work requests they wanted.
                 return View(rci);
             }
 
