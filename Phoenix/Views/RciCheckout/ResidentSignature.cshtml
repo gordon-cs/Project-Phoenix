@@ -46,7 +46,7 @@
                         <p class="padded-paragraph-vertical">This RCI has been signed by the resident @Model.FirstName @Model.LastName</p>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.FirstName @Model.LastName" />
-                            <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRes" />
+                            <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRes.Value.ToString("yyyy-MM-dd")" />
                         </div>
                     }
                 </div>
