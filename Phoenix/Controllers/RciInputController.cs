@@ -49,7 +49,7 @@ namespace Phoenix.Controllers
             //  Redirect to the review page if this is already signed by the RD
             if(rci.CheckinSigRD != null)
             {
-                return RedirectToAction("RciReview");
+                return RedirectToAction("RciReview", new { id = id });
             }
 
             // This is how we access items set in the filter.

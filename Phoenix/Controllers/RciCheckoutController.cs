@@ -49,7 +49,7 @@ namespace Phoenix.Controllers
                 ViewBag.CostDictionary = componentService.GetCostDictionary("common", rci.BuildingCode);
                 if (rci.CheckoutSigRD != null)
                 {
-                    return RedirectToAction("RciReview");
+                    return RedirectToAction("RciReview", new { id = id } );
                 }
                 return View("CommonArea", rci);
             }
@@ -59,7 +59,7 @@ namespace Phoenix.Controllers
                 ViewBag.CostDictionary = componentService.GetCostDictionary("individual", rci.BuildingCode);
                 if (rci.CheckoutSigRD != null)
                 {
-                    return RedirectToAction("RciReview");
+                    return RedirectToAction("RciReview", new { id = id });
                 }
                 return View("IndividualRoom", rci);
             }
