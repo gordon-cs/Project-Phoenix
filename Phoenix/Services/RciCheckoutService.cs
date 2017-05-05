@@ -229,14 +229,23 @@ namespace Phoenix.Services
         /// <summary>
         /// Sign the RD portion of the rci during the checkout process and make the rci non-current.
         /// </summary>
-        public void CheckoutRDSignRci(int rciID, string rdGordonID)
+        public bool CheckoutRDSignRci(int rciID, string rdGordonID)
         {
-            var rci = db.Rci.Find(rciID);
+            try
+            {
+                var rci = db.Rci.Find(rciID);
 
-            rci.CheckoutSigRD = System.DateTime.Today;
-            rci.CheckoutSigRDGordonID = rdGordonID;
+                rci.CheckoutSigRD = System.DateTime.Today;
+                rci.CheckoutSigRDGordonID = rdGordonID;
 
-            db.SaveChanges();
+                db.SaveChanges();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
 
         }
 
@@ -308,7 +317,7 @@ namespace Phoenix.Services
             }
         }
 
-        public void WorkRequestDamages(List<string> workRequests, string username, string password, int rciID)
+        public void WorkRequestDamages(List<string> workRequests, string username, string password, int rciID, string phoneNumber)
         {
             // Go.gordon.edu can be accessed using Basic authentication. I found this out via trial and error xD
             string authenticationInfo = username + ":" + password;
@@ -328,7 +337,7 @@ namespace Phoenix.Services
 
                 foreach (var request in workRequests)
                 {
-                    PostWorkRequest(client, request, acct.AD_Username, buildingName, rci.RoomNumber, "9789272300", acct.firstname, acct.lastname, acct.ID_NUM);
+                    PostWorkRequest(client, request, acct.AD_Username, buildingName, rci.RoomNumber, phoneNumber, acct.firstname, acct.lastname, acct.ID_NUM);
                 }
             }
         }
