@@ -244,7 +244,7 @@ namespace Phoenix.Services
 
             foreach (var component in rci.RciComponent)
             {
-                foreach (var fine in component.Fine)
+                foreach (var fine in component.Fine.Where(x => x.FineAmount > 0))// Work requests get input as $0 charges. We don't want to confuse students by emailng them $0 charges.
                 {
                     if (fineEmailDictionary.ContainsKey(fine.GordonID))
                     {
@@ -266,36 +266,36 @@ namespace Phoenix.Services
                     }
                 }
             }
-
-            foreach (KeyValuePair<string, Dictionary<string, string>> entry in fineEmailDictionary)
+            using (var smtp = new SmtpClient())
             {
-                var message = new MailMessage();
-                var recepientAccount = db.Account.Where(r => r.ID_NUM.Equals(entry.Key)).FirstOrDefault();
-                var to = recepientAccount.email;
-                var from = emailAddress;
-                var today = DateTime.Now.ToLongDateString();
-                var recepientName = recepientAccount.firstname; 
-                message.To.Add(new MailAddress(to));
-                message.From = new MailAddress(from);
-                message.Subject = "Checkout Fines - " + rci.BuildingCode + " " + rci.RoomNumber;
-                message.Body = string.Format(Properties.Resources.FINE_EMAIL, 
-                    today, 
-                    recepientName, 
-                    entry.Value["body"], 
-                    "$" + entry.Value["total"]);
-                message.IsBodyHtml = true;
-
-                using (var smtp = new SmtpClient())
+                var credential = new NetworkCredential
                 {
-                    var credential = new NetworkCredential
-                    {
-                        UserName = emailAddress,
-                        Password = password
-                    };
-                    smtp.Credentials = credential;
-                    smtp.Host = "smtp.office365.com";
-                    smtp.Port = 587;
-                    smtp.EnableSsl = true;
+                    UserName = emailAddress,
+                    Password = password
+                };
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.office365.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+
+                foreach (KeyValuePair<string, Dictionary<string, string>> entry in fineEmailDictionary)
+                {
+                    var message = new MailMessage();
+                    var recepientAccount = db.Account.Where(r => r.ID_NUM.Equals(entry.Key)).FirstOrDefault();
+                    var to = recepientAccount.email;
+                    var from = emailAddress;
+                    var today = DateTime.Now.ToLongDateString();
+                    var recepientName = recepientAccount.firstname;
+                    message.To.Add(new MailAddress(to));
+                    message.From = new MailAddress(from);
+                    message.Subject = "Checkout Fines - " + rci.BuildingCode + " " + rci.RoomNumber;
+                    message.Body = string.Format(Properties.Resources.FINE_EMAIL,
+                        today,
+                        recepientName,
+                        entry.Value["body"],
+                        "$" + entry.Value["total"]);
+                    message.IsBodyHtml = true;
+
                     smtp.Send(message);
                 }
             }
