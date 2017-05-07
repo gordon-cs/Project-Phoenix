@@ -240,7 +240,7 @@ Authentication is the process of determining that the user has a valid identity.
 
 _So how does this happen in our application?_
 When the user gets to the login page and inputs some credentials, the credentials are sent via LDAP to Gordon’s user directory. Given a username and a password, the Gordon directory can determine if the user is real and their password is correct. The result of this validation is sent back to our application. If the user is validated, a JWT (Json Web Token) iis created for the user and stored in a cookie.
-You can read about JWTs here. In short, these tokens are a secure way to reliably establish the identity of the user on the server on each request.
+You can read about JWTs [here](https://jwt.io/introduction/). In short, these tokens are a secure way to reliably establish the identity of the user on the server on each request.
 
 _Where is the code that does this?_
 Good question. Controllers > LoginController.cs is the file that handles everything authentication.
@@ -255,6 +255,16 @@ Controllers and Views are at the center of the ASP.NET MVC framework. Controller
 Views are basically the HTML that you return to the user. Methods in the controller usually return Views. 
 
 There is no need to go deeper into Controllers and Views here. Microsoft has good documentation on starting out with their ASP.NET framework. If you are not familiar with ASP.NET at all, you should start by reading their guides and walking through their tutorials. Use these search terms to get you started: “ASP.NET MVC 5”.
+Here are some links to get you started:
+
+https://www.asp.net/mvc
+
+https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introduction/getting-started
+
+https://mva.microsoft.com/en-US/training-courses/introduction-to-asp-net-mvc-8322?l=VZ2619Zy_8804984382
+
+
+
 
 #### RCI Generation
 
