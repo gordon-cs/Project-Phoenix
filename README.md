@@ -62,10 +62,12 @@ interface will assist Residence Life staff in doing manual tasks ( e.g. finding 
 
 ### How To:
 
-#### How do I find the project? <a name="how-do-i-find-the-project"></a>
+<a name="how-do-i-find-the-project"></a>
+#### How do I find the project? 
 The code for this project is hosted in this repository. It is part of the projects hosted by the gordon-cs group, so you will need to be a part of that group and added as a collaborator on the project in order to commit changes to the repository. 
 
-#### How do I make changes and run the project to test? <a name="how-do-i-make-changes-and-run-the-project-to-test"></a>
+<a name="how-do-i-make-changes-and-run-the-project-to-test"></a>
+#### How do I make changes and run the project to test? 
 This assumes you have a working understanding of the basics of git and the way github works. If you don’t, we suggest you start there before moving forward.
 
 If you were not already aware, the project is written in C# using the ASP.NET framework. We are using the 4.6 version of the .NET framework, so the project can only be run on a windows machine with Visual Studio. If you are reading this, chances are that have been given access to a Virtual Machine to do development work on the project.
@@ -78,7 +80,8 @@ If you were not already aware, the project is written in C# using the ASP.NET fr
 - Start debugging by clicking on the Green play button on the top, or Debug => Start Debugging.
 - After a few moments, the bottom status bar should turn orange, and the browser should start. Initially, it will try to go to “https://localhost:SOMEPORT”. It will get the port wrong, correct it with the port number you took note of earlier and you should be set. 
 
-#### How do I publish my changes to the live websites? <a name="how-do-i-publish-my-changes-to-the-live-websites"></a>
+<a name="how-do-i-publish-my-changes-to-the-live-websites"></a>
+#### How do I publish my changes to the live websites? 
 There are two live websites accessible from within the Gordon network. You need to be connected to GordonNET to access them.
 
 This is an example of the workflow:
@@ -96,7 +99,8 @@ To publish:
 - Select RCI_Publish_DEV and click publish to publish to rcitrain.gordon.edu
 - Select RCI_Publish and click publish to publish to rci.gordon.edu
 
-#### How do I change the format of the fine email? <a name="how-do-I-change-the-format-of-the-fine-email"></a>
+<a name="how-do-I-change-the-format-of-the-fine-email"></a>
+#### How do I change the format of the fine email? 
 
 Ok, so you have set up shop and received your first task; “Change the format of the fine emails to: so and so”. Your first questions might be: What are fine emais? Where are they and how can I change them? No worries, we anticipated this and got you covered.
 
@@ -113,7 +117,8 @@ Point of imporvement: Allow Admins to change the fine email from the web portal.
 --------------------------------------------------------------------------------|
 
 
-#### How do I manually change the furniture that RCIs have? <a name="how-do-i-manually-change-the-furniture-that-rcis-have"></a>
+<a name="how-do-i-manually-change-the-furniture-that-rcis-have"></a>
+#### How do I manually change the furniture that RCIs have? 
 
 RCIs come by default with a set of furniture to which you can add damages. It is possible to change that. One of the Admins should be capable of doing this through the web portal, so there should never be a need for you to do it manually. However, we will talk about this here to help introduce you to the different parts of the project.
 
@@ -122,13 +127,15 @@ Each dorm has a different set of furniture and the system reflects this. We use 
 Obviously, if you are adding new furniture to an rci, make sure it follows the same syntax as everything else. 
 You will notice that we never really use the word “Furniture” in the code. We refer to the the items on the RCI as “Rci Components”. Rci Components are created when an rci is initially created, so modifying the XML document will modify the RciComponents of future rcis.
 
-#### How do I find the user-uploaded pictures? <a name="how-do-i-find-user-uploaded-pictures"></a>
+<a name="how-do-i-find-user-uploaded-pictures"></a>
+#### How do I find the user-uploaded pictures? 
 
 A better question is: What actually happens when you publish the project?
 
 When you type in “rci.gordon.edu” you are actually accessing files on some remote computer. Specifically, you are accessing files on the CS-RDP-1 Virtual machine, which might be the machine you are using to work on the project. It should come as no surprise then, that you can find the published product on the machine you are using (if you are using CS-RDP-1 to do you development work). Navigate to the `F:\Sites` and you should see folders for all the sites that are hosted on this machine. There should folders for rci and rcitrain. These correspond to the sites rci.gordon.edu and rcitrain.gordon.edu. The pictures uploaded by users should appear under Content\Images. Images are organized into folders according to date of upload to make navigating easier.
 
-#### How do I manually query the database? <a name="how-do-i-manually-query-the-database"></a>
+<a name="how-do-i-manually-query-the-database"></a>
+#### How do I manually query the database? 
 As you start working in earnest on the project, it will often prove useful to examine the database or update it directly via queries. This can also be done using Microsoft Sql Server Manager (MSSQL). Open it up and login to the `adminprodsql.gordon.edu` server using Windows authentication. Both the RCI database or the RCITrain database exist on this server. I would stay away from editing the RCI database completely since it contains real user data (unless you know what you are doing). 
 Naturally, you will need to be familiar with some SQL query the database, and as this is not an SQL tutorial, you will find no help with that here.
 
@@ -136,7 +143,8 @@ Naturally, you will need to be familiar with some SQL query the database, and as
 One thing to note, if you logged into the Virtual Machine with your Gordon credentials but can’t seem to login to the `adminprodsql.gordon.edu` server, you might need to ask whoever your supervisor at CTS is to give your user account access permissions to that server.|
 -------|
 
-#### How do I use a new table in the application? <a name="how-do-i-use-a-new-table-in-the-application"></a>
+<a name="how-do-i-use-a-new-table-in-the-application"></a>
+#### How do I use a new table in the application? 
 
 You were given the task of storing the side of the room an RCI is for. Let's assume you only need to do this for regular doubles. Currently the database don't store that information.
 There are always multiple options when thinking about how to implement a new feature. One way of getting this information is to add a new column to the Rci table. Once the new column is added, you'll need to use it in the application code.
