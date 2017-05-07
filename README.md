@@ -115,12 +115,12 @@ Point of imporvement: Allow Admins to change the fine email from the web portal.
 
 #### How do I manually change the furniture that RCIs have? <a name="how-do-i-manually-change-the-furniture-that-rcis-have"></a>
 
-RCIs come by default with a set of furniture to which you can add damages. It is possible to change that. One of the Admins should be capable of doing this through the User-interface, so there should never be a need for you to do it manually. However, we are talking about this here just to help introduce you to the different corners of the project.
+RCIs come by default with a set of furniture to which you can add damages. It is possible to change that. One of the Admins should be capable of doing this through the web portal, so there should never be a need for you to do it manually. However, we will talk about this here to help introduce you to the different parts of the project.
 
-Each dorm has a set of different furniture and the system reflects this. We use an XML document to tell the system what furniture needs to be generated for each type of room. This XML document is found under the App_Data folder. It’s called RoomComponents.xml. Take a look at it. XML is usually self-descriptive, so we’ll let you figure it out.
+Each dorm has a different set of furniture and the system reflects this. We use an XML document as a template to tell the system what furniture needs to be generated for each type of room. This XML document is found under the `App_Data` folder. It’s called RoomComponents.xml. Take a look at it. XML is usually self-descriptive, so we’ll let you figure it out.
 
-Obviously, if you are adding a new furniture to an rci, make sure it follows the same syntax as everything else. 
-You will notice that we never really use the word “Furniture” in the code. That is for the client, we refer to the the items on the rci as “Rci Components”. Rci Components are created when an rci is initially created, so modifying the XML document will modify the RciComponents of future rcis.
+Obviously, if you are adding new furniture to an rci, make sure it follows the same syntax as everything else. 
+You will notice that we never really use the word “Furniture” in the code. We refer to the the items on the RCI as “Rci Components”. Rci Components are created when an rci is initially created, so modifying the XML document will modify the RciComponents of future rcis.
 
 #### How do I find the user-uploaded pictures? <a name="how-do-i-find-user-uploaded-pictures"></a>
 
