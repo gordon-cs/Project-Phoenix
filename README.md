@@ -13,10 +13,14 @@
 - [Technical Documentation](#technical-documentation)
     - [How to](#how-to)
         - [How do I find the project?](#how-do-i-find-the-project)
-        - [](#how-do-i-make-changes-and-run-the-project-to-test)
-        - [](#how-do-i-publish-my-changes-to-the-live-websites)
-        - [](#how-do-I-change-the-format-of-the-fine-email)
-        - [](#how-do-i-manually-change-the-furniture-that-rcis-have)
+        - [How do I make changes and run the project to test?](#how-do-i-make-changes-and-run-the-project-to-test)
+        - [How do I publish my changes to the live websites?](#how-do-i-publish-my-changes-to-the-live-websites)
+        - [How do I change the format of the fine email?](#how-do-I-change-the-format-of-the-fine-email)
+        - [How do I manually change the furniture that RCIs have?](#how-do-i-manually-change-the-furniture-that-rcis-have)
+        - [How do I find the user-uploaded pictures?](#how-do-i-find-user-uploaded-pictures)
+        - [How do I manually query the database?](#how-do-i-manually-query-the-database)
+        - [How do I use a new table in the application?](#how-do-i-use-a-new-table-in-the-application)
+        
         
     
 
@@ -53,7 +57,7 @@ interface will assist Residence Life staff in doing manual tasks ( e.g. finding 
 
 ### How To:
 
-#### How do I find the project?: <a name="how-do-i-find-the-project"></a>
+#### How do I find the project? <a name="how-do-i-find-the-project"></a>
 The code for this project is hosted on github. This is the link. It is part of the projects hosted by the gordon-cs group, so you will need to be a part of that group and added as a collaborator on the project in order to commit changes to the repository. 
 
 #### How do I make changes and run the project to test? <a name="how-do-i-make-changes-and-run-the-project-to-test"></a>
