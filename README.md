@@ -19,7 +19,7 @@
         - [How do I manually change the furniture that RCIs have?](#how-do-i-manually-change-the-furniture-that-rcis-have)
         - [How do I find the user-uploaded pictures?](#how-do-i-find-user-uploaded-pictures)
         - [How do I manually query the database?](#how-do-i-manually-query-the-database)
-        - [How do I use a new table in the application?](#how-do-i-use-a-new-table-in-the-application)
+        - [How do I update or add a table to be used in the application?](#how-do-i-update-or-add-a-table-to-be-used-in-the-application)
     - [Deep Dive](#deep-dive)
         - [The Database](#the-database)
         - [Authentication](#authentication)
@@ -70,7 +70,7 @@ The code for this project is hosted in this repository. It is part of the projec
 #### How do I make changes and run the project to test? 
 This assumes you have a working understanding of the basics of git and the way github works. If you don’t, we suggest you start there before moving forward.
 
-If you were not already aware, the project is written in C# using the ASP.NET framework. We are using the 4.6 version of the .NET framework, so the project can only be run on a windows machine with Visual Studio. If you are reading this, chances are that have been given access to a Virtual Machine to do development work on the project.
+If you were not already aware, the project is written in C# using the ASP.NET framework. We are using the 4.6 version of the .NET framework, so the project can only be run on a windows machine with Visual Studio. If you are reading this, chances are that you have been given access to a Virtual Machine to do development work on the project.
 
 - Clone the project from the github repository. This should give you all the code you need to work on the project. 
 - Start up Visual Studio. Open Project => Navigate to the folder you just cloned => Select the “Phoenix.sln” file. 
@@ -86,14 +86,14 @@ There are two live websites accessible from within the Gordon network. You need 
 
 This is an example of the workflow:
 - Make a change and test it locally by running it directly from Visual Studio
-- Once you are confident that it is working, publish it to rcitrain.gordon.edu
+- Once you are confident that it is working, publish it to rcitrain.gordon.edu (See notes on how to publish below).
 - As the name might suggest, rcitrain.gordon.edu is the development site. Use it to make sure the changes work as expected on the web
 - Once you are sure everything works on rcitrain.gordon.edu, publish to rci.gordon.edu
 
 Publish profiles have been set up to make publishing hassle free. When you publish to rcitrain.gordon.edu, the published web application will access the RCITrain database. When you publish to rci.gordon.edu, the published web applicatoin will access the main RCI database. This should happen automatically.
 
 To publish:
-- Open Visual Studio as an administrator.
+- Open Visual Studio as **an administrator**.
 - At the top, click on Build => Publish Phoenix.
 - A Publish Web window will open. You will find a drop down at the top with two options: RCI_Publish_DEV and RCI_Publish
 - Select RCI_Publish_DEV and click publish to publish to rcitrain.gordon.edu
@@ -109,8 +109,12 @@ When a resident checks out of their room with their Resident Advisor (RA), the R
 Open up the project and select the Phoenix node on the right. Right-click on it and select Properties, then Resources. You should see a table with resources the project has. We are using the ASP.NET Resource feature to store the fine email string. This is not necessarily the best way to do it, but that’s what we came up with at the moment. 
 
 You should be able to edit the email string in this window. A few things to note:
+
 Use the arrow keys to navigate across multiple lines, trying to click doesn't work as expected in this window.
-When the email string is used, it is formatted to include dynamic information like the date, the name of the resident, description of charges etc… This information ultimately appears where you see the {SOME DIGIT} symbols. If you are going to edit the fine email extensively, you should probably read more about C# string formatting before doing so.
+When the email string is used, it is formatted to include dynamic information like the date, the name of the resident, description of charges etc… This information ultimately appears where you see the {SOME DIGIT} symbols. If you are going to edit the fine email extensively, you should probably read more about C# string formatting before doing so. We currently don't do any complex string formatting, so you don't have to read much to understand how it works. The first paragraph of this article should bring you up to speed:
+
+http://azuliadesigns.com/string-formatting-examples/
+
 
 
 Point of imporvement: Allow Admins to change the fine email from the web portal.|
@@ -136,17 +140,21 @@ When you type in “rci.gordon.edu” you are actually accessing files on some r
 
 <a name="how-do-i-manually-query-the-database"></a>
 #### How do I manually query the database? 
-As you start working in earnest on the project, it will often prove useful to examine the database or update it directly via queries. This can also be done using Microsoft Sql Server Manager (MSSQL). Open it up and login to the `adminprodsql.gordon.edu` server using Windows authentication. Both the RCI database or the RCITrain database exist on this server. I would stay away from editing the RCI database completely since it contains real user data (unless you know what you are doing). 
+As you start working in earnest on the project, it will often prove useful to examine the database or update it directly via queries. This can also be done using Microsoft Sql Server Manager (MSSQL). Open it up and login to the `adminprodsql.gordon.edu` server using Windows authentication. 
+
+This is assuming that you are logged into the Virtual Machine using your Gordon credentials. If you are not, do so. If you don't seem to have access to it using your credentials, ask your supervisor at CTS to try to get you permission. Things are much more straightforward when your account has the appropriate permissions. 
+
+So assuming you are logged in with your Gordon Credentials, accessing MSSQL should be automatic. "Windows Authentication" means "Use the same credentials I used to log into Windows to access MSSQL". Again, if you can't seem to access MSSQL, contact your CTS supervisor.
+
+Both the RCI database or the RCITrain database exist on this server. I would stay away from editing the RCI database completely since it contains real user data (unless you know what you are doing). 
 Naturally, you will need to be familiar with some SQL query the database, and as this is not an SQL tutorial, you will find no help with that here.
 
 
-One thing to note, if you logged into the Virtual Machine with your Gordon credentials but can’t seem to login to the `adminprodsql.gordon.edu` server, you might need to ask whoever your supervisor at CTS is to give your user account access permissions to that server.|
--------|
+<a name="how-do-i-update-or-add-a-table-to-be-used-in-the-application"></a>
+#### How do I update or add a table to be used in the application? 
 
-<a name="how-do-i-use-a-new-table-in-the-application"></a>
-#### How do I use a new table in the application? 
+You were given the task of storing the side of the room an RCI is for. Let's assume you only need to do this for regular doubles. Currently the database doesn't store that information.
 
-You were given the task of storing the side of the room an RCI is for. Let's assume you only need to do this for regular doubles. Currently the database don't store that information.
 There are always multiple options when thinking about how to implement a new feature. One way of getting this information is to add a new column to the Rci table. Once the new column is added, you'll need to use it in the application code.
 
 
@@ -160,9 +168,9 @@ There are always multiple options when thinking about how to implement a new fea
 - Uncheck the "Save connection string in WebConfig as" option, then click Next.
 - Select all the Views and Tables and uncheck the "Pluralize table and view names" option. Click Finish
 
-All the files you deleted shoudl not re-appear. The Rci.cs file shoul now have a new field corresponding to the new column you created.
+All the files you deleted should not re-appear. The Rci.cs file should now have a new field corresponding to the new column you created.
 
-What did we just do?
+_What did we just do?_
 
 Let's step back a bit. To interact with a relational database, you need to use SQL. However manually writing SQL strings in C# code can be very error prone and messy. Let's not even talk about retrieving the results. To help, Object Relational Mappers (ORM) were developed. They create an abstraction layer between the application code and the database so programmers like yourself don't have to bother too much with SQL. 
 
@@ -202,9 +210,9 @@ RoomChangeHistory: We don’t use this (^_^;)
 _Tables:_
 These are tables that we created. You have full control over these.
 
-Admin: A listing of the id numbers of the Admins. If someone is listed here, their admin role takes precedence over everything else. E.g. If you want to test the admin functionality, you can add your id number here...of course, this should be don on the RCITrain database 
+Admin: A listing of the id numbers of the Admins. If someone is listed here, their admin role takes precedence over everything else. E.g. If you want to test the admin functionality, you can add your id number here...of course, this should be done on the RCITrain database 
 
-BuildingAssign: A mapping of Job Titles to halls they are responsible for. If I am the RD of “Tavilla and Bromley”, there will be two records in the table that are as follows:
+BuildingAssign: A mapping of Job Titles to hall codes for the halls a given RD is responsible for. If I am the RD of “Tavilla and Bromley”, there will be two records in the table that are as follows:
 “Tavilla and Bromley” : TAV
 “Tavilla and Bromley” : BRO 
 
