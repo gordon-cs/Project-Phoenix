@@ -97,15 +97,16 @@ To publish:
 - Select RCI_Publish and click publish to publish to rci.gordon.edu
 
 #### How do I change the format of the fine email? <a name="how-do-I-change-the-format-of-the-fine-email"></a>
-Ok, so you have set up shop and received your first task; “Change the format of the fine emails to so and so”. Your first questions might be: What are fine emais? Where are they and how can I change them? No worries, we anticipated this and got you covered.
 
-When a resident checks out of their room with their Resident Advisor (RA), the Resident Director (RD) and RA eventually walkthrough the room a second time to finalize charges and fines. Once that is done, the system sends out an automated email to the resident (or residents if it is an apartment common area) with the fines they have been given. The format of the email is pretty much set, but hey, who knows, maybe they want to add a comma somewhere in there.
+Ok, so you have set up shop and received your first task; “Change the format of the fine emails to: so and so”. Your first questions might be: What are fine emais? Where are they and how can I change them? No worries, we anticipated this and got you covered.
+
+When a resident checks out of their room with their Resident Advisor (RA), the Resident Director (RD) and RA eventually walk through the room a second time to finalize charges. Once that is done, the system sends out an automated email to the resident (or residents if it is an apartment common area) with a listing of the charges they owe. The format of the email is pretty much set, but who knows, maybe they want to add a comma somewhere in there.
 
 Open up the project and select the Phoenix node on the right. Right-click on it and select Properties, then Resources. You should see a table with resources the project has. We are using the ASP.NET Resource feature to store the fine email string. This is not necessarily the best way to do it, but that’s what we came up with at the moment. 
 
 You should be able to edit the email string in this window. A few things to note:
-Use the arrow keys to navigate across multiple lines, trying to click does weird things.
-When the email string is used, it is formatted to include dynamic information like the date, resident name, description of fines etc… This information ultimately appears where you see the {SOME DIGIT} symbols. If you are going to edit the fine email extensively, you should probably read up on c# string formatting before doing so.
+Use the arrow keys to navigate across multiple lines, trying to click doesn't work as expected in this window.
+When the email string is used, it is formatted to include dynamic information like the date, the name of the resident, description of charges etc… This information ultimately appears where you see the {SOME DIGIT} symbols. If you are going to edit the fine email extensively, you should probably read more about C# string formatting before doing so.
 
 
 Point of imporvement: Allow Admins to change the fine email from the web portal.|
