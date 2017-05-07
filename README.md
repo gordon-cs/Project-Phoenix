@@ -107,7 +107,10 @@ You should be able to edit the email string in this window. A few things to note
 Use the arrow keys to navigate across multiple lines, trying to click does weird things.
 When the email string is used, it is formatted to include dynamic information like the date, resident name, description of fines etc… This information ultimately appears where you see the {SOME DIGIT} symbols. If you are going to edit the fine email extensively, you should probably read up on c# string formatting before doing so.
 
-Point of imporvement: Allow Admins to change the fine email from the web portal.
+
+Point of imporvement: Allow Admins to change the fine email from the web portal.|
+--------------------------------------------------------------------------------|
+
 
 #### How do I manually change the furniture that RCIs have? <a name="how-do-i-manually-change-the-furniture-that-rcis-have"></a>
 
@@ -128,7 +131,8 @@ As you start working in earnest on the project, it will often prove useful to ex
 Naturally, you will need to be familiar with some SQL query the database, and as this is not an SQL tutorial, you will find no help with that here.
 
 
-One thing to note, if you logged into the Virtual Machine with your Gordon credentials but can’t seem to login to the adminprodsql.gordon.edu server, you might need to ask the folks over at CTS to give your user account access permission to that server.
+One thing to note, if you logged into the Virtual Machine with your Gordon credentials but can’t seem to login to the adminprodsql.gordon.edu server, you might need to ask the folks over at CTS to give your user account access permission to that server.|
+-------|
 
 #### How do I use a new table in the application? <a name="how-do-i-use-a-new-table-in-the-application"></a>
 
@@ -139,30 +143,45 @@ One thing to note, if you logged into the Virtual Machine with your Gordon crede
 A distinction must be made between our tables and the views that were provided to us by CTS. Views are basically non-editable tables. The Views can be found under….you guessed it: the Views folder in either the RCITrain or RCI databases. The Tables can be found in the Tables folder. 
 If you find something is missing in a View, it is most likely a CTS person that will have to update it (remember you can’t update it, you can just read).
 
-Important: Both RCI and RCITrain databases must have IDENTICAL schemas at all times. So if you make a change to the schema of one, make sure you do it for the other.
+Important: Both RCI and RCITrain databases must have IDENTICAL schemas at all times. So if you make a change to the schema of one, make sure you do it for the other.|
+---------------------------------------|
 
 
 _Views:_
 Account: Account information for everyone at the college. Does not contain password info.
+
 CurrentRA: The canonical view for which accounts are RAs. If this isn’t up to date, the system won’t be either.
+
 CurrentRD: The canonical view for which accounts are RDs. If this isn’t up to date, the system won’t be either.
+
 Room: A view with all the rooms on campus. We have currently restricted it to only show residential rooms, but it actually also has access to all types of rooms including classrooms and offices. Those are not needed for the purposes of this system though.
+
 RoomAssign: This is an important view. It dictates which resident is assigned to which room. The system depends on this to generate rcis. If a resident does not have a room assignment in this view, one must be created by the Residence Life staff before the resident will see their rci.
+
 Session: Another important view. It is basically a listing of the all sessions present and past. Rci generation depends on this.
+
 RoomChangeHistory: We don’t use this (^_^;)
 
 _Tables:_
 These are tables that we created. You have full control over these.
+
 Admin: A listing of the id numbers of the Admins. If someone is listed here, their admin role takes precedence over everything else. E.g. If you want to test the admin functionality, you can add your id number here...of course, this should be don on the RCITrain database 
+
 BuildingAssign: A mapping of Job Titles to halls they are responsible for. If I am the RD of “Tavilla and Bromley”, there will be two records in the table that are as follows:
 “Tavilla and Bromley” : TAV
 “Tavilla and Bromley” : BRO 
+
 CommonAreaSignatures: A table to store common area signatures for common area rcis. A signature is either for Checkout or for Checkin.
+
 Damage: This it the table that stores the damages that users enter. The type can be either TEXT or IMAGE. (WE NEED TO REMOVE THE FINE ASSESSED COLUMN)
+
 Fine: This is the table that stores the charges and fines that RAs and RDs enter for residents.
-Rci: This table represents the Rci entity. It has columns for all the Checkin and Checkout signatures so we can keep track of the state of the Rci. 
+
+Rci: This table represents the Rci entity. It has columns for all the Checkin and Checkout signatures so we can keep track of the state of the Rci.
+
 The IsCurrent column is used to differentiate active rcis from old rcis. An rci is active throughout the year until sometime after checkout when the RD decides that they don’t need it anymore. They can then archive it by making it non-current
-If an RCI has a GordonID, it is a normal rci. If it’s GordonID column is NULL, it is a common area rci.
+If an RCI has a GordonID, it is a normal rci. If it’s GordonID column is NULL, it is a common area rci.|
+-------------------------------------------------------------------------------------------------------|
 
 RciComponent: In the spirit of the paper rci, each rci is made up of different components. These components can then be associated with damages through the Damage table.
 
