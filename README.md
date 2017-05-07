@@ -20,6 +20,11 @@
         - [How do I find the user-uploaded pictures?](#how-do-i-find-user-uploaded-pictures)
         - [How do I manually query the database?](#how-do-i-manually-query-the-database)
         - [How do I use a new table in the application?](#how-do-i-use-a-new-table-in-the-application)
+    - [Deep Dive](#deep-dive)
+        - [The Database](#the-database)
+        - [Authentication](#authentication)
+        - [Controllers and Views](#controllers-and-views)
+        - [RCI Generation](#rci-generation)
         
         
     
