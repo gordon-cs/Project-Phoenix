@@ -63,38 +63,38 @@ interface will assist Residence Life staff in doing manual tasks ( e.g. finding 
 ### How To:
 
 #### How do I find the project? <a name="how-do-i-find-the-project"></a>
-The code for this project is hosted on github. This is the link. It is part of the projects hosted by the gordon-cs group, so you will need to be a part of that group and added as a collaborator on the project in order to commit changes to the repository. 
+The code for this project is hosted in this repository. It is part of the projects hosted by the gordon-cs group, so you will need to be a part of that group and added as a collaborator on the project in order to commit changes to the repository. 
 
 #### How do I make changes and run the project to test? <a name="how-do-i-make-changes-and-run-the-project-to-test"></a>
 This assumes you have a working understanding of the basics of git and the way github works. If you don’t, we suggest you start there before moving forward.
 
-If you were not already aware, the project is written in c# using the ASP.NET framework. At the time of writing, a new cross-platform .NET framework is being developed, but it wasn’t stable enough for us. We are using the 4.6 version of the .NET framework, so the project can only be run on a windows machine with Visual Studio. If you are reading, this, chances are that have been given access to a Virtual Machine to do development work on the project. Use that.
+If you were not already aware, the project is written in C# using the ASP.NET framework. We are using the 4.6 version of the .NET framework, so the project can only be run on a windows machine with Visual Studio. If you are reading this, chances are that have been given access to a Virtual Machine to do development work on the project.
 
-- Clone the project from the github repository. This should give you almost all the code you need to work on the project. 
-- Fire up visual studio. Open Project => Navigate to the folder you just cloned => Select the root “Phoenix.sln” file. 
-- When the project finishes loading, you should see the project files and folders on the right. The main pane is the editing window.
-- Make whatever changes you want. Save of course.
+- Clone the project from the github repository. This should give you all the code you need to work on the project. 
+- Start up Visual Studio. Open Project => Navigate to the folder you just cloned => Select the “Phoenix.sln” file. 
+- When the project finishes loading, you should see the project files and folders on the right. 
+- Make whatever changes you want and save.
 - On the right-hand side, select the Phoenix node, then click on the properties tab on the far-right. Make note of the SSL URL, specifically the port number.
 - Start debugging by clicking on the Green play button on the top, or Debug => Start Debugging.
-- After a few moments, the bottom status bar should turn orange, and the browser should fire up. Initially, it will try to go to “https://localhost:SOMEPORT”. It will get the port wrong, correct it with the port number you took note of earlier and you should be set. 
+- After a few moments, the bottom status bar should turn orange, and the browser should start. Initially, it will try to go to “https://localhost:SOMEPORT”. It will get the port wrong, correct it with the port number you took note of earlier and you should be set. 
 
 #### How do I publish my changes to the live websites? <a name="how-do-i-publish-my-changes-to-the-live-websites"></a>
-There are two live websites accessible from within the Gordon network. You need to be connected to GordonNET to access them, so make sure you are not using data if you are on a phone.
+There are two live websites accessible from within the Gordon network. You need to be connected to GordonNET to access them.
 
-The workflow will go something like this:
+This is an example of the workflow:
 - Make a change and test it locally by running it directly from Visual Studio
-- Once you are confident that it is working, you publish it to rcitrain.gordon.edu
-- As the name might suggest, rcitrain.gordon.edu is the development site. Use it to make sure the changes work as expected once they have been pushed to the big wild web. Once you are sure everything works, here, you can be sure it will work for users.
-- Publish to rci.gordon.edu
+- Once you are confident that it is working, publish it to rcitrain.gordon.edu
+- As the name might suggest, rcitrain.gordon.edu is the development site. Use it to make sure the changes work as expected on the web
+- Once you are sure everything works on rcitrain.gordon.edu, publish to rci.gordon.edu
 
-Publish profiles have been set up to make publishing hassle free. When you publish to rcitrain.gordon.edu, the published web app will access the RCITrain database. When you publish to rci.gordon.edu, the published web app will access the main RCI database. This should happen automatically.
+Publish profiles have been set up to make publishing hassle free. When you publish to rcitrain.gordon.edu, the published web application will access the RCITrain database. When you publish to rci.gordon.edu, the published web applicatoin will access the main RCI database. This should happen automatically.
 
 To publish:
-- If you are running Visual Studio, close. Re-open it, this time as an administrator. How to do this is left as an exercise to the user.
+- Open Visual Studio as an administrator.
 - At the top, click on Build => Publish Phoenix.
-- A Publish Web window should be opened. You will find a drop down at the top with two options: RCI_Publish_DEV and RCI_Publish
-- Select RCI_Publish_DEV and hit publish to publish to rcitrain.gordon.edu
-- Select RCI_Publish and hit publish to publish to rci.gordon.edu
+- A Publish Web window will open. You will find a drop down at the top with two options: RCI_Publish_DEV and RCI_Publish
+- Select RCI_Publish_DEV and click publish to publish to rcitrain.gordon.edu
+- Select RCI_Publish and click publish to publish to rci.gordon.edu
 
 #### How do I change the format of the fine email? <a name="how-do-I-change-the-format-of-the-fine-email"></a>
 Ok, so you have set up shop and received your first task; “Change the format of the fine emails to so and so”. Your first questions might be: What are fine emais? Where are they and how can I change them? No worries, we anticipated this and got you covered.
