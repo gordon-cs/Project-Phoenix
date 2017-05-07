@@ -124,18 +124,46 @@ You will notice that we never really use the word “Furniture” in the code. W
 
 #### How do I find the user-uploaded pictures? <a name="how-do-i-find-user-uploaded-pictures"></a>
 
-A better question will be: so what actually happens when you publish the project?
-This assumes you are familiar with how the internet works to some degree. When you type in “rci.gordon.edu” you are actually accessing files on some other computer. Specifically, you are accessing files on the CS-RDP-1 Virtual machine, which should be the machine you are using to work on the project. It should come as no surprise then, that you can find the published product on the machine you are using. Navigate to the F:\Sites and you should see folders for all the sites that are hosted on this machine. There should folders for rci and rcitrain. These correspond to the sites rci.gordon.edu and rcitrain.gordon.edu. The user-uploaded pictures should appear under Content\Images. Images are organized into folders according to date of upload to ease manual navigation.
+A better question is: What actually happens when you publish the project?
+
+When you type in “rci.gordon.edu” you are actually accessing files on some remote computer. Specifically, you are accessing files on the CS-RDP-1 Virtual machine, which might be the machine you are using to work on the project. It should come as no surprise then, that you can find the published product on the machine you are using (if you are using CS-RDP-1 to do you development work). Navigate to the `F:\Sites` and you should see folders for all the sites that are hosted on this machine. There should folders for rci and rcitrain. These correspond to the sites rci.gordon.edu and rcitrain.gordon.edu. The pictures uploaded by users should appear under Content\Images. Images are organized into folders according to date of upload to make navigating easier.
 
 #### How do I manually query the database? <a name="how-do-i-manually-query-the-database"></a>
-As you start working in earnest on the project, it will often prove useful to examine the database or update it directly via queries. This can also be done using Microsoft Sql Server Manager. Open it up and login to the adminprodsql.gordon.edu server using Windows authentication. Both the RCI database or the RCITrain database exist on this server. I would stay away from editing the RCI database completely since it contains real user data (unless you know exactly what you are doing). 
+As you start working in earnest on the project, it will often prove useful to examine the database or update it directly via queries. This can also be done using Microsoft Sql Server Manager (MSSQL). Open it up and login to the `adminprodsql.gordon.edu` server using Windows authentication. Both the RCI database or the RCITrain database exist on this server. I would stay away from editing the RCI database completely since it contains real user data (unless you know what you are doing). 
 Naturally, you will need to be familiar with some SQL query the database, and as this is not an SQL tutorial, you will find no help with that here.
 
 
-One thing to note, if you logged into the Virtual Machine with your Gordon credentials but can’t seem to login to the adminprodsql.gordon.edu server, you might need to ask the folks over at CTS to give your user account access permission to that server.|
+One thing to note, if you logged into the Virtual Machine with your Gordon credentials but can’t seem to login to the `adminprodsql.gordon.edu` server, you might need to ask whoever your supervisor at CTS is to give your user account access permissions to that server.|
 -------|
 
 #### How do I use a new table in the application? <a name="how-do-i-use-a-new-table-in-the-application"></a>
+
+You were given the task of storing the side of the room an RCI is for. Let's assume you only need to do this for regular doubles. Currently the database don't store that information.
+There are always multiple options when thinking about how to implement a new feature. One way of getting this information is to add a new column to the Rci table. Once the new column is added, you'll need to use it in the application code.
+
+
+- Create a new column in the Rci Table using MSSQL. You will need to let this new column accept null values since it wasn't there initially.
+- Back in Visual Studio, with your project open, go to the Models folder.
+- Delete all top level files (not folders) in the Models folder. So everything from Account.cs to .... Session.cs
+- Right click on the Models folder => Add => New Item
+- On the navigation menu on the left, choose Data, then select ADO.NET Entity Data Model
+- Change the Name to "RCIContext". The spelling needs to be exact.
+- On the next screen, select "Code First from Database", then click Next
+- Uncheck the "Save connection string in WebConfig as" option, then click Next.
+- Select all the Views and Tables and uncheck the "Pluralize table and view names" option. Click Finish
+
+All the files you deleted shoudl not re-appear. The Rci.cs file shoul now have a new field corresponding to the new column you created.
+
+What did we just do?
+
+Let's step back a bit. To interact with a relational database, you need to use SQL. However manually writing SQL strings in C# code can be very error prone and messy. Let's not even talk about retrieving the results. To help, Object Relational Mappers (ORM) were developed. They create an abstraction layer between the application code and the database so programmers like yourself don't have to bother too much with SQL. 
+
+Very generally an ORM works by creating classes that correspond to different database things. The table `Rci` in the database is referred to in the code as the class `Rci`. The column `IsCurrent` within the Rci table is referred to as a field within the Rci class in the code. So 10 Rci rows in the dabatase would correspond to a list of 10 Rci objects in C#. 
+
+For our project, we are using the Entity Framework ORM. Given a database, it can generate all the corresponding class definitions automatically.
+
+So when you change the database, you also need to update the class definitions. We deleted the old class definitions and then regenerated them from the database.
+
 
 
 ### Deep Dive
