@@ -346,7 +346,10 @@ namespace Phoenix.Controllers
             if (rciSigned) // Only do the rest if the rci was successfully signed.
             {
                  checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
-                 checkoutService.WorkRequestDamages(workRequest, username, password, id, phoneNumber);
+                if(workRequest != null)
+                {
+                    checkoutService.WorkRequestDamages(workRequest, username, password, id, phoneNumber);
+                }
             }
             else
             {

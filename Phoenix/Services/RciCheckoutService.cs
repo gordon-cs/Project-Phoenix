@@ -380,9 +380,6 @@ namespace Phoenix.Services
             var response = client.PostAsync(Constants.WORK_REQUEST_ENDPOINT, content).Result;
             var statusCode = response.StatusCode;
 
-            Debug.WriteLine("This task yeilded a " + statusCode + " status code");
-            Debug.WriteLine(response.Content.ReadAsStringAsync().Result);
-
             return statusCode;
         }
 
