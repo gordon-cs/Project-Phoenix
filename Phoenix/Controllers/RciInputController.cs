@@ -47,7 +47,7 @@ namespace Phoenix.Controllers
             //  Redirect to the review page if this is already signed by the RD
             if(rci.CheckinSigRD != null)
             {
-                return RedirectToAction("RciReview");
+                return RedirectToAction("RciReview", new { id = id });
             }
 
             // This is how we access items set in the filter.
@@ -316,6 +316,7 @@ namespace Phoenix.Controllers
                     Image resizedImg = new Bitmap(origImg, imgSize);
 
                     rciInputService.ResizeImage(origImg, resizedImg, imgSize);
+                    rciInputService.ApplyExifData(resizedImg);
 
                     string imageName = "RciComponentId" + rciComponentId + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
 

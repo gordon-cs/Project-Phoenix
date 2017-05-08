@@ -168,6 +168,11 @@ namespace Phoenix.Controllers
             dashboardService.ArchiveRcis(rciID);
         }
 
+        /// <summary>
+        /// Sync up all the RCI's so that the RCI's in the system accurately reflect which
+        /// residents are in which dorms
+        /// </summary>
+        [ResLifeStaff]
         [HttpGet]
         public ActionResult SyncRcis()
         {
@@ -179,11 +184,11 @@ namespace Phoenix.Controllers
             return RedirectToAction("Index");
         }
 
-        // Potentially later: admin option that can view all RCI's for all buildings
-
-        // Maybe use an authorization filter here to only allow an RD to access this method?
-        // It would be kind of filtered by default since the Export Fines button only appears in RD's view
-        // But I suppose if someone new the path, they could call this controller method just from the url
+        /// <summary>
+        /// Export all the fines and charges recorded to a spreadsheet
+        /// </summary>
+        /// <returns>A .csv file sent back to the client</returns>
+        [RD]
         [HttpGet]
         public FileContentResult ExportFines()
         {
