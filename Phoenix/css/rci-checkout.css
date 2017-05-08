@@ -83,3 +83,10 @@ material-icons.clear:focus {
 .fine-table {
     margin-top: 30px;
 }
+
+
+#work-requests-wrapper {
+    border: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0.5em;
+}

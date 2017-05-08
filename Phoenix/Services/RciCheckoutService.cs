@@ -1,12 +1,18 @@
 ﻿using Phoenix.Models;
 using Phoenix.Models.ViewModels;
+using Phoenix.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Phoenix.Services
 {
@@ -51,7 +57,8 @@ namespace Phoenix.Services
                     CheckoutSigRDName =
                                          (from acct in db.Account
                                           where acct.ID_NUM.Equals(r.CheckoutSigRDGordonID)
-                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
+                                          select acct.firstname + " " + acct.lastname).FirstOrDefault(),
+                    RciComponent = r.RciComponent
 
                 };
 
@@ -222,14 +229,23 @@ namespace Phoenix.Services
         /// <summary>
         /// Sign the RD portion of the rci during the checkout process and make the rci non-current.
         /// </summary>
-        public void CheckoutRDSignRci(int rciID, string rdGordonID)
+        public bool CheckoutRDSignRci(int rciID, string rdGordonID)
         {
-            var rci = db.Rci.Find(rciID);
+            try
+            {
+                var rci = db.Rci.Find(rciID);
 
-            rci.CheckoutSigRD = System.DateTime.Today;
-            rci.CheckoutSigRDGordonID = rdGordonID;
+                rci.CheckoutSigRD = System.DateTime.Today;
+                rci.CheckoutSigRDGordonID = rdGordonID;
 
-            db.SaveChanges();
+                db.SaveChanges();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
 
         }
 
@@ -300,6 +316,73 @@ namespace Phoenix.Services
                 }
             }
         }
+
+        public void WorkRequestDamages(List<string> workRequests, string username, string password, int rciID, string phoneNumber)
+        {
+            // Go.gordon.edu can be accessed using Basic authentication. I found this out via trial and error xD
+            string authenticationInfo = username + ":" + password;
+            authenticationInfo = Convert.ToBase64String(Encoding.Default.GetBytes(authenticationInfo));
+
+            var acct = db.Account.Where(x => x.AD_Username.Equals(username)).FirstOrDefault();
+            var rci = db.Rci.Find(rciID);
+            var buildingName = db.Room.Where(x => x.BLDG_CDE.Equals(rci.BuildingCode)).First().BUILDING_DESC;
+
+            // Set up the Http client
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(Constants.GO_GORDON_URL);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authenticationInfo);
+                client.DefaultRequestHeaders.ExpectContinue = false;
+                client.DefaultRequestHeaders.ConnectionClose = false;
+
+                foreach (var request in workRequests)
+                {
+                    PostWorkRequest(client, request, acct.AD_Username, buildingName, rci.RoomNumber, phoneNumber, acct.firstname, acct.lastname, acct.ID_NUM);
+                }
+            }
+        }
+
+        public HttpStatusCode PostWorkRequest(HttpClient client, 
+                                                                        string workRequest, 
+                                                                        string ADUsername, 
+                                                                        string fullBuildingName, 
+                                                                        string roomNumber,
+                                                                        string phoneNumber, 
+                                                                        string firstname,
+                                                                        string lastname,
+                                                                        string gordonID)
+        {
+            var data = new List<KeyValuePair<string, string>>();
+            data.Add(new KeyValuePair<string, string>("submitted_by", ADUsername));
+            data.Add(new KeyValuePair<string, string>("ad_username", ADUsername));
+            data.Add(new KeyValuePair<string, string>("building", fullBuildingName));
+            data.Add(new KeyValuePair<string, string>("location", "Room " + roomNumber));
+            data.Add(new KeyValuePair<string, string>("strdescription", workRequest));
+            data.Add(new KeyValuePair<string, string>("phone", phoneNumber));
+            data.Add(new KeyValuePair<string, string>("fname", firstname));
+            data.Add(new KeyValuePair<string, string>("lname", lastname));
+            data.Add(new KeyValuePair<string, string>("gordon_id", gordonID));
+            data.Add(new KeyValuePair<string, string>("m_date_needed", "1"));
+            data.Add(new KeyValuePair<string, string>("d_date_needed", "1"));
+            data.Add(new KeyValuePair<string, string>("y_date_needed", "1900"));
+            data.Add(new KeyValuePair<string, string>("hr_date_needed", "00"));
+            data.Add(new KeyValuePair<string, string>("mm_date_needed", "00"));
+            data.Add(new KeyValuePair<string, string>("tt_date_needed", "AM"));
+            data.Add(new KeyValuePair<string, string>("m_date_to", "1"));
+            data.Add(new KeyValuePair<string, string>("d_date_to", "1"));
+            data.Add(new KeyValuePair<string, string>("y_date_to", "1900"));
+            data.Add(new KeyValuePair<string, string>("hr_date_to", "00"));
+            data.Add(new KeyValuePair<string, string>("mm_date_to", "00"));
+            data.Add(new KeyValuePair<string, string>("tt_date_to", "AM"));
+
+            var content = new FormUrlEncodedContent(data);
+
+            var response = client.PostAsync(Constants.WORK_REQUEST_ENDPOINT, content).Result;
+            var statusCode = response.StatusCode;
+
+            return statusCode;
+        }
+
 
         public IEnumerable<string> GetCommonRooms(int id)
         {

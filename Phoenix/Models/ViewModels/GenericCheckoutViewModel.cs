@@ -15,6 +15,7 @@ namespace Phoenix.Models.ViewModels
         public string CheckoutSigRAGordonID { get; set; }
         public string CheckoutSigRDName { get; set; }
         public string CheckoutSigRDGordonID { get; set; }
+        public ICollection<RciComponent> RciComponent { get; set; }
 
     }
 }

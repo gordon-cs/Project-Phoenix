@@ -8,43 +8,88 @@
     ViewBag.Role = TempData["role"];
 }
 
+@section Styles{
+    @Styles.Render("~/bundles/page_specific/css/rci-checkout")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/page_specific/js/rci-checkout")
+}
+
+
 <h2>@ViewBag.ViewTitle</h2>
 <div class="view">
     <div class="pane">
-        <div class="pane-content">
-            @if (ViewBag.ErrorMessage != null)
+        @if (ViewBag.ErrorMessage != null)
             {
-                <div class="error-message">
-                        <p>@ViewBag.ErrorMessage</p>
-                </div>
-            }
-            @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
+            <div class="error-message">
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
+        }
+        @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
-                <div>
-                    @if (Model.CheckoutSigRD == null)
-                    {
-                        <p class="padded-paragraph-vertical">I, @ViewBag.ExpectedSignature, hereby agree to all of the fines and charges that have been recorded.</p>
-                        <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to send a fine email to the resident(s) if any fines/charges were assessed.</p>
+            <div>
+                @if (Model.CheckoutSigRD == null)
+                {
+                    <p class="padded-paragraph-vertical">I, @ViewBag.RDName, hereby agree to all of the fines and charges that have been recorded.</p>
+                        <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to send fine emails to the resident(s) if any fines/charges were assessed.</p>
+                        <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to submit the work requests displayed below.</p>
+
+                        <div id="work-requests-wrapper">
+                            <h4>Work Requests to be submitted:</h4>
+                            @if (ViewBag.ErrorMessage != null) // e.g. the RD enters the wrong password and the page reloads. We don't want to make them re-edit the work requests.
+                            {
+                                foreach (var fineString in ViewBag.WorkRequests)
+                                {
+                                    <div class="divAddOn">
+                                        <input class="divAddOn-field" type="text" name="workRequest" value="@fineString">
+                                        <div class="divAddOn-item"><i class="material-icons" onclick="removeWorkRequest(event, this);">close</i></div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                foreach (var component in Model.RciComponent)
+                                {
+                                    foreach (var fine in component.Fine)
+                                    {
+                                        <div class="divAddOn">
+                                            <input class="divAddOn-field" type="text" name="workRequest" value="@component.RciComponentName - @fine.Reason">
+                                            <div class="divAddOn-item"><i class="material-icons" onclick="removeWorkRequest(event, this);">close</i></div>
+                                        </div>
+                                    }
+                                }
+                            }
+                            <div class="divAddOn">
+                                <input class="divAddOn-field" type="text" placeholder="Add a new Work Request" onclick="addWorkRequest(event, this)">
+                            </div>
+                        </div>
+
+                        <div>
+                            <p>Please enter your Gordon username and password below. If you are submitting any work requests, also provide your phone number</p>
+                        </div>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="username" type="text" value="@ViewBag.ExpectedUsername" />
                         </div>
                         <div class="divAddOn">
                             <input class="divAddOn-field" name="password" type="password" placeholder="Please enter your password" />
                         </div>
-                    }
-                    else
-                    {
-                        <p>This RCI has been signed by the Resident Director</p>
+                        <div class="divAddOn">
+                            <input class="divAddOn-field" name="phonenumber" type="tel" placeholder="Phone Number (for work requests)" />
+                        </div>
+                }
+                else
+                {
+                    <p>This RCI has been signed by the Resident Director</p>
                         <div class="divAddOn">
                             <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRD.Value.ToString("yyyy-MM-dd")" />
                         </div>
-                    }
-                </div>
+                }
+            </div>
                 <div class="distribute-evenly">
                     <button type="submit">Finish</button>
                 </div>
-            }
-        </div>
-
+        }
     </div>
+
 </div>
