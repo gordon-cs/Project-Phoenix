@@ -16,9 +16,11 @@ namespace Phoenix.Services
     public class DashboardService
 {
         private RCIContext db;
+        private XDocument document;
         public DashboardService()
         {
             db = new Models.RCIContext();
+            document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
 
         /*
@@ -313,8 +315,6 @@ namespace Phoenix.Services
             // Create the components
             var newComponents = new List<RciComponent>();
 
-            XDocument document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
-
             foreach (var rci in newRcis)
             {
                 newComponents.AddRange(CreateRciComponents(document, rci.RciID, "individual", rci.BuildingCode));
@@ -371,7 +371,6 @@ namespace Phoenix.Services
                 db.SaveChanges();
 
                 // Create Components
-                XDocument document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
                 db.RciComponent.AddRange(CreateRciComponents(document, newRci.RciID, "individual", newRci.BuildingCode));
                 db.SaveChanges();
 
@@ -415,7 +414,6 @@ namespace Phoenix.Services
 
             // Create components
             var newRciComponents = new List<RciComponent>();
-            XDocument document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
 
             foreach (var rci in newCommonAreaRcis)
             {
@@ -464,7 +462,6 @@ namespace Phoenix.Services
                 db.SaveChanges();
 
                 // Create Components
-                XDocument document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
                 db.RciComponent.AddRange(CreateRciComponents(document, commonAreaRci.RciID, "common", commonAreaRci.BuildingCode));
                 db.SaveChanges();
             }
