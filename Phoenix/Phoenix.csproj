@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>44338</IISExpressSSLPort>
+    <IISExpressSSLPort>44300</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
@@ -205,7 +205,6 @@
     <Compile Include="Services\RciComponentReassignService.cs" />
     <Compile Include="Services\RciInputService.cs" />
     <Compile Include="Services\RciCheckoutService.cs" />
-    <Compile Include="Services\RoomComponentService.cs" />
     <Compile Include="Utilities\Constants.cs" />
   </ItemGroup>
   <ItemGroup>

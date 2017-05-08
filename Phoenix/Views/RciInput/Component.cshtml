@@ -8,9 +8,14 @@
     }
     <div class="input pane-content @visible">
         <div class="component-cost">
-            @foreach (var fineString in ViewBag.CostDictionary[Model.RciComponentName])
-            {
-                <span>| @fineString |</span>
+            @{
+                var costString = Model.SuggestedCosts;
+                var costArray = costString.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var suggestion in costArray)
+                {
+                    var tmp = suggestion.Split(new char[] { ',' });
+                    <span>| @tmp[0] - $@tmp[1] |</span>
+                }
             }
         </div>
         <div class="divAddOn">

@@ -20,25 +20,30 @@
 
         <h2 class="pane-title">@ViewBag.ViewTitle</h2>
 
-    @foreach (var component in Model.RciComponent)
-    {
-        var visible = "hide";
-        if (component.Damage.Any() || component.Fine.Any())
+        @foreach (var component in Model.RciComponent)
         {
-            visible = "show";
-        }
-        <div class="pane component" id="@component.RciComponentID">
-            <h2 class="pane-title div-list-toggle component-title">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
-            <div class="checkout pane-content @visible">
-                <div class="component-cost">
-                    @foreach (var fineString in ViewBag.CostDictionary[component.RciComponentName])
-                    {
-                        <span>| @fineString |</span>
-                    }
-                </div>
-                <div class="div-list">
-                    <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
-                        @foreach (var damage in component.Damage)
+            var visible = "hide";
+            if (component.Damage.Any() || component.Fine.Any())
+            {
+                visible = "show";
+            }
+            <div class="pane component" id="@component.RciComponentID">
+                <h2 class="pane-title div-list-toggle component-title">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
+                <div class="checkout pane-content @visible">
+                    <div class="component-cost">
+                        @{
+                            var costString = component.SuggestedCosts;
+                            var costArray = costString.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var suggestion in costArray)
+                            {
+                                var tmp = suggestion.Split(new char[] { ',' });
+                                <span>| @tmp[0] - $@tmp[1] |</span>
+                            }
+                        }
+                    </div>
+                    <div class="div-list">
+                        <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
+                            @foreach (var damage in component.Damage)
                 {
                     if (damage.DamageType.Equals("IMAGE"))
                     {
@@ -60,7 +65,7 @@
                                 <i class="material-icons forward">navigate_next</i>
                             </div>
                         </div>
-                        
+
                         @foreach (var damage in component.Damage)
                         {
                             if (damage.DamageDescription != null)
@@ -99,7 +104,7 @@
 
                 </div>
             </div>
-        }
+                            }
     </div>
     <div class="distribute-evenly">
         <button id="next-button" onclick="window.location.href = '@Url.Action(actionName:"ResidentSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })'">Next</button>

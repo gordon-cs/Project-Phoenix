@@ -16,9 +16,11 @@ namespace Phoenix.Services
     public class DashboardService
 {
         private RCIContext db;
+        private XDocument document;
         public DashboardService()
         {
             db = new Models.RCIContext();
+            document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
 
         /*
@@ -129,11 +131,10 @@ namespace Phoenix.Services
          * @params: rciId - the id of the RCI to associate with 
          *          roomType - string to indicate type of room, either "common area" or "dorm room" currently
          */ 
-        public List<RciComponent> CreateRciComponents(int rciId, string roomType, string buildingCode)
+        public List<RciComponent> CreateRciComponents(XDocument document, int rciId, string roomType, string buildingCode)
         {
             List<RciComponent> created = new List<RciComponent>();
-            var server = HttpContext.Current.Server;
-            XDocument document = XDocument.Load(server.MapPath("~/App_Data/RoomComponents.xml"));
+
             XElement rciTypes = document.Root;
             IEnumerable<XElement> componentElements =
                 from rci in rciTypes.Elements("rci")
@@ -147,6 +148,17 @@ namespace Phoenix.Services
                 newComponent.RciComponentName = (string)componentElement.Attribute("name");
                 newComponent.RciComponentDescription = (string)componentElement.Attribute("description");
                 newComponent.RciID = rciId;
+
+                var costString = "";
+                var costElements = componentElement.Elements("cost");
+                foreach(var costElement in costElements)
+                {
+                    var costReason = costElement.Attribute("name").Value;
+                    var costAmount = costElement.Attribute("approxCost").Value;
+                    costString += costReason + "," + costAmount + "|";
+                }
+
+                newComponent.SuggestedCosts = costString;
                 created.Add(newComponent);
             }
             return created;
@@ -303,9 +315,9 @@ namespace Phoenix.Services
             // Create the components
             var newComponents = new List<RciComponent>();
 
-            foreach(var rci in newRcis)
+            foreach (var rci in newRcis)
             {
-                newComponents.AddRange(CreateRciComponents(rci.RciID, "individual", rci.BuildingCode));
+                newComponents.AddRange(CreateRciComponents(document, rci.RciID, "individual", rci.BuildingCode));
             }
 
             db.RciComponent.AddRange(newComponents);
@@ -359,7 +371,7 @@ namespace Phoenix.Services
                 db.SaveChanges();
 
                 // Create Components
-                db.RciComponent.AddRange(CreateRciComponents(newRci.RciID, "individual", newRci.BuildingCode));
+                db.RciComponent.AddRange(CreateRciComponents(document, newRci.RciID, "individual", newRci.BuildingCode));
                 db.SaveChanges();
 
                 
@@ -402,9 +414,10 @@ namespace Phoenix.Services
 
             // Create components
             var newRciComponents = new List<RciComponent>();
-            foreach(var rci in newCommonAreaRcis)
+
+            foreach (var rci in newCommonAreaRcis)
             {
-                newRciComponents.AddRange(CreateRciComponents(rci.RciID, "common", rci.BuildingCode));
+                newRciComponents.AddRange(CreateRciComponents(document, rci.RciID, "common", rci.BuildingCode));
             }
 
             db.RciComponent.AddRange(newRciComponents);
@@ -449,7 +462,7 @@ namespace Phoenix.Services
                 db.SaveChanges();
 
                 // Create Components
-                db.RciComponent.AddRange(CreateRciComponents(commonAreaRci.RciID, "common", commonAreaRci.BuildingCode));
+                db.RciComponent.AddRange(CreateRciComponents(document, commonAreaRci.RciID, "common", commonAreaRci.BuildingCode));
                 db.SaveChanges();
             }
         }
