@@ -32,6 +32,12 @@
     }
     else if (Model.CheckinSigRes != null && Model.LifeAndConductSigRes == null)
     {
+        <p>You have signed and confirmed your entered damages.</p>
+        <div class="divAddOn">
+            <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.User" />
+            <input class="divAddOn-item" type="text" disabled value="@Model.CheckinSigRes.Value.ToString("yyyy-MM-dd")" />
+        </div>
+
         <p>I have read, understood and agree to comply with all of the terms and conditions established in the license agreement.</p>
         <p>Please sign with your Gordon username @ViewBag.User</p>
         <input type="text" id="lac-sig" />
@@ -45,13 +51,34 @@
         <p>@ViewBag.User, please sign with your Gordon username to confirm the entered damages.</p>
         <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
 
+        <p>You have signed the life and conduct statement.</p>
+        <div class="divAddOn">
+            <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.User" />
+            <input class="divAddOn-item" type="text" disabled value="@Model.LifeAndConductSigRes.Value.ToString("yyyy-MM-dd")" />
+        </div>
+
         <div class="distribute-evenly">
             <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
         </div>
     }
     else
     {
+        <p>You have signed and confirmed your entered damages.</p>
+        <div class="divAddOn">
+            <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.User" />
+            <input class="divAddOn-item" type="text" disabled value="@Model.CheckinSigRes.Value.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <p>You have signed the life and conduct statement.</p>
+        <div class="divAddOn">
+            <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.User" />
+            <input class="divAddOn-item" type="text" disabled value="@Model.LifeAndConductSigRes.Value.ToString("yyyy-MM-dd")" />
+        </div>
+
         <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
+        <div class="distribute-evenly">
+            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"Dashboard")'">Back to Dashboard</button>
+        </div>
     }
 
 </div>
