@@ -320,6 +320,7 @@ namespace Phoenix.Controllers
                     Image resizedImg = new Bitmap(origImg, imgSize);
 
                     rciInputService.ResizeImage(origImg, resizedImg, imgSize);
+                    rciInputService.ApplyExifData(resizedImg);
 
                     string imageName = "RciComponentId" + rciComponentId + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
 
