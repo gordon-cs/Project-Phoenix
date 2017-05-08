@@ -205,7 +205,7 @@ namespace Phoenix.Services
                 join component in db.RciComponent on rci.RciID equals component.RciID
                 join fine in db.Fine on component.RciComponentID equals fine.RciComponentID
                 join account in db.Account on fine.GordonID equals account.ID_NUM
-                where buildingCodes.Contains(rci.BuildingCode) && rci.SessionCode.Equals(currentSession)
+                where buildingCodes.Contains(rci.BuildingCode) && rci.IsCurrent.Value == true
                 && fine.FineAmount > 0 // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
                 // charge the resident for it e.g. Window blinds need to be replaced.
                 select new
@@ -214,7 +214,7 @@ namespace Phoenix.Services
                     BuildingCode = rci.BuildingCode,
                     FirstName = account.firstname,
                     LastName = account.lastname,
-                    Id = rci.GordonID,
+                    Id = fine.GordonID,
                     ComponentName = component.RciComponentName,
                     DetailedReason = fine.Reason,
                     FineAmount = fine.FineAmount,

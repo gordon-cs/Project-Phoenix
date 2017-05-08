@@ -49,7 +49,7 @@ namespace Phoenix.Controllers
             //  Redirect to the review page if this is already signed by the RD
             if(rci.CheckinSigRD != null)
             {
-                return RedirectToAction("RciReview");
+                return RedirectToAction("RciReview", new { id = id });
             }
 
             // This is how we access items set in the filter.
@@ -248,9 +248,9 @@ namespace Phoenix.Controllers
         /// <returns>Redirect to dashboard if signed or checked</returns>
         [RD]
         [HttpPost]
-        public ActionResult SaveSigRD(string rciSig, int id)
+        public ActionResult SaveSigRD(string rciSig, int id, bool isChecked)
         {
-            if (rciSig == null || rciSig.Trim() == "")
+            if ((rciSig == null || rciSig.Trim() == "") && !isChecked)
             {
                 return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }

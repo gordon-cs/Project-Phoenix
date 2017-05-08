@@ -20,6 +20,8 @@ namespace Phoenix.Models
         [StringLength(50)]
         public string lastname { get; set; }
 
+        [Key]
+        [Column(Order = 1)]
         [StringLength(50)]
         public string email { get; set; }
 
@@ -30,7 +32,7 @@ namespace Phoenix.Models
         public string account_type { get; set; }
 
         [Key]
-        [Column(Order = 1)]
+        [Column(Order = 2)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Private { get; set; }
     }

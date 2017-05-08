@@ -30,28 +30,23 @@
                 @foreach (var rci in Model)
                 {
                     <div class="divAddOn">
-                        <div class="divAddOn-field">
-                            <p>@rci.BuildingCode @rci.RoomNumber</p>
-                            <p>@rci.FirstName @rci.LastName</p>
-                        </div>
-                        <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
+                        <a  class="divAddOn-field rci-card-checkin" href="@Url.Action(actionName:"GotoRci", controllerName:"Dashboard", routeValues: new { rciID = rci.RciID })">
                             <div>
-                                <i class="material-icons">mode_edit</i>
+                                <p>@rci.BuildingCode @rci.RoomNumber</p>
+                                <p>@rci.FirstName @rci.LastName</p>
                             </div>
                         </a>
-                        <a class="divAddOn-item" href="@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = rci.RciID })">
-                            <div>
-                                @if (rci.CheckinSigRDGordonID == null)
-                                {
-                                    <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" />
-                                }
-                                else
-                                {
-                                    <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" checked="checked" />
-                                }
+                        <div class="divAddOn-item">
+                            @if (rci.CheckinSigRDGordonID == null)
+                            {
+                                <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" checked="checked" />
+                            }
 
-                            </div>
-                        </a>
+                        </div>
                     </div>
                 }
             </div>
