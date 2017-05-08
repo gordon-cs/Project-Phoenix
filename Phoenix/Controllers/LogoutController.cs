@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Phoenix.Filters;
+using System;
 using System.Web.Mvc;
 
 namespace Phoenix.Controllers
 {
+    [CustomAuthentication]
     public class LogoutController : Controller
     {
         // GET: Logout
