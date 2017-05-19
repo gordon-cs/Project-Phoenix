@@ -356,7 +356,7 @@ namespace Phoenix.Services
             data.Add(new KeyValuePair<string, string>("submitted_by", ADUsername));
             data.Add(new KeyValuePair<string, string>("ad_username", ADUsername));
             data.Add(new KeyValuePair<string, string>("building", fullBuildingName));
-            data.Add(new KeyValuePair<string, string>("location", "Room " + roomNumber));
+            data.Add(new KeyValuePair<string, string>("location", roomNumber));
             data.Add(new KeyValuePair<string, string>("strdescription", workRequest));
             data.Add(new KeyValuePair<string, string>("phone", phoneNumber));
             data.Add(new KeyValuePair<string, string>("fname", firstname));
