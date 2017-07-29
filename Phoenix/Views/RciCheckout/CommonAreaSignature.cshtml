@@ -38,13 +38,13 @@
                         {
                             <p>I, @person.FirstName @person.LastName, hereby agree to the preliminary charges that have been assessed by my AC. I understand that these charges are subject to change at the discretion of the Resident Director</p>
                             <div class="divAddOn">
-                                <input class="divAddOn-field" name="signature" type="text" placeholder="@person.FirstName @person.LastName" />
+                                <input data-selenium-id="signature-field" class="divAddOn-field" name="signature" type="text" placeholder="@person.FirstName @person.LastName" />
                             </div>
                         }
                     }
                 </div>
                 <div class="distribute-evenly">
-                    <input type="submit" value="OK" />
+                    <input data-selenium-id="checkout-signature-next-button" type="submit" value="OK" />
                 </div>
             }
         </div>

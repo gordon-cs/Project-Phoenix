@@ -197,7 +197,6 @@ namespace Phoenix.Services
             }
 
             var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
-
             if (RAentry != null)
             {
                 // Since CurrentRA has building codes, we need to a do a little kung fu to make sure cases like

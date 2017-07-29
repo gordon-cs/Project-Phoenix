@@ -12,10 +12,10 @@
          }
      }
 <div class="divAddOn-vert rci-card">
-    <a href="@Url.Action(actionName:"GotoRci", controllerName:"Dashboard", routeValues: new { rciID = rci.RciID })">
+    <a data-selenium-id="dashboard-page-rci-button" href="@Url.Action(actionName:"GotoRci", controllerName:"Dashboard", routeValues: new { rciID = rci.RciID })">
         <div class="divAddOn-vert-field search-field @rciCssClass">
-            <p class="emphasized">@rci.BuildingCode @rci.RoomNumber</p>
-            <p>@rci.FirstName @rci.LastName</p>
+            <p class="emphasized" selenium_id="dashboard-page-rci-building-and-room">@rci.BuildingCode @rci.RoomNumber</p>
+            <p data-selenium-id="dashboard-page-rci-student-name">@rci.FirstName @rci.LastName</p>
             @Html.Partial("~/Views/Dashboard/SignatureBlocks.cshtml", rci)
         </div>
     </a>

@@ -21,7 +21,7 @@
                 <div class="divAddOn">
                     @if (member.GordonID == ViewBag.GordonID)
                     {
-                        <input id="rci-sig" class="divAddOn-field" type="text" placeholder="@member.FirstName @member.LastName" />
+                        <input data-selenium-id="signature-field" id="rci-sig" class="divAddOn-field" type="text" placeholder="@member.FirstName @member.LastName" />
                     }
                     else
                     {

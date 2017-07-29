@@ -4,12 +4,10 @@ using System.Linq;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
-using System.Diagnostics;
 using System.Xml.Linq;
 using System.Data.SqlClient;
 using System.Web;
 using System.Web.Mvc;
-using Phoenix.Controllers;
 
 namespace Phoenix.Services
 {
