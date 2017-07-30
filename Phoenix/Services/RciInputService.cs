@@ -43,29 +43,6 @@ namespace Phoenix.Services
             return buildingRCIs.OrderBy(m => m.RoomNumber);
         }
 
-        /*public IEnumerable<SignAllRDViewModel> GetCheckedRcis(string gordonID)
-        {
-            var rcis =
-                from r in db.Rci
-                where r.CheckinSigRDGordonID == gordonID
-                where r.CheckinSigRD == null
-                join a in db.Account on r.GordonID equals a.ID_NUM into account
-                from temp in account.DefaultIfEmpty()
-                select new SignAllRDViewModel()
-                {
-                    RciID = r.RciID,
-                    GordonID = r.GordonID,
-                    FirstName = temp.firstname ?? "Common Area",
-                    LastName = temp.lastname ?? "Rci",
-                    BuildingCode = r.BuildingCode,
-                    RoomNumber = r.RoomNumber
-                };
-                
-            return rcis;
-        }*/
-
-       
-
         /// <summary>
         /// Get the rci for a common area by id
         /// </summary>
@@ -352,7 +329,6 @@ namespace Phoenix.Services
             // Now that we have the image rotated correctly, remove the exif information so that
             // other programs don't try to adjust the image again based on the exif data.
             image.RemovePropertyItem(274);
-
         } 
 
         public IEnumerable<string> GetCommonRooms(int id)
