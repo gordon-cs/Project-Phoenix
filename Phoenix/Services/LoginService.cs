@@ -4,6 +4,7 @@ using System.Linq;
 using System.DirectoryServices.AccountManagement;
 using Jose;
 using Phoenix.Models;
+using Phoenix.Exceptions;
 
 namespace Phoenix.Services
 {
@@ -42,7 +43,7 @@ namespace Phoenix.Services
         {
             if(username == null || ADContext == null)
             {
-                return null;
+                throw new ArgumentNullException("One of the passed in arguments (username, ADContext) is null.");
             }
 
             if (username.EndsWith("@gordon.edu"))
@@ -57,6 +58,11 @@ namespace Phoenix.Services
             PrincipalSearcher searcher = new PrincipalSearcher(userQueryFilter);
             UserPrincipal userEntry = (UserPrincipal)searcher.FindOne();
             searcher.Dispose();
+
+            if (userEntry == null)
+            {
+                throw new UserNotFoundException(username);
+            }
 
             return userEntry;
         }
@@ -82,7 +88,7 @@ namespace Phoenix.Services
             // Right now just hardcode to true for test purposes
             bool isAdmin = false;
 
-
+            // Witll throw an exception if the user has no role within the system. The exceptions is caught in the controller.
             var role = GetRole(id);
             var mostRecentRoomAssign = GetCurrentRoomAssign(id);
 
@@ -96,7 +102,6 @@ namespace Phoenix.Services
                 currentRoomNumber = mostRecentRoomAssign.ROOM_CDE.Trim();
                 currentRoomAssignDate = mostRecentRoomAssign.ASSIGN_DTE;
             }
-            
 
             List<string> kingdom = null;
             if(role == "RA" || role == "RD")
@@ -104,6 +109,7 @@ namespace Phoenix.Services
                 kingdom = GetKingdom(id); // The buildings for which you are responsible
             }
 
+            
             var account = db.Account.Where(m => m.ID_NUM == id).FirstOrDefault();
             var name = account.firstname + " " + account.lastname;
 
@@ -146,7 +152,7 @@ namespace Phoenix.Services
         {
             if(id == null)
             {
-                return null;
+                throw new ArgumentNullException("Can't get the role of a user with a null id number.");
             }
 
             var AdminEntry = db.Admin.Where(m => m.GordonID == id);
@@ -167,8 +173,14 @@ namespace Phoenix.Services
                 return "RA";
             }
 
-            return "Resident";
+            var ResidentEntry = db.Account.Where(m =>m.ID_NUM.ToString() == id &&  m.account_type.Equals("STUDENT")).FirstOrDefault();
+            if(ResidentEntry != null)
+            {
+                return "Resident";
+            }
 
+            // They are neither Admin, RD, RA or resident.
+            throw new InvalidUserException("User with ID " + id + " does not have a role within the system.");
         }
 
         /*
@@ -178,7 +190,7 @@ namespace Phoenix.Services
         {
             if (id == null)
             {
-                return null;
+                throw new ArgumentNullException("Can't get the kingdom of a user with a null id number.");
             }
 
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
@@ -221,7 +233,8 @@ namespace Phoenix.Services
             }
 
             // If you are not an RA or RD, you don't have a kingdom  :p
-            return null;
+            // We return an empty list to avoid null argument exceptions
+            return new List<string>();
 
         }
 
@@ -229,11 +242,18 @@ namespace Phoenix.Services
         public RoomAssign GetCurrentRoomAssign(string id)
         {
             var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
-            if(ResidentEntry != null)
+
+            if (ResidentEntry != null)
             {
                 return ResidentEntry;
             }
-            return null;
+            else
+            {
+                // It is ok to return null here because there are people without room assignments that should
+                // be able to log into the system e.g. RDs
+                return null;
+            }
+
         }
 
     }
