@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Phoenix.Filters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +13,9 @@ namespace Phoenix
     {
         protected void Application_Start()
         {
+            // Register global filter
+            GlobalFilters.Filters.Add(new ExceptionLogAttribute());
+
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
