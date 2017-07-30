@@ -23,15 +23,14 @@ namespace Phoenix.Services
             document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
 
-        /*
-         * Get a set of RCI's, depending on certain parameters, such as building, year, etc.
-         * This method is used in admin Find RCIs tool
-         * If no params are specified, returns all
-         * 
-         * @params: building - a building specified to get rci's for
-         *          year - a session specificed to get rci's for
-         * @returns: A collection of RCI View Models
-         */
+        /// <summary>
+        /// Get a set of RCI's, depending on certain parameters, such as building, year, etc.
+        /// This method is used in admin Find RCIs tool
+        /// If no params are specified, returns all
+        /// </summary>
+        /// <param name="building">a building specified to get rci's for</param>
+        /// <param name="year"> a session specificed to get rci's for</param>
+        /// <returns>A collection of RCI View Models</returns>
         public IEnumerable<HomeRciViewModel> GetRcis(string building = null, string year = null)
         {
             if (building != null)
@@ -62,11 +61,11 @@ namespace Phoenix.Services
             }
         }
 
-        /*
-         * Get the RCI for an individual resident
-         * @params: id - resident's Gordon id
-         * @return: A collection of RCI View Models (which should contain only 1)
-         */ 
+        ///<summary>
+        /// Get the RCI for an individual resident
+        ///</summary>
+        ///<param  name="id">resident's Gordon id </params> 
+        ///<returns>A collection of RCI View Models (which should contain only 1)</returns>
         public IEnumerable<HomeRciViewModel> GetRcisForResident(string id)
         {
             if(id == null)
@@ -95,13 +94,12 @@ namespace Phoenix.Services
             return RCIs;
         }
 
-        /*
-         * Display all RCI's for the corresponding building 
-         * @params: buildingCode - code(s) for the building(s) of the RA or RD's sphere of authority
-         */
+        ///<summary>
+        /// Display all RCI's for the corresponding building 
+        ///</summary>
+        ///<param name="buildingCode">code(s) for the building(s) of the RA or RD's sphere of authority</param>
         public IEnumerable<HomeRciViewModel> GetRcisForBuilding(List<string> buildingCode)
         {
-            // Not sure if this will end up with duplicates for the RA's own RCI
             var buildingRCIs =
                 from personalRCI in db.Rci
                 join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
@@ -126,11 +124,13 @@ namespace Phoenix.Services
         }
 
 
-        /*
-         * Create RCI Components that are associated with a single RCI, according to room type
-         * @params: rciId - the id of the RCI to associate with 
-         *          roomType - string to indicate type of room, either "common area" or "dorm room" currently
-         */ 
+        ///<summary>
+        /// Create RCI Components that are associated with a single RCI, according to room type
+        ///</summary>
+        ///<param name="document">Xml document containing room components</param>
+        ///<param name="rciId">the id of the RCI to associate with </param>
+        ///<param name="roomType">string to indicate type of room, either "common area" or "dorm room" currently</param>
+        ///<param name="buildingCode">building code for the rci we are about to create</param>
         public List<RciComponent> CreateRciComponents(XDocument document, int rciId, string roomType, string buildingCode)
         {
             List<RciComponent> created = new List<RciComponent>();
@@ -165,12 +165,12 @@ namespace Phoenix.Services
         }
 
 
-        /*
-         * Get the current common area RCIs for an apartment
-         * @params: apartmentNumber - the apartment's number
-         *          building - the building where the apartment is located
-         * @return: the common area, if any, that was found in the db
-         */ 
+        ///<summary>
+        /// Get the current common area RCIs for an apartment
+        ///</summary>
+        ///<param name="apartmentNumber">the apartment's number</param>
+        ///<param name="building">the building where the apartment is located</param>
+        ///<returns>the common area, if any, that was found in the db</returns>
         public IEnumerable<HomeRciViewModel> GetCommonAreaRci(string currentRoom, string building)
         {
             var apartmentNumber = currentRoom.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
@@ -198,27 +198,23 @@ namespace Phoenix.Services
 
         }
 
-        /*
-         * Generate a csv file of fines for rci's from current, according to buildings of RD
-         * Right now this is just generating for all buildings. We could add specificity so that RD can choose 
-         * which building to pull from.
-         * CSV format: RoomNumber, BuildingCode, Name, id, DetailedReason, FineAmount 
-         * 
-         */
-         public string GenerateFinesSpreadsheet(List<string> buildingCodes)
+         /// <summary>
+         /// Generate a csv file of fines for rci's from current, according to buildings of RD
+         /// </summary>
+         /// <param name="buildingCodes">The building for which to generate a fines spreadsheet</param>
+        public string GenerateFinesSpreadsheet(List<string> buildingCodes)
         {
             var currentSession = GetCurrentSession();
             var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Charge Amount,Behavioral Fine\n";
 
-            // ***** This does not handle common areas! *****
-            // We should talk to MC about how he wants common area fine assignment to be handled in the system
             var fineQueries =
                 from rci in db.Rci
                 join component in db.RciComponent on rci.RciID equals component.RciID
                 join fine in db.Fine on component.RciComponentID equals fine.RciComponentID
                 join account in db.Account on fine.GordonID equals account.ID_NUM
                 where buildingCodes.Contains(rci.BuildingCode) && rci.IsCurrent.Value == true
-                && fine.FineAmount > 0 // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
+                && fine.FineAmount > 0 
+                // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
                 // charge the resident for it e.g. Window blinds need to be replaced.
                 select new
                 {
@@ -247,10 +243,10 @@ namespace Phoenix.Services
             return csvString;
         } 
 
-        /*
-         * Query the db for the current session, which will be the session with the most recent SESS_BEGN_DTE
-         * @return: string that contains the code for the current session
-         */
+        ///<summary>
+        /// Query the db for the current session, which will be the session with the most recent SESS_BEGN_DTE
+        ///</summary>
+        ///<returns>string that contains the code for the current session</returns>
          public string GetCurrentSession()
         {
             var today = DateTime.Now;
@@ -535,7 +531,7 @@ namespace Phoenix.Services
         }
 
         /// <summary>
-        /// Create a route dictionary that will tell us where to go, given the rci state and the role of the user.
+        /// Create a route dictionary that will tell us where to go given the rci state and the role of the user.
         /// </summary>
         public Dictionary<string, Dictionary<string, ActionResult>> GetRciRouteDictionary(int rciID)
         {
