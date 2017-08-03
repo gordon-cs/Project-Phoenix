@@ -27,7 +27,7 @@ namespace Phoenix.Tests.Tests
         {
             var loginService = new LoginService();
 
-            var dorms = loginService.GetKingdom(Credentials.RA_ID_NUMBER);
+            var dorms = loginService.GetKingdom(Credentials.DORM_RA_ID_NUMBER);
             // Choose a random building code
             var dorm = dorms[Methods.GetRandomInteger(0, dorms.Count)];
             // Choose a random room number
@@ -53,8 +53,8 @@ namespace Phoenix.Tests.Tests
             wd.Navigate().GoToUrl(Values.START_URL);
 
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.RA_USERNAME);
-            login.EnterUserPassword(Credentials.RA_PASSWORD);
+            login.EnterUsername(Credentials.DORM_RA_USERNAME);
+            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
             DashboardPage dashboard = login.SubmitCredentials();
             RciCheckinPage rci = dashboard.SelectRci(rciID).asRciCheckinPage();
 
@@ -91,7 +91,7 @@ namespace Phoenix.Tests.Tests
         {
             var loginService = new LoginService();
 
-            var dorms = loginService.GetKingdom(Credentials.RD_ID_NUMBER);
+            var dorms = loginService.GetKingdom(Credentials.DORM_RD_ID_NUMBER);
             // Choose a random building code
             var dorm = dorms[Methods.GetRandomInteger(0, dorms.Count)];
             // Choose a random room number
@@ -117,8 +117,8 @@ namespace Phoenix.Tests.Tests
             wd.Navigate().GoToUrl(Values.START_URL);
 
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.RD_USERNAME);
-            login.EnterUserPassword(Credentials.RD_PASSWORD);
+            login.EnterUsername(Credentials.DORM_RD_USERNAME);
+            login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
             DashboardPage dashboard = login.SubmitCredentials();
             RciCheckinPage rci = dashboard.SelectRci(rciID).asRciCheckinPage();
 
@@ -155,7 +155,7 @@ namespace Phoenix.Tests.Tests
         {
             var loginService = new LoginService();
 
-            var dorms = loginService.GetKingdom(Credentials.RD_ID_NUMBER);
+            var dorms = loginService.GetKingdom(Credentials.DORM_RD_ID_NUMBER);
             // Choose a random building code
             var dorm = dorms[Methods.GetRandomInteger(0, dorms.Count)];
             // Choose a random room number
@@ -183,8 +183,8 @@ namespace Phoenix.Tests.Tests
             wd.Navigate().GoToUrl(Values.START_URL);
 
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.RD_USERNAME);
-            login.EnterUserPassword(Credentials.RD_PASSWORD);
+            login.EnterUsername(Credentials.DORM_RD_USERNAME);
+            login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
             DashboardPage dashboard = login.SubmitCredentials();
             RciCheckinPage rci = dashboard.SelectRci(rciID).asRciCheckinPage();
 
@@ -221,18 +221,18 @@ namespace Phoenix.Tests.Tests
         [TestMethod]
         public void RciSignature_Test_4()
         {
-            var rci = db.Rci.Where(r => r.GordonID == Credentials.RA_ID_NUMBER && r.IsCurrent == true).First();
+            var rci = db.Rci.Where(r => r.GordonID == Credentials.DORM_RA_ID_NUMBER && r.IsCurrent == true).First();
 
 
             wd.Navigate().GoToUrl(Values.START_URL);
 
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.RA_USERNAME);
-            login.EnterUserPassword(Credentials.RA_PASSWORD);
+            login.EnterUsername(Credentials.DORM_RA_USERNAME);
+            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
             DashboardPage dashboard = login.SubmitCredentials();
             RciCheckinPage personalRci = dashboard.SelectRci(rci.RciID).asRciCheckinPage();
 
-            var account = db.Account.Where(a => a.ID_NUM == Credentials.RA_ID_NUMBER).First();
+            var account = db.Account.Where(a => a.ID_NUM == Credentials.DORM_RA_ID_NUMBER).First();
             var signature = string.Format("{0} {1}", account.firstname, account.lastname);
 
             dashboard = personalRci.HitNextToSignatures().Sign(signature).SubmitSignature();

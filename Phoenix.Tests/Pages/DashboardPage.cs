@@ -95,9 +95,11 @@ namespace Phoenix.Tests.Pages
         /// <returns></returns>
         public GenericRciPage SelectFirstRciWithName(string name)
         {
+            name = name.Replace(" ", "").ToLower();
+
             var rciList = webDriver.FindElements(rciCards);
 
-            var rci = rciList.Where(m => m.FindElement(rciCardStudentName).Text.Contains(name)).FirstOrDefault();
+            var rci = rciList.Where(m => m.FindElement(rciCardStudentName).Text.ToLower().Contains(name)).FirstOrDefault();
 
             if (rci == null)
             {
@@ -237,6 +239,30 @@ namespace Phoenix.Tests.Pages
             if (rciList.Count() < 1)
             {
                 throw new NotFoundException("There was no rci card with the given href. Href: " + expectedHrefAttribute);
+            }
+            return new RciCard(rciList.First());
+        }
+
+        /// <summary>
+        /// Get an RciCard object that represents the rci card on the dashboard with the given name
+        /// </summary>
+        /// <param name="name">The name of the owner of the rci we are looking for</param>
+        /// <returns>An RciCard object.</returns>
+        /// <exception cref="NotFoundException">If an rci card was not found with the given id </exception>
+        /// <exception cref="IllegalStateException">If for some reason there were multiple rcis with the same id</exception>
+        public RciCard GetRciCardWithName(string name)
+        {
+            name = name.Replace(" ", "").ToLower();
+
+            var rciList = webDriver.FindElements(rciCards).Where(m => m.FindElement(rciCardStudentName).Text.ToLower().Contains(name));
+
+            if (rciList.Count() > 1)
+            {
+                throw new IllegalStateException("There were multiple rci cards with the same name on them.");
+            }
+            if (rciList.Count() < 1)
+            {
+                throw new NotFoundException("There was no rci card with the given name. Name: " + name);
             }
             return new RciCard(rciList.First());
         }
