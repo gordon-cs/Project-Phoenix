@@ -112,8 +112,9 @@
     <Compile Include="Pages\GenericRciPage.cs" />
     <Compile Include="Pages\LoginPage.cs" />
     <Compile Include="Pages\RciCheckoutPage.cs" />
+    <Compile Include="Tests\CheckoutFlowTests.cs" />
     <Compile Include="Tests\RciGenerationTests.cs" />
-    <Compile Include="Tests\RciStateTests.cs" />
+    <Compile Include="Tests\CheckinFlowTests.cs" />
     <Compile Include="Tests\RciSignatureTests.cs" />
     <Compile Include="TestUtilities\Credentials.cs" />
     <Compile Include="TestUtilities\CustomExceptions.cs" />

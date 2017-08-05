@@ -8,6 +8,8 @@ namespace Phoenix.Tests.Pages
         protected IWebDriver webDriver;
 
         private static By rciComponents = By.ClassName("component");
+        private static By homeButtonContainer = By.ClassName("logo-box");
+
         protected static By nextButton = By.Id("next-button");
 
         public GenericRciPage(IWebDriver driver)
@@ -61,6 +63,25 @@ namespace Phoenix.Tests.Pages
         public int ComponentCount()
         {
             return webDriver.FindElements(rciComponents).Count;
+        }
+
+        /// <summary>
+        /// Click on the back button/gordon logo to go back to the dashboard.
+        /// </summary>
+        /// <returns>A DashboardPage object</returns>
+        /// <exception cref="NotFoundException">If the back button or gordon logo were not found.</exception>
+        public DashboardPage GoHomeToDashboard()
+        {
+            try
+            {
+                webDriver.FindElement(homeButtonContainer).FindElement(By.TagName("a")).Click();
+            }
+            catch (NoSuchElementException e)
+            {
+                throw new IllegalFunctionCall("Could not locate the gordon logo or the back button.", e);
+            }
+
+            return new DashboardPage(webDriver);
         }
     } 
 }

@@ -61,5 +61,19 @@ namespace Phoenix.Tests.Pages
 
             return new DashboardPage(webDriver) ;
         }
+
+        /// <summary>
+        /// If you have no need for going through the discreet steps; enter username, password then submit,
+        /// You can use this method to login.
+        /// </summary>
+        /// <param name="username">Login username</param>
+        /// <param name="password">Login password</param>
+        /// <returns>A DashboardPage object</returns>
+        public DashboardPage LoginAs(string username, string password)
+        {
+            EnterUsername(username);
+            EnterUserPassword(password);
+            return SubmitCredentials();
+        }
     }
 }

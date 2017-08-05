@@ -36,10 +36,9 @@ namespace Phoenix.Tests.Tests
 
             // Login
             wd.Navigate().GoToUrl(Values.START_URL);
-            var loginPage = new LoginPage(wd);
-            loginPage.EnterUsername(Credentials.DORM_RES_USERNAME);
-            loginPage.EnterUserPassword(Credentials.DORM_RES_PASSWORD);
-            DashboardPage dashboard = loginPage.SubmitCredentials();
+            var dashboard = new LoginPage(wd).LoginAs(
+                                                Credentials.DORM_RES_USERNAME, 
+                                                Credentials.DORM_RES_PASSWORD);
 
             // Assert that the rci count is 1
             Assert.IsTrue(dashboard.RciCount().Equals(1), "More than one rci was present on first login as a dorm resident.");
@@ -75,19 +74,17 @@ namespace Phoenix.Tests.Tests
             // Login
             wd.Navigate().GoToUrl(Values.START_URL);
             var loginPage = new LoginPage(wd);
-            loginPage.EnterUsername(Credentials.DORM_RES_USERNAME);
-            loginPage.EnterUserPassword(Credentials.DORM_RES_PASSWORD);
-            DashboardPage dashboard = loginPage.SubmitCredentials();
+            var dashboard = loginPage.LoginAs(Credentials.DORM_RES_USERNAME,
+                                                                    Credentials.DORM_RES_PASSWORD);
 
             var count1 = dashboard.RciCount();
 
             // Logout
-            loginPage = dashboard.Logout();
+            dashboard.Logout();
 
             // Login a second time
-            loginPage.EnterUsername(Credentials.DORM_RES_USERNAME);
-            loginPage.EnterUserPassword(Credentials.DORM_RES_PASSWORD);
-            dashboard = loginPage.SubmitCredentials();
+            loginPage.LoginAs(Credentials.DORM_RES_USERNAME,
+                                         Credentials.DORM_RES_PASSWORD);
 
             var count2 = dashboard.RciCount();
 
@@ -107,6 +104,7 @@ namespace Phoenix.Tests.Tests
         [TestMethod]
         public void RciGeneration_RA_LogIn_FirstTime()
         {
+            // Remove old rcis
             var loginService = new LoginService();
             var dorms = loginService.GetKingdom(Credentials.DORM_RA_ID_NUMBER);
 
@@ -114,15 +112,10 @@ namespace Phoenix.Tests.Tests
             db.Rci.RemoveRange(rcis);
             db.SaveChanges();
 
-            // Verify that we have deleted all rcis for this building.
-            Assert.AreEqual(db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count(), 0);
-
             wd.Navigate().GoToUrl(Values.START_URL);
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RA_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
-            // Submitting the credentials leads us to the dashboard.
-            DashboardPage dashboard = login.SubmitCredentials();
+            var dashboard = login.LoginAs(Credentials.DORM_RA_USERNAME,
+                                                            Credentials.DORM_RA_PASSWORD);
 
             // Verify that the number of rcis displayed matches the number of rcis in the database for the specified dorms.
             Assert.AreEqual(dashboard.RciCount(), db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count());
@@ -143,18 +136,16 @@ namespace Phoenix.Tests.Tests
 
             // Login a first time.
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RA_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
-            DashboardPage dashboard = login.SubmitCredentials();
+            var dashboard = login.LoginAs(Credentials.DORM_RA_USERNAME,
+                                                            Credentials.DORM_RA_PASSWORD);
             var rciCount1 = dashboard.RciCount();
 
             // Logout
-            login = dashboard.Logout();
+            dashboard.Logout();
 
             // Login a second time.
-            login.EnterUsername(Credentials.DORM_RA_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
-            dashboard = login.SubmitCredentials();
+            login.LoginAs(Credentials.DORM_RA_USERNAME,
+                                         Credentials.DORM_RA_PASSWORD);
             var rciCount2 = dashboard.RciCount();
 
             // Assert
@@ -186,10 +177,9 @@ namespace Phoenix.Tests.Tests
 
             wd.Navigate().GoToUrl(Values.START_URL);
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RD_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
-            DashboardPage dashboard = login.SubmitCredentials();
-
+            var dashboard = login.LoginAs(Credentials.DORM_RD_USERNAME, 
+                                                            Credentials.DORM_RD_PASSWORD);
+           
             Assert.AreEqual(dashboard.RciCount(), db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count());
 
             wd.Close();
@@ -208,18 +198,16 @@ namespace Phoenix.Tests.Tests
 
             // Login a first time.
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RD_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
-            DashboardPage dashboard = login.SubmitCredentials();
+            var dashboard = login.LoginAs(Credentials.DORM_RD_USERNAME,
+                                                            Credentials.DORM_RD_PASSWORD);
             var rciCount1 = dashboard.RciCount();
 
             // Logout
-            login = dashboard.Logout();
+            dashboard.Logout();
 
             // Login a second time.
-            login.EnterUsername(Credentials.DORM_RD_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
-            dashboard = login.SubmitCredentials();
+            login.LoginAs(Credentials.DORM_RD_USERNAME,
+                                    Credentials.DORM_RD_PASSWORD);
             var rciCount2 = dashboard.RciCount();
 
             // Assert

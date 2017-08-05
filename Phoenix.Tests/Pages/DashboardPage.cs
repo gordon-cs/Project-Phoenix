@@ -222,6 +222,22 @@ namespace Phoenix.Tests.Pages
         }
 
         /// <summary>
+        /// Get a list of all rci cards on the dashboard
+        /// </summary>
+        /// <returns>A list of RciCard objects</returns>
+        public IEnumerable<RciCard> GetAllRciCards()
+        {
+            var webElementList = webDriver.FindElements(rciCards);
+            var rciCardList = Enumerable.Empty<RciCard>();
+
+            foreach(var element in webElementList)
+            {
+                rciCardList.Concat(new[] { new RciCard(element) });
+            }
+
+            return rciCardList;
+        }
+        /// <summary>
         /// Get an RciCard object that represents the rci card on the dashboard
         /// </summary>
         /// <param name="rciID">The id of the rci we are looking for</param>

@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Phoenix.Tests.Pages;
 using System;
 
 namespace Phoenix.Tests.TestUtilities
@@ -38,8 +39,5 @@ namespace Phoenix.Tests.TestUtilities
             Random rnd = new Random();
             return rnd.Next(min, max);
         }
-
-
-
     }
 }

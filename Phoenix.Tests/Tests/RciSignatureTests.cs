@@ -53,15 +53,17 @@ namespace Phoenix.Tests.Tests
             wd.Navigate().GoToUrl(Values.START_URL);
 
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RA_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
-            DashboardPage dashboard = login.SubmitCredentials();
+            var dashboard = login.LoginAs(Credentials.DORM_RA_USERNAME, 
+                                                            Credentials.DORM_RA_PASSWORD);
+           
             RciCheckinPage rci = dashboard.SelectRci(rciID).asRciCheckinPage();
 
             bool canSign = true;
             try
             {
-                rci.HitNextToSignatures().Sign("").SubmitSignature();
+                rci.HitNextToSignatures()
+                    .Sign("")
+                    .SubmitSignature();
             }
             catch (IllegalStateException e)
             {
@@ -117,15 +119,17 @@ namespace Phoenix.Tests.Tests
             wd.Navigate().GoToUrl(Values.START_URL);
 
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RD_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
-            DashboardPage dashboard = login.SubmitCredentials();
+            var dashboard = login.LoginAs(Credentials.DORM_RD_USERNAME,
+                                                            Credentials.DORM_RD_PASSWORD);
+
             RciCheckinPage rci = dashboard.SelectRci(rciID).asRciCheckinPage();
 
             bool canSign = true;
             try
             {
-                rci.HitNextToSignatures().Sign("").SubmitSignature();
+                rci.HitNextToSignatures()
+                    .Sign("")
+                    .SubmitSignature();
             }
             catch (IllegalStateException e)
             {
@@ -181,17 +185,18 @@ namespace Phoenix.Tests.Tests
             var rciID = newRci.RciID;
 
             wd.Navigate().GoToUrl(Values.START_URL);
-
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RD_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
-            DashboardPage dashboard = login.SubmitCredentials();
+            var dashboard = login.LoginAs(Credentials.DORM_RD_USERNAME,
+                                                            Credentials.DORM_RD_PASSWORD);
+         
             RciCheckinPage rci = dashboard.SelectRci(rciID).asRciCheckinPage();
 
             bool canSign = true;
             try
             {
-                rci.HitNextToSignatures().Sign("").SubmitSignature();
+                rci.HitNextToSignatures()
+                    .Sign("").
+                    SubmitSignature();
             }
             catch (IllegalStateException e)
             {
@@ -227,15 +232,17 @@ namespace Phoenix.Tests.Tests
             wd.Navigate().GoToUrl(Values.START_URL);
 
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RA_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
-            DashboardPage dashboard = login.SubmitCredentials();
+            var dashboard = login.LoginAs(Credentials.DORM_RA_USERNAME,
+                                                            Credentials.DORM_RA_PASSWORD);
+          
             RciCheckinPage personalRci = dashboard.SelectRci(rci.RciID).asRciCheckinPage();
 
             var account = db.Account.Where(a => a.ID_NUM == Credentials.DORM_RA_ID_NUMBER).First();
             var signature = string.Format("{0} {1}", account.firstname, account.lastname);
 
-            dashboard = personalRci.HitNextToSignatures().Sign(signature).SubmitSignature();
+            personalRci.HitNextToSignatures()
+                .Sign(signature)
+                .SubmitSignature();
 
             var rciCard = dashboard.GetRciCard(rci.RciID);
 
