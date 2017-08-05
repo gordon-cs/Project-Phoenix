@@ -237,11 +237,10 @@ namespace Phoenix.Tests.Tests
           
             RciCheckinPage personalRci = dashboard.SelectRci(rci.RciID).asRciCheckinPage();
 
-            var account = db.Account.Where(a => a.ID_NUM == Credentials.DORM_RA_ID_NUMBER).First();
-            var signature = string.Format("{0} {1}", account.firstname, account.lastname);
+            var ra_name = Methods.GetFullName(Credentials.DORM_RA_ID_NUMBER);
 
             personalRci.HitNextToSignatures()
-                .Sign(signature)
+                .Sign(ra_name)
                 .SubmitSignature();
 
             var rciCard = dashboard.GetRciCard(rci.RciID);

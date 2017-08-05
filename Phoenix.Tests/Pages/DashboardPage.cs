@@ -95,7 +95,7 @@ namespace Phoenix.Tests.Pages
         /// <returns></returns>
         public GenericRciPage SelectFirstRciWithName(string name)
         {
-            name = name.Replace(" ", "").ToLower();
+            name = name.ToLower().Trim();
 
             var rciList = webDriver.FindElements(rciCards);
 
@@ -112,7 +112,7 @@ namespace Phoenix.Tests.Pages
         }
 
         /// <summary>
-        /// Select a random rci that is in the checkin state.
+        /// Select and click on a random rci that is in the checkin state.
         /// </summary>
         /// <param name="signedByResident">The rci is signed by the resident</param>
         /// <param name="signedByRA">The rci is signed by the RA</param>
@@ -199,7 +199,7 @@ namespace Phoenix.Tests.Pages
         }
 
         /// <summary>
-        /// Select the rci with the given ID
+        /// Select and click on the rci with the given ID
         /// </summary>
         /// <param name="rciID">The rci ID</param>
         /// <returns>A GeneralRciPage object. Throws </returns>
@@ -222,6 +222,36 @@ namespace Phoenix.Tests.Pages
         }
 
         /// <summary>
+        /// Select and click on the common area rci that matches the given parameters.
+        /// </summary>
+        /// <param name="buildingCode">The building code</param>
+        /// <param name="apartmentNumber">The room number</param>
+        /// <returns>A GeneralRciPage object</returns>
+        public GenericRciPage SelectCommonAreaRci(string buildingCode, string apartmentNumber)
+        {
+            string building = buildingCode.ToLower().Trim();
+            string room = apartmentNumber.ToLower().Trim();
+            string locationString = building + " " +  room;
+
+            var rciList = webDriver.FindElements(rciCards).Where(m => m.FindElement(rciCardBuildingAndRoom).Text.ToLower().Equals(locationString));
+
+            // There should be only one entry
+            if (rciList.Count() > 1)
+            {
+                throw new IllegalStateException("There was more than one common area rci for room " + building + " " + room);
+            }
+            if (rciList.Count() < 1)
+            {
+                throw new NotFoundException("Could not find a common area rci for room " + building + " " + room);
+            }
+
+            var commonAreaRci = rciList.First();
+            commonAreaRci.FindElement(By.TagName("a")).Click();
+
+            return new GenericRciPage(webDriver);
+        }
+
+        /// <summary>
         /// Get a list of all rci cards on the dashboard
         /// </summary>
         /// <returns>A list of RciCard objects</returns>
@@ -232,7 +262,7 @@ namespace Phoenix.Tests.Pages
 
             foreach(var element in webElementList)
             {
-                rciCardList.Concat(new[] { new RciCard(element) });
+                rciCardList.Concat(new[] { new RciCard(element, webDriver) });
             }
 
             return rciCardList;
@@ -256,7 +286,7 @@ namespace Phoenix.Tests.Pages
             {
                 throw new NotFoundException("There was no rci card with the given href. Href: " + expectedHrefAttribute);
             }
-            return new RciCard(rciList.First());
+            return new RciCard(rciList.First(), webDriver);
         }
 
         /// <summary>
@@ -268,7 +298,7 @@ namespace Phoenix.Tests.Pages
         /// <exception cref="IllegalStateException">If for some reason there were multiple rcis with the same id</exception>
         public RciCard GetRciCardWithName(string name)
         {
-            name = name.Replace(" ", "").ToLower();
+            name = name.ToLower().Trim();
 
             var rciList = webDriver.FindElements(rciCards).Where(m => m.FindElement(rciCardStudentName).Text.ToLower().Contains(name));
 
@@ -280,7 +310,7 @@ namespace Phoenix.Tests.Pages
             {
                 throw new NotFoundException("There was no rci card with the given name. Name: " + name);
             }
-            return new RciCard(rciList.First());
+            return new RciCard(rciList.First(), webDriver);
         }
 
         /// <summary>

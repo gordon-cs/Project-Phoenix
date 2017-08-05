@@ -44,11 +44,9 @@ namespace Phoenix.Tests.Tests
             Assert.IsTrue(dashboard.RciCount().Equals(1), "More than one rci was present on first login as a dorm resident.");
 
             // Assert that the correct rci is displayed.
-            var acct = db.Account.Where(m => m.ID_NUM.Equals(Credentials.DORM_RES_ID_NUMBER)).First();
-            var firstname = acct.firstname;
-            var lastname = acct.lastname;
+            var resident_name = Methods.GetFullName(Credentials.DORM_RES_ID_NUMBER);
 
-            var rciCard = dashboard.GetRciCardWithName(firstname + " " + lastname);
+            var rciCard = dashboard.GetRciCardWithName(resident_name);
 
             wd.Close();
         }

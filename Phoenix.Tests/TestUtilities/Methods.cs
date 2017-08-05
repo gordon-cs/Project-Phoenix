@@ -1,7 +1,9 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Phoenix.Models;
 using Phoenix.Tests.Pages;
 using System;
+using System.Linq;
 
 namespace Phoenix.Tests.TestUtilities
 {
@@ -38,6 +40,35 @@ namespace Phoenix.Tests.TestUtilities
         {
             Random rnd = new Random();
             return rnd.Next(min, max);
+        }
+
+        /// <summary>
+        /// Helper method to get the name of a person given their ID number
+        /// The returned name is formated as FIRSTNAME LASTNAME
+        /// </summary>
+        /// <param name="id">The gordon id of the person we are trying to find.</param>
+        /// <returns></returns>
+        public static string GetFullName(string id)
+        {
+            string fullname;
+
+            using (var db = new RCIContext())
+            {
+                Account acct;
+                try
+                {
+                    acct = db.Account.Where(m => m.ID_NUM.Equals(id)).First();
+                }
+                catch(InvalidOperationException e)
+                {
+                    // Gets thrown if the sequence is empty
+                    throw new NotFoundException("Could not find the account with id " + id, e);
+                }
+
+                fullname = string.Format("{0} {1}", acct.firstname, acct.lastname);
+                fullname = fullname.Trim();
+            }
+            return fullname;
         }
     }
 }

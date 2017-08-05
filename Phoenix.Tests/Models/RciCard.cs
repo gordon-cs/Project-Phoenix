@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using Phoenix.Tests.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,17 @@ namespace Phoenix.Tests.Models
     public class RciCard
     {
         private IWebElement element;
+        private IWebDriver webDriver;
         private string rciCheckinClass = "rci-card-checkin";
         private string rciCheckoutClass = "rci-card-checkout";
 
         private static By rciLink = By.CssSelector("[data-selenium-id='dashboard-page-rci-button']");
         private static By rciSignatureBlocks = By.CssSelector("[data-selenium-id='dashboard-page-signature-blocks']");
 
-        public RciCard(IWebElement e)
+        public RciCard(IWebElement e, IWebDriver wd)
         {
             element = e;
+            webDriver = wd;
         }
 
         public bool isCheckinRci()
@@ -49,6 +52,13 @@ namespace Phoenix.Tests.Models
         public bool isSignedByRD()
         {
             return element.FindElement(rciSignatureBlocks).Text.Contains("RD");
+        }
+
+        public GenericRciPage Click()
+        {
+            element.FindElement(rciLink).Click();
+
+            return new GenericRciPage(webDriver);
         }
     }
 }

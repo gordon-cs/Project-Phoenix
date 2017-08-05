@@ -43,20 +43,14 @@ namespace Phoenix.Tests.Tests
             wd.Navigate().GoToUrl(Values.START_URL);
             // Resident logs in
             LoginPage login = new LoginPage(wd);
-            login.EnterUsername(Credentials.DORM_RES_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RES_PASSWORD);
-            DashboardPage dashboard = login.SubmitCredentials();
-
+            var dashboard = login.LoginAs(Credentials.DORM_RES_USERNAME, Credentials.DORM_RES_PASSWORD);
             dashboard.Logout();
 
             // RA logs in
-            login.EnterUsername(Credentials.DORM_RA_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
-            // Submitting the credentials leads us to the dashboard.
-            login.SubmitCredentials();
+            login.LoginAs(Credentials.DORM_RA_USERNAME, Credentials.DORM_RA_PASSWORD);
 
-            var res_acct = db.Account.Where(m => m.ID_NUM.Equals(Credentials.DORM_RES_ID_NUMBER)).First();
-            var resident_name = res_acct.firstname + " " + res_acct.lastname;
+            var resident_name = Methods.GetFullName(Credentials.DORM_RES_ID_NUMBER);
+
             var rciCard = dashboard.GetRciCardWithName(resident_name);
 
             // Assert
@@ -67,17 +61,16 @@ namespace Phoenix.Tests.Tests
 
             // Login again as resident.
             dashboard.Logout();
-            login.EnterUsername(Credentials.DORM_RES_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RES_PASSWORD);
-            login.SubmitCredentials();
+            login.LoginAs(Credentials.DORM_RES_USERNAME, Credentials.DORM_RES_PASSWORD);
 
             GenericRciPage rci = dashboard.SelectFirstRciWithName(resident_name);
-            rci.asRciCheckinPage().HitNextToSignatures().Sign(resident_name).SubmitSignature();
-
+            rci.asRciCheckinPage()
+                .HitNextToSignatures()
+                .Sign(resident_name)
+                .SubmitSignature();
             dashboard.Logout();
-            login.EnterUsername(Credentials.DORM_RA_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
-            login.SubmitCredentials();
+
+            login.LoginAs(Credentials.DORM_RA_USERNAME, Credentials.DORM_RA_PASSWORD);
 
             rciCard = dashboard.GetRciCardWithName(resident_name);
 
@@ -88,9 +81,11 @@ namespace Phoenix.Tests.Tests
 
             // RA signs
             var checkinRci = dashboard.SelectFirstRciWithName(resident_name).asRciCheckinPage();
-            var user = db.Account.Where(m => m.ID_NUM.Equals(Credentials.DORM_RA_ID_NUMBER)).First();
-            var userSignature = string.Format("{0} {1}", user.firstname, user.lastname);
-            checkinRci.HitNextToSignatures().Sign(userSignature).SubmitSignature();
+
+            // The fullname is also the signature
+            var ra_name = Methods.GetFullName(Credentials.DORM_RA_ID_NUMBER);
+
+            checkinRci.HitNextToSignatures().Sign(ra_name).SubmitSignature();
 
             rciCard = dashboard.GetRciCardWithName(resident_name);
 
@@ -101,16 +96,16 @@ namespace Phoenix.Tests.Tests
 
             //RD logs in
             dashboard.Logout();
-            login.EnterUsername(Credentials.DORM_RD_USERNAME);
-            login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
-            login.SubmitCredentials();
 
+            login.LoginAs(Credentials.DORM_RD_USERNAME, Credentials.DORM_RD_PASSWORD);
+           
             checkinRci = dashboard.SelectFirstRciWithName(resident_name).asRciCheckinPage();
 
             // RD signs
-            user = db.Account.Where(m => m.ID_NUM.Equals(Credentials.DORM_RD_ID_NUMBER)).First();
-            userSignature = string.Format("{0} {1}", user.firstname, user.lastname);
-            checkinRci.HitNextToSignatures().Sign(userSignature).SubmitSignature();
+            var rd_name = Methods.GetFullName(Credentials.DORM_RD_ID_NUMBER);
+            checkinRci.HitNextToSignatures()
+                .Sign(rd_name)
+                .SubmitSignature();
 
             rciCard = dashboard.GetRciCardWithName(resident_name);
 
@@ -164,9 +159,18 @@ namespace Phoenix.Tests.Tests
                                                                     && m.BuildingCode.Equals(buildingCode)
                                                                     && m.RoomNumber.Equals(apartmentNumber)));
             }
+            // Clear old common area signatures
+            var oldSignatures  = db.CommonAreaRciSignature.Where(m => m.GordonID.Equals(Credentials.APT_RES_1_ID_NUMBER)
+                                                            || m.GordonID.Equals(Credentials.APT_RES_2_ID_NUMBER)
+                                                            || m.GordonID.Equals(Credentials.APT_RES_3_ID_NUMBER)
+                                                            || m.GordonID.Equals(Credentials.APT_RES_4_ID_NUMBER));
+
             db.Rci.RemoveRange(oldRcis);
+            db.CommonAreaRciSignature.RemoveRange(oldSignatures);
             db.SaveChanges();
 
+            // Create a dictionary with important values for each resident.
+            // This lets us use a for loop when we want to do the same action for each resident.
             var residentDictionary = new Dictionary<string, Dictionary<string,string>>();
             residentDictionary.Add(Credentials.APT_RES_1_USERNAME, new Dictionary<string, string>
             {
@@ -183,11 +187,11 @@ namespace Phoenix.Tests.Tests
                 {"password", Credentials.APT_RES_3_PASSWORD },
                 { "id", Credentials.APT_RES_3_ID_NUMBER}
             });
-            residentDictionary.Add(Credentials.APT_RES_4_USERNAME, new Dictionary<string, string>
-            {
-                {"password", Credentials.APT_RES_4_PASSWORD },
-                { "id", Credentials.APT_RES_4_ID_NUMBER}
-            });
+            //residentDictionary.Add(Credentials.APT_RES_4_USERNAME, new Dictionary<string, string>
+            //{
+            //    {"password", Credentials.APT_RES_4_PASSWORD },
+            //    { "id", Credentials.APT_RES_4_ID_NUMBER}
+            //});
 
             // Residents log in in sequence
             wd.Navigate().GoToUrl(Values.START_URL);
@@ -215,8 +219,9 @@ namespace Phoenix.Tests.Tests
             foreach(var entry in residentDictionary)
             {
                 loginPage.LoginAs(entry.Key, entry.Value["password"]);
-                var acct = db.Account.Where(m => m.ID_NUM.Equals(entry.Value["id"])).First();
-                var resident_name = acct.firstname + " " + acct.lastname;
+
+                var gordonID = entry.Value["id"];
+                var resident_name = Methods.GetFullName(gordonID);
                 
                 // Sign personal rci.
                 dashboard.SelectFirstRciWithName(resident_name)
@@ -225,61 +230,46 @@ namespace Phoenix.Tests.Tests
                     .Sign(resident_name)
                     .SubmitSignature();
 
+                // Find out the full location number for the appartment BUILDINGCODE ROOMNUMBER
+                var rciRecord = db.Rci.Where(m => m.GordonID.Equals(gordonID)).First();
+                var buildingCode = rciRecord.BuildingCode;
+                var apartmentNumber = rciRecord.RoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+                
+                // Sign common area rci
+                dashboard.SelectCommonAreaRci(buildingCode, apartmentNumber)
+                    .asRciCheckinPage()
+                    .HitNextToSignatures()
+                    .Sign(resident_name)
+                    .SubmitSignature();
                 dashboard.Logout();
-            }            
-
-         
-            //login.EnterUsername(Credentials.DORM_RA_USERNAME);
-            //login.EnterUserPassword(Credentials.DORM_RA_PASSWORD);
-            //login.SubmitCredentials();
-
-            //rciCard = dashboard.GetRciCardWithName(resident_name);
-
-            //// Assert
-            //Assert.IsTrue(rciCard.isCheckinRci());
-            //Assert.IsTrue(rciCard.isSignedByResident());
-            //Assert.IsFalse(rciCard.isSignedByRA());
-
-            //// RA signs
-            //var checkinRci = dashboard.SelectFirstRciWithName(resident_name).asRciCheckinPage();
-            //var user = db.Account.Where(m => m.ID_NUM.Equals(Credentials.DORM_RA_ID_NUMBER)).First();
-            //var userSignature = string.Format("{0} {1}", user.firstname, user.lastname);
-            //checkinRci.HitNextToSignatures().Sign(userSignature).SubmitSignature();
-
-            //rciCard = dashboard.GetRciCardWithName(resident_name);
-
-            //// Assert
-            //Assert.IsTrue(rciCard.isCheckinRci());
-            //Assert.IsTrue(rciCard.isSignedByResident());
-            //Assert.IsTrue(rciCard.isSignedByRA());
-
-            ////RD logs in
-            //dashboard.Logout();
-            //login.EnterUsername(Credentials.DORM_RD_USERNAME);
-            //login.EnterUserPassword(Credentials.DORM_RD_PASSWORD);
-            //login.SubmitCredentials();
-
-            //checkinRci = dashboard.SelectFirstRciWithName(resident_name).asRciCheckinPage();
-
-            //// RD signs
-            //user = db.Account.Where(m => m.ID_NUM.Equals(Credentials.DORM_RD_ID_NUMBER)).First();
-            //userSignature = string.Format("{0} {1}", user.firstname, user.lastname);
-            //checkinRci.HitNextToSignatures().Sign(userSignature).SubmitSignature();
-
-            //rciCard = dashboard.GetRciCardWithName(resident_name);
-
-            //// Assert
-            //Assert.IsTrue(rciCard.isCheckoutRci());
-            //Assert.IsFalse(rciCard.isSignedByResident());
-            //Assert.IsFalse(rciCard.isSignedByRA());
-            //Assert.IsFalse(rciCard.isSignedByRD());
+            }
 
 
-            //// Cleanup 
-            //var usedRci = db.Rci.Where(m => m.GordonID.Equals(Credentials.DORM_RES_ID_NUMBER));
-            //db.Rci.RemoveRange(usedRci);
-            //db.SaveChanges();
-            //wd.Quit();
+            // RA logs in once more
+            loginPage.LoginAs(Credentials.APT_RA_USERNAME, Credentials.APT_RA_PASSWORD);
+
+            rciCards = dashboard.GetAllRciCards();
+
+            // Assert then sign each rci.
+            foreach (var rciCard in rciCards)
+            {
+                // Assert 
+                Assert.IsTrue(rciCard.isCheckinRci());
+                Assert.IsTrue(rciCard.isSignedByResident());
+                Assert.IsFalse(rciCard.isSignedByRA());
+                Assert.IsFalse(rciCard.isSignedByRD());
+
+                var ra_name = Methods.GetFullName(Credentials.APT_RA_ID_NUMBER);
+
+                // Sign
+                var rciPage = rciCard.Click();
+                rciPage.asRciCheckinPage()
+                    .HitNextToSignatures()
+                    .Sign(ra_name)
+                    .SubmitSignature();
+            }
+
+           
         }
 
 
