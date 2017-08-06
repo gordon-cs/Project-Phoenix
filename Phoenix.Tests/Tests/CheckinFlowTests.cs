@@ -230,13 +230,10 @@ namespace Phoenix.Tests.Tests
                     .Sign(resident_name["firstname"] + " " + resident_name["lastname"])
                     .SubmitSignature();
 
-                // Find out the full location number for the appartment BUILDINGCODE ROOMNUMBER
-                var rciRecord = db.Rci.Where(m => m.GordonID.Equals(gordonID)).First();
-                var buildingCode = rciRecord.BuildingCode;
-                var apartmentNumber = rciRecord.RoomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+                var roomID = Methods.GetRoomID(gordonID);
                 
                 // Sign common area rci
-                dashboard.SelectCommonAreaRci(buildingCode, apartmentNumber)
+                dashboard.SelectCommonAreaRci(roomID["building"] + " " + roomID["room"].TrimEnd(new char[] { 'A', 'B', 'C', 'D' }))
                     .asRciCheckinPage()
                     .HitNextToSignatures()
                     .Sign(resident_name["firstname"] + " " + resident_name["lastname"])

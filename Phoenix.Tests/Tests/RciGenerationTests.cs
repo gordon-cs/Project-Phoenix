@@ -81,13 +81,12 @@ namespace Phoenix.Tests.Tests
             Assert.IsTrue(dashboard.RciCount().Equals(2), "Expected two rcis to be present. Found " + dashboard.RciCount());
 
             // Try to find the rci card with the resident's name.
-            var resident_name = Methods.GetFullName(Credentials.DORM_RES_ID_NUMBER);
-            var roomID = Methods.GetRoomID(Credentials.DORM_RES_ID_NUMBER);
-                //.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+            var resident_name = Methods.GetFullName(Credentials.APT_RES_1_ID_NUMBER);
+            var roomID = Methods.GetRoomID(Credentials.APT_RES_1_ID_NUMBER);
 
             // The following will throw exceptions if the cards are note found :D
             var rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
-            var commonAreaRciCard = dashboard.GetRciCardWithName(roomID["building"] + " " + roomID["room"]);
+            var commonAreaRciCard = dashboard.GetCommonAreaRciCard(roomID["building"] + " " + roomID["room"].TrimEnd(new char[] { 'A', 'B', 'C', 'D' }));
 
             wd.Close();
         }
@@ -128,7 +127,38 @@ namespace Phoenix.Tests.Tests
             var count2 = dashboard.RciCount();
 
             // Assert that the rci count is 1
-            Assert.AreEqual(count1, count2, "The number of rcis changed between first and second login.");
+            Assert.AreEqual(count1, count2, "The number of rcis changed between first and second login of the dorm resident.");
+
+            wd.Close();
+        }
+
+        [TestMethod]
+        public void RciGeneration_Apt_Res_LogIn_SecondTime()
+        {
+            // Clear old rcis.
+            var oldRcis = db.Rci.Where(m => m.GordonID.Equals(Credentials.APT_RES_1_ID_NUMBER));
+            var oldSignatures = db.CommonAreaRciSignature.Where(m => m.GordonID.Equals(Credentials.APT_RES_1_ID_NUMBER));
+            db.Rci.RemoveRange(oldRcis);
+            db.CommonAreaRciSignature.RemoveRange(oldSignatures);
+            db.SaveChanges();
+
+            // Login
+            wd.Navigate().GoToUrl(Values.START_URL);
+            var loginPage = new LoginPage(wd);
+            var dashboard = loginPage.LoginAs(Credentials.APT_RES_1_USERNAME,
+                                                                    Credentials.APT_RES_1_PASSWORD);
+
+            // Assert that the rci count is 2
+            var count1 = dashboard.RciCount();
+
+            dashboard.Logout();
+
+            loginPage.LoginAs( Credentials.APT_RES_1_USERNAME,
+                                        Credentials.APT_RES_1_PASSWORD);
+
+            var count2 = dashboard.RciCount();
+
+            Assert.AreEqual(count1, count2, "The number of rcis changed between first and second login of the apartment resident.");
 
             wd.Close();
         }
@@ -157,7 +187,7 @@ namespace Phoenix.Tests.Tests
                                                             Credentials.DORM_RA_PASSWORD);
 
             // Verify that the number of rcis displayed matches the number of rcis in the database for the specified dorms.
-            Assert.AreEqual(dashboard.RciCount(), db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count());
+            Assert.AreEqual(dashboard.RciCount(), db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count(), "The number of rcis displayed is different form the number of rcis in the database.");
 
             wd.Close();
         }
@@ -188,7 +218,7 @@ namespace Phoenix.Tests.Tests
             var rciCount2 = dashboard.RciCount();
 
             // Assert
-            Assert.AreEqual(rciCount1, rciCount2);
+            Assert.AreEqual(rciCount1, rciCount2, "The number of rcis changed between first and second login of the ra");
 
             wd.Close();
         }
@@ -211,15 +241,12 @@ namespace Phoenix.Tests.Tests
             db.Rci.RemoveRange(rcis);
             db.SaveChanges();
 
-            // Verify that we have deleted all rcis for this building.
-            Assert.AreEqual(db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count(), 0);
-
             wd.Navigate().GoToUrl(Values.START_URL);
             LoginPage login = new LoginPage(wd);
             var dashboard = login.LoginAs(Credentials.DORM_RD_USERNAME, 
                                                             Credentials.DORM_RD_PASSWORD);
            
-            Assert.AreEqual(dashboard.RciCount(), db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count());
+            Assert.AreEqual(dashboard.RciCount(), db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count(), "The number of rcis displayd is different from the number of rcis in the database.");
 
             wd.Close();
         }
@@ -250,7 +277,7 @@ namespace Phoenix.Tests.Tests
             var rciCount2 = dashboard.RciCount();
 
             // Assert
-            Assert.AreEqual(rciCount1, rciCount2);
+            Assert.AreEqual(rciCount1, rciCount2, "The number of rcis changed between first and second login of the rd");
 
             wd.Close();
         }

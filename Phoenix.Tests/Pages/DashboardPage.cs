@@ -224,25 +224,22 @@ namespace Phoenix.Tests.Pages
         /// <summary>
         /// Select and click on the common area rci that matches the given parameters.
         /// </summary>
-        /// <param name="buildingCode">The building code</param>
-        /// <param name="apartmentNumber">The room number</param>
+        /// <param name="apartmentNumber">The apartment number</param>
         /// <returns>A GeneralRciPage object</returns>
-        public GenericRciPage SelectCommonAreaRci(string buildingCode, string apartmentNumber)
+        public GenericRciPage SelectCommonAreaRci(string apartmentNumber)
         {
-            string building = buildingCode.ToLower().Trim();
-            string room = apartmentNumber.ToLower().Trim();
-            string locationString = building + " " +  room;
+            string roomID = apartmentNumber.Trim().ToLower();
 
-            var rciList = webDriver.FindElements(rciCards).Where(m => m.FindElement(rciCardBuildingAndRoom).Text.ToLower().Equals(locationString));
+            var rciList = webDriver.FindElements(rciCards).Where(m => m.FindElement(rciCardBuildingAndRoom).Text.ToLower().Equals(roomID));
 
             // There should be only one entry
             if (rciList.Count() > 1)
             {
-                throw new IllegalStateException("There was more than one common area rci for room " + building + " " + room);
+                throw new IllegalStateException("There was more than one common area rci for room " + roomID);
             }
             if (rciList.Count() < 1)
             {
-                throw new NotFoundException("Could not find a common area rci for room " + building + " " + room);
+                throw new NotFoundException("Could not find a common area rci for room " + roomID);
             }
 
             var commonAreaRci = rciList.First();
@@ -262,7 +259,7 @@ namespace Phoenix.Tests.Pages
 
             foreach(var element in webElementList)
             {
-                rciCardList.Concat(new[] { new RciCard(element, webDriver) });
+                rciCardList = rciCardList.Concat(new[] { new RciCard(element, webDriver) });
             }
 
             return rciCardList;
@@ -310,6 +307,30 @@ namespace Phoenix.Tests.Pages
             {
                 throw new NotFoundException("There was no rci card with the given name. Name: " + name);
             }
+            return new RciCard(rciList.First(), webDriver);
+        }
+
+        /// <summary>
+        /// Returns an RciCard object that represents the rci card for the apartment with the given number
+        /// </summary>
+        /// <param name="apartmentNumber">The apartment number</param>
+        /// <returns>An RciCard object</returns>
+        public RciCard GetCommonAreaRciCard(string apartmentNumber)
+        {
+            string roomID = apartmentNumber.Trim().ToLower();
+
+            var rciList = webDriver.FindElements(rciCards).Where(m => m.FindElement(rciCardBuildingAndRoom).Text.ToLower().Equals(roomID));
+
+            // There should be only one entry
+            if (rciList.Count() > 1)
+            {
+                throw new IllegalStateException("There was more than one common area rci for room " + roomID);
+            }
+            if (rciList.Count() < 1)
+            {
+                throw new NotFoundException("Could not find a common area rci for room " +roomID);
+            }
+
             return new RciCard(rciList.First(), webDriver);
         }
 
