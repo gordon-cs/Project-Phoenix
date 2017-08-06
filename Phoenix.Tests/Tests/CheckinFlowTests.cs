@@ -51,7 +51,7 @@ namespace Phoenix.Tests.Tests
 
             var resident_name = Methods.GetFullName(Credentials.DORM_RES_ID_NUMBER);
 
-            var rciCard = dashboard.GetRciCardWithName(resident_name);
+            var rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
 
             // Assert
             Assert.IsTrue(rciCard.isCheckinRci());
@@ -63,16 +63,16 @@ namespace Phoenix.Tests.Tests
             dashboard.Logout();
             login.LoginAs(Credentials.DORM_RES_USERNAME, Credentials.DORM_RES_PASSWORD);
 
-            GenericRciPage rci = dashboard.SelectFirstRciWithName(resident_name);
+            GenericRciPage rci = dashboard.SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
             rci.asRciCheckinPage()
                 .HitNextToSignatures()
-                .Sign(resident_name)
+                .Sign(resident_name["firstname"] + " " + resident_name["lastname"])
                 .SubmitSignature();
             dashboard.Logout();
 
             login.LoginAs(Credentials.DORM_RA_USERNAME, Credentials.DORM_RA_PASSWORD);
 
-            rciCard = dashboard.GetRciCardWithName(resident_name);
+            rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
 
             // Assert
             Assert.IsTrue(rciCard.isCheckinRci());
@@ -80,14 +80,14 @@ namespace Phoenix.Tests.Tests
             Assert.IsFalse(rciCard.isSignedByRA());
 
             // RA signs
-            var checkinRci = dashboard.SelectFirstRciWithName(resident_name).asRciCheckinPage();
+            var checkinRci = dashboard.SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"]).asRciCheckinPage();
 
             // The fullname is also the signature
             var ra_name = Methods.GetFullName(Credentials.DORM_RA_ID_NUMBER);
 
-            checkinRci.HitNextToSignatures().Sign(ra_name).SubmitSignature();
+            checkinRci.HitNextToSignatures().Sign(ra_name["firstname"] + " " +  ra_name["lastname"]).SubmitSignature();
 
-            rciCard = dashboard.GetRciCardWithName(resident_name);
+            rciCard = dashboard.GetRciCardWithName(string.Format("{0} {1}", resident_name["firstname"], resident_name["lastname"]));
 
             // Assert
             Assert.IsTrue(rciCard.isCheckinRci());
@@ -99,15 +99,15 @@ namespace Phoenix.Tests.Tests
 
             login.LoginAs(Credentials.DORM_RD_USERNAME, Credentials.DORM_RD_PASSWORD);
            
-            checkinRci = dashboard.SelectFirstRciWithName(resident_name).asRciCheckinPage();
+            checkinRci = dashboard.SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"]).asRciCheckinPage();
 
             // RD signs
             var rd_name = Methods.GetFullName(Credentials.DORM_RD_ID_NUMBER);
             checkinRci.HitNextToSignatures()
-                .Sign(rd_name)
+                .Sign(rd_name["firstname"] + " " + rd_name["lastname"])
                 .SubmitSignature();
 
-            rciCard = dashboard.GetRciCardWithName(resident_name);
+            rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
 
             // Assert
             Assert.IsTrue(rciCard.isCheckoutRci());
@@ -224,10 +224,10 @@ namespace Phoenix.Tests.Tests
                 var resident_name = Methods.GetFullName(gordonID);
                 
                 // Sign personal rci.
-                dashboard.SelectFirstRciWithName(resident_name)
+                dashboard.SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"])
                     .asRciCheckinPage()
                     .HitNextToSignatures()
-                    .Sign(resident_name)
+                    .Sign(resident_name["firstname"] + " " + resident_name["lastname"])
                     .SubmitSignature();
 
                 // Find out the full location number for the appartment BUILDINGCODE ROOMNUMBER
@@ -239,7 +239,7 @@ namespace Phoenix.Tests.Tests
                 dashboard.SelectCommonAreaRci(buildingCode, apartmentNumber)
                     .asRciCheckinPage()
                     .HitNextToSignatures()
-                    .Sign(resident_name)
+                    .Sign(resident_name["firstname"] + " " + resident_name["lastname"])
                     .SubmitSignature();
                 dashboard.Logout();
             }
@@ -265,7 +265,7 @@ namespace Phoenix.Tests.Tests
                 var rciPage = rciCard.Click();
                 rciPage.asRciCheckinPage()
                     .HitNextToSignatures()
-                    .Sign(ra_name)
+                    .Sign(ra_name["firstname"] + " " + ra_name["lastname"])
                     .SubmitSignature();
             }
 

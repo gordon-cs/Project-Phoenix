@@ -240,7 +240,7 @@ namespace Phoenix.Tests.Tests
             var ra_name = Methods.GetFullName(Credentials.DORM_RA_ID_NUMBER);
 
             personalRci.HitNextToSignatures()
-                .Sign(ra_name)
+                .Sign(string.Format("{0} {1}", ra_name["firstname"], ra_name["lastname"]))
                 .SubmitSignature();
 
             var rciCard = dashboard.GetRciCard(rci.RciID);

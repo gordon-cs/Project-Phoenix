@@ -27,7 +27,7 @@ namespace Phoenix.Tests.Tests
         /// - Verify that only one rci is displayed.
         /// </summary>
         [TestMethod]
-        public void RciGeneration_Res_LogIn_FirstTime()
+        public void RciGeneration_Dorm_Res_LogIn_FirstTime()
         {
             // Delete existing rcis
             var rcis = db.Rci.Where(m => m.GordonID.Equals(Credentials.DORM_RES_ID_NUMBER));
@@ -46,7 +46,48 @@ namespace Phoenix.Tests.Tests
             // Assert that the correct rci is displayed.
             var resident_name = Methods.GetFullName(Credentials.DORM_RES_ID_NUMBER);
 
-            var rciCard = dashboard.GetRciCardWithName(resident_name);
+            var rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
+
+            wd.Close();
+        }
+
+        /// <summary>
+        /// Verity that when an apartment resident logs in for the first time, 
+        ///  their individual and common area rcis are present.
+        /// Steps:
+        /// - Start by deleting any existing Rcis for the resident (to simulate first login)
+        /// - Login
+        /// - Verify that the Rci displayed belongs to the resident.
+        /// - Verify that the Common area rci is present.
+        /// - Verify that the Common area rci is for the correct Room
+        /// </summary>
+        [TestMethod]
+        public void RciGeneration_Apt_Res_LogIn_FirstTime()
+        {
+            // Delete existing rcis
+            var oldRcis = db.Rci.Where(m => m.GordonID.Equals(Credentials.APT_RES_1_ID_NUMBER));
+            var oldSignatures = db.CommonAreaRciSignature.Where(m => m.GordonID.Equals(Credentials.APT_RES_1_ID_NUMBER));
+            db.Rci.RemoveRange(oldRcis);
+            db.CommonAreaRciSignature.RemoveRange(oldSignatures);
+            db.SaveChanges();
+
+            // Login
+            wd.Navigate().GoToUrl(Values.START_URL);
+            var dashboard = new LoginPage(wd).LoginAs(
+                                                Credentials.APT_RES_1_USERNAME,
+                                                Credentials.APT_RES_1_PASSWORD);
+
+            // Assert that the rci count is 2
+            Assert.IsTrue(dashboard.RciCount().Equals(2), "Expected two rcis to be present. Found " + dashboard.RciCount());
+
+            // Try to find the rci card with the resident's name.
+            var resident_name = Methods.GetFullName(Credentials.DORM_RES_ID_NUMBER);
+            var roomID = Methods.GetRoomID(Credentials.DORM_RES_ID_NUMBER);
+                //.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+
+            // The following will throw exceptions if the cards are note found :D
+            var rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
+            var commonAreaRciCard = dashboard.GetRciCardWithName(roomID["building"] + " " + roomID["room"]);
 
             wd.Close();
         }
@@ -62,7 +103,7 @@ namespace Phoenix.Tests.Tests
         /// - Asset that the number of rcis present on the dashboard did not change.
         /// </summary>
         [TestMethod]
-        public void RciGeneration_Res_LogIn_SecondTime()
+        public void RciGeneration_Dorm_Res_LogIn_SecondTime()
         {
             // Delete existing rcis
             var rcis = db.Rci.Where(m => m.GordonID.Equals(Credentials.DORM_RES_ID_NUMBER));
@@ -100,7 +141,7 @@ namespace Phoenix.Tests.Tests
         ///   - Verify that the counts match up
         /// </summary>
         [TestMethod]
-        public void RciGeneration_RA_LogIn_FirstTime()
+        public void RciGeneration_Dorm_RA_LogIn_FirstTime()
         {
             // Remove old rcis
             var loginService = new LoginService();
@@ -128,7 +169,7 @@ namespace Phoenix.Tests.Tests
         /// - Log back in and verify that the number of displayed rcis are the same
         /// </summary>
         [TestMethod]
-        public void RciGeneration_RA_LogIn_SecondTime()
+        public void RciGeneration_Dorm_RA_LogIn_SecondTime()
         {
             wd.Navigate().GoToUrl(Values.START_URL);
 
@@ -161,7 +202,7 @@ namespace Phoenix.Tests.Tests
         ///   - Verify that the counts match up
         /// </summary>
         [TestMethod]
-        public void RciGeneration_RD_LogIn_FirstTime()
+        public void RciGeneration_Dorm_RD_LogIn_FirstTime()
         {
             var loginService = new LoginService();
             var dorms = loginService.GetKingdom(Credentials.DORM_RD_ID_NUMBER);
@@ -190,7 +231,7 @@ namespace Phoenix.Tests.Tests
         /// - Log back in and verify that the number of displayed rcis are the same
         /// </summary>
         [TestMethod]
-        public void RciGeneration_RD_LogIn_SecondTime()
+        public void RciGeneration_Dorm_RD_LogIn_SecondTime()
         {
             wd.Navigate().GoToUrl(Values.START_URL);
 
