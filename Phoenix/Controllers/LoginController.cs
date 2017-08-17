@@ -47,7 +47,7 @@ namespace Phoenix.Controllers
             }
             catch (Exception e)
             {
-                loginViewModel.ErrorMessage = "There was a problem connection to the server. We are sorry. Please try again later or contact the project maintainer.";
+                loginViewModel.ErrorMessage = "There was a problem connecting to the server. We are sorry. Please try again later or contact the project maintainer.";
                 return View("Index", loginViewModel);
             }
       
@@ -65,7 +65,7 @@ namespace Phoenix.Controllers
             catch(ArgumentNullException ex)
             {
                 _ADContext.Dispose();
-                loginViewModel.ErrorMessage = "Please make sure you enter in values for the username.";
+                loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
                 return View("Index", loginViewModel);
             }
 

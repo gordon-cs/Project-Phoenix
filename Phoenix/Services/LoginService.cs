@@ -88,7 +88,7 @@ namespace Phoenix.Services
             // Right now just hardcode to true for test purposes
             bool isAdmin = false;
 
-            // Witll throw an exception if the user has no role within the system. The exceptions is caught in the controller.
+            // Will throw an exception if the user has no role within the system. The exceptions is caught in the controller.
             var role = GetRole(id);
             var mostRecentRoomAssign = GetCurrentRoomAssign(id);
 
