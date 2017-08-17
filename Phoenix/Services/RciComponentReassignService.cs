@@ -2,6 +2,9 @@
 using Phoenix.Models.ViewModels;
 using System.Linq;
 
+/// <summary>
+/// ~ Currently not being used ~
+/// </summary>
 namespace Phoenix.Services
 {
     public class RciComponentReassignService
