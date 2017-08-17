@@ -16,8 +16,6 @@
  * ............. view
  * ............. pane
  *
- * Footer layout
- *
  * Layout for Generic items:
  * ............. paragraphs
  * ............. ul
@@ -158,15 +156,6 @@
         .pane-content {
             padding: 1em;
         }
-
-/***************************/
-/**********FOOTER***********/
-/***************************/
-#footer {
-    text-align: center;
-    min-height: 3em;
-}
-
 
 /****************************/
 /******GENERIC ELEMENTS******/
