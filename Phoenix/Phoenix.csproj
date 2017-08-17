@@ -228,7 +228,6 @@
     <Content Include="css\site-colors.css" />
     <Content Include="css\site-layout.css" />
     <Content Include="css\site-typography.css" />
-    <Content Include="Content\Images\phoenix.png" />
     <Content Include="css\login.css" />
     <Content Include="css\site.css" />
     <Content Include="css\under_construction.css" />
