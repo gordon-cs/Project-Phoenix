@@ -228,7 +228,6 @@
     <Content Include="css\site-colors.css" />
     <Content Include="css\site-layout.css" />
     <Content Include="css\site-typography.css" />
-    <Content Include="Content\Images\phoenix.png" />
     <Content Include="css\login.css" />
     <Content Include="css\site.css" />
     <Content Include="css\under_construction.css" />
@@ -273,7 +272,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Placeholder\Index.cshtml" />
     <Content Include="Views\RciInput\Index.cshtml" />
     <Content Include="Views\Login\Index.cshtml">
       <BrowseToURL>~/Login</BrowseToURL>
