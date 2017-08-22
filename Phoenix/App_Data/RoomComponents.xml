@@ -338,7 +338,7 @@
       </component>
     </components>
   </rci>
-  <rci roomType="individual" buildingCode="DRE">
+  <rci roomType="individual" buildingCode="DRW">
     <components>
       <component name="Bed Frame" description="Main Room">
         <cost name="Fixing Cost" approxCost="50" />
