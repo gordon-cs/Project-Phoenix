@@ -226,15 +226,13 @@ namespace Phoenix.Tests.Tests
         [TestMethod]
         public void RciSignature_Test_4()
         {
-            var rci = db.Rci.Where(r => r.GordonID == Credentials.DORM_RA_ID_NUMBER && r.IsCurrent == true).First();
-
-
             wd.Navigate().GoToUrl(Values.START_URL);
 
             LoginPage login = new LoginPage(wd);
             var dashboard = login.LoginAs(Credentials.DORM_RA_USERNAME,
                                                             Credentials.DORM_RA_PASSWORD);
-          
+
+            var rci = db.Rci.Where(r => r.GordonID == Credentials.DORM_RA_ID_NUMBER && r.IsCurrent == true).First();
             RciCheckinPage personalRci = dashboard.SelectRci(rci.RciID).asRciCheckinPage();
 
             var ra_name = Methods.GetFullName(Credentials.DORM_RA_ID_NUMBER);
