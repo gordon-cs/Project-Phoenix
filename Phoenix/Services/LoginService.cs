@@ -27,7 +27,7 @@ namespace Phoenix.Services
             PrincipalContext ADContext = new PrincipalContext(
                 ContextType.Domain,
                 "elder.gordon.edu:636",
-                "OU=Gordon College,DC=gordon,DC=edu",
+                "DC=gordon,DC=edu",
                 ContextOptions.Negotiate | ContextOptions.ServerBind | ContextOptions.SecureSocketLayer,
                 "CS-LDAP-CCT",
                 "QUl59QpdpL**sTwZ");
@@ -209,7 +209,6 @@ namespace Phoenix.Services
             }
 
             var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
-
             if (RAentry != null)
             {
                 // Since CurrentRA has building codes, we need to a do a little kung fu to make sure cases like

@@ -1,6 +1,6 @@
 ﻿@model Phoenix.Models.ViewModels.LoginViewModel
 @{
-    ViewBag.Title = "RCI-Login";
+    ViewBag.Title = "Login";
     ViewBag.ViewTitle = "Online RCI";
     ViewBag.NavigationAction = "";
     ViewBag.NavigationController = "";
@@ -25,9 +25,9 @@
             </div>
         }
         <div class="login-container">
-            @Html.TextBoxFor(m => m.Username, new { placeholder = "Username" })
-            @Html.PasswordFor(m => m.Password, new { placeholder = "Password" })
-            <button type="submit">Login</button>
+            @Html.TextBoxFor(m => m.Username, new { placeholder = "Username", data_selenium_id = "login-page-username-input"})
+            @Html.PasswordFor(m => m.Password, new { placeholder = "Password", data_selenium_id = "login-page-password-input"})
+            <button data-selenium-id="login-page-submit-button" type="submit">Login</button>
         </div>
         
         

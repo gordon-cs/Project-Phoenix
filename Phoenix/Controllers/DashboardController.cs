@@ -5,7 +5,6 @@ using Phoenix.Filters;
 using Phoenix.Services;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Diagnostics;
 using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
@@ -26,7 +25,6 @@ namespace Phoenix.Controllers
         {
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
-            Debug.WriteLine("Role: " + role);
 
             if (role == null)
             {

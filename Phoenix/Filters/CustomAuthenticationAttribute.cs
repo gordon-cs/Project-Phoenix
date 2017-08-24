@@ -3,23 +3,18 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 
 namespace Phoenix.Filters
 {
     public class CustomAuthenticationAttribute : ActionFilterAttribute, IAuthenticationFilter
     {
         public void OnAuthentication(AuthenticationContext filterContext)
-        {
-            Debug.WriteLine("Reached OnAuthentication method");
-            
+        {            
             HttpCookie authCookie = filterContext.HttpContext.Request.Cookies["Authentication"];
 
 
             if (authCookie == null)
             {
-                Debug.WriteLine("Authcookie is null");
-
                 // Set the context result to redirect.
                 filterContext.Result = new RedirectToRouteResult(
                     new System.Web.Routing.RouteValueDictionary(
@@ -41,7 +36,6 @@ namespace Phoenix.Filters
             }
             catch(Exception)
             {
-                Debug.WriteLine("There was an error decoding the token.");
                 filterContext.Result = new RedirectToRouteResult(
                     new System.Web.Routing.RouteValueDictionary(
                         new { controller = "Login", action = "Index" }));
@@ -66,17 +60,11 @@ namespace Phoenix.Filters
             filterContext.Controller.TempData["currentRoom"] = decodedJson["currentRoom"].ToString();
             filterContext.Controller.TempData["currentRoomAssignDate"] = decodedJson["currentRoomAssignDate"];
             filterContext.Controller.TempData["kingdom"] = decodedJson["kingdom"];
-            filterContext.Controller.TempData["login_username"] = decodedJson["sub"].ToString();
-
-
-            Debug.WriteLine(decodedJson.ToString());
-           
+            filterContext.Controller.TempData["login_username"] = decodedJson["sub"].ToString();           
 
         }
 
         public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)
-        {
-            Debug.WriteLine("Reached OnAuthenticationChallenge method");
-        }
+        {}
     }
 }
