@@ -169,22 +169,6 @@ namespace Phoenix.Controllers
         }
 
         /// <summary>
-        /// Sync up all the RCI's so that the RCI's in the system accurately reflect which
-        /// residents are in which dorms
-        /// </summary>
-        [ResLifeStaff]
-        [HttpGet]
-        public ActionResult SyncRcis()
-        {
-            var temp = (JArray)TempData["kingdom"];
-            List<string> kingdom = temp.ToObject<List<string>>();
-
-            dashboardService.SyncRoomRcisFor(kingdom);
-            dashboardService.SyncCommonAreaRcisFor(kingdom);
-            return RedirectToAction("Index");
-        }
-
-        /// <summary>
         /// Export all the fines and charges recorded to a spreadsheet
         /// </summary>
         /// <returns>A .csv file sent back to the client</returns>
