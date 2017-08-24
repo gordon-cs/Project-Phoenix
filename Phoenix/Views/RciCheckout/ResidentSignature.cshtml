@@ -38,7 +38,7 @@
                         <p class="padded-paragraph-vertical">I, @Model.FirstName @Model.LastName, hereby agree to the preliminary charges that have been assessed by my RA. I understand that these fines are subject to change at the discretion of the Resident Director</p>
                         <p class="padded-paragraph-vertical">Total Charges: $@sum</p>
                         <div class="divAddOn">
-                            <input class="divAddOn-field" name="signature" type="text" placeholder="@Model.FirstName @Model.LastName" />
+                            <input data-selenium-id="signature-field" class="divAddOn-field" name="signature" type="text" placeholder="@Model.FirstName @Model.LastName" />
                         </div>
                     }
                     else
@@ -51,7 +51,7 @@
                     }
                 </div>
                 <div class="distribute-evenly">
-                    <button type="submit">Next</button>
+                    <button data-selenium-id="checkout-signature-next-button" type="submit">Next</button>
                 </div>
             }
         </div>

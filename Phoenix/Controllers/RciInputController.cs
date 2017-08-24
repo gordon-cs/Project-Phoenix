@@ -5,7 +5,6 @@ using System.Web.Mvc;
 
 using Phoenix.Models;
 using Phoenix.Filters;
-using System.Diagnostics;
 using System;
 using Phoenix.Services;
 using System.Drawing;
@@ -27,7 +26,6 @@ namespace Phoenix.Controllers
 
         public RciInputController()
         {
-            Debug.WriteLine("Initialize RCIInput Controller");
             db = new Models.RCIContext();
             rciInputService = new RciInputService();
         }
@@ -297,7 +295,6 @@ namespace Phoenix.Controllers
                 {
                     HttpPostedFileBase photoFile = Request.Files[s];
                     string rciComponentId = photoFile.FileName;
-                    Debug.Write("Filename identified on client: " + rciComponentId);
 
                     Damage newDamage = new Damage();
                     newDamage.DamageType = "IMAGE";
@@ -339,7 +336,6 @@ namespace Phoenix.Controllers
             catch (Exception e)
             {
                 Response.Status = "500 Error saving photo";
-                Debug.Write("Error saving photo to database: " + e.Message);
             }
             return -1;
         }

@@ -25,7 +25,7 @@
                     {
                         <p class="padded-paragraph-vertical">I, @ViewBag.ExpectedSignature, hereby agree that I have assessed preliminary charges to the best of my ability. I understand that these charges are subject to change at the discretion of the Resident Director.</p>
                         <div class="divAddOn">
-                            <input class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />
+                            <input data-selenium-id="signature-field" class="divAddOn-field" name="signature" type="text" placeholder="@ViewBag.ExpectedSignature" />
                         </div>
                     }
                     else
@@ -38,7 +38,7 @@
                     }
                 </div>
                 <div class="distribute-evenly">
-                    <button type="submit">Next</button>
+                    <button data-selenium-id="checkout-signature-next-button" type="submit">Next</button>
                 </div>
             }
         </div>

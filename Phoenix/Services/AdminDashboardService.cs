@@ -3,10 +3,7 @@ using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using System.Xml.Linq;
 
 namespace Phoenix.Services

@@ -20,7 +20,7 @@
     @if (Model.CheckinSigRes == null && Model.LifeAndConductSigRes == null)
     {
         <p>@ViewBag.User, please sign with your name to confirm the entered damages.</p>
-        <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
+        <input data-selenium-id="signature-field" type="text" id="rci-sig" placeholder="@ViewBag.User" />
 
         <div class="life-and-conduct">
             <h4>Residence Hall License and Life and Conduct Agreement</h4>
@@ -54,7 +54,7 @@
 
         </div>
         <p>Please sign with your name @ViewBag.User</p>
-        <input type="text" id="lac-sig" placeholder="@ViewBag.User" />
+        <input data-selenium-id="signature-field" type="text" id="lac-sig" placeholder="@ViewBag.User" />
 
         <div class="distribute-evenly">
             <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
@@ -101,7 +101,7 @@
         </div>
 
         <p>Please sign with your name @ViewBag.User</p>
-        <input type="text" id="lac-sig" placeholder="@ViewBag.User" />
+        <input data-selenium-id="signature-field" type="text" id="lac-sig" placeholder="@ViewBag.User" />
 
         <div class="distribute-evenly">
             <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
@@ -110,7 +110,7 @@
     else if (Model.CheckinSigRes == null && Model.LifeAndConductSigRes != null)
     {
         <p>@ViewBag.User, please sign with your name to confirm the entered damages.</p>
-        <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
+        <input data-selenium-id="signature-field" type="text" id="rci-sig" placeholder="@ViewBag.User" />
 
         <p>You have signed the life and conduct statement.</p>
         <div class="divAddOn">

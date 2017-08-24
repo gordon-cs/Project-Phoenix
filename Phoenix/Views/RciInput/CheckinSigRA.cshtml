@@ -25,7 +25,7 @@
             if (Model.CheckoutSigRes == null)
             {
                 <p>@ViewBag.User, please sign your name to confirm the entered damages.</p>
-                <input type="text" id="rci-sig-res" placeholder="@ViewBag.User" />
+                <input data-selenium-id="signature-field" type="text" id="rci-sig-res" placeholder="@ViewBag.User" />
             }
             else
             {
@@ -71,7 +71,7 @@
 
                 </div>
                 <p>Please sign with your name @ViewBag.User</p>
-                <input type="text" id="lac-sig" placeholder="@ViewBag.User" />
+                <input data-selenium-id="signature-field" type="text" id="lac-sig" placeholder="@ViewBag.User" />
             }
             else
             {
@@ -114,7 +114,7 @@
         else if (Model.CheckinSigRA == null)
         {
             <p>@ViewBag.User, please sign your name  to confirm the entered damages.</p>
-            <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
+            <input data-selenium-id="signature-field" type="text" id="rci-sig" placeholder="@ViewBag.User" />
             <div class="distribute-evenly">
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
                 <button id="submit-button" onclick="RASigSubmit()">Submit</button>
@@ -139,7 +139,7 @@
         else if (Model.CheckinSigRA == null)
         {
             <p>@ViewBag.User, please sign with your name to confirm the entered damages as an AC.</p>
-            <input type="text" id="rci-sig" placeholder="@ViewBag.User" />
+            <input data-selenium-id="signature-field" type="text" id="rci-sig" placeholder="@ViewBag.User" />
             <div class="distribute-evenly">
                 <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
                 <button id="submit-button" onclick="RASigSubmit()">Submit</button>
