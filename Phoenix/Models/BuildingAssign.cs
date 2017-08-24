@@ -18,11 +18,5 @@ namespace Phoenix.Models
         [Column(Order = 1)]
         [StringLength(50)]
         public string BuildingCode { get; set; }
-
-        [StringLength(50)]
-        public string GordonID { get; set; }
-
-        [StringLength(100)]
-        public string RDName { get; set; }
     }
 }

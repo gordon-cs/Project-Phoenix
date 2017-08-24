@@ -100,37 +100,30 @@ namespace Phoenix.Models
 
             modelBuilder.Entity<Room>()
                 .Property(e => e.LOC_CDE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
                 .Property(e => e.BLDG_CDE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
                 .Property(e => e.BUILDING_DESC)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
                 .Property(e => e.ROOM_CDE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
                 .Property(e => e.ROOM_DESC)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
                 .Property(e => e.ROOM_TYPE)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
                 .Property(e => e.ROOM_TYPE_DESC)
-                .IsFixedLength()
                 .IsUnicode(false);
 
             modelBuilder.Entity<Room>()
