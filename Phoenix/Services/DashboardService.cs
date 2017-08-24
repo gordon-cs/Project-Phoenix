@@ -373,79 +373,44 @@ namespace Phoenix.Services
         }
 
         /// <summary>
-        /// Create rci records that correspond to common areas in the Room table for the list of buildings we are given.
-        /// End result: All rooms will have corresponding rci records that are current.
-        /// </summary>
-        public void SyncCommonAreaRcisFor(List<string> kingdom)
-        {
-            var currentSession = GetCurrentSession();
-            var query =
-                from rm in db.Room
-                join rci in db.Rci
-                on new { buildingCode = rm.BLDG_CDE.Trim(), roomNumber = rm.ROOM_CDE.Trim() } equals new { buildingCode = rci.BuildingCode, roomNumber = rci.RoomNumber } into matchedRcis
-                from temp in matchedRcis.DefaultIfEmpty()
-                where rm.MAX_CAPACITY == 0 // This is how we narrow down to the rooms that are actually common areas.
-                    && rm.ROOM_GENDER == null
-                    && temp == null // select the records that were unmatched by the rci table
-                    && kingdom.Contains(rm.BLDG_CDE.Trim())
-                select rm;
-
-            var newCommonAreaRcis = new List<Rci>();
-
-            foreach(var room in query)
-            {
-                var newCommonAreaRci = CreateRciObject(
-                    room.BLDG_CDE.Trim(),
-                    room.ROOM_CDE.Trim(),
-                    currentSession);
-
-                newCommonAreaRcis.Add(newCommonAreaRci);
-            }
-
-            db.Rci.AddRange(newCommonAreaRcis);
-
-            db.SaveChanges();
-
-            // Create components
-            var newRciComponents = new List<RciComponent>();
-
-            foreach (var rci in newCommonAreaRcis)
-            {
-                newRciComponents.AddRange(CreateRciComponents(document, rci.RciID, "common", rci.BuildingCode));
-            }
-
-            db.RciComponent.AddRange(newRciComponents);
-            db.SaveChanges();
-
-        }
-
-        /// <summary>
         /// Create rci records that correspond to common areas in the Room table for the specified room.
-        /// End result: If there isn't a common area rci associated with the given room, always create one.
+        /// End result: If there isn't an active common area rci associated with the given room, always create one.
         /// </summary>
         public void SyncCommonAreaRcisFor(string buildingCode, string roomNumber)
         {
             var apartmentNumber = roomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
 
-            // No need to check if it is an apartment. If it isn't an apartment, the result of the query will be empty.
-            var query =
+            // Room types that would flag apartment-style room records
+            var apartmentFlags = new List<string>() { "AP", "LV" };
+
+            // Do I already have an active common area rci for the apartment I am in?
+            var activeCommonAreaRcis =
+                from rci in db.Rci
+                where rci.BuildingCode.Equals(buildingCode)
+                && rci.RoomNumber.Equals(apartmentNumber)
+                && rci.IsCurrent == true
+                && rci.GordonID == null // This is what indicates a common area rci
+                select rci;
+
+            var commonAreaRciExists = activeCommonAreaRcis.Any();
+
+            // Does the room I live in have a common area?
+            var commonArea =
                 from rm in db.Room
-                join rci in db.Rci
-                on new { buildingCode = rm.BLDG_CDE.Trim(), roomNumber = rm.ROOM_CDE.Trim() } equals new { buildingCode = rci.BuildingCode, roomNumber = rci.RoomNumber } into matchedRcis
-                from temp in matchedRcis.DefaultIfEmpty()
-                where rm.MAX_CAPACITY == 0 // This is how we narrow down to the rooms that are actually common areas.
-                    && rm.ROOM_GENDER == null
-                    && temp == null // select the records that were unmatched by the rci table
-                    && rm.BLDG_CDE.Trim() == buildingCode
-                    && rm.ROOM_CDE.Trim() == apartmentNumber
+                where rm.BLDG_CDE.Equals(buildingCode)
+                && rm.ROOM_CDE.Equals(apartmentNumber)
+                && apartmentFlags.Contains(rm.ROOM_TYPE)
                 select rm;
 
-            // There is a common area rci to create if the query has any results
-            var createCommonAreaRci = query.Any();
+            var commonAreaExists = commonArea.Any();
+
+            // There is a common area rci to create if a common area exists for that room AND 
+            // the person has no active common area rcis for that room
+            var createCommonAreaRci = commonAreaExists && !commonAreaRciExists;
 
             if(createCommonAreaRci)
             {
-                var commonAreaRoom = query.FirstOrDefault();
+                var commonAreaRoom = commonArea.First();
                     
                 var commonAreaRci = CreateRciObject(
                     commonAreaRoom.BLDG_CDE.Trim(),
