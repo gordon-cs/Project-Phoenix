@@ -13,7 +13,7 @@ namespace Phoenix.Tests.TestUtilities
         // A shorter wait
         public static TimeSpan ONE_MOMENT = new TimeSpan(0, 0, 5);
 
-        public static string START_URL = "https://localhost:44300";
+        public static string START_URL = "https://rcitrain.gordon.edu";
 
         public static string DASHBOARD_PAGE_TITLE = "Online RCI - Dashboard";
         public static string RCI_CHECKIN_PAGE_EDIT_TITLE = "Online RCI - Check-In";
