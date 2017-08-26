@@ -132,6 +132,16 @@ namespace Phoenix.Tests.Tests
             wd.Close();
         }
 
+        /// <summary>
+        /// Verify that when an apartment resident logs in a second time, no new rcis are generated.
+        /// Steps:
+        /// - Start by deleting any existing Rcis for the resident (to simulate first login)
+        /// - Login
+        /// - Take note of number of rcis present on dashboard
+        /// - Logout
+        /// - Login again and take note of number of rcis present on dashboard
+        /// - Asset that the number of rcis present on the dashboard did not change.
+        /// </summary>
         [TestMethod]
         public void RciGeneration_Apt_Res_LogIn_SecondTime()
         {
@@ -188,6 +198,44 @@ namespace Phoenix.Tests.Tests
 
             // Verify that the number of rcis displayed matches the number of rcis in the database for the specified dorms.
             Assert.AreEqual(dashboard.RciCount(), db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count(), "The number of rcis displayed is different form the number of rcis in the database.");
+
+            wd.Close();
+        }
+
+        /// <summary>
+        /// Verify that when an AC logs in, rci records generated in the db = rci records displayed
+        ///  Steps:
+        ///   - Start by deleting all existing Rcis for that RA's dorm(s)
+        ///   - Log the RA in 
+        ///   - Verify that the counts match up
+        ///   - Verify that the AC's room shows up
+        ///   - Verify that the AC's common area shows up
+        /// </summary>
+        [TestMethod]
+        public void RciGeneration_Apt_AC_LogIn_FirstTime()
+        {
+            // Remove old rcis
+            var loginService = new LoginService();
+            var dorms = loginService.GetKingdom(Credentials.APT_RA_ID_NUMBER);
+            var rcis = db.Rci.Where(m => dorms.Contains(m.BuildingCode));
+            db.Rci.RemoveRange(rcis);
+            db.SaveChanges();
+
+            wd.Navigate().GoToUrl(Values.START_URL);
+            LoginPage login = new LoginPage(wd);
+            var dashboard = login.LoginAs(Credentials.APT_RA_USERNAME,
+                                                            Credentials.APT_RA_PASSWORD);
+
+            // Verify that the number of rcis displayed matches the number of rcis in the database for the specified dorms.
+            Assert.AreEqual(dashboard.RciCount(), db.Rci.Where(m => dorms.Contains(m.BuildingCode)).Count(), "The number of rcis displayed is different form the number of rcis in the database.");
+
+            var raName = Methods.GetFullName(Credentials.APT_RA_ID_NUMBER);
+            var raRoom = Methods.GetRoomID(Credentials.APT_RA_ID_NUMBER);
+
+            // Will throw exception if these cards are not found
+            dashboard.GetRciCardWithName(raName["firstname"] + " " + raName["lastname"]);
+            dashboard.GetCommonAreaRciCard(raRoom["building"] + " " + raRoom["room"].TrimEnd(new char[] { 'A', 'B', 'C', 'D' }));
+
 
             wd.Close();
         }

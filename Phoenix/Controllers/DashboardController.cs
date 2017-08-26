@@ -92,8 +92,14 @@ namespace Phoenix.Controllers
             }
 
             var temp = (JArray)TempData["kingdom"];
+            var currentBuilding = (string)TempData["currentBuilding"];
+            var currentRoom = (string)TempData["currentRoom"];
             List<string> kingdom = temp.ToObject<List<string>>();
+            // Create missing individual rcis for the kindgom
             dashboardService.SyncRoomRcisFor(kingdom);
+            // Create a common area rci if missing
+            dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom);
+
             var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom);
 
             return View(buildingRCIs);
