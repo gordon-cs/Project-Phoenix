@@ -33,9 +33,7 @@ namespace Phoenix.Controllers
         }
 
         // POST: Login
-        // ValidateInput(false) is set so that all characters will be allowed for passwords
-        // Without it, a password with "<" or ">" for exmple will cause an exception to be thrown due to HTML content validation.
-        [HttpPost, ValidateInput(false)]
+        [HttpPost]
         public ActionResult Authenticate(LoginViewModel loginViewModel)
         {
 
