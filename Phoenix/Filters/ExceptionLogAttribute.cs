@@ -29,6 +29,7 @@ namespace Phoenix.Filters
             message.AppendLine(filterContext.HttpContext.Request.Url.ToString());
             message.AppendLine("Exception: " + filterContext.Exception.Message);
             message.AppendLine("Inner Exception: " + filterContext.Exception.InnerException);
+            message.AppendLine("Stack Trace: " + filterContext.Exception.StackTrace);
 
 
             log.Error(message.ToString());
