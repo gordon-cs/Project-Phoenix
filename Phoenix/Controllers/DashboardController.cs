@@ -56,18 +56,36 @@ namespace Phoenix.Controllers
         {
             // Redirect to other dashboards if role not correct
             var role = (string)TempData["role"];
-
             if (role == null)
             {
                 return RedirectToAction("Index", "Login");
             }
 
-
             // TempData stores object, so always cast to string.
             var strID = (string)TempData["id"];
+            if (strID == null)
+            {
+                throw new ArgumentNullException("Couldn't find the Gordon ID for  resident. It was null.");
+            }
+
             var currentBuilding = (string)TempData["currentBuilding"];
+            if (currentBuilding == null)
+            {
+                throw new ArgumentNullException("Couldn't find current building for resident. It was null.");
+            }
+
             var currentRoom = (string)TempData["currentRoom"];
+            if (currentRoom == null)
+            {
+                throw new ArgumentNullException("Couldn't find current room for resident. It was null.");
+            }
+
             var temp = (JValue)TempData["currentRoomAssignDate"];
+            if (temp == null)
+            {
+                throw new ArgumentNullException("Couldn't get the most recent room assign date for resident. It was null");
+            }
+
             DateTime currentRoomAssignDate = temp.ToObject<DateTime>();
 
             dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID, currentRoomAssignDate);
@@ -83,9 +101,8 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult RA()
         {
-            // Redirect to other dashboards if role not correct
+            // Redirect to login if role not correct
             var role = (string)TempData["role"];
-
             if (role == null)
             {
                 return RedirectToAction("Index", "Login");
@@ -103,16 +120,14 @@ namespace Phoenix.Controllers
         [RD]
         public ActionResult RD()
         {
-            // Redirect to other dashboards if role not correct
+            // Redirect to login if role not correct
             var role = (string)TempData["role"];
-
             if (role == null)
             {
                 return RedirectToAction("Index", "Login");
             }
 
             // Display all RCI's for the corresponding building
-
             // RD is not in RoomAssign, so there will be nothing under currentRoomNumber and currentBuilding.
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
