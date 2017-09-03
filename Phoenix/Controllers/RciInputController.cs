@@ -11,6 +11,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using Phoenix.Exceptions;
+using System.Text;
 
 namespace Phoenix.Controllers
 {
@@ -346,11 +348,22 @@ namespace Phoenix.Controllers
         /// </summary>
         /// <param name="damageId">The id for the damage that has the associated photo we want to delete</param>
         [HttpPost]
-        public ActionResult DeletePhoto(int damageId) //Hmm, this would be cleaner if we used the damage id
+        public ActionResult DeletePhoto(int damageId)
         {
+            var log = new LoggerService();
+            var message = new StringBuilder();
+
             var damage = db.Damage.Find(damageId);
 
+            if (damage == null)
+            {
+                message.AppendLine("User requested to delete photo with damage ID of " + damageId + ". But it was not found");
+                log.Error(message.ToString());
+
+                return new HttpStatusCodeResult(500, "Could not find photo of damage with ID " + damageId);
+            }
             var filePath = Server.MapPath(damage.DamageImagePath);
+
             try
             {
                 db.Damage.Remove(damage); // Remove from db
@@ -360,7 +373,13 @@ namespace Phoenix.Controllers
             }
             catch(Exception e)
             {
-                return new HttpStatusCodeResult(500, "Error saving photo. Error message: " + e.Message);
+                message.AppendLine("User requested to delete photo with damage ID of " + damageId + ". But an exception was thrown.");
+                message.AppendLine("Exception: " + e.Message);
+                message.AppendLine("Inner Exception: " + e.InnerException);
+                message.AppendLine("StackTrace: " + e.StackTrace);
+                log.Error(message.ToString());
+
+                return new HttpStatusCodeResult(500, "Error deleting photo. Error message: " + e.Message);
             }
 
         }
