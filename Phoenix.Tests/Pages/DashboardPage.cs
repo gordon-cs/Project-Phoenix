@@ -319,7 +319,9 @@ namespace Phoenix.Tests.Pages
         {
             string roomID = apartmentNumber.Trim().ToLower();
 
-            var rciList = webDriver.FindElements(rciCards).Where(m => m.FindElement(rciCardBuildingAndRoom).Text.ToLower().Equals(roomID));
+            var rciList = webDriver.FindElements(rciCards).Where(m => 
+            m.FindElement(rciCardBuildingAndRoom).Text.ToLower().Equals(roomID)
+            && m.FindElement(rciCardStudentName).Text.ToLower().Equals("common area rci"));
 
             // There should be only one entry
             if (rciList.Count() > 1)
