@@ -13,6 +13,7 @@ namespace Phoenix.Tests.Pages
         private static By signatureContainer = By.Id("signature-container");
         private static By signatureInput = By.CssSelector("[data-selenium-id='signature-field']");
         private static By signatureSubmit = By.Id("submit-button");
+        private static By queueForSigningCheckbox = By.Id("rci-sig-checkbox");
 
         public bool isEditPage;
         public bool isReviewPage;
@@ -111,6 +112,23 @@ namespace Phoenix.Tests.Pages
             {
                 throw new NoSuchElementException("Could not find the signature popup. Perhaps it has not yet been opened/is not visible.", e);
             }
+        }
+
+        public RciCheckinPage ToggleQueueForSigningCheckbox()
+        {
+            IWebElement checkbox;
+            try
+            {
+                checkbox = webDriver.FindElement(queueForSigningCheckbox);
+            }
+            catch(NoSuchElementException e)
+            {
+                throw new NoSuchElementException("Could not find the checkbox allowing an RD to queue an RCI for later signing. Perhaps this person is not an RD.", e);
+            }
+
+            checkbox.Click();
+
+            return this;
         }
     }
 }

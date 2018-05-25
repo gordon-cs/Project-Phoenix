@@ -11,7 +11,7 @@
              rciCssClass = "rci-card-checkout";
          }
      }
-<div class="divAddOn-vert rci-card">
+<div id="@rci.RciID" class="divAddOn-vert rci-card">
     <a data-selenium-id="dashboard-page-rci-button" href="@Url.Action(actionName:"GotoRci", controllerName:"Dashboard", routeValues: new { rciID = rci.RciID })">
         <div class="divAddOn-vert-field search-field @rciCssClass">
             <p class="emphasized" data-selenium-id="dashboard-page-rci-building-and-room">@rci.BuildingCode @rci.RoomNumber</p>

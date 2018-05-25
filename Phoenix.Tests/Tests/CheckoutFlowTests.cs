@@ -32,116 +32,126 @@ namespace Phoenix.Tests.Tests
         [TestMethod]
         public void CheckoutFlow_DormBuilding()
         {
-            // Clear old rcis
-            var oldRcis = db.Rci.Where(m => m.GordonID.Equals(Credentials.DORM_RES_ID_NUMBER));
-            db.Rci.RemoveRange(oldRcis);
-            db.SaveChanges();
+            try
+            {
+                // Clear old rcis
+                var oldRcis = db.Rci.Where(m => m.GordonID.Equals(Credentials.DORM_RES_ID_NUMBER));
+                db.Rci.RemoveRange(oldRcis);
+                db.SaveChanges();
 
-            var resident_name = Methods.GetFullName(Credentials.DORM_RES_ID_NUMBER);
-            var ra_name = Methods.GetFullName(Credentials.DORM_RA_ID_NUMBER);
-            var rd_name = Methods.GetFullName(Credentials.DORM_RD_ID_NUMBER);
+                var resident_name = Methods.GetFullName(Credentials.DORM_RES_ID_NUMBER);
+                var ra_name = Methods.GetFullName(Credentials.DORM_RA_ID_NUMBER);
+                var rd_name = Methods.GetFullName(Credentials.DORM_RD_ID_NUMBER);
 
-            // START  Quick checkin flow -- pls don't hate me for doing this :))))
-            wd.Navigate().GoToUrl(Values.START_URL);
-            new LoginPage(wd)
-                .LoginAs(Credentials.DORM_RES_USERNAME, Credentials.DORM_RES_PASSWORD)
-                .SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"])
-                .asRciCheckinPage()
-                .HitNextToSignatures()
-                .Sign(resident_name["firstname"] + " " + resident_name["lastname"])
-                .SubmitSignature()
-                .Logout()
-                .LoginAs(Credentials.DORM_RA_USERNAME, Credentials.DORM_RA_PASSWORD)
-                .SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"])
-                .asRciCheckinPage()
-                .HitNextToSignatures()
-                .Sign(ra_name["firstname"] + " " + ra_name["lastname"])
-                .SubmitSignature()
-                .Logout()
-                .LoginAs(Credentials.DORM_RD_USERNAME, Credentials.DORM_RD_PASSWORD)
-                .SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"])
-                .asRciCheckinPage()
-                .HitNextToSignatures()
-                .Sign(rd_name["firstname"] + " " + rd_name["lastname"])
-                .SubmitSignature()
-                .Logout();
-            // END Quick checkin flow. 
-            //At this point, if everything went well the resident's rci will be green
+                // START  Quick checkin flow -- pls don't hate me for doing this :))))
+                wd.Navigate().GoToUrl(Values.START_URL);
+                var rciId = new LoginPage(wd)
+                    .LoginAs(Credentials.DORM_RES_USERNAME, Credentials.DORM_RES_PASSWORD)
+                    .GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"])
+                    .GetId();
 
-            wd.Navigate().GoToUrl(Values.START_URL);
+                new DashboardPage(wd)
+                    .SelectRci(rciId)
+                    .asRciCheckinPage()
+                    .HitNextToSignatures()
+                    .Sign(resident_name["firstname"] + " " + resident_name["lastname"])
+                    .SubmitSignature()
+                    .Logout()
+                    .LoginAs(Credentials.DORM_RA_USERNAME, Credentials.DORM_RA_PASSWORD)
+                    .SelectRci(rciId)
+                    .asRciCheckinPage()
+                    .HitNextToSignatures()
+                    .Sign(ra_name["firstname"] + " " + ra_name["lastname"])
+                    .SubmitSignature()
+                    .Logout()
+                    .LoginAs(Credentials.DORM_RD_USERNAME, Credentials.DORM_RD_PASSWORD)
+                    .SelectRci(rciId)
+                    .asRciCheckinPage()
+                    .HitNextToSignatures()
+                    .Sign(rd_name["firstname"] + " " + rd_name["lastname"])
+                    .SubmitSignature()
+                    .Logout();
+                // END Quick checkin flow. 
+                //At this point, if everything went well the resident's rci will be green
 
-            // RA logs in
-            LoginPage login = new LoginPage(wd);
-            var dashboard = login.LoginAs(Credentials.DORM_RA_USERNAME, Credentials.DORM_RA_PASSWORD);
+                wd.Navigate().GoToUrl(Values.START_URL);
 
-            var rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
+                // RA logs in
+                LoginPage login = new LoginPage(wd);
+                var dashboard = login.LoginAs(Credentials.DORM_RA_USERNAME, Credentials.DORM_RA_PASSWORD);
 
-            // Assert
-            Assert.IsTrue(rciCard.isCheckoutRci());
-            Assert.IsTrue(rciCard.isUnsigned());
-            Assert.IsFalse(rciCard.isSignedByResident());
-            Assert.IsFalse(rciCard.isSignedByRA());
+                var rciCard = dashboard.GetRciCard(rciId);
 
-
-            // RA signs for resident
-            dashboard.SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"])
-                .asRciCheckoutPage()
-                .HitNextToResidentSignature()
-                .Sign(resident_name["firstname"] + " " + resident_name["lastname"])
-                .HitNextToRASignature()
-                .GoHomeToDashboard();
-
-            rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
-
-            // Assert
-            Assert.IsTrue(rciCard.isCheckoutRci());
-            Assert.IsTrue(rciCard.isSignedByResident());
-            Assert.IsFalse(rciCard.isSignedByRA());
-
-            // RA signs
-            dashboard
-                .SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"])
-                .asRciCheckoutPage()
-                .HitNextToResidentSignature()
-                .HitNextToRASignature()
-                .Sign(ra_name["firstname"] + " " + ra_name["lastname"])
-                .SubmitSignature();
-
-            rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
-
-            // Assert
-            Assert.IsTrue(rciCard.isCheckoutRci());
-            Assert.IsTrue(rciCard.isSignedByResident());
-            Assert.IsTrue(rciCard.isSignedByRA());
-
-            //RD logs in
-            dashboard.Logout();
-            login.LoginAs(Credentials.DORM_RD_USERNAME, Credentials.DORM_RD_PASSWORD);
-
-            // RD signs
-            dashboard
-                .SelectFirstRciWithName(resident_name["firstname"] + " " + resident_name["lastname"])
-                .asRciCheckoutPage()
-                .HitNextToResidentSignature()
-                .HitNextToRASignature()
-                .HitNextToRDSignature()
-                .Sign(Credentials.DORM_RD_USERNAME, Credentials.DORM_RD_PASSWORD)
-                .SubmitSignature();
-
-            rciCard = dashboard.GetRciCardWithName(resident_name["firstname"] + " " + resident_name["lastname"]);
-
-            // Assert
-            Assert.IsTrue(rciCard.isCheckoutRci());
-            Assert.IsTrue(rciCard.isSignedByResident());
-            Assert.IsTrue(rciCard.isSignedByRA());
-            Assert.IsTrue(rciCard.isSignedByRD());
+                // Assert
+                Assert.IsTrue(rciCard.isCheckoutRci());
+                Assert.IsTrue(rciCard.isUnsigned());
+                Assert.IsFalse(rciCard.isSignedByResident());
+                Assert.IsFalse(rciCard.isSignedByRA());
 
 
-            // Cleanup 
-            var usedRci = db.Rci.Where(m => m.GordonID.Equals(Credentials.DORM_RES_ID_NUMBER));
-            db.Rci.RemoveRange(usedRci);
-            db.SaveChanges();
-            wd.Quit();
+                // RA signs for resident
+                dashboard.SelectRci(rciId)
+                    .asRciCheckoutPage()
+                    .HitNextToResidentSignature()
+                    .Sign(resident_name["firstname"] + " " + resident_name["lastname"])
+                    .HitNextToRASignature()
+                    .GoHomeToDashboard();
+
+                rciCard = dashboard.GetRciCard(rciId);
+
+                // Assert
+                Assert.IsTrue(rciCard.isCheckoutRci());
+                Assert.IsTrue(rciCard.isSignedByResident());
+                Assert.IsFalse(rciCard.isSignedByRA());
+
+                // RA signs
+                dashboard
+                    .SelectRci(rciId)
+                    .asRciCheckoutPage()
+                    .HitNextToResidentSignature()
+                    .HitNextToRASignature()
+                    .Sign(ra_name["firstname"] + " " + ra_name["lastname"])
+                    .SubmitSignature();
+
+                rciCard = dashboard.GetRciCard(rciId);
+
+                // Assert
+                Assert.IsTrue(rciCard.isCheckoutRci());
+                Assert.IsTrue(rciCard.isSignedByResident());
+                Assert.IsTrue(rciCard.isSignedByRA());
+
+                //RD logs in
+                dashboard.Logout();
+                login.LoginAs(Credentials.DORM_RD_USERNAME, Credentials.DORM_RD_PASSWORD);
+
+                // RD signs
+                dashboard
+                    .SelectRci(rciId)
+                    .asRciCheckoutPage()
+                    .HitNextToResidentSignature()
+                    .HitNextToRASignature()
+                    .HitNextToRDSignature()
+                    .Sign(Credentials.DORM_RD_USERNAME, Credentials.DORM_RD_PASSWORD)
+                    .SubmitSignature();
+
+                rciCard = dashboard.GetRciCard(rciId);
+
+                // Assert
+                Assert.IsTrue(rciCard.isCheckoutRci());
+                Assert.IsTrue(rciCard.isSignedByResident());
+                Assert.IsTrue(rciCard.isSignedByRA());
+                Assert.IsTrue(rciCard.isSignedByRD());
+
+
+                // Cleanup 
+                var usedRci = db.Rci.Where(m => m.GordonID.Equals(Credentials.DORM_RES_ID_NUMBER));
+                db.Rci.RemoveRange(usedRci);
+                db.SaveChanges();
+            }
+            finally
+            {
+                wd.Quit();
+            }
         }
     }
 }

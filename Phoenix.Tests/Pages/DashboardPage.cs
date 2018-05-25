@@ -15,6 +15,7 @@ namespace Phoenix.Tests.Pages
 
         private static By menuButton = By.ClassName("dropdown");
         private static By logoutButton = By.ClassName("logout-button");
+        private static By batchSignatureButton = By.CssSelector("[data-selenium-id='batch-signature-button']");
         private static By legend = By.ClassName("legends-wrapper");
         private static By rciCards = By.ClassName("rci-card");
         private static By rciLinks = By.CssSelector("[data-selenium-id='dashboard-page-rci-button']");
@@ -59,6 +60,28 @@ namespace Phoenix.Tests.Pages
             webDriver.FindElement(logoutButton).Click();
 
             return new LoginPage(webDriver);
+        }
+
+        /// <summary>
+        /// Finds the batch signature button and clicks on it.
+        /// </summary>
+        /// <returns>A BatchSignaturePage object</returns>
+        public BatchSignaturePage BatchSignRcis()
+        {
+            webDriver.FindElement(menuButton).Click();
+
+            try
+            {
+                new WebDriverWait(webDriver, Values.ONE_MOMENT).Until(ExpectedConditions.ElementToBeClickable(batchSignatureButton));
+            }
+            catch (TimeoutException e)
+            {
+                throw new TimeoutException("Could not find the batch signature button.", e);
+            }
+
+            webDriver.FindElement(batchSignatureButton).Click();
+
+            return new BatchSignaturePage(webDriver);
         }
 
         /// <summary>
@@ -203,20 +226,11 @@ namespace Phoenix.Tests.Pages
         /// </summary>
         /// <param name="rciID">The rci ID</param>
         /// <returns>A GeneralRciPage object. Throws </returns>
-        /// <exception cref="NotFoundException">If an rci with the given id was not found</exception>
         public GenericRciPage SelectRci(int rciID)
         {
-            var expectedHrefAttribute = Values.START_URL + "/Dashboard/GotoRci?rciID=" + rciID;
-            var rciList = webDriver.FindElements(rciLinks).Where(m => m.GetAttribute("href").Equals(expectedHrefAttribute));
-            if (rciList.Count() > 1)
-            {
-                throw new IllegalStateException("There were multiple rci cards with the same href link.");
-            }
-            if (rciList.Count() < 1)
-            {
-                throw new NotFoundException("There was no rci card with the given href. Href: " + expectedHrefAttribute);
-            }
-            rciList.First().Click();
+            var rci = webDriver.FindElement(By.Id(rciID.ToString()));
+
+            rci.Click();
 
             return new GenericRciPage(webDriver);
         }
@@ -269,25 +283,17 @@ namespace Phoenix.Tests.Pages
         /// </summary>
         /// <param name="rciID">The id of the rci we are looking for</param>
         /// <returns>An RciCard object.</returns>
-        /// <exception cref="NotFoundException">If an rci card was not found with the given id </exception>
-        /// <exception cref="IllegalStateException">If for some reason there were multiple rcis with the same id</exception>
         public RciCard GetRciCard(int rciID)
         {
-            var expectedHrefAttribute = Values.START_URL + "/Dashboard/GotoRci?rciID=" + rciID;
-            var rciList = webDriver.FindElements(rciCards).Where(m => m.FindElement(rciLinks).GetAttribute("href").Equals(expectedHrefAttribute));
-            if (rciList.Count() > 1)
-            {
-                throw new IllegalStateException("There were multiple rci cards with the same href link.");
-            }
-            if (rciList.Count() < 1)
-            {
-                throw new NotFoundException("There was no rci card with the given href. Href: " + expectedHrefAttribute);
-            }
-            return new RciCard(rciList.First(), webDriver);
+            var rci = webDriver.FindElement(By.Id(rciID.ToString()));
+
+            return new RciCard(rci, webDriver);
         }
 
         /// <summary>
-        /// Get an RciCard object that represents the rci card on the dashboard with the given name
+        /// Get an RciCard object that represents the rci card on the dashboard with the given name.
+        /// Only use this when there are not many rci cards.
+        /// This method is extremely slow when multiple cards are displayed. Try using GetRciCard instead.
         /// </summary>
         /// <param name="name">The name of the owner of the rci we are looking for</param>
         /// <returns>An RciCard object.</returns>
