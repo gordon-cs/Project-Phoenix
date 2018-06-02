@@ -276,6 +276,8 @@ namespace Phoenix.Tests.Tests
                 // RA logs in once more
                 loginPage.LoginAs(Credentials.APT_RA_USERNAME, Credentials.APT_RA_PASSWORD);
 
+                var ra_name = Methods.GetFullName(Credentials.APT_RA_ID_NUMBER);
+                
                 // Assert then sign each rci.
                 foreach (var entry in residentDictionary)
                 {
@@ -286,8 +288,6 @@ namespace Phoenix.Tests.Tests
                     Assert.IsTrue(rciCard.isSignedByResident());
                     Assert.IsFalse(rciCard.isSignedByRA());
                     Assert.IsFalse(rciCard.isSignedByRD());
-
-                    var ra_name = Methods.GetFullName(Credentials.APT_RA_ID_NUMBER);
 
                     // Sign
                     var rciPage = rciCard.Click();
@@ -302,6 +302,8 @@ namespace Phoenix.Tests.Tests
                 // Loging As RD To Complete Stuff
                 loginPage
                     .LoginAs(Credentials.APT_RD_USERNAME, Credentials.APT_RD_PASSWORD);
+
+                var rd_name = Methods.GetFullName(Credentials.APT_RD_ID_NUMBER);
 
                 // Assert
                 foreach (var entry in residentDictionary)
@@ -319,6 +321,33 @@ namespace Phoenix.Tests.Tests
                         .ToggleQueueForSigningCheckbox()
                         .SubmitSignature();
                 }
+
+                // Now Go to the Batch Signature page.
+                var batchSignaturePage = dashboard.BatchSignRcis();
+
+                Assert.IsTrue(batchSignaturePage.CountRcisTobeSigned() == 4);
+
+                // Now Sign them all
+                batchSignaturePage
+                    .Sign(rd_name["firstname"] + " " + rd_name["lastname"])
+                    .SubmitSignature();
+
+
+                // Assert
+                foreach (var entry in residentDictionary)
+                {
+                    var rciCard = dashboard.GetRciCard(int.Parse(entry.Value["rciId"]));
+
+                    Assert.IsTrue(rciCard.isCheckoutRci());
+                    Assert.IsFalse(rciCard.isSignedByResident());
+                    Assert.IsFalse(rciCard.isSignedByRA());
+                    Assert.IsFalse(rciCard.isSignedByRD());
+                }
+
+                dashboard.Logout();
+
+                // Cleanup
+
             }
             finally
             {

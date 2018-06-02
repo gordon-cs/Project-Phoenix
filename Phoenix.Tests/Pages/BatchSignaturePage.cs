@@ -14,6 +14,7 @@ namespace Phoenix.Tests.Pages
 
         private static By signatureInput = By.CssSelector("[data-selenium-id='rci-sig']");
         private static By submitButton = By.CssSelector("[data-selenium-id='submit-button']");
+        private static By checkedInputBox = By.CssSelector("[data-selenium-id='checked-input-box']");
 
         public BatchSignaturePage(IWebDriver driver)
         {
@@ -71,6 +72,15 @@ namespace Phoenix.Tests.Pages
             }
 
             return new DashboardPage(webDriver);
+        }
+
+        /// <summary>
+        /// Figure out how many Rcis there are to sign by counting the number of checkeed input boxes on the page.
+        /// </summary>
+        /// <returns>The Number of Rcis that have been checked to be signed.</returns>
+        public int CountRcisTobeSigned()
+        {
+            return webDriver.FindElements(checkedInputBox).Count;
         }
 
 

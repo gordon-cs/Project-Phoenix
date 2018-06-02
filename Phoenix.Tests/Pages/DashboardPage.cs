@@ -79,7 +79,7 @@ namespace Phoenix.Tests.Pages
                 throw new TimeoutException("Could not find the batch signature button.", e);
             }
 
-            webDriver.FindElement(batchSignatureButton).Click();
+            webDriver.FindElement(batchSignatureButton).FindElement(By.TagName("a")).Click();
 
             return new BatchSignaturePage(webDriver);
         }

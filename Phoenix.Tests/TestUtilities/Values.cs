@@ -21,6 +21,6 @@ namespace Phoenix.Tests.TestUtilities
         public static string RCI_CHECKOUT_PAGE_EDIT_TITLE = "Online RCI - Checkout";
         public static string RCI_CHECKOUT_PAGE_REVIEW_TITLE = "Online RCI - Checkout Review";
         public static string LOGIN_PAGE_TITLE = "Online RCI - Login";
-        public static string BATCH_SIGNATURE_TITLE = "Online RCI - Batch Sign RCI Check-Ins";
+        public static string BATCH_SIGNATURE_TITLE = "Online RCI - Check-In Signature";
     }
 }

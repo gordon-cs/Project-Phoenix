@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\RciCard.cs" />
+    <Compile Include="Pages\BatchSignaturePage.cs" />
     <Compile Include="Pages\DashboardPage.cs" />
     <Compile Include="Pages\RciCheckinPage.cs" />
     <Compile Include="Pages\GenericRciPage.cs" />
