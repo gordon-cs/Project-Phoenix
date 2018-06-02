@@ -39,7 +39,7 @@
                 <ul class="dropdown-menu">
                     @if (ViewBag.Role == "RD" || ViewBag.Role == "ADMIN")
                     {
-                        <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "SignAllRD", controllerName: "RciInput")">Batch Sign RCI Checkins</a></li>
+                        <li data-selenium-id="batch-signature-button" class="dropdown-menu-item"><a href="@Url.Action(actionName: "SignAllRD", controllerName: "RciInput")">Batch Sign RCI Checkins</a></li>
                         <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "ExportFines", controllerName: "Dashboard")">Export Fines</a></li>
                         <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "ArchiveRcis", controllerName: "Dashboard")">Archive Rcis</a></li>
                     }

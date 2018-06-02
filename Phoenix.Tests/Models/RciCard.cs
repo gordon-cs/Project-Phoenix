@@ -24,6 +24,11 @@ namespace Phoenix.Tests.Models
             webDriver = wd;
         }
 
+        public int GetId()
+        {
+            return int.Parse(element.GetAttribute("id"));
+        }
+
         public bool isCheckinRci()
         {
             return element.FindElement(By.ClassName(rciCheckinClass)) != null;

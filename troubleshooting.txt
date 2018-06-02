@@ -1,0 +1,8 @@
+ChromeDriver Crashing?
+
+Download an older version of the driver. Preferably 2.38, which i know works.
+https://chromedriver.storage.googleapis.com/index.html?path=2.38/
+
+Copying ChromeDriver fails with error code 1?
+
+Open up task manager. Chances are, chromedriver doesn't exit normally, and you will have to manually end the task.

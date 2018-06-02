@@ -104,7 +104,7 @@ namespace Phoenix.Services
             }
 
             List<string> kingdom = null;
-            if(role == "RA" || role == "RD")
+            if(role == "RA" || role == "RD" || role == "ADMIN")
             {
                 kingdom = GetKingdom(id); // The buildings for which you are responsible
             }

@@ -74,4 +74,8 @@
     {
         @Html.Partial("CheckinSigRD", Model)
     }
+    else if (ViewBag.Role == "ADMIN")
+    {
+        @Html.Partial("CheckinSigRD", Model)
+    }
 </div>
