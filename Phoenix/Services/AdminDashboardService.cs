@@ -1,4 +1,5 @@
-﻿using Phoenix.Models;
+﻿using Phoenix.DataAccessLayer;
+using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
 using System;
@@ -48,32 +49,32 @@ namespace Phoenix.Services
          */
         public IEnumerable<HomeRciViewModel> Search(IEnumerable<string> sessions, IEnumerable<string> buildings, string keyword)
         {
-            // Note: These queries are not quite right yet. Maybe I can try refining them in SQL server
-           
-                var results = from rci in db.Rci
-                              join account in db.Account on rci.GordonID equals account.ID_NUM 
-                              join sess in db.Session on rci.SessionCode equals sess.SESS_CDE
-                              where sessions.Contains(sess.SESS_CDE) && buildings.Contains(rci.BuildingCode)
-                              &&( keyword.Contains(rci.GordonID) || keyword.Contains(rci.BuildingCode)
-                              || keyword.Contains(rci.SessionCode) || keyword.Contains(rci.RoomNumber)
-                              || (account.firstname + " " + account.lastname).Contains(keyword))
-                              select new HomeRciViewModel
-                              {
-                                  RciID = rci.RciID,
-                                  BuildingCode = rci.BuildingCode.Trim(),
-                                  RoomNumber = rci.RoomNumber.Trim(),
-                                  FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                                  LastName = account.lastname == null ? "RCI" : account.lastname,
-                                  RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                                  CheckinSigRes = rci.CheckinSigRes,
-                                  CheckinSigRA = rci.CheckinSigRA,
-                                  CheckinSigRD = rci.CheckinSigRD,
-                                  CheckoutSigRes = rci.CheckoutSigRes,
-                                  CheckoutSigRA = rci.CheckoutSigRA,
-                                  CheckoutSigRD = rci.CheckoutSigRD
-                              };
+            var rciQueries = new RciQueries();
 
-                return results;
+            var results = from rci in rciQueries.Rcis()
+                            where sessions.Contains(rci.SessionCode) && buildings.Contains(rci.BuildingCode)
+                            &&( (rci.GordonID != null && keyword.Contains(rci.GordonID)) 
+                            || keyword.Contains(rci.BuildingCode)
+                            || keyword.Contains(rci.SessionCode) 
+                            || keyword.Contains(rci.RoomNumber)
+                            || (rci.FirstName + " " + rci.LastName).Contains(keyword))
+                            select new HomeRciViewModel
+                            {
+                                RciID = rci.RciID,
+                                BuildingCode = rci.BuildingCode.Trim(),
+                                RoomNumber = rci.RoomNumber.Trim(),
+                                FirstName = rci.FirstName,
+                                LastName = rci.LastName,
+                                RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
+                                CheckinSigRes = rci.CheckinSigRes,
+                                CheckinSigRA = rci.CheckinSigRA,
+                                CheckinSigRD = rci.CheckinSigRD,
+                                CheckoutSigRes = rci.CheckoutSigRes,
+                                CheckoutSigRA = rci.CheckoutSigRA,
+                                CheckoutSigRD = rci.CheckoutSigRD
+                            };
+
+            return results;
  
         }
 

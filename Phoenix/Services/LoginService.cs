@@ -193,6 +193,11 @@ namespace Phoenix.Services
                 throw new ArgumentNullException("Can't get the kingdom of a user with a null id number.");
             }
 
+            if (db.Admin.Any(x => x.GordonID.Equals(id, StringComparison.OrdinalIgnoreCase)))
+            {
+                return db.BuildingAssign.Select(x => x.BuildingCode).ToList();
+            }
+
             var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
             if (RDentry != null)
             {
