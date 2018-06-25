@@ -1,0 +1,103 @@
+﻿using Phoenix.DapperDal;
+using Phoenix.DapperDal.Types;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using Xunit;
+
+namespace Phoenix.UnitTests
+{
+    public class DapperDalTests
+    {
+        private readonly IDapperDal Dal;
+        private readonly string ConnectionString;
+
+        
+        public DapperDalTests()
+        {
+            this.ConnectionString = ConfigurationManager.ConnectionStrings["RCIDatabase"].ConnectionString;
+
+            this.Dal = new DapperDal.DapperDal(this.ConnectionString);
+
+            SlapperAutoMapperInit.Initialize();
+        }
+
+        [Fact]
+        public void FetchRciById_Succeeds()
+        {
+            // Arrange
+            int existingRciId = 4842;
+
+            // Test
+            var result = this.Dal.FetchRciById(existingRciId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotEqual(0, result.RciId);
+            Assert.NotNull(result.SessionCode);
+            Assert.NotNull(result.RciComponents);
+            Assert.NotEqual(0, result.RciComponents.Count);
+            Assert.NotNull(result.RciComponents[0].Fines);
+            Assert.NotNull(result.RciComponents[0].Damages);
+            Assert.NotNull(result.CommonAreaSignatures);
+        }
+
+        [Fact]
+        public void FetchRciById_Throws_When_No_Rci_Exists_For_The_RciId()
+        {
+            var exception = Assert.Throws<Exception>(() => this.Dal.FetchRciById(0));
+
+            Assert.Contains("Expected a single result", exception.Message);
+        }
+
+        [Fact]
+        public void FetchRciBySessionAndBuilding_Returns_Empty_List_When_No_Sessions_Or_Buildings_Are_Given()
+        {
+            var result = this.Dal.FetchRciBySessionAndBuilding(new List<string>(), new List<string>());
+
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void FetchRciBySessionAndBuilding_Successeds()
+        {
+            var sessions = new List<string> { "201801" };
+            var buildings = new List<string> { "LEW" };
+
+            var result = this.Dal.FetchRciBySessionAndBuilding(sessions, buildings);
+
+            Assert.NotEmpty(result);
+            Assert.True(result.TrueForAll(x => x.SessionCode.Equals("201801")));
+            Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("LEW")));
+
+            var rciIds = result.Select(x => x.RciId);
+            var duplicateRciIds = rciIds.GroupBy(r => r).Any(x => x.Count() > 1);
+
+
+            Assert.False(duplicateRciIds);
+        }
+
+        [Fact]
+        public void FetchBuildingCodes_Success()
+        {
+            var results = this.Dal.FetchBuildingCodes();
+
+            Assert.NotNull(results);
+            Assert.NotEmpty(results);
+        }
+
+        [Fact]
+        public void FetchSessions_Success()
+        {
+            var results = this.Dal.FetchSessions();
+
+            Assert.NotNull(results);
+            Assert.NotEmpty(results);
+            Assert.NotNull(results[0].SessionCode);
+            Assert.NotNull(results[0].SessionDescription);
+            Assert.NotNull(results[0].SessionStartDate);
+            Assert.NotNull(results[0].SessionEndDate);
+        }
+    }
+}
