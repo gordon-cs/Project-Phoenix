@@ -1,4 +1,5 @@
-﻿using Phoenix.Filters;
+﻿using Phoenix.DapperDal;
+using Phoenix.Filters;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -16,6 +17,7 @@ namespace Phoenix
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            SlapperAutoMapperInit.Initialize();
         }
     }
 }

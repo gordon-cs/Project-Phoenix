@@ -5,15 +5,20 @@ using System.Drawing;
 using System.Collections.Generic;
 using System;
 using System.Drawing.Drawing2D;
+using Phoenix.DapperDal;
 
 namespace Phoenix.Services
 {
     public class RciInputService
     {
         private RCIContext db;
+
+        private readonly IDapperDal Dal;
+
         public RciInputService()
         {
             db = new Models.RCIContext();
+            this.Dal = new DapperDal.DapperDal();
         }
 
         public Rci GetRci(int id)

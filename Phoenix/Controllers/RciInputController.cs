@@ -23,9 +23,6 @@ namespace Phoenix.Controllers
         private RCIContext db;
         private RciInputService rciInputService;
 
-        // This list is static so it will persist across actions.
-        private static List<int> damagesToDelete = new List<int>();
-
         public RciInputController()
         {
             db = new Models.RCIContext();

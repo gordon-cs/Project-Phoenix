@@ -1,9 +1,16 @@
-﻿using Phoenix.DataAccessLayer;
+﻿using Dapper;
+using Newtonsoft.Json;
+using Phoenix.DapperDal;
+using Phoenix.DapperDal.Types;
+using Phoenix.DataAccessLayer;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -11,22 +18,22 @@ namespace Phoenix.Services
 {
     public class AdminDashboardService
     {
-        private RCIContext db;
+        private readonly IDapperDal Dal;
 
         public AdminDashboardService()
         {
-            db = new Models.RCIContext();
-        }
-        
-        /* Get a list of all current building codes in the system
-         */
-        public IEnumerable<string> GetBuildingCodes()
-        {
-            var buildingCodes = from entry in db.BuildingAssign
-                                select entry.BuildingCode;
-            return buildingCodes;
+            this.Dal = new DapperDal.DapperDal();
         }
 
+        public AdminDashboardService(IDapperDal _dal)
+        {
+            this.Dal = _dal;
+        }
+        
+        public IEnumerable<string> GetBuildingCodes()
+        {
+            return this.Dal.FetchBuildingCodes();
+        }
 
         /* Get a list of session codes for the last 4 years
          */
@@ -34,50 +41,20 @@ namespace Phoenix.Services
         {
             DateTime fourYearsAgo = DateTime.Today.AddYears(-4);
 
-            var sessions = from entry in db.Session
-                           select entry;
+            var sessions = this.Dal.FetchSessions();
+
             // now filter out only recent sessions
-            sessions = sessions.Where(x => fourYearsAgo.CompareTo(x.SESS_BEGN_DTE.Value) <= 0).OrderByDescending(m => m.SESS_BEGN_DTE);
+            sessions = sessions
+                .Where(x => fourYearsAgo.CompareTo(x.SessionStartDate.Value) <= 0)
+                .OrderByDescending(m => m.SessionStartDate)
+                .ToList();
 
             // Convert query result to a dictionary of <key=Session Code, value=Session Description>
-            IDictionary<string, string> sessionDictionary = sessions.ToDictionary(s => s.SESS_CDE.Trim(), s => s.SESS_DESC.Trim());
+            IDictionary<string, string> sessionDictionary = sessions.ToDictionary(s => s.SessionCode.Trim(), s => s.SessionDescription.Trim());
 
             return sessionDictionary;
         }
-
-        /* Search the RCI db for RCI's that match specified search criteria 
-         */
-        public IEnumerable<HomeRciViewModel> Search(IEnumerable<string> sessions, IEnumerable<string> buildings, string keyword)
-        {
-            var rciQueries = new RciQueries();
-
-            var results = from rci in rciQueries.Rcis()
-                            where sessions.Contains(rci.SessionCode) && buildings.Contains(rci.BuildingCode)
-                            &&( (rci.GordonID != null && keyword.Contains(rci.GordonID)) 
-                            || keyword.Contains(rci.BuildingCode)
-                            || keyword.Contains(rci.SessionCode) 
-                            || keyword.Contains(rci.RoomNumber)
-                            || (rci.FirstName + " " + rci.LastName).Contains(keyword))
-                            select new HomeRciViewModel
-                            {
-                                RciID = rci.RciID,
-                                BuildingCode = rci.BuildingCode.Trim(),
-                                RoomNumber = rci.RoomNumber.Trim(),
-                                FirstName = rci.FirstName,
-                                LastName = rci.LastName,
-                                RciStage = rci.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                                CheckinSigRes = rci.CheckinSigRes,
-                                CheckinSigRA = rci.CheckinSigRA,
-                                CheckinSigRD = rci.CheckinSigRD,
-                                CheckoutSigRes = rci.CheckoutSigRes,
-                                CheckoutSigRA = rci.CheckoutSigRA,
-                                CheckoutSigRD = rci.CheckoutSigRD
-                            };
-
-            return results;
- 
-        }
-
+    
         // Load all the different types of RCIs from the RoomComponents.xml doc
         // Returns a tuple of strings representing each type of RCI, 
         //where Item 1 is the building code and Item 2 is the room type (either common (area) or individual)
@@ -110,5 +87,55 @@ namespace Phoenix.Services
            
     }
 
+        public List<HomeRciViewModel> Search(IEnumerable<string> sessions, IEnumerable<string> buildings, string keyword)
+        {
+            // Filter all the rcis by the session and building codes provided
+            var filteredRcis = this.Dal.FetchRciBySessionAndBuilding(sessions.ToList(), buildings.ToList());
+
+            List<SmolRci> searchResults = filteredRcis;
+
+            // Of the returned rcis, search for the keyword inside specific fields
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                searchResults = filteredRcis
+                    .Where(x =>
+                    {
+                        if (x.FirstName != null && x.FirstName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                            return true;
+                        if (x.LastName != null && x.LastName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                            return true;
+                        if (x.FirstName != null && x.LastName != null && $"{x.FirstName} {x.LastName}".IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                            return true;
+                        if (x.GordonId != null && x.GordonId.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                            return true;
+                        if (x.RoomNumber != null && x.RoomNumber.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                            return true;
+                        return false;
+                    })
+                    .ToList();
+            }
+
+            return searchResults
+                .Select(x =>
+                {
+                    return new HomeRciViewModel
+                    {
+                        RciID = x.RciId,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        BuildingCode = x.BuildingCode,
+                        RoomNumber = x.RoomNumber,
+                        CheckinSigRes = x.ResidentCheckinDate,
+                        CheckinSigRA = x.RaCheckinDate,
+                        CheckinSigRD = x.RdCheckinDate,
+                        CheckoutSigRes = x.ResidentCheckoutDate,
+                        CheckoutSigRA = x.RaCheckoutDate,
+                        CheckoutSigRD = x.RdCheckoutDate,
+                        RciStage = x.RaCheckinDate == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE
+                    };
+                })
+                .ToList();
+
+        }
     }
 }

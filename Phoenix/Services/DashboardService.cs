@@ -21,6 +21,11 @@ namespace Phoenix.Services
             document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
         }
 
+        public DashboardService(bool testflag)
+        {
+            db = new Models.RCIContext();
+        }
+
         /// <summary>
         /// Get a set of RCI's, depending on certain parameters, such as building, year, etc.
         /// This method is used in admin Find RCIs tool
