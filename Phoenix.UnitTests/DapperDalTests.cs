@@ -1,14 +1,17 @@
-﻿using Phoenix.DapperDal;
+﻿using Dapper;
+using Phoenix.DapperDal;
 using Phoenix.DapperDal.Types;
+using Phoenix.UnitTests.TestUtilities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using Xunit;
 
 namespace Phoenix.UnitTests
 {
-    public class DapperDalTests
+    public class DapperDalTests : IClassFixture<DatabaseFixture>
     {
         private readonly IDapperDal Dal;
         private readonly string ConnectionString;
@@ -23,6 +26,7 @@ namespace Phoenix.UnitTests
             SlapperAutoMapperInit.Initialize();
         }
 
+       
         [Fact]
         public void FetchRciById_Succeeds()
         {
