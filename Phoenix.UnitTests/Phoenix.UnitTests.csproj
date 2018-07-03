@@ -81,7 +81,7 @@
     <Compile Include="AdminDashboardServiceTests.cs" />
     <Compile Include="DapperDalTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestUtilities\TestDatabase.cs" />
+    <Compile Include="TestUtilities\DatabaseFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">

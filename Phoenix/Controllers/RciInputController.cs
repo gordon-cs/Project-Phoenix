@@ -21,12 +21,12 @@ namespace Phoenix.Controllers
     {
         // RCI context wrapper. It can be considered to be an object that represents the database.
         private RCIContext db;
-        private RciInputService rciInputService;
+        private IRciInputService rciInputService;
 
-        public RciInputController()
+        public RciInputController(IRciInputService service)
         {
             db = new Models.RCIContext();
-            rciInputService = new RciInputService();
+            rciInputService = service;
         }
 
         public ActionResult Index(int id)

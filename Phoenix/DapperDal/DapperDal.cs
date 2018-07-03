@@ -10,23 +10,18 @@ using System.Web;
 
 namespace Phoenix.DapperDal
 {
-    public class DapperDal : IDapperDal
+    public class DapperDal : IDal
     {
-        public readonly string ConnectionString;
+        public readonly IDbConnectionFactory _dbConnectionFactory;
 
-        public DapperDal()
+        public DapperDal(IDbConnectionFactory factory)
         {
-            this.ConnectionString = ConfigurationManager.ConnectionStrings["RCIDatabase"].ConnectionString;
-        }
-
-        public DapperDal(string _connectionString)
-        {
-            this.ConnectionString = _connectionString;
+            this._dbConnectionFactory = factory;
         }
 
         public List<string> FetchBuildingCodes()
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = @"select BuildingCode from BuildingAssign group by BuildingCode";
 
@@ -36,7 +31,7 @@ namespace Phoenix.DapperDal
 
         public List<Session> FetchSessions()
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = @"select s.SESS_CDE as SessionCode, 
                             s.SESS_DESC as SessionDescription, 
@@ -50,7 +45,7 @@ namespace Phoenix.DapperDal
 
         public BigRci FetchRciById(int rciId)
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = BigRciSelectStatement + "where rci.RciId = @RciId";
 
@@ -79,7 +74,7 @@ namespace Phoenix.DapperDal
 
         public List<BigRci> FetchRciByGordonId(string gordonId)
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = BigRciSelectStatement + "where rci.GordonId = @GordonId";
 
@@ -95,7 +90,7 @@ namespace Phoenix.DapperDal
 
         public List<SmolRci> FetchRciBySessionAndBuilding(List<string> sessions, List<string> buildings)
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = SmolRciSelectstatement +
                     "where rci.SessionCode in @SessionCodes and rci.BuildingCode in @BuildingCodes";

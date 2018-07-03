@@ -44,6 +44,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.0.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.0.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.4.0.2\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
@@ -152,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\DependencyInjection.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminDashboardController.cs" />
@@ -163,6 +170,8 @@
     <Compile Include="Controllers\RciCheckoutController.cs" />
     <Compile Include="Controllers\RciComponentReassignController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
+    <Compile Include="DapperDal\IDbConnectionFactory.cs" />
+    <Compile Include="DapperDal\SqlConnectionFactory.cs" />
     <Compile Include="DapperDal\Types\BigRci.cs" />
     <Compile Include="DapperDal\Types\CommonAreaRciSignature.cs" />
     <Compile Include="DapperDal\Types\Damage.cs" />
@@ -227,6 +236,8 @@
     </Compile>
     <Compile Include="Services\AdminDashboardService.cs" />
     <Compile Include="Services\DashboardService.cs" />
+    <Compile Include="Services\Interfaces\IAdminDashboardService.cs" />
+    <Compile Include="Services\Interfaces\IRciInputService.cs" />
     <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\RciComponentReassignService.cs" />

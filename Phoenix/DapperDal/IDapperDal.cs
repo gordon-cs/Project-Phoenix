@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Phoenix.DapperDal
 {
-    public interface IDapperDal
+    public interface IDal
     {
        
         BigRci FetchRciById(int rciId);

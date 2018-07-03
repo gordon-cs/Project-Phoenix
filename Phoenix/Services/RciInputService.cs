@@ -9,16 +9,17 @@ using Phoenix.DapperDal;
 
 namespace Phoenix.Services
 {
-    public class RciInputService
+    public class RciInputService : IRciInputService
     {
         private RCIContext db;
 
-        private readonly IDapperDal Dal;
+        private readonly IDal Dal;
 
-        public RciInputService()
+        public RciInputService(IDal dal)
         {
             db = new Models.RCIContext();
-            this.Dal = new DapperDal.DapperDal();
+
+            this.Dal = dal;
         }
 
         public Rci GetRci(int id)

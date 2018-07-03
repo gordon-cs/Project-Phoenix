@@ -13,15 +13,15 @@ namespace Phoenix.UnitTests
 {
     public class DapperDalTests : IClassFixture<DatabaseFixture>
     {
-        private readonly IDapperDal Dal;
-        private readonly string ConnectionString;
+        private readonly IDal Dal;
 
+        private IDbConnectionFactory DbConnectionFactory { get; set; }
         
-        public DapperDalTests()
+        public DapperDalTests(DatabaseFixture fixture)
         {
-            this.ConnectionString = ConfigurationManager.ConnectionStrings["RCIDatabase"].ConnectionString;
+            this.DbConnectionFactory = fixture.DbFactory;
 
-            this.Dal = new DapperDal.DapperDal(this.ConnectionString);
+            this.Dal = new DapperDal.DapperDal(this.DbConnectionFactory);
 
             SlapperAutoMapperInit.Initialize();
         }

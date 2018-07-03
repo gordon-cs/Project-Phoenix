@@ -1,6 +1,8 @@
 ﻿using Dapper;
+using Phoenix.DapperDal;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -13,7 +15,9 @@ namespace Phoenix.UnitTests.TestUtilities
     {
         public DatabaseFixture()
         {
-            this.Db = new SqlConnection("Server=(LocalDB)\\MSSQLLocalDB; Integrated Security=True; MultipleActiveResultSets=True");
+            this.DbFactory = new TestDbConnectionFactory();
+
+            this.Db = this.DbFactory.CreateConnection();
 
             /* Drop Test Database if it exists */
             var dropDatabaseSql = @"
@@ -45,15 +49,28 @@ namespace Phoenix.UnitTests.TestUtilities
                 this.Db.Execute(schemaSql);
                 this.Db.Execute(dataSql);
             }
+
+            // And we are done with this sql connection, close it.
+            this.Db.Close();
         }
 
         public void Dispose()
         {
-            this.Db.Close();
+            // Nothing to dispose of here
         }
 
-        public readonly SqlConnection Db { get; set; }
+        private IDbConnection Db { get; set; }
+
+        public IDbConnectionFactory DbFactory { get; set; }
     }
 
-
+    public class TestDbConnectionFactory : IDbConnectionFactory
+    {
+        public IDbConnection CreateConnection()
+        {
+            var conn = new SqlConnection("Server=(LocalDB)\\MSSQLLocalDB; Integrated Security=True; MultipleActiveResultSets=True");
+            conn.Open();
+            return conn;
+        }
+    }
 }
