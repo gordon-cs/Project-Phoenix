@@ -15,11 +15,11 @@ namespace Phoenix.Controllers
     [Admin]
     public class AdminDashboardController : Controller
     {
-        private AdminDashboardService adminDashboardService;
+        private IAdminDashboardService adminDashboardService;
 
-        public AdminDashboardController()
+        public AdminDashboardController(IAdminDashboardService service)
         {
-            adminDashboardService = new AdminDashboardService();
+            this.adminDashboardService = service;
         }
 
         // GET: AdminDashboard

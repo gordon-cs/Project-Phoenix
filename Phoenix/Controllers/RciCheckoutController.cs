@@ -11,12 +11,13 @@ namespace Phoenix.Controllers
     public class RciCheckoutController : Controller
     {
         private RciCheckoutService checkoutService;
-        private LoginService loginService;
 
-        public RciCheckoutController()
+        private ILoginService loginService;
+
+        public RciCheckoutController(ILoginService loginService)
         {
             checkoutService = new RciCheckoutService();
-            loginService = new LoginService();
+            this.loginService = loginService;
         }
 
         // GET: RCICheckout

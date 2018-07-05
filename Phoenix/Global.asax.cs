@@ -18,6 +18,7 @@ namespace Phoenix
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             SlapperAutoMapperInit.Initialize();
+            DependencyInjection.Initialize();
         }
     }
 }

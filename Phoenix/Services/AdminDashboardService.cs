@@ -16,16 +16,11 @@ using System.Xml.Linq;
 
 namespace Phoenix.Services
 {
-    public class AdminDashboardService
+    public class AdminDashboardService : IAdminDashboardService
     {
-        private readonly IDapperDal Dal;
+        private readonly IDal Dal;
 
-        public AdminDashboardService()
-        {
-            this.Dal = new DapperDal.DapperDal();
-        }
-
-        public AdminDashboardService(IDapperDal _dal)
+        public AdminDashboardService(IDal _dal)
         {
             this.Dal = _dal;
         }

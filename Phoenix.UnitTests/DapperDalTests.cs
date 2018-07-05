@@ -1,33 +1,37 @@
-﻿using Phoenix.DapperDal;
+﻿using Dapper;
+using Phoenix.DapperDal;
 using Phoenix.DapperDal.Types;
+using Phoenix.UnitTests.TestUtilities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using Xunit;
 
 namespace Phoenix.UnitTests
 {
-    public class DapperDalTests
+    public class DapperDalTests : IClassFixture<DatabaseFixture>
     {
-        private readonly IDapperDal Dal;
-        private readonly string ConnectionString;
+        private readonly IDal Dal;
 
+        private IDbConnectionFactory DbConnectionFactory { get; set; }
         
-        public DapperDalTests()
+        public DapperDalTests(DatabaseFixture fixture)
         {
-            this.ConnectionString = ConfigurationManager.ConnectionStrings["RCIDatabase"].ConnectionString;
+            this.DbConnectionFactory = fixture.DbFactory;
 
-            this.Dal = new DapperDal.DapperDal(this.ConnectionString);
+            this.Dal = new DapperDal.DapperDal(this.DbConnectionFactory);
 
             SlapperAutoMapperInit.Initialize();
         }
 
+       
         [Fact]
         public void FetchRciById_Succeeds()
         {
             // Arrange
-            int existingRciId = 4842;
+            int existingRciId = 7065;
 
             // Test
             var result = this.Dal.FetchRciById(existingRciId);
@@ -62,14 +66,14 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FetchRciBySessionAndBuilding_Successeds()
         {
-            var sessions = new List<string> { "201801" };
-            var buildings = new List<string> { "LEW" };
+            var sessions = new List<string> { "201709" };
+            var buildings = new List<string> { "TAV" };
 
             var result = this.Dal.FetchRciBySessionAndBuilding(sessions, buildings);
 
             Assert.NotEmpty(result);
-            Assert.True(result.TrueForAll(x => x.SessionCode.Equals("201801")));
-            Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("LEW")));
+            Assert.True(result.TrueForAll(x => x.SessionCode.Equals("201709")));
+            Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("TAV")));
 
             var rciIds = result.Select(x => x.RciId);
             var duplicateRciIds = rciIds.GroupBy(r => r).Any(x => x.Count() > 1);
@@ -86,6 +90,11 @@ namespace Phoenix.UnitTests
             Assert.NotNull(results);
             Assert.NotEmpty(results);
         }
+        [Fact]
+        public void FetchBuildingMap_Success()
+        {
+            var results = this.Dal.FetchBuildingMap();
+        }
 
         [Fact]
         public void FetchSessions_Success()
@@ -98,6 +107,75 @@ namespace Phoenix.UnitTests
             Assert.NotNull(results[0].SessionDescription);
             Assert.NotNull(results[0].SessionStartDate);
             Assert.NotNull(results[0].SessionEndDate);
+        }
+
+        [Fact]
+        public void FetchAccount_Success()
+        {
+            // Tavilla Resident
+            var studentId = "50196746";
+
+            // Drew Ra
+            var raId = "50159101";
+
+            // Road Hall RD
+            var rdId = "9529423";
+
+            var studentResult = this.Dal.FetchAccountByGordonId(studentId);
+
+            var raResult = this.Dal.FetchAccountByGordonId(raId);
+
+            var rdResult = this.Dal.FetchAccountByGordonId(rdId);
+
+            Assert.NotNull(studentResult);
+            Assert.NotNull(raResult);
+            Assert.NotNull(rdResult);
+
+            Assert.NotNull(studentResult.GordonId);
+            Assert.False(studentResult.IsRa);
+            Assert.False(studentResult.IsRd);
+            Assert.False(studentResult.IsAdmin);
+            Assert.Null(studentResult.RaBuildingCode);
+            Assert.Null(studentResult.RdHallGroup);
+
+            Assert.NotNull(raResult.GordonId);
+            Assert.True(raResult.IsRa);
+            Assert.False(raResult.IsRd);
+            Assert.False(raResult.IsAdmin);
+            Assert.NotNull(raResult.RaBuildingCode);
+            Assert.Null(raResult.RdHallGroup);
+
+            Assert.NotNull(rdResult.GordonId);
+            Assert.False(rdResult.IsRa);
+            Assert.True(rdResult.IsRd);
+            Assert.False(rdResult.IsAdmin);
+            Assert.Null(rdResult.RaBuildingCode);
+            Assert.NotNull(rdResult.RdHallGroup);
+        }
+
+        [Fact]
+        public void FetchLatestRoomAssign_Invalid_Id_Returns_Null()
+        {
+            var id = "43";
+
+            var result = this.Dal.FetchLatestRoomAssignmentForId(id);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void FetchLatestRoomAssign_Success()
+        {
+            var id = "50196746";
+
+            var result = this.Dal.FetchLatestRoomAssignmentForId(id);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.GordonId);
+            Assert.NotNull(result.BuildingCode);
+            Assert.NotNull(result.RoomNumber);
+            Assert.NotNull(result.AssignmentDate);
+            Assert.NotNull(result.SessionCode);
         }
     }
 }

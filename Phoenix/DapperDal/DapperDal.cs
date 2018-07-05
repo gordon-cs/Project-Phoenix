@@ -10,23 +10,32 @@ using System.Web;
 
 namespace Phoenix.DapperDal
 {
-    public class DapperDal : IDapperDal
+    public class DapperDal : IDal
     {
-        public readonly string ConnectionString;
+        public readonly IDbConnectionFactory _dbConnectionFactory;
 
-        public DapperDal()
+        public DapperDal(IDbConnectionFactory factory)
         {
-            this.ConnectionString = ConfigurationManager.ConnectionStrings["RCIDatabase"].ConnectionString;
+            this._dbConnectionFactory = factory;
         }
 
-        public DapperDal(string _connectionString)
+        public List<ResidentHallGrouping> FetchBuildingMap()
         {
-            this.ConnectionString = _connectionString;
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = @"select JobTitleHall as HallGroup, BuildingCode as BuildingCodes_$ from BuildingAssign";
+
+                var queryResult = connection.Query(sql).ToList();
+
+                var mapperResult = Slapper.AutoMapper.MapDynamic<ResidentHallGrouping>(queryResult).ToList();
+
+                return mapperResult;
+            }
         }
 
         public List<string> FetchBuildingCodes()
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = @"select BuildingCode from BuildingAssign group by BuildingCode";
 
@@ -36,7 +45,7 @@ namespace Phoenix.DapperDal
 
         public List<Session> FetchSessions()
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = @"select s.SESS_CDE as SessionCode, 
                             s.SESS_DESC as SessionDescription, 
@@ -50,7 +59,7 @@ namespace Phoenix.DapperDal
 
         public BigRci FetchRciById(int rciId)
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = BigRciSelectStatement + "where rci.RciId = @RciId";
 
@@ -79,7 +88,7 @@ namespace Phoenix.DapperDal
 
         public List<BigRci> FetchRciByGordonId(string gordonId)
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = BigRciSelectStatement + "where rci.GordonId = @GordonId";
 
@@ -95,7 +104,7 @@ namespace Phoenix.DapperDal
 
         public List<SmolRci> FetchRciBySessionAndBuilding(List<string> sessions, List<string> buildings)
         {
-            using (var connection = new SqlConnection(this.ConnectionString))
+            using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = SmolRciSelectstatement +
                     "where rci.SessionCode in @SessionCodes and rci.BuildingCode in @BuildingCodes";
@@ -110,6 +119,46 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public Account FetchAccountByGordonId(string gordonId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = AccountSelectStatement +
+                    "where account.GordonId = @Id";
+
+                var queryResult = connection.Query<Account>(sql, new { Id = gordonId });
+
+                Account account = null;
+
+                try
+                {
+                    account = queryResult.Single();
+                }
+                catch (InvalidOperationException e)
+                {
+                    throw new Exception($"Excpected exactly one account result, got {queryResult.Count()}", e);
+                }
+
+                return account;
+            }
+        }
+
+
+        public RoomAssignment FetchLatestRoomAssignmentForId(string id)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = RoomAssignmentSelectStatment +
+                    "where ID_NUM = @Id order by ASSIGN_DTE desc";
+
+                var queryResult = connection.Query<RoomAssignment>(sql, new { Id = id }).ToList();
+
+                var latestRoomAssign = queryResult.FirstOrDefault();
+
+                // For now, we are ok with returning nulls
+                return latestRoomAssign;
+            }
+        }
         // Don't forget the newline at the end of the SQL string:)
 
         private const string SmolRciSelectstatement =
@@ -193,5 +242,38 @@ on damage.RciComponentID = rciComponent.RciComponentID
 left join Fine as fine
 on fine.RciComponentID = rciComponent.RciComponentID
 ";
+
+        private const string AccountSelectStatement =
+            @"select * from 
+(
+	select a.ID_NUM as GordonId,
+		a.firstname as FirstName,
+		a.lastname as LastName,
+		a.email as Email,
+		case when cra.ID_NUM is null then 0 else 1 END as IsRa,
+		cra.Dorm as RaBuildingCode,
+		case when crd.ID_NUM is null then 0 else 1 END as IsRd,
+		crd.Job_Title_Hall as RdHallGroup,
+		case when adm.GordonID is null then 0 else 1 END as isAdmin
+	from Account a
+	left join CurrentRA cra
+	on a.ID_NUM = cra.ID_NUM
+	left join CurrentRD crd
+	on a.ID_NUM = crd.ID_NUM
+	left join [Admin] adm
+	on a.ID_NUM = adm.GordonID ) As account
+";
+
+        private const string RoomAssignmentSelectStatment =
+            @"select ID_NUM as GordonId,
+		BLDG_CDE as BuildingCode,
+		ROOM_CDE as RoomNumber,
+		ROOM_TYPE as RoomType,
+		SESS_CDE as SessionCode,
+		ASSIGN_DTE as AssignmentDate
+from RoomAssign
+";
+
+
     }
 }
