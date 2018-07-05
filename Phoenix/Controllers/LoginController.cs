@@ -12,11 +12,11 @@ namespace Phoenix.Controllers
     {
         // Global Variables
         private PrincipalContext _ADContext;
-        private LoginService loginService;
+        private ILoginService loginService;
 
-        public LoginController()
+        public LoginController(ILoginService service)
         {
-            loginService = new Services.LoginService();
+            this.loginService = service;
         }
 
         // GET: Login

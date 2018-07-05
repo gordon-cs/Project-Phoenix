@@ -5,17 +5,22 @@ using System.DirectoryServices.AccountManagement;
 using Jose;
 using Phoenix.Models;
 using Phoenix.Exceptions;
+using Phoenix.DapperDal;
 
 namespace Phoenix.Services
 {
 
-    public class LoginService
+    public class LoginService : ILoginService
     {
         private RCIContext db;
 
-        public LoginService()
+        private IDal Dal;
+
+        public LoginService(IDal dal)
         {
             db = new Models.RCIContext();
+
+            this.Dal = dal;
         }
 
         /*
@@ -89,7 +94,7 @@ namespace Phoenix.Services
             bool isAdmin = false;
 
             // Will throw an exception if the user has no role within the system. The exceptions is caught in the controller.
-            var role = GetRole(id);
+            var accountPermissions = GetAccountPermissions(id);
             var mostRecentRoomAssign = GetCurrentRoomAssign(id);
 
             string currentBuildingCode = null;
@@ -102,13 +107,6 @@ namespace Phoenix.Services
                 currentRoomNumber = mostRecentRoomAssign.ROOM_CDE.Trim();
                 currentRoomAssignDate = mostRecentRoomAssign.ASSIGN_DTE;
             }
-
-            List<string> kingdom = null;
-            if(role == "RA" || role == "RD" || role == "ADMIN")
-            {
-                kingdom = GetKingdom(id); // The buildings for which you are responsible
-            }
-
             
             var account = db.Account.Where(m => m.ID_NUM == id).FirstOrDefault();
             var name = account.firstname + " " + account.lastname;
@@ -127,8 +125,8 @@ namespace Phoenix.Services
                 {"iat", ToUnixTime(issued) },
                 {"exp", ToUnixTime(expire) },
                 {"admin", isAdmin },
-                {"role", role },
-                {"kingdom", kingdom },
+                {"role", accountPermissions.Role.ToString() },
+                {"kingdom", accountPermissions.Kingdom },
                 {"currentRoom", currentRoomNumber},
                 {"currentBuilding",  currentBuildingCode },
                 {"currentRoomAssignDate", currentRoomAssignDate }
@@ -148,98 +146,78 @@ namespace Phoenix.Services
         /*
          * Get the role of a user
          */
-        public string GetRole(string id)
+        
+        public AccountPermission GetAccountPermissions(string id)
         {
-            if(id == null)
+            var permission = new AccountPermission();
+
+            if (id == null)
             {
                 throw new ArgumentNullException("Can't get the role of a user with a null id number.");
             }
 
-            var AdminEntry = db.Admin.Where(m => m.GordonID == id);
-            if (AdminEntry.Any())
+            Phoenix.DapperDal.Types.Account account = null;
+
+            var buildingMap = this.Dal.FetchBuildingMap();
+
+            try
             {
-                return "ADMIN";
+                account = this.Dal.FetchAccountByGordonId(id);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidUserException($"User with ID {id} does not have a role within the system. {e.Message}");
             }
 
-            var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
-            if (RDentry != null)
+            if (account.IsAdmin)
             {
-                return "RD";
+                permission.Role = Role.ADMIN;
+
+                permission.Kingdom = this.Dal.FetchBuildingCodes();
+
+                return permission;
             }
-
-            var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
-            if (RAentry != null)
+            else if (account.IsRd)
             {
-                return "RA";
-            }
+                permission.Role = Role.RD;
 
-            var ResidentEntry = db.Account.Where(m =>m.ID_NUM.ToString() == id &&  m.account_type.Equals("STUDENT")).FirstOrDefault();
-            if(ResidentEntry != null)
-            {
-                return "Resident";
-            }
+                var hallgroup = buildingMap.Where(x => x.HallGroup.Equals(account.RdHallGroup)).FirstOrDefault();
 
-            // They are neither Admin, RD, RA or resident.
-            throw new InvalidUserException("User with ID " + id + " does not have a role within the system.");
-        }
-
-        /*
-         * Get a list of building codes that this user is responsible for.
-         */
-        public List<string> GetKingdom (string id)
-        {
-            if (id == null)
-            {
-                throw new ArgumentNullException("Can't get the kingdom of a user with a null id number.");
-            }
-
-            if (db.Admin.Any(x => x.GordonID.Equals(id, StringComparison.OrdinalIgnoreCase)))
-            {
-                return db.BuildingAssign.Select(x => x.BuildingCode).ToList();
-            }
-
-            var RDentry = db.CurrentRD.Where(m => m.ID_NUM == id).FirstOrDefault();
-            if (RDentry != null)
-            {
-                // Get the building codes associated with the RD's Job Title
-                var query = db.BuildingAssign.Where(m => m.JobTitleHall.Equals(RDentry.Job_Title_Hall));
-                var buildingCodes = new List<string>();
-
-                foreach(var record in query)
+                if (hallgroup == null)
                 {
-                    buildingCodes.Add(record.BuildingCode);
+                    permission.Kingdom = new List<string>();
+                }
+                else
+                {
+                    permission.Kingdom = hallgroup.BuildingCodes;
                 }
 
-                return buildingCodes;
+                return permission;
             }
-
-            var RAentry = db.CurrentRA.Where(m => m.ID_NUM.ToString() == id).FirstOrDefault();
-            if (RAentry != null)
+            else if (account.IsRa)
             {
-                // Since CurrentRA has building codes, we need to a do a little kung fu to make sure cases like
-                // the road halls work.
+                permission.Role = Role.RA;
 
-                // Step 1: For a given buildingCode, get what JobTitle it is associated with.
-                var temp = db.BuildingAssign.Where(m => m.BuildingCode.Equals(RAentry.Dorm)).FirstOrDefault();
-                var raJobTitleHall = temp.JobTitleHall;
+                var hallgroup = buildingMap.Where(x => x.BuildingCodes.Contains(account.RaBuildingCode)).FirstOrDefault();
 
-                // Step 2: Now that we have the job title, get what building codes it is associated with.
-                var query = db.BuildingAssign.Where(m => m.JobTitleHall.Equals(raJobTitleHall));
-                 
-                var buildingCodes = new List<string>();
-
-                foreach(var record in query)
+                if (hallgroup == null)
                 {
-                    buildingCodes.Add(record.BuildingCode.Trim());
+                    permission.Kingdom = new List<string>();
+                }
+                else
+                {
+                    permission.Kingdom = hallgroup.BuildingCodes;
                 }
 
-                return buildingCodes;
+                return permission;
             }
+            else
+            {
+                permission.Role = Role.Resident;
+                permission.Kingdom = null;
 
-            // If you are not an RA or RD, you don't have a kingdom  :p
-            // We return an empty list to avoid null argument exceptions
-            return new List<string>();
-
+                return permission;
+            }
         }
 
         /* Get the most recent room assign information for the person  */
@@ -261,4 +239,13 @@ namespace Phoenix.Services
         }
 
     }
+
+    public class AccountPermission
+    {
+        public Role Role { get; set; }
+
+        public List<string> Kingdom { get; set; } = new List<string>();
+    }
+
+    public enum Role { ADMIN, RA, RD, Resident }
 }

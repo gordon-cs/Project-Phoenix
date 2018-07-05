@@ -1,13 +1,9 @@
 ﻿using Dapper;
 using Phoenix.DapperDal;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Phoenix.UnitTests.TestUtilities
 {
@@ -15,9 +11,10 @@ namespace Phoenix.UnitTests.TestUtilities
     {
         public DatabaseFixture()
         {
-            this.DbFactory = new TestDbConnectionFactory();
+            // Create a connection to the master database since the RCITrain database may not exist yet.
+            this.Db = new SqlConnection("Server=(LocalDB)\\MSSQLLocalDB; Initial Catalog=master;Integrated Security=True; MultipleActiveResultSets=True");
 
-            this.Db = this.DbFactory.CreateConnection();
+            this.Db.Open();
 
             /* Drop Test Database if it exists */
             var dropDatabaseSql = @"
@@ -52,6 +49,9 @@ namespace Phoenix.UnitTests.TestUtilities
 
             // And we are done with this sql connection, close it.
             this.Db.Close();
+
+            // Setup the Test DB factory now that we know that the RciTrain database exists
+            this.DbFactory = new TestDbConnectionFactory();
         }
 
         public void Dispose()
@@ -68,7 +68,7 @@ namespace Phoenix.UnitTests.TestUtilities
     {
         public IDbConnection CreateConnection()
         {
-            var conn = new SqlConnection("Server=(LocalDB)\\MSSQLLocalDB; Integrated Security=True; MultipleActiveResultSets=True");
+            var conn = new SqlConnection("Server=(LocalDB)\\MSSQLLocalDB; Initial Catalog=RCITrain;Integrated Security=True; MultipleActiveResultSets=True");
             conn.Open();
             return conn;
         }

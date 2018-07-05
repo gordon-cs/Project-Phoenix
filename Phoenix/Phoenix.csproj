@@ -172,11 +172,13 @@
     <Compile Include="Controllers\RciInputController.cs" />
     <Compile Include="DapperDal\IDbConnectionFactory.cs" />
     <Compile Include="DapperDal\SqlConnectionFactory.cs" />
+    <Compile Include="DapperDal\Types\Account.cs" />
     <Compile Include="DapperDal\Types\BigRci.cs" />
     <Compile Include="DapperDal\Types\CommonAreaRciSignature.cs" />
     <Compile Include="DapperDal\Types\Damage.cs" />
     <Compile Include="DapperDal\DapperDal.cs" />
     <Compile Include="DapperDal\Types\Fine.cs" />
+    <Compile Include="DapperDal\Types\HallGroup.cs" />
     <Compile Include="DapperDal\Types\Rci.cs" />
     <Compile Include="DapperDal\IDapperDal.cs" />
     <Compile Include="DapperDal\Types\RciComponent.cs" />
@@ -236,6 +238,7 @@
     </Compile>
     <Compile Include="Services\AdminDashboardService.cs" />
     <Compile Include="Services\DashboardService.cs" />
+    <Compile Include="Services\Interfaces\ILoginService.cs" />
     <Compile Include="Services\Interfaces\IAdminDashboardService.cs" />
     <Compile Include="Services\Interfaces\IRciInputService.cs" />
     <Compile Include="Services\LoggerService.cs" />

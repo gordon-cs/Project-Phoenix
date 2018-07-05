@@ -29,6 +29,7 @@ namespace Phoenix
                 .RegisterType<DapperDal.DapperDal>()
                 .As<IDal>();
 
+            // Register services
             builder
                 .RegisterType<AdminDashboardService>()
                 .As<IAdminDashboardService>();
@@ -38,11 +39,24 @@ namespace Phoenix
                 .As<IRciInputService>();
 
             builder
+                .RegisterType<LoginService>()
+                .As<ILoginService>();
+
+            //Register Controllers
+            builder
                 .RegisterType<AdminDashboardController>()
                 .InstancePerRequest();
 
             builder
                 .RegisterType<RciInputController>()
+                .InstancePerRequest();
+
+            builder
+                .RegisterType<LoginController>()
+                .InstancePerRequest();
+
+            builder
+                .RegisterType<RciCheckoutController>()
                 .InstancePerRequest();
 
             Container = builder.Build();

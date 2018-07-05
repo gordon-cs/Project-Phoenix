@@ -407,7 +407,7 @@ SET IDENTITY_INSERT Damage OFF
 
 
 -- Some RDs and their respective entries in the CurrentRD Table (Tavilla, Drew and One Road hall)
-INSERT [dbo].[Account] ([ID_NUM], [firstname], [lastname], [email], [AD_Username], [account_type], [Private]) VALUES (N'50183743', N'Sarah', N'Welch', N'Sarah.Welch@gordon.edu', N'Sarah.Welch', N'STUDENT', 0)
+INSERT [dbo].[Account] ([ID_NUM], [firstname], [lastname], [email], [AD_Username], [account_type], [Private]) VALUES (N'9529423', N'Sarah', N'Welch', N'Sarah.J.Welch@gordon.edu', N'Sarah.J.Welch', N'STAFF', 0)
 INSERT [dbo].[CurrentRD] ([ID_NUM], [firstname], [lastname], [email], [Job_Title], [Job_Title_Hall]) VALUES (N'9529423', N'Sarah', N'Welch', N'Sarah.J.Welch@gordon.edu', N'Resident Director - Road Halls', N'Road Halls')
 INSERT [dbo].[Account] ([ID_NUM], [firstname], [lastname], [email], [AD_Username], [account_type], [Private]) VALUES (N'40000911', N'Ethan', N'Mignard', N'Ethan.Mignard@gordon.edu', N'Ethan.Mignard', N'STAFF', 0)
 INSERT [dbo].[CurrentRD] ([ID_NUM], [firstname], [lastname], [email], [Job_Title], [Job_Title_Hall]) VALUES (N'40000911', N'Ethan', N'Mignard', N'Ethan.Mignard@gordon.edu', N'Resident Director - Tavilla', N'Tavilla')
