@@ -143,6 +143,22 @@ namespace Phoenix.DapperDal
             }
         }
 
+
+        public RoomAssignment FetchLatestRoomAssignmentForId(string id)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = RoomAssignmentSelectStatment +
+                    "where ID_NUM = @Id order by ASSIGN_DTE desc";
+
+                var queryResult = connection.Query<RoomAssignment>(sql, new { Id = id }).ToList();
+
+                var latestRoomAssign = queryResult.FirstOrDefault();
+
+                // For now, we are ok with returning nulls
+                return latestRoomAssign;
+            }
+        }
         // Don't forget the newline at the end of the SQL string:)
 
         private const string SmolRciSelectstatement =
@@ -247,5 +263,17 @@ on fine.RciComponentID = rciComponent.RciComponentID
 	left join [Admin] adm
 	on a.ID_NUM = adm.GordonID ) As account
 ";
+
+        private const string RoomAssignmentSelectStatment =
+            @"select ID_NUM as GordonId,
+		BLDG_CDE as BuildingCode,
+		ROOM_CDE as RoomNumber,
+		ROOM_TYPE as RoomType,
+		SESS_CDE as SessionCode,
+		ASSIGN_DTE as AssignmentDate
+from RoomAssign
+";
+
+
     }
 }

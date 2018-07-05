@@ -182,6 +182,7 @@
     <Compile Include="DapperDal\Types\Rci.cs" />
     <Compile Include="DapperDal\IDapperDal.cs" />
     <Compile Include="DapperDal\Types\RciComponent.cs" />
+    <Compile Include="DapperDal\Types\RoomAssignment.cs" />
     <Compile Include="DapperDal\Types\Session.cs" />
     <Compile Include="DapperDal\SlapperAutoMapperInit.cs" />
     <Compile Include="DapperDal\Types\SmolRci.cs" />

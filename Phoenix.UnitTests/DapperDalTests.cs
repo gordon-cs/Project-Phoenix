@@ -152,5 +152,30 @@ namespace Phoenix.UnitTests
             Assert.Null(rdResult.RaBuildingCode);
             Assert.NotNull(rdResult.RdHallGroup);
         }
+
+        [Fact]
+        public void FetchLatestRoomAssign_Invalid_Id_Returns_Null()
+        {
+            var id = "43";
+
+            var result = this.Dal.FetchLatestRoomAssignmentForId(id);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void FetchLatestRoomAssign_Success()
+        {
+            var id = "50196746";
+
+            var result = this.Dal.FetchLatestRoomAssignmentForId(id);
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.GordonId);
+            Assert.NotNull(result.BuildingCode);
+            Assert.NotNull(result.RoomNumber);
+            Assert.NotNull(result.AssignmentDate);
+            Assert.NotNull(result.SessionCode);
+        }
     }
 }

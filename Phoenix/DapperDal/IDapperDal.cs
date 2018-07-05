@@ -12,8 +12,12 @@ namespace Phoenix.DapperDal
 
         List<string> FetchBuildingCodes();
         List<ResidentHallGrouping> FetchBuildingMap();
-        List<Session> FetchSessions();
 
+        RoomAssignment FetchLatestRoomAssignmentForId(string id);
+
+        List<Session> FetchSessions();
+        
         Account FetchAccountByGordonId(string gordonId);
+
     }
 }

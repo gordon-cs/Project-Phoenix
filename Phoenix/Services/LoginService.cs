@@ -3,23 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.DirectoryServices.AccountManagement;
 using Jose;
-using Phoenix.Models;
 using Phoenix.Exceptions;
 using Phoenix.DapperDal;
+using Phoenix.DapperDal.Types;
 
 namespace Phoenix.Services
 {
 
     public class LoginService : ILoginService
     {
-        private RCIContext db;
-
-        private IDal Dal;
+        private readonly IDal Dal;
 
         public LoginService(IDal dal)
         {
-            db = new Models.RCIContext();
-
             this.Dal = dal;
         }
 
@@ -89,12 +85,9 @@ namespace Phoenix.Services
 
         public string GenerateToken(string username, string id)
         {
-            // Add some code here to check the db to see if user has admin permissions
-            // Right now just hardcode to true for test purposes
-            bool isAdmin = false;
+            var account = this.Dal.FetchAccountByGordonId(id);
 
-            // Will throw an exception if the user has no role within the system. The exceptions is caught in the controller.
-            var accountPermissions = GetAccountPermissions(id);
+            var accountPermissions = GetAccountPermissions(account);
             var mostRecentRoomAssign = GetCurrentRoomAssign(id);
 
             string currentBuildingCode = null;
@@ -103,13 +96,12 @@ namespace Phoenix.Services
 
             if (mostRecentRoomAssign != null)
             {
-                currentBuildingCode = mostRecentRoomAssign.BLDG_CDE.Trim();
-                currentRoomNumber = mostRecentRoomAssign.ROOM_CDE.Trim();
-                currentRoomAssignDate = mostRecentRoomAssign.ASSIGN_DTE;
+                currentBuildingCode = mostRecentRoomAssign.BuildingCode.Trim();
+                currentRoomNumber = mostRecentRoomAssign.RoomNumber.Trim();
+                currentRoomAssignDate = mostRecentRoomAssign.AssignmentDate;
             }
-            
-            var account = db.Account.Where(m => m.ID_NUM == id).FirstOrDefault();
-            var name = account.firstname + " " + account.lastname;
+
+            var name = account.FirstName + " " + account.LastName;
 
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
@@ -124,7 +116,7 @@ namespace Phoenix.Services
                 {"iss", "rci.gordon.edu" },
                 {"iat", ToUnixTime(issued) },
                 {"exp", ToUnixTime(expire) },
-                {"admin", isAdmin },
+                {"admin", account.IsAdmin },
                 {"role", accountPermissions.Role.ToString() },
                 {"kingdom", accountPermissions.Kingdom },
                 {"currentRoom", currentRoomNumber},
@@ -147,27 +139,11 @@ namespace Phoenix.Services
          * Get the role of a user
          */
         
-        public AccountPermission GetAccountPermissions(string id)
+        public AccountPermission GetAccountPermissions(Account account)
         {
             var permission = new AccountPermission();
 
-            if (id == null)
-            {
-                throw new ArgumentNullException("Can't get the role of a user with a null id number.");
-            }
-
-            Phoenix.DapperDal.Types.Account account = null;
-
             var buildingMap = this.Dal.FetchBuildingMap();
-
-            try
-            {
-                account = this.Dal.FetchAccountByGordonId(id);
-            }
-            catch (Exception e)
-            {
-                throw new InvalidUserException($"User with ID {id} does not have a role within the system. {e.Message}");
-            }
 
             if (account.IsAdmin)
             {
@@ -221,21 +197,9 @@ namespace Phoenix.Services
         }
 
         /* Get the most recent room assign information for the person  */
-        public RoomAssign GetCurrentRoomAssign(string id)
+        public RoomAssignment GetCurrentRoomAssign(string id)
         {
-            var ResidentEntry = db.RoomAssign.Where(m => m.ID_NUM.ToString() == id).OrderByDescending(m => m.ASSIGN_DTE).FirstOrDefault();
-
-            if (ResidentEntry != null)
-            {
-                return ResidentEntry;
-            }
-            else
-            {
-                // It is ok to return null here because there are people without room assignments that should
-                // be able to log into the system e.g. RDs
-                return null;
-            }
-
+            return this.Dal.FetchLatestRoomAssignmentForId(id);
         }
 
     }
