@@ -15,11 +15,16 @@ namespace Phoenix.Services
 
         private readonly IDal Dal;
 
-        public RciInputService(IDal dal)
+        private IDashboardService DashboardService { get; set; }
+
+
+        public RciInputService(IDal dal, IDashboardService dashboardService)
         {
             db = new Models.RCIContext();
 
             this.Dal = dal;
+
+            this.DashboardService = dashboardService;
         }
 
         public Rci GetRci(int id)
@@ -54,7 +59,7 @@ namespace Phoenix.Services
         /// </summary>
         public CheckinCommonAreaRciViewModel GetCommonAreaRciById(int id)
         {
-            var currentSession = new DashboardService().GetCurrentSession();
+            var currentSession = this.DashboardService.GetCurrentSession();
 
             var query =
                 from rci in db.Rci

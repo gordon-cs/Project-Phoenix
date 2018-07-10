@@ -85,7 +85,7 @@ namespace Phoenix.Services
         public List<HomeRciViewModel> Search(IEnumerable<string> sessions, IEnumerable<string> buildings, string keyword)
         {
             // Filter all the rcis by the session and building codes provided
-            var filteredRcis = this.Dal.FetchRciBySessionAndBuilding(sessions.ToList(), buildings.ToList());
+            var filteredRcis = this.Dal.FetchRcisBySessionAndBuilding(sessions.ToList(), buildings.ToList());
 
             List<SmolRci> searchResults = filteredRcis;
 
@@ -111,24 +111,7 @@ namespace Phoenix.Services
             }
 
             return searchResults
-                .Select(x =>
-                {
-                    return new HomeRciViewModel
-                    {
-                        RciID = x.RciId,
-                        FirstName = x.FirstName,
-                        LastName = x.LastName,
-                        BuildingCode = x.BuildingCode,
-                        RoomNumber = x.RoomNumber,
-                        CheckinSigRes = x.ResidentCheckinDate,
-                        CheckinSigRA = x.RaCheckinDate,
-                        CheckinSigRD = x.RdCheckinDate,
-                        CheckoutSigRes = x.ResidentCheckoutDate,
-                        CheckoutSigRA = x.RaCheckoutDate,
-                        CheckoutSigRD = x.RdCheckoutDate,
-                        RciStage = x.RaCheckinDate == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE
-                    };
-                })
+                .Select(x => new HomeRciViewModel(x))
                 .ToList();
 
         }

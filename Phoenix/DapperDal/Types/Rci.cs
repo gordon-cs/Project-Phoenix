@@ -27,15 +27,5 @@ namespace Phoenix.DapperDal.Types
         public string CheckoutRdGordonId { get; set; }
         public string CheckinRaGordonId { get; set; }
         public string CheckinRdGordonId { get; set; }
-        
-        public void PopulateFirstAndLastName()
-        {
-            if (string.IsNullOrWhiteSpace(this.GordonId))
-            {
-                this.FirstName = "Common";
-
-                this.LastName = "Area Rci";
-            }
-        }
     }
 }

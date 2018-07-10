@@ -1,4 +1,5 @@
-﻿using Phoenix.Models;
+﻿using Phoenix.DapperDal;
+using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
 using System;
@@ -11,12 +12,21 @@ using System.Text;
 
 namespace Phoenix.Services
 {
-    public class RciCheckoutService
+    public class RciCheckoutService : IRciCheckoutService
     {
         private RCIContext db;
-        public RciCheckoutService()
+
+        private IDal Dal { get; set; }
+        
+        private IDashboardService DashboardService { get; set; }
+
+        public RciCheckoutService(IDal dal, IDashboardService dashboardService)
         {
             db = new RCIContext();
+
+            this.Dal = dal;
+
+            this.DashboardService = dashboardService;
         }
 
         /// <summary>
@@ -61,6 +71,8 @@ namespace Phoenix.Services
         }
         /// <summary>
         /// Get the rci for a person by RciID
+        /// 
+        /// TODO: Make sure this method works for Alumni Rcis. We should still be able to display them
         /// </summary>
         public CheckoutIndividualRoomRciViewModel GetIndividualRoomRciByID(int id)
         {
@@ -101,7 +113,7 @@ namespace Phoenix.Services
         /// </summary>
         public CheckoutCommonAreaRciViewModel GetCommonAreaRciByID(int id)
         {
-            var currentSession = new DashboardService().GetCurrentSession();
+            var currentSession = this.DashboardService.GetCurrentSession();
 
             var query =
                 from rci in db.Rci
