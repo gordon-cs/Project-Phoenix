@@ -26,7 +26,7 @@ namespace Phoenix.UnitTests
             SlapperAutoMapperInit.Initialize();
         }
 
-       
+        // Rcis
         [Fact]
         public void FetchRciById_Succeeds()
         {
@@ -56,32 +56,66 @@ namespace Phoenix.UnitTests
         }
 
         [Fact]
-        public void FetchRciBySessionAndBuilding_Returns_Empty_List_When_No_Sessions_Or_Buildings_Are_Given()
+        public void FetchRcisByBuilding_Success()
         {
-            var result = this.Dal.FetchRciBySessionAndBuilding(new List<string>(), new List<string>());
+            var buildings = new List<string> { "TAV" };
+
+            var result = this.Dal.FetchRcisByBuilding(buildings);
+
+            Assert.NotEmpty(result);
+            Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("TAV")));
+
+            // Verify that we have no duplicates.
+            var list = result.Select(x => x.RciId);
+            var set = new HashSet<int>(list);
+            Assert.Equal(set.Count, list.Count());
+        }
+
+        [Fact]
+        public void FetchRcisBySessionAndBuilding_Returns_Empty_List_When_No_Sessions_Or_Buildings_Are_Given()
+        {
+            var result = this.Dal.FetchRcisBySessionAndBuilding(new List<string>(), new List<string>());
 
             Assert.Empty(result);
         }
 
         [Fact]
-        public void FetchRciBySessionAndBuilding_Successeds()
+        public void FetchRcisBySessionAndBuilding_Successeds()
         {
             var sessions = new List<string> { "201709" };
             var buildings = new List<string> { "TAV" };
 
-            var result = this.Dal.FetchRciBySessionAndBuilding(sessions, buildings);
+            var result = this.Dal.FetchRcisBySessionAndBuilding(sessions, buildings);
 
             Assert.NotEmpty(result);
             Assert.True(result.TrueForAll(x => x.SessionCode.Equals("201709")));
             Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("TAV")));
 
-            var rciIds = result.Select(x => x.RciId);
-            var duplicateRciIds = rciIds.GroupBy(r => r).Any(x => x.Count() > 1);
-
-
-            Assert.False(duplicateRciIds);
+            // Verify that we have no duplicates.
+            var list = result.Select(x => x.RciId);
+            var set = new HashSet<int>(list);
+            Assert.Equal(set.Count, list.Count());
         }
 
+        [Fact]
+        public void FetchRcisByRoom_Success()
+        {
+            var buildingCode = "GRA";
+            var roomNumber = "113";
+
+            var result = this.Dal.FetchRcisForRoom(buildingCode, roomNumber);
+
+            Assert.NotEmpty(result);
+            Assert.True(result.TrueForAll(x => x.BuildingCode.Equals(buildingCode)));
+            Assert.True(result.TrueForAll(x => x.RoomNumber.Equals(roomNumber)));
+
+            // Verify that we have no duplicates.
+            var list = result.Select(x => x.RciId);
+            var set = new HashSet<int>(list);
+            Assert.Equal(set.Count, list.Count());
+        }
+
+        // Building Codes
         [Fact]
         public void FetchBuildingCodes_Success()
         {
@@ -90,12 +124,16 @@ namespace Phoenix.UnitTests
             Assert.NotNull(results);
             Assert.NotEmpty(results);
         }
+
         [Fact]
         public void FetchBuildingMap_Success()
         {
             var results = this.Dal.FetchBuildingMap();
+
+            results.ForEach(x => Assert.NotEmpty(x.BuildingCodes));
         }
 
+        // Sessions
         [Fact]
         public void FetchSessions_Success()
         {
@@ -109,6 +147,7 @@ namespace Phoenix.UnitTests
             Assert.NotNull(results[0].SessionEndDate);
         }
 
+        // Account
         [Fact]
         public void FetchAccount_Success()
         {
@@ -153,6 +192,7 @@ namespace Phoenix.UnitTests
             Assert.NotNull(rdResult.RdHallGroup);
         }
 
+        // Room Assign
         [Fact]
         public void FetchLatestRoomAssign_Invalid_Id_Returns_Null()
         {

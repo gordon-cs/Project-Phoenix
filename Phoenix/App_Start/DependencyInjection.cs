@@ -35,8 +35,16 @@ namespace Phoenix
                 .As<IAdminDashboardService>();
 
             builder
+                .RegisterType<DashboardService>()
+                .As<IDashboardService>();
+
+            builder
                 .RegisterType<RciInputService>()
                 .As<IRciInputService>();
+
+            builder
+                .RegisterType<RciCheckoutService>()
+                .As<IRciCheckoutService>();
 
             builder
                 .RegisterType<LoginService>()
@@ -45,6 +53,10 @@ namespace Phoenix
             //Register Controllers
             builder
                 .RegisterType<AdminDashboardController>()
+                .InstancePerRequest();
+
+            builder
+                .RegisterType<DashboardController>()
                 .InstancePerRequest();
 
             builder

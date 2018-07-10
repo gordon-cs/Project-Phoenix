@@ -10,14 +10,15 @@ namespace Phoenix.Controllers
     [CustomAuthentication]
     public class RciCheckoutController : Controller
     {
-        private RciCheckoutService checkoutService;
+        private IRciCheckoutService CheckoutService { get; set; }
 
-        private ILoginService loginService;
+        private ILoginService LoginService { get; set; }
 
-        public RciCheckoutController(ILoginService loginService)
+        public RciCheckoutController(ILoginService loginService, IRciCheckoutService checkoutService)
         {
-            checkoutService = new RciCheckoutService();
-            this.loginService = loginService;
+            this.CheckoutService = checkoutService;
+
+            this.LoginService = loginService;
         }
 
         // GET: RCICheckout
@@ -36,15 +37,15 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            var temp = checkoutService.GetBareRciByID(id);
+            var temp = this.CheckoutService.GetBareRciByID(id);
 
             // Preliminary check to figure out which method to call
             var isIndividualRci = temp.IsIndividualRci();
 
             if (!isIndividualRci) // A common area rci
             {
-                ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
-                var rci = checkoutService.GetCommonAreaRciByID(id);
+                ViewBag.commonRooms = this.CheckoutService.GetCommonRooms(id);
+                var rci = this.CheckoutService.GetCommonAreaRciByID(id);
                 if (rci.CheckoutSigRD != null)
                 {
                     return RedirectToAction("RciReview", new { id = id } );
@@ -53,7 +54,7 @@ namespace Phoenix.Controllers
             }
             else // An individual room
             {
-                var rci = checkoutService.GetIndividualRoomRciByID(id);
+                var rci = this.CheckoutService.GetIndividualRoomRciByID(id);
                 if (rci.CheckoutSigRD != null)
                 {
                     return RedirectToAction("RciReview", new { id = id });
@@ -74,7 +75,7 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            var temp = checkoutService.GetBareRciByID(id);
+            var temp = this.CheckoutService.GetBareRciByID(id);
 
             // Check to figure out if this RCI can be viewed by the logged in user
             var isViewable = temp.isViewableBy((string)TempData["id"], role, (string)TempData["currentRoom"], (string)TempData["currentBuilding"]);
@@ -88,13 +89,13 @@ namespace Phoenix.Controllers
 
             if (!isIndividualRci) // A common area rci
             {
-                ViewBag.commonRooms = checkoutService.GetCommonRooms(id);
-                var rci = checkoutService.GetCommonAreaRciByID(id);
+                ViewBag.commonRooms = this.CheckoutService.GetCommonRooms(id);
+                var rci = this.CheckoutService.GetCommonAreaRciByID(id);
                 return View("RciReviewCommonArea", rci);
             }
             else // An individual room
             {
-                var rci = checkoutService.GetIndividualRoomRciByID(id);
+                var rci = this.CheckoutService.GetIndividualRoomRciByID(id);
                 return View("RciReviewIndividualRoom", rci);
             }
         }
@@ -104,7 +105,7 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public int AddFine(RciNewFineViewModel fine)
         {
-            var fineID = checkoutService.AddFine(fine);
+            var fineID = this.CheckoutService.AddFine(fine);
             return fineID;
         }
 
@@ -114,7 +115,7 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult RemoveFine(int fineID)
         {
-            checkoutService.RemoveFine(fineID);
+            this.CheckoutService.RemoveFine(fineID);
             return new HttpStatusCodeResult(200, "OK");
         }
 
@@ -133,7 +134,7 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Index", "LoginController");
             }
 
-            var rci = checkoutService.GetCommonAreaRciByID(id);
+            var rci = this.CheckoutService.GetCommonAreaRciByID(id);
             return View(rci);
         }
 
@@ -154,7 +155,7 @@ namespace Phoenix.Controllers
             }
             
 
-            var rci = checkoutService.GetCommonAreaRciByID(id);
+            var rci = this.CheckoutService.GetCommonAreaRciByID(id);
 
             if (rci.EveryoneHasSigned()) // Already signed
             {
@@ -171,7 +172,7 @@ namespace Phoenix.Controllers
 
                     if(!member.HasSignedCommonAreaRci)
                     {
-                        checkoutService.CheckoutCommonAreaMemberSignRci(id, member.GordonID);
+                        this.CheckoutService.CheckoutCommonAreaMemberSignRci(id, member.GordonID);
                     }
                 }
             }
@@ -185,15 +186,15 @@ namespace Phoenix.Controllers
                     errorMessages.Add("The name " + sig + " does not match.");
                 }
                 ViewBag.ErrorMessage = errorMessages;
-                rci = checkoutService.GetCommonAreaRciByID(id); // Reload the rci to reflect those who have already signed.
+                rci = this.CheckoutService.GetCommonAreaRciByID(id); // Reload the rci to reflect those who have already signed.
                 return View(rci);
             }
 
-            rci = checkoutService.GetCommonAreaRciByID(id); // reload rci from db to see if everyone has now signed.
+            rci = this.CheckoutService.GetCommonAreaRciByID(id); // reload rci from db to see if everyone has now signed.
             // If at the end of the loop, the boolean is still true, then everyone has signed.
             if(rci.EveryoneHasSigned())
             {
-                checkoutService.CheckoutResidentSignRci(id); // This is set once everybody has signed
+                this.CheckoutService.CheckoutResidentSignRci(id); // This is set once everybody has signed
                 return RedirectToAction("RASignature", new { id = id });
             }
             else
@@ -211,7 +212,7 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult ResidentSignature(int id)
         {
-            var rci = checkoutService.GetIndividualRoomRciByID(id);
+            var rci = this.CheckoutService.GetIndividualRoomRciByID(id);
             return View(rci);
         }
 
@@ -222,7 +223,7 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult ResidentSignature(int id, string signature)
         {
-            var rci = checkoutService.GetIndividualRoomRciByID(id);
+            var rci = this.CheckoutService.GetIndividualRoomRciByID(id);
 
             if(rci.CheckoutSigRes != null) // Already signed
             {
@@ -237,7 +238,7 @@ namespace Phoenix.Controllers
                 return View(rci);
             }
 
-            checkoutService.CheckoutResidentSignRci(rci.RciID);
+            this.CheckoutService.CheckoutResidentSignRci(rci.RciID);
             return RedirectToAction("RASignature", new { id = id });
         }
 
@@ -251,7 +252,7 @@ namespace Phoenix.Controllers
         {
             var raName = (string)TempData["user"];
             ViewBag.ExpectedSignature = raName;
-            var rci = checkoutService.GetGenericCheckoutRciByID(id);
+            var rci = this.CheckoutService.GetGenericCheckoutRciByID(id);
             return View(rci);
         }
 
@@ -264,7 +265,7 @@ namespace Phoenix.Controllers
         {
             var role = (string)TempData["role"];
 
-            var rci = checkoutService.GetGenericCheckoutRciByID(id);
+            var rci = this.CheckoutService.GetGenericCheckoutRciByID(id);
             if(rci.CheckoutSigRA != null) // Already signed
             {
                 return RedirectToAction("RDSignature", new { id = id });
@@ -278,7 +279,7 @@ namespace Phoenix.Controllers
                 return View(rci);
             }
 
-            checkoutService.CheckoutRASignRci(rci.RciID, (string)TempData["id"]);
+            this.CheckoutService.CheckoutRASignRci(rci.RciID, (string)TempData["id"]);
             return RedirectToAction("RDSignature", new { id = id });
         }
 
@@ -294,7 +295,7 @@ namespace Phoenix.Controllers
 
             var userName = (string)TempData["login_username"];
             ViewBag.ExpectedUsername = userName;
-            var rci = checkoutService.GetGenericCheckoutRciByID(id);
+            var rci = this.CheckoutService.GetGenericCheckoutRciByID(id);
             return View(rci);
         }
 
@@ -305,7 +306,7 @@ namespace Phoenix.Controllers
         [RD]
         public ActionResult RDSignature(int id, string password, string username,  string phoneNumber, List<string> workRequest)
         {
-            var rci = checkoutService.GetGenericCheckoutRciByID(id);
+            var rci = this.CheckoutService.GetGenericCheckoutRciByID(id);
             if (rci.CheckoutSigRD != null) // Already signed
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
@@ -316,7 +317,7 @@ namespace Phoenix.Controllers
                 username = username.Remove(username.IndexOf('@'));
             }
 
-            var isValidLogin = loginService.IsValidUser(username, password, loginService.ConnectToADServer());
+            var isValidLogin = this.LoginService.IsValidUser(username, password, this.LoginService.ConnectToADServer());
             if (!isValidLogin) // If this is not a valid user.
             {
                 ViewBag.RDName = (string)TempData["user"]; ;
@@ -338,14 +339,14 @@ namespace Phoenix.Controllers
 
             var rciSigned = false;
 
-            rciSigned = checkoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
+            rciSigned = this.CheckoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
 
             if (rciSigned) // Only do the rest if the rci was successfully signed.
             {
-                 checkoutService.SendFineEmail(id, username + "@gordon.edu", password);
+                 this.CheckoutService.SendFineEmail(id, username + "@gordon.edu", password);
                 if(workRequest != null)
                 {
-                    checkoutService.WorkRequestDamages(workRequest, username, password, id, phoneNumber);
+                    this.CheckoutService.WorkRequestDamages(workRequest, username, password, id, phoneNumber);
                 }
             }
             else

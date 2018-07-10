@@ -7,8 +7,10 @@ namespace Phoenix.DapperDal
     {
        
         BigRci FetchRciById(int rciId);
-        List<BigRci> FetchRciByGordonId(string gordonId);
-        List<SmolRci> FetchRciBySessionAndBuilding(List<string> sessions, List<string> buildings);
+        List<BigRci> FetchRcisByGordonId(string gordonId);
+        List<SmolRci> FetchRcisByBuilding(List<string> buildings);
+        List<SmolRci> FetchRcisBySessionAndBuilding(List<string> sessions, List<string> buildings);
+        List<SmolRci> FetchRcisForRoom(string building, string room);
 
         List<string> FetchBuildingCodes();
         List<ResidentHallGrouping> FetchBuildingMap();

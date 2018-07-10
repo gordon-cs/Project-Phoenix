@@ -8,124 +8,58 @@ using System.Xml.Linq;
 using System.Data.SqlClient;
 using System.Web;
 using System.Web.Mvc;
+using Phoenix.DapperDal;
 
 namespace Phoenix.Services
 {
-    public class DashboardService
-{
+    public class DashboardService : IDashboardService
+    {
         private RCIContext db;
         private XDocument document;
-        public DashboardService()
+        private IDal Dal { get; set; }
+        public DashboardService(IDal dal)
         {
             db = new Models.RCIContext();
             document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
+            this.Dal = dal;
         }
 
-        public DashboardService(bool testflag)
+        public IEnumerable<HomeRciViewModel> GetCurrentRcisForResident(string gordonId)
         {
-            db = new Models.RCIContext();
-        }
-
-        /// <summary>
-        /// Get a set of RCI's, depending on certain parameters, such as building, year, etc.
-        /// This method is used in admin Find RCIs tool
-        /// If no params are specified, returns all
-        /// </summary>
-        /// <param name="building">a building specified to get rci's for</param>
-        /// <param name="year"> a session specificed to get rci's for</param>
-        /// <returns>A collection of RCI View Models</returns>
-        public IEnumerable<HomeRciViewModel> GetRcis(string building = null, string year = null)
-        {
-            if (building != null)
-            {
-                return GetRcisForBuilding(new List<string> { building });
-            }
-            else 
-            {
-                // Return all RCI's
-                var RCIs = from personalRCI in db.Rci
-                           join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                           select new HomeRciViewModel
-                           {
-                               RciID = personalRCI.RciID,
-                               BuildingCode = personalRCI.BuildingCode.Trim(),
-                               RoomNumber = personalRCI.RoomNumber.Trim(),
-                               FirstName = account.firstname,
-                               LastName = account.lastname,
-                               RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                               CheckinSigRes = personalRCI.CheckinSigRes,
-                               CheckinSigRA = personalRCI.CheckinSigRA,
-                               CheckinSigRD = personalRCI.CheckinSigRD,
-                               CheckoutSigRes = personalRCI.CheckoutSigRes,
-                               CheckoutSigRA = personalRCI.CheckoutSigRA,
-                               CheckoutSigRD = personalRCI.CheckoutSigRD
-                           };
-                return RCIs;
-            }
-        }
-
-        ///<summary>
-        /// Get the RCI for an individual resident
-        ///</summary>
-        ///<param  name="id">resident's Gordon id </params> 
-        ///<returns>A collection of RCI View Models (which should contain only 1)</returns>
-        public IEnumerable<HomeRciViewModel> GetRcisForResident(string id)
-        {
-            if(id == null)
+            if (gordonId == null)
             {
                 return null;
             }
-            var RCIs =
-                from personalRCI in db.Rci
-                join account in db.Account on personalRCI.GordonID equals account.ID_NUM
-                where account.ID_NUM == id && personalRCI.IsCurrent == true
-                select new HomeRciViewModel
-                {
-                    RciID = personalRCI.RciID,
-                    BuildingCode = personalRCI.BuildingCode.Trim(),
-                    RoomNumber = personalRCI.RoomNumber.Trim(),
-                    FirstName = account.firstname,
-                    LastName = account.lastname,
-                    RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                    CheckinSigRes = personalRCI.CheckinSigRes,
-                    CheckinSigRA = personalRCI.CheckinSigRA,
-                    CheckinSigRD = personalRCI.CheckinSigRD,
-                    CheckoutSigRes = personalRCI.CheckoutSigRes,
-                    CheckoutSigRA = personalRCI.CheckoutSigRA,
-                    CheckoutSigRD = personalRCI.CheckoutSigRD
-                };
-            return RCIs;
+
+            var currentRcis = this.Dal.FetchRcisByGordonId(gordonId)
+                .Where(x => x.IsCurrent)
+                .Select(x => new HomeRciViewModel(x));
+
+            return currentRcis;
         }
 
-        ///<summary>
-        /// Display all RCI's for the corresponding building 
-        ///</summary>
-        ///<param name="buildingCode">code(s) for the building(s) of the RA or RD's sphere of authority</param>
-        public IEnumerable<HomeRciViewModel> GetRcisForBuilding(List<string> buildingCode)
+        public IEnumerable<HomeRciViewModel> GetCurrentRcisForBuilding(List<string> buildingCodes)
         {
-            var buildingRCIs =
-                from personalRCI in db.Rci
-                join account in db.Account on personalRCI.GordonID equals account.ID_NUM into rci
-                from account in rci.DefaultIfEmpty()
-                where buildingCode.Contains(personalRCI.BuildingCode) && personalRCI.IsCurrent == true
-                select new HomeRciViewModel
-                {
-                    RciID = personalRCI.RciID,
-                    BuildingCode = personalRCI.BuildingCode.Trim(),
-                    RoomNumber = personalRCI.RoomNumber.Trim(),
-                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                    LastName = account.lastname == null ? "RCI" : account.lastname,
-                    RciStage = personalRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                    CheckinSigRes = personalRCI.CheckinSigRes,
-                    CheckinSigRA = personalRCI.CheckinSigRA,
-                    CheckinSigRD = personalRCI.CheckinSigRD,
-                    CheckoutSigRes = personalRCI.CheckoutSigRes,
-                    CheckoutSigRA = personalRCI.CheckoutSigRA,
-                    CheckoutSigRD = personalRCI.CheckoutSigRD
-                };
-            return buildingRCIs.OrderBy(m => m.RoomNumber);
+            var currentRcis = this.Dal
+                .FetchRcisByBuilding(buildingCodes)
+                .Where(x => x.IsCurrent)
+                .Select(x => new HomeRciViewModel(x))
+                .OrderBy(m => m.RoomNumber);
+
+            return currentRcis;
         }
 
+        public IEnumerable<HomeRciViewModel> GetCurrentCommonAreaRcisForRoom(string currentRoom, string building)
+        {
+            var apartmentNumber = currentRoom.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+
+            var currentCommonAreaRcis = this.Dal.FetchRcisForRoom(building, apartmentNumber)
+                .Where(x => x.IsCurrent) // Current
+                .Where(x => x.GordonId == null) // Common Area
+                .Select(x => new HomeRciViewModel(x));
+
+            return currentCommonAreaRcis;
+        }
 
         ///<summary>
         /// Create RCI Components that are associated with a single RCI, according to room type
@@ -167,39 +101,6 @@ namespace Phoenix.Services
             return created;
         }
 
-
-        ///<summary>
-        /// Get the current common area RCIs for an apartment
-        ///</summary>
-        ///<param name="apartmentNumber">the apartment's number</param>
-        ///<param name="building">the building where the apartment is located</param>
-        ///<returns>the common area, if any, that was found in the db</returns>
-        public IEnumerable<HomeRciViewModel> GetCommonAreaRci(string currentRoom, string building)
-        {
-            var apartmentNumber = currentRoom.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
-
-            var commonAreaRCIs =
-                from tempCommonAreaRCI in db.Rci
-                where tempCommonAreaRCI.RoomNumber == apartmentNumber && tempCommonAreaRCI.BuildingCode == building
-                && tempCommonAreaRCI.GordonID == null && tempCommonAreaRCI.IsCurrent == true
-                select new HomeRciViewModel
-                {
-                    RciID = tempCommonAreaRCI.RciID,
-                    BuildingCode = tempCommonAreaRCI.BuildingCode,
-                    RoomNumber = tempCommonAreaRCI.RoomNumber,
-                    FirstName = "Common Area",
-                    LastName = "RCI",
-                    RciStage = tempCommonAreaRCI.CheckinSigRD == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE,
-                    CheckinSigRes = tempCommonAreaRCI.CheckinSigRes,
-                    CheckinSigRA = tempCommonAreaRCI.CheckinSigRA,
-                    CheckinSigRD = tempCommonAreaRCI.CheckinSigRD,
-                    CheckoutSigRes = tempCommonAreaRCI.CheckoutSigRes,
-                    CheckoutSigRA = tempCommonAreaRCI.CheckoutSigRA,
-                    CheckoutSigRD = tempCommonAreaRCI.CheckoutSigRD
-                };
-            return commonAreaRCIs;
-
-        }
 
          /// <summary>
          /// Generate a csv file of fines for rci's from current, according to buildings of RD

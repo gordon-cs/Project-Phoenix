@@ -12,12 +12,11 @@ namespace Phoenix.Controllers
     [CustomAuthentication]
     public class DashboardController : Controller
     {
-        private DashboardService dashboardService;
+        private IDashboardService dashboardService;
 
-        public DashboardController()
+        public DashboardController(IDashboardService service)
         {
-            
-            dashboardService = new DashboardService();
+            dashboardService = service;
         }
 
         // GET: Home
@@ -48,7 +47,6 @@ namespace Phoenix.Controllers
 
                 return RedirectToAction("Resident" );
             }
-          
         }
 
         // GET: Home/Resident
@@ -91,8 +89,8 @@ namespace Phoenix.Controllers
             dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID, currentRoomAssignDate);
             dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom);
 
-            var RCIs = dashboardService.GetRcisForResident(strID);
-            var commonAreaRcis = dashboardService.GetCommonAreaRci(currentRoom, currentBuilding);
+            var RCIs = dashboardService.GetCurrentRcisForResident(strID);
+            var commonAreaRcis = dashboardService.GetCurrentCommonAreaRcisForRoom(currentRoom, currentBuilding);
 
             return View(RCIs.Concat(commonAreaRcis));
         }
@@ -111,7 +109,7 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
             dashboardService.SyncRoomRcisFor(kingdom);
-            var buildingRCIs = dashboardService.GetRcisForBuilding(kingdom);
+            var buildingRCIs = dashboardService.GetCurrentRcisForBuilding(kingdom);
 
             return View(buildingRCIs);
         }
@@ -132,17 +130,9 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
             dashboardService.SyncRoomRcisFor(kingdom);
-            var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
+            var buildingRcis = dashboardService.GetCurrentRcisForBuilding(kingdom);
             
             return View(buildingRcis);
-        }
-
-        // GET: Home/Admin
-        [Admin]
-        public ActionResult Admin()
-        {
-            var rcis = dashboardService.GetRcis();
-            return View(rcis);
         }
 
         public ActionResult GotoRci(int rciID)
@@ -166,7 +156,7 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
 
-            var buildingRcis = dashboardService.GetRcisForBuilding(kingdom);
+            var buildingRcis = dashboardService.GetCurrentRcisForBuilding(kingdom);
 
             return View(buildingRcis);
         }
