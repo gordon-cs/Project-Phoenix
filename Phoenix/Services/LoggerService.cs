@@ -11,7 +11,7 @@ namespace Phoenix.Services
     /// 
     /// Later on, we can use this class to modify how things are logged at different levels, without changing code elsewhere.
     /// </summary>
-    public class LoggerService
+    public class LoggerService : ILoggerService
     {
         /// <summary>
         /// Log information.

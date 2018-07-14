@@ -170,6 +170,7 @@
     <Compile Include="Controllers\RciCheckoutController.cs" />
     <Compile Include="Controllers\RciComponentReassignController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
+    <Compile Include="DapperDal\Sql\Fine.cs" />
     <Compile Include="DapperDal\IDbConnectionFactory.cs" />
     <Compile Include="DapperDal\SqlConnectionFactory.cs" />
     <Compile Include="DapperDal\Sql\Account.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="DapperDal\Types\Damage.cs" />
     <Compile Include="DapperDal\DapperDal.cs" />
     <Compile Include="DapperDal\Types\Fine.cs" />
+    <Compile Include="DapperDal\Types\FineSummary.cs" />
     <Compile Include="DapperDal\Types\HallGroup.cs" />
     <Compile Include="DapperDal\Types\Rci.cs" />
     <Compile Include="DapperDal\IDapperDal.cs" />
@@ -242,6 +244,7 @@
     </Compile>
     <Compile Include="Services\AdminDashboardService.cs" />
     <Compile Include="Services\DashboardService.cs" />
+    <Compile Include="Services\ILoggerService.cs" />
     <Compile Include="Services\Interfaces\IDashboardService.cs" />
     <Compile Include="Services\Interfaces\ILoginService.cs" />
     <Compile Include="Services\Interfaces\IAdminDashboardService.cs" />

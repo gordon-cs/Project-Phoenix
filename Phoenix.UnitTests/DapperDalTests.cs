@@ -217,5 +217,33 @@ namespace Phoenix.UnitTests
             Assert.NotNull(result.AssignmentDate);
             Assert.NotNull(result.SessionCode);
         }
+
+        // Fines
+        [Fact]
+        public void FineSummary_Tests()
+        {
+            var noBuildings = new List<string>();
+
+            var oneBuilding = new List<string> { "FUL" };
+
+            var noBuildingResult = this.Dal.FetchFinesByBuilding(noBuildings);
+            var oneBuildingResult = this.Dal.FetchFinesByBuilding(oneBuilding);
+
+            Assert.Empty(noBuildingResult);
+
+            Assert.NotEmpty(oneBuildingResult);
+
+            var fineSummary = oneBuildingResult.First();
+            Assert.NotNull(fineSummary.FineId);
+            Assert.NotNull(fineSummary.GordonId);
+            Assert.NotNull(fineSummary.LastName);
+            Assert.NotNull(fineSummary.FirstName);
+            Assert.NotNull(fineSummary.BuildingCode);
+            Assert.NotNull(fineSummary.RoomNumber);
+            Assert.NotNull(fineSummary.RciComponentName);
+            Assert.NotNull(fineSummary.SessionCode);
+            Assert.NotNull(fineSummary.SuggestedCostsString);
+            Assert.Contains(fineSummary.BuildingCode, oneBuilding);
+        }
     }
 }

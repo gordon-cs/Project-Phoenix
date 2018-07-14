@@ -50,6 +50,10 @@ namespace Phoenix
                 .RegisterType<LoginService>()
                 .As<ILoginService>();
 
+            builder
+                .RegisterType<LoggerService>()
+                .As<ILoggerService>();
+
             //Register Controllers
             builder
                 .RegisterType<AdminDashboardController>()

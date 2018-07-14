@@ -12,6 +12,8 @@ namespace Phoenix.DapperDal
         List<SmolRci> FetchRcisBySessionAndBuilding(List<string> sessions, List<string> buildings);
         List<SmolRci> FetchRcisForRoom(string building, string room);
 
+        List<FineSummary> FetchFinesByBuilding(List<string> buildings);
+
         List<string> FetchBuildingCodes();
         List<ResidentHallGrouping> FetchBuildingMap();
 

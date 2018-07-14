@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Web;
 using System.Web.Mvc;
 using Phoenix.DapperDal;
+using System.Text;
 
 namespace Phoenix.Services
 {
@@ -109,66 +110,53 @@ namespace Phoenix.Services
         public string GenerateFinesSpreadsheet(List<string> buildingCodes)
         {
             var currentSession = GetCurrentSession();
-            var csvString = "Room Number,Building Code,Name,ID,Detailed Reason,Charge Amount,Behavioral Fine\n";
+            var finesCsv = new StringBuilder();
+            finesCsv.AppendLine(@"""Room Number"",""Building Code"",""Name"",""ID"",""Detailed Reason"",""Charge Amount"",""Behavioral Fine""");
 
-            var fineQueries =
-                from rci in db.Rci
-                join component in db.RciComponent on rci.RciID equals component.RciID
-                join fine in db.Fine on component.RciComponentID equals fine.RciComponentID
-                join account in db.Account on fine.GordonID equals account.ID_NUM
-                where buildingCodes.Contains(rci.BuildingCode) && rci.IsCurrent.Value == true
-                && fine.FineAmount > 0 
-                // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
-                // charge the resident for it e.g. Window blinds need to be replaced.
-                select new
-                {
-                    RoomNumber = rci.RoomNumber,
-                    BuildingCode = rci.BuildingCode,
-                    FirstName = account.firstname,
-                    LastName = account.lastname,
-                    Id = fine.GordonID,
-                    ComponentName = component.RciComponentName,
-                    DetailedReason = fine.Reason,
-                    FineAmount = fine.FineAmount,
-                    IsFine = component.RciComponentDescription.Equals(Constants.FINE) ? "YES" : "NO"
-                };
+            var fines = this.Dal.FetchFinesByBuilding(buildingCodes)
+                .Where(x => x.IsCurrent)
+                .Where(x => x.FineAmount > 0); // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
+                                               // charge the resident for it e.g. Window blinds need to be replaced.
 
-            foreach (var fine in fineQueries)
+            foreach (var fine in fines)
             {
-                csvString += fine.RoomNumber + ",";
-                csvString += fine.BuildingCode + ",";
-                csvString += fine.FirstName + " " + fine.LastName + ",";
-                csvString += fine.Id + ",";
-                csvString += fine.ComponentName + ": " + fine.DetailedReason + ",";
-                csvString += fine.FineAmount + ",";
-                csvString += fine.IsFine + "\n";
+                // All the fields are quoted because some fields will contain the comma separater in them, which will throw things off if the quotes are not present.
+                finesCsv.Append($"\"{fine.RoomNumber}\",");
+                finesCsv.Append($"\"{fine.BuildingCode}\",");
+                finesCsv.Append($"\"{fine.FirstName} {fine.LastName}\",");
+                finesCsv.Append($"\"{fine.GordonId}\",");
+                finesCsv.Append($"\"{fine.RciComponentName}: {fine.Reason}\",");
+                finesCsv.Append($"\"{fine.FineAmount}\",");
+                finesCsv.Append(fine.RciComponentDescription.Equals(Constants.FINE, StringComparison.OrdinalIgnoreCase) ? $"\"YES\"" : $"\"NO\"");
+                finesCsv.AppendLine();
             }
 
-            return csvString;
+            return finesCsv.ToString();
         } 
 
-        ///<summary>
-        /// Query the db for the current session, which will be the session with the most recent SESS_BEGN_DTE
-        ///</summary>
-        ///<returns>string that contains the code for the current session</returns>
-         public string GetCurrentSession()
+        public string GetCurrentSession()
         {
             var today = DateTime.Now;
-            var sessions = db.Session.Where(m => m.SESS_BEGN_DTE.HasValue && m.SESS_END_DTE.HasValue);
-            sessions = sessions.Where(x => 
-                            today.CompareTo(x.SESS_BEGN_DTE.Value) >= 0 
-                            && 
-                            today.CompareTo(x.SESS_END_DTE.Value) <= 0 ); // We are assuming sessions don't overlap
+
+            var allSessions = this.Dal.FetchSessions();
+
+            var sessions = allSessions
+                .Where(m => m.SessionStartDate.HasValue && m.SessionEndDate.HasValue)
+                .Where(x => today.CompareTo(x.SessionStartDate.Value) >= 0
+                            &&
+                            today.CompareTo(x.SessionEndDate.Value) <= 0); // We are assuming sessions don't overlap
+
             var currentSession = sessions.FirstOrDefault();
+
             // If we are within a session.
             if(currentSession != null)
             {
-                return currentSession.SESS_CDE.Trim();
+                return currentSession.SessionCode.Trim();
             }
             // If the table doesn't have a session for the date we are within
             else
             {
-                return db.Session.OrderByDescending(m => m.SESS_BEGN_DTE).FirstOrDefault().SESS_CDE.Trim();
+                return allSessions.OrderByDescending(m => m.SessionStartDate).First().SessionCode.Trim();
             }
         } 
 
@@ -367,33 +355,33 @@ namespace Phoenix.Services
         /// </summary>
         public string GetRciState(int rciID)
         {
-            var rci = db.Rci.Find(rciID);
+            var rci = this.Dal.FetchRciById(rciID);
 
-            if(rci.CheckinSigRes == null)
+            if(rci.ResidentCheckinDate == null)
             {
                 return Constants.RCI_UNSIGNED;
             }
-            else if(rci.CheckinSigRA == null)
+            else if(rci.RaCheckinDate == null)
             {
                 return Constants.RCI_SIGNGED_BY_RES_CHECKIN;
             }
-            else if(rci.CheckinSigRD == null)
+            else if(rci.RdCheckinDate == null)
             {
                 return Constants.RCI_SIGNGED_BY_RA_CHECKIN;
             }
-            else if(rci.CheckoutSigRes == null)
+            else if(rci.ResidentCheckoutDate == null)
             {
                 return Constants.RCI_SIGNGED_BY_RD_CHECKIN;
             }
-            else if(rci.CheckoutSigRA == null)
+            else if(rci.RaCheckoutDate == null)
             {
                 return Constants.RCI_SIGNGED_BY_RES_CHECKOUT;
             }
-            else if(rci.CheckoutSigRD == null)
+            else if(rci.RdCheckoutDate == null)
             {
                 return Constants.RCI_SIGNGED_BY_RA_CHECKOUT;
             }
-            else // rci.CheckoutSigRD != null
+            else // rci.RdCheckoutDate != null
             {
                 return Constants.RCI_COMPLETE;
             }

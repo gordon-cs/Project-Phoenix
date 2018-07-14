@@ -128,6 +128,19 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public List<FineSummary> FetchFinesByBuilding(List<string> buildings)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = Sql.Fine.FineSummarySelectStatement +
+                    "where rci.BuildingCode in @BuildingCodes";
+
+                var queryResult = connection.Query<FineSummary>(sql, new { BuildingCodes = buildings }).ToList();
+
+                return queryResult;
+            }
+        }
+
         public Account FetchAccountByGordonId(string gordonId)
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
