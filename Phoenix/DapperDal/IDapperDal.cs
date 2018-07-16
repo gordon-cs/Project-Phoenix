@@ -32,6 +32,7 @@ namespace Phoenix.DapperDal
         List<Session> FetchSessions();
         
         Account FetchAccountByGordonId(string gordonId);
+        List<Account> FetchResidentAccounts(string builingCode, string roomNumber, string sessionCode);
 
     }
 }

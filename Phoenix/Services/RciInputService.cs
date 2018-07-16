@@ -27,10 +27,11 @@ namespace Phoenix.Services
             this.DashboardService = dashboardService;
         }
 
-        public Rci GetRci(int id)
+        public FullRciViewModel GetRci(int id)
         {
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
-            return rci;
+            var rci =  this.Dal.FetchRciById(id);
+
+            return new FullRciViewModel(rci);
         }
 
         public IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(List<string> buildingCode)
@@ -113,6 +114,7 @@ namespace Phoenix.Services
 
             return query.FirstOrDefault();
         }
+
         public void SignRcis(string gordonID)
         {
             var rcis =
@@ -125,13 +127,6 @@ namespace Phoenix.Services
                 rci.CheckinSigRD = DateTime.Today;
             }
             db.SaveChanges();
-        }
-
-        public string GetName(string gordonID)
-        {
-            var account = this.Dal.FetchAccountByGordonId(gordonID);
-
-            return $"{account.FirstName} {account.LastName}";
         }
 
         public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
@@ -239,14 +234,6 @@ namespace Phoenix.Services
             db.SaveChanges();
         }
 
-
-        public string GetUsername(string gordon_id)
-        {
-            var account = this.Dal.FetchAccountByGordonId(gordon_id);
-
-            return account.AdUsername;
-        }
-
         // Save a damage to the Damage table in the db
         // @return the resulting image path that was saved to the db
         public void SavePhotoDamage(Damage damage, string rciComponentId)
@@ -343,12 +330,5 @@ namespace Phoenix.Services
             // other programs don't try to adjust the image again based on the exif data.
             image.RemovePropertyItem(274);
         } 
-
-        public IEnumerable<string> GetCommonRooms(int id)
-        {
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
-            return rci.RciComponent.GroupBy(x => x.RciComponentDescription).Select(x => x.First()).Select(x => x.RciComponentDescription);
-        }
-
     }
 }

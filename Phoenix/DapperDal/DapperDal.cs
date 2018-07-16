@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Phoenix.DapperDal.Types;
+using Phoenix.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -131,17 +132,17 @@ namespace Phoenix.DapperDal
 
                 var fineSql = Sql.Fine.FineSelectStatement + "where fine.RciId = @RciId";
 
-                var roomComponentTypesSql = Sql.RciTypeRoomComponentTypeMap.MapSelectStatment +
-                    "where rci.RciId = @RciId";
+                var roomComponentTypesSql = Sql.RciTypeRoomComponentTypeMap.MapSelectStatment + "where rci.RciId = @RciId";
 
-                // The order is important.
-                // The order in which the statements are created is the order you read them in.
-                var sql = string.Join("\n\n", new List<string> { rciSql, damageSql, fineSql, roomComponentTypesSql });
+                var commonAreaRciSignaturesSql = Sql.Rci.CommonAreaRciSignatureManifest + "where sig.RciId = @RciId";
+
+                var sql = string.Join("\n\n", new List<string> { rciSql, damageSql, fineSql, roomComponentTypesSql, commonAreaRciSignaturesSql});
 
                 var queryResult = connection.QueryMultiple(sql, new { RciId = rciId });
 
                 BigRci rci;
 
+                // The order in which the statements are made is the order you read them in.
                 var allRciResults = queryResult.Read<BigRci>();
 
                 try
@@ -161,11 +162,26 @@ namespace Phoenix.DapperDal
 
                 var roomComponentTypes = queryResult.Read<RoomComponentType>();
 
+                var commonAreaSignatures = queryResult.Read<CommonAreaRciSignature>();
+
                 rci.Damages = damages.ToList();
 
                 rci.Fines = fines.ToList();
 
                 rci.RoomComponentTypes = roomComponentTypes.ToList();
+
+                rci.CommonAreaSignatures = commonAreaSignatures.ToList();
+
+                // Also fetch Account Information for Checkin and Checkout Ra and Rd
+                if (rci.CheckinRaGordonId != null) { rci.CheckinRaAccount = this.FetchAccountByGordonId(rci.CheckinRaGordonId); }
+                if (rci.CheckinRdGordonId != null) { rci.CheckinRdAccount = this.FetchAccountByGordonId(rci.CheckinRdGordonId); }
+                if (rci.CheckoutRaGordonId != null) { rci.CheckoutRaAccount = this.FetchAccountByGordonId(rci.CheckoutRaGordonId); }
+                if (rci.CheckoutRdGordonId != null) { rci.CheckoutRdAccount = this.FetchAccountByGordonId(rci.CheckoutRdGordonId); }
+
+                // Also fetch Account information for Apartment Mates in the case of an Apartment or Roommates in the case of a Dorm
+                var normalizedRoomNumber = rci.RoomNumber.TrimEnd(Constants.ROOM_NUMBER_SUFFIXES);
+
+                rci.RoomOrApartmentResidents = this.FetchResidentAccounts(rci.BuildingCode, normalizedRoomNumber, rci.SessionCode);
 
                 return rci;
             }
@@ -227,7 +243,7 @@ namespace Phoenix.DapperDal
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = Sql.Account.AccountSelectStatement +
-                    "where account.GordonId = @Id";
+                    "where account.ID_NUM = @Id";
 
                 var queryResult = connection.Query<Account>(sql, new { Id = gordonId });
 
@@ -243,6 +259,26 @@ namespace Phoenix.DapperDal
                 }
 
                 return account;
+            }
+        }
+
+        public List<Account> FetchResidentAccounts(string builingCode, string roomNumber, string sessionCode)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = Sql.Account.ResidentAccountsSelectStatement +
+                    "where roomAssign.BLDG_CDE = @BuildingCode and roomAssign.ROOM_CDE like '%' + @RoomNumber + '%' and roomAssign.SESS_CDE = @SessionCode";
+
+                var inputParams = new
+                {
+                    BuildingCode = builingCode,
+                    RoomNumber = roomNumber,
+                    SessionCode = sessionCode
+                };
+
+                var queryResults = connection.Query<Account>(sql, inputParams).ToList();
+
+                return queryResults;
             }
         }
 

@@ -10,11 +10,8 @@ namespace Phoenix.Services
         void ApplyExifData(Image image);
         void CheckRcis(int sigCheck, string gordonID, int id);
         CheckinCommonAreaRciViewModel GetCommonAreaRciById(int id);
-        IEnumerable<string> GetCommonRooms(int id);
-        string GetName(string gordonID);
-        Rci GetRci(int id);
+        FullRciViewModel GetRci(int id);
         IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(List<string> buildingCode);
-        string GetUsername(string gordon_id);
         Size NewImageSize(Size imageSize, Size newSize);
         void ResizeImage(Image origImg, Image newImage, Size imgSize);
         bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID);

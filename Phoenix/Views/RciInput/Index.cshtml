@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.Rci
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
 @{
     ViewBag.Title = "Check-In";
@@ -18,23 +18,16 @@
 
 <div class="view">
     <h2>@ViewBag.ViewTitle</h2>
-    @if (ViewBag.commonRooms == null)
-    {
 
-        foreach (var component in Model.RciComponent)
-        {
-            @Html.Partial("Component", component);
-        }
-    }
-    else
+    @{ var roomComponentsGroupedByArea = Model.RoomComponents.GroupBy(x => x.RoomArea); }
+
+   
+    @foreach (var roomArea in roomComponentsGroupedByArea)
     {
-        foreach (var room in ViewBag.commonRooms)
+        <h2>@roomArea.Key</h2>
+        foreach (var roomComponent in roomArea)
         {
-            <h2>@room</h2>
-            foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room)))
-            {
-                @Html.Partial("Component", component);
-            }
+            @Html.Partial("Component", roomComponent);
         }
     }
 
@@ -50,9 +43,9 @@
 <div id="signature-container">
     @if (ViewBag.Role == "Resident")
     {
-        if (Model.GordonID == null)
+        if (Model.GordonId == null)
         {
-            @Html.Partial("CheckinSigCommonArea", (Phoenix.Models.ViewModels.CheckinCommonAreaRciViewModel)ViewBag.CommonAreaModel)
+            @Html.Partial("CheckinSigCommonArea", Model)
         }
         else
         {
@@ -61,9 +54,9 @@
     }
     else if (ViewBag.Role == "RA")
     {
-        if(Model.GordonID == null && ViewBag.RAIsMemberOfApartment && Model.CheckinSigRes == null)
+        if(Model.GordonId == null && ViewBag.RAIsMemberOfApartment && Model.ResidentCheckinDate == null)
         {
-            @Html.Partial("CheckinSigCommonArea", (Phoenix.Models.ViewModels.CheckinCommonAreaRciViewModel)ViewBag.CommonAreaModel)
+            @Html.Partial("CheckinSigCommonArea", Model)
         }
         else
         {

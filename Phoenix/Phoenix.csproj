@@ -226,6 +226,7 @@
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckinCommonAreaRciViewModel.cs" />
+    <Compile Include="Models\ViewModels\FullRciViewModel.cs" />
     <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutCommonAreaRciViewModel.cs" />
     <Compile Include="Models\ViewModels\CheckoutIndividualRoomRciViewModel.cs" />

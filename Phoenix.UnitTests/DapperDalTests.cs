@@ -27,7 +27,7 @@ namespace Phoenix.UnitTests
         public void FetchRciById_Succeeds()
         {
             // Arrange
-            var rciId = this.Dal.CreateNewDormRci("TESTID", "TAV", "104", "TESTSESSION");
+            var rciId = this.Dal.CreateNewDormRci("50184689", "TAV", "104A", "201809");
 
             // Test
             var result = this.Dal.FetchRciById(rciId);
@@ -37,11 +37,12 @@ namespace Phoenix.UnitTests
             Assert.NotEqual(0, result.RciId);
             Assert.NotNull(result.SessionCode);
             Assert.NotNull(result.RoomComponentTypes);
-            Assert.NotEqual(0, result.RoomComponentTypes.Count);
+            Assert.NotEmpty(result.RoomComponentTypes);
             Assert.NotNull(result.Fines);
             Assert.DoesNotContain(result.Fines, x => x.FineId == 0);
             Assert.NotNull(result.Damages);
             Assert.DoesNotContain(result.Damages, x => x.DamageId == 0);
+            Assert.NotEmpty(result.RoomOrApartmentResidents);
 
             // Cleanup
             this.Dal.DeleteRci(rciId);
@@ -77,15 +78,21 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FetchRcisBySessionAndBuilding_Success()
         {
+            // Setup
             var rciId = this.Dal.CreateNewDormRci("4343", "TAV", "32", "201709");
             var sessions = new List<string> { "201709" };
             var buildings = new List<string> { "TAV" };
 
+            // Test
             var result = this.Dal.FetchRcisBySessionAndBuilding(sessions, buildings);
 
+            // Assert
             Assert.NotEmpty(result);
             Assert.True(result.TrueForAll(x => x.SessionCode.Equals("201709")));
             Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("TAV")));
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId);
         }
 
         [Fact]
@@ -260,6 +267,20 @@ namespace Phoenix.UnitTests
             Assert.False(rdResult.IsAdmin);
             Assert.Null(rdResult.RaBuildingCode);
             Assert.NotNull(rdResult.RdHallGroup);
+        }
+
+        [Fact]
+        public void FetchResidentAccounts()
+        {
+            var buildingCode = "BRO";
+            var apartmentNumber = "203";
+            var session = "201509";
+
+            // The fields will be all null (except for the id) because these are alumni residents
+            var results = this.Dal.FetchResidentAccounts(buildingCode, apartmentNumber, session);
+
+            Assert.NotEmpty(results);
+            Assert.Equal(4, results.Count);
         }
 
         // Room Assign

@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Phoenix.Exceptions;
 using System.Text;
+using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
 {
@@ -42,7 +43,7 @@ namespace Phoenix.Controllers
             var rci = rciInputService.GetRci(id);
 
             //  Redirect to the review page if this is already signed by the RD
-            if(rci.CheckinSigRD != null)
+            if(rci.RdCheckinDate != null)
             {
                 return RedirectToAction("RciReview", new { id = id });
             }
@@ -56,19 +57,18 @@ namespace Phoenix.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            if (rci.GordonID == null) // A common area rci
+            if (rci.GordonId == null) // A common area rci
             {
-                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
+                ViewBag.ViewTitle = $"Check-In: {rci.BuildingCode} {rci.RoomNumber} Common Area";
                 // Select rooms of common area RCIs to group the RCIs
-                ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
-                var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
-                ViewBag.CommonAreaModel = commonAreaRci;
-                ViewBag.RAIsMemberOfApartment = (role == "RA") && (commonAreaRci.CommonAreaMember.Where(m => m.GordonID == gordon_id).Any());
+                //ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
+                //var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
+                //ViewBag.CommonAreaModel = commonAreaRci;
+                ViewBag.RAIsMemberOfApartment = (role == Constants.RA) && (rci.CommonAreaMembers.Where(m => m.GordonID == gordon_id).Any());
             }
             else
             {
-                var name = rciInputService.GetName(rci.GordonID);
-                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " " + name;
+                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " " + rci.FirstName + " " + rci.LastName;
             }
 
             return View(rci);
@@ -89,15 +89,14 @@ namespace Phoenix.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            if (rci.GordonID == null) // A common area rci
+            if (rci.GordonId == null) // A common area rci
             {
                 ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
-                ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
+                // CHANGE!!! ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
             }
             else
             {
-                var name = rciInputService.GetName(rci.GordonID);
-                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " " + name;
+                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " " + rci.FirstName + " " + rci.LastName; ;
             }
 
             return View(rci);

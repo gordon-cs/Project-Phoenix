@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Phoenix.Utilities;
+using System;
 using System.Collections.Generic;
 
 namespace Phoenix.DapperDal.Types

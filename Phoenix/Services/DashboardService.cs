@@ -142,7 +142,7 @@ namespace Phoenix.Services
                     continue;
                 }
 
-                var newRciId = this.Dal.CreateNewDormRci(roomAssignment.GordonId, roomAssignment.BuildingCode, roomAssignment.RoomNumber, currentSession);
+                var newRciId = this.Dal.CreateNewDormRci(roomAssignment.GordonId, roomAssignment.BuildingCode, roomAssignment.RoomNumber, roomAssignment.SessionCode);
 
                 this.Logger.Info($"New Rci Created by Rci Generation in DashboardService.SyncRoomRcisFor. RciId={newRciId}");
             }
@@ -184,7 +184,9 @@ namespace Phoenix.Services
             
             if(createNewRci)
             {
-                this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, GetCurrentSession());
+                var roomAssignment = this.Dal.FetchLatestRoomAssignmentForId(idNumber);
+
+                this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, roomAssignment.SessionCode);
             }
         }
 
@@ -217,7 +219,7 @@ namespace Phoenix.Services
 
             if(createCommonAreaRci)
             {
-                var commmonAreaRciId = this.Dal.CreateNewCommonAreaRci(thisRoom.BuildingCode, thisRoom.RoomNumber, GetCurrentSession());
+                var commmonAreaRciId = this.Dal.CreateNewCommonAreaRci(thisRoom.BuildingCode, thisRoom.RoomNumber, this.GetCurrentSession());
 
                 this.Logger.Info($"New Common Area Rci Created by Rci Generation in DashboardService.SyncCommonAreaRcisFor. RciId={commmonAreaRciId}");
             }

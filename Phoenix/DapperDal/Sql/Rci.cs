@@ -5,8 +5,17 @@
         public const string RciInsertStatement =
             @"insert into Rci(IsCurrent,CreationDate,BuildingCode,RoomNumber,GordonID,SessionCode,RciTypeId,CheckinSigRes,CheckinSigRA,CheckinSigRD,LifeAndConductSigRes,CheckoutSigRes,CheckoutSigRA,CheckoutSigRD,CheckoutSigRAGordonID,CheckoutSigRDGordonID,CheckinSigRAGordonID,CheckinSigRDGordonID)
 values (@IsCurrent,@CreationDate,@BuildingCode, @RoomNumber, @GordonId,@SessionCode,@RciTypeId, null, null, null, null, null, null, null, null, null, null, null)
-SELECT CAST(SCOPE_IDENTITY() as int)";
+SELECT CAST(SCOPE_IDENTITY() as int)
+";
 
+        public const string CommonAreaRciSignatureManifest =
+            @"
+select sig.GordonID as GordonId,
+		sig.RciId as RciId,
+		sig.[Signature] as SignatureDate,
+		sig.SignatureType as SignatureType
+from CommonAreaRciSignature sig
+";
         public const string RciSelectstatement =
             @"select rci.RciId as RciId,
 		rci.GordonID as GordonId,
