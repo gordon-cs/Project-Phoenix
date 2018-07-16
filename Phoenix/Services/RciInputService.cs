@@ -129,8 +129,9 @@ namespace Phoenix.Services
 
         public string GetName(string gordonID)
         {
-            return db.Account.Where(m => m.ID_NUM == gordonID)
-                    .Select(m => m.firstname + " " + m.lastname).FirstOrDefault();
+            var account = this.Dal.FetchAccountByGordonId(gordonID);
+
+            return $"{account.FirstName} {account.LastName}";
         }
 
         public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
@@ -241,8 +242,9 @@ namespace Phoenix.Services
 
         public string GetUsername(string gordon_id)
         {
-            var username = db.Account.Where(u => u.ID_NUM == gordon_id).FirstOrDefault().AD_Username;
-            return username;
+            var account = this.Dal.FetchAccountByGordonId(gordon_id);
+
+            return account.AdUsername;
         }
 
         // Save a damage to the Damage table in the db

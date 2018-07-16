@@ -14,7 +14,7 @@ namespace Phoenix.DapperDal
             Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(SmolRci), new List<string> { "RciId" });
             Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(BigRci), new List<string> { "RciId" });
             Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(CommonAreaRciSignature), new List<string> { "CommonAreaSignatureGordonId", "CommonAreaSignatureRciId", "CommonAreaSignatureType" });
-            Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(RciComponent), new List<string> { "RciComponentId" });
+            Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(RoomComponentType), new List<string> { "RoomComponentTypeId" });
             Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(Fine), new List<string> { "FineId" });
             Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(Damage), new List<string> { "DamageId" });
             Slapper.AutoMapper.Configuration.AddIdentifiers(typeof(Account), new List<string> { "GordonId" });

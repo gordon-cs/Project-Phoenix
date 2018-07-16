@@ -1,11 +1,7 @@
-﻿using Dapper;
-using Phoenix.DapperDal;
-using Phoenix.DapperDal.Types;
+﻿using Phoenix.DapperDal;
 using Phoenix.UnitTests.TestUtilities;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
 using System.Linq;
 using Xunit;
 
@@ -31,20 +27,24 @@ namespace Phoenix.UnitTests
         public void FetchRciById_Succeeds()
         {
             // Arrange
-            int existingRciId = 7065;
+            var rciId = this.Dal.CreateNewDormRci("TESTID", "TAV", "104", "TESTSESSION");
 
             // Test
-            var result = this.Dal.FetchRciById(existingRciId);
+            var result = this.Dal.FetchRciById(rciId);
 
             // Assert
             Assert.NotNull(result);
             Assert.NotEqual(0, result.RciId);
             Assert.NotNull(result.SessionCode);
-            Assert.NotNull(result.RciComponents);
-            Assert.NotEqual(0, result.RciComponents.Count);
-            Assert.NotNull(result.RciComponents[0].Fines);
-            Assert.NotNull(result.RciComponents[0].Damages);
-            Assert.NotNull(result.CommonAreaSignatures);
+            Assert.NotNull(result.RoomComponentTypes);
+            Assert.NotEqual(0, result.RoomComponentTypes.Count);
+            Assert.NotNull(result.Fines);
+            Assert.DoesNotContain(result.Fines, x => x.FineId == 0);
+            Assert.NotNull(result.Damages);
+            Assert.DoesNotContain(result.Damages, x => x.DamageId == 0);
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId);
         }
 
         [Fact]
@@ -64,11 +64,6 @@ namespace Phoenix.UnitTests
 
             Assert.NotEmpty(result);
             Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("TAV")));
-
-            // Verify that we have no duplicates.
-            var list = result.Select(x => x.RciId);
-            var set = new HashSet<int>(list);
-            Assert.Equal(set.Count, list.Count());
         }
 
         [Fact]
@@ -80,8 +75,9 @@ namespace Phoenix.UnitTests
         }
 
         [Fact]
-        public void FetchRcisBySessionAndBuilding_Successeds()
+        public void FetchRcisBySessionAndBuilding_Success()
         {
+            var rciId = this.Dal.CreateNewDormRci("4343", "TAV", "32", "201709");
             var sessions = new List<string> { "201709" };
             var buildings = new List<string> { "TAV" };
 
@@ -90,29 +86,103 @@ namespace Phoenix.UnitTests
             Assert.NotEmpty(result);
             Assert.True(result.TrueForAll(x => x.SessionCode.Equals("201709")));
             Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("TAV")));
-
-            // Verify that we have no duplicates.
-            var list = result.Select(x => x.RciId);
-            var set = new HashSet<int>(list);
-            Assert.Equal(set.Count, list.Count());
         }
 
         [Fact]
         public void FetchRcisByRoom_Success()
         {
+            // Arrange
             var buildingCode = "GRA";
             var roomNumber = "113";
+            var rciId = this.Dal.CreateNewDormRci("TESTID", buildingCode, roomNumber, "TESTSESSION");
 
+            // Test
             var result = this.Dal.FetchRcisForRoom(buildingCode, roomNumber);
 
             Assert.NotEmpty(result);
             Assert.True(result.TrueForAll(x => x.BuildingCode.Equals(buildingCode)));
             Assert.True(result.TrueForAll(x => x.RoomNumber.Equals(roomNumber)));
 
-            // Verify that we have no duplicates.
-            var list = result.Select(x => x.RciId);
-            var set = new HashSet<int>(list);
-            Assert.Equal(set.Count, list.Count());
+            // Cleanup
+            this.Dal.DeleteRci(rciId);
+        }
+
+        [Fact]
+        public void CreateAndDeleteTests()
+        {
+            // Create an Rci
+            var rciId = this.Dal.CreateNewDormRci("0101", "Hello", "20", "2020");
+            var commonAreaRciId = this.Dal.CreateNewCommonAreaRci("Common", "2", "32");
+
+            var rci = this.Dal.FetchRciById(rciId);
+            var commonAreaRci = this.Dal.FetchRciById(commonAreaRciId);
+
+            Assert.NotEqual(0, rciId);
+            Assert.Equal("0101", rci.GordonId);
+            Assert.Equal("Hello", rci.BuildingCode);
+            Assert.Equal("20", rci.RoomNumber);
+            Assert.Equal("2020", rci.SessionCode);
+            Assert.Equal(1, rci.RciTypeId);
+
+            Assert.NotEqual(0, commonAreaRciId);
+            Assert.Null(commonAreaRci.GordonId);
+            Assert.Equal("Common", commonAreaRci.BuildingCode);
+            Assert.Equal("2", commonAreaRci.RoomNumber);
+            Assert.Equal("32", commonAreaRci.SessionCode);
+            Assert.Equal(2, commonAreaRci.RciTypeId);
+
+            // Delete it
+            this.Dal.DeleteRci(rciId);
+            this.Dal.DeleteRci(commonAreaRciId);
+
+            var exception = Assert.Throws<Exception>(() => this.Dal.FetchRciById(rciId));
+            var commonAreaException = Assert.Throws<Exception>(() => this.Dal.FetchRciById(commonAreaRciId));
+
+            Assert.Contains("Expected a single result", exception.Message);
+            Assert.Contains("Expected a single result", commonAreaException.Message);
+        }
+
+        [Fact]
+        public void UpdateRciIsCurrentColumnTests()
+        {
+            // Create an rci
+            var rciId1 = this.Dal.CreateNewDormRci("010101", "Test", "2020202", "2020202");
+            var rciId2 = this.Dal.CreateNewDormRci("939393", "Test", "4434334", "3233232");
+            var rciId3 = this.Dal.CreateNewDormRci("49494", "Test", "3444", "3232332");
+
+            // Now Fetch the rcis
+            var rci1 = this.Dal.FetchRciById(rciId1);
+            var rci2 = this.Dal.FetchRciById(rciId2);
+            var rci3 = this.Dal.FetchRciById(rciId3);
+
+            Assert.True(rci1.IsCurrent);
+            Assert.True(rci2.IsCurrent);
+            Assert.True(rci2.IsCurrent);
+
+            this.Dal.SetRciIsCurrentColumn(new List<int> { rciId1, rciId2, rciId3 }, false);
+
+            rci1 = this.Dal.FetchRciById(rciId1);
+            rci2 = this.Dal.FetchRciById(rciId2);
+            rci3 = this.Dal.FetchRciById(rciId3);
+
+            Assert.False(rci1.IsCurrent);
+            Assert.False(rci2.IsCurrent);
+            Assert.False(rci2.IsCurrent);
+
+            this.Dal.SetRciIsCurrentColumn(new List<int> { rciId1, rciId2, rciId3 }, true);
+
+            rci1 = this.Dal.FetchRciById(rciId1);
+            rci2 = this.Dal.FetchRciById(rciId2);
+            rci3 = this.Dal.FetchRciById(rciId3);
+
+            Assert.True(rci1.IsCurrent);
+            Assert.True(rci2.IsCurrent);
+            Assert.True(rci2.IsCurrent);
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId1);
+            this.Dal.DeleteRci(rciId2);
+            this.Dal.DeleteRci(rciId3);
         }
 
         // Building Codes
@@ -218,6 +288,21 @@ namespace Phoenix.UnitTests
             Assert.NotNull(result.SessionCode);
         }
 
+        [Fact]
+        public void FetchRoomAssignmentsThatDoNotHaveRcis_Success()
+        {
+            // Use an old SessionCode so that we won't find matching rcis
+            var sessionCode = "201109";
+            var building = "TAV";
+
+            var result = this.Dal.FetchRoomAssignmentsThatDoNotHaveRcis(building, sessionCode);
+
+            // 150 is the number of RoomAssignments that were made in the sessionCode "201109"
+            // Well technically, it's 151, but that's because of a record with ID_NUM of null, which our method ignores.
+            Assert.Equal(150, result.Count);
+
+        }
+
         // Fines
         [Fact]
         public void FineSummary_Tests()
@@ -240,10 +325,43 @@ namespace Phoenix.UnitTests
             Assert.NotNull(fineSummary.FirstName);
             Assert.NotNull(fineSummary.BuildingCode);
             Assert.NotNull(fineSummary.RoomNumber);
-            Assert.NotNull(fineSummary.RciComponentName);
+            Assert.NotNull(fineSummary.RoomComponentName);
             Assert.NotNull(fineSummary.SessionCode);
             Assert.NotNull(fineSummary.SuggestedCostsString);
             Assert.Contains(fineSummary.BuildingCode, oneBuilding);
+        }
+
+        // Rooms
+        [Fact]
+        public void FetchRoom_Success()
+        {
+            var room = this.Dal.FetchRoom("TAV", "104");
+
+            Assert.Equal("TAV", room.BuildingCode);
+            Assert.Equal("104", room.RoomNumber);
+        }
+
+        // Room Component Types
+        [Fact]
+        public void FetchRoomComponentTypesForRci_Success()
+        {
+            // Setup
+            var rciId = this.Dal.CreateNewDormRci("40404", "TAV", "201", "230230");
+            var commonAreaRciId = this.Dal.CreateNewCommonAreaRci("TAV", "201", "30202");
+
+            // Test
+            var roomComponentTypesDorm = this.Dal.FetchRoomComponentTypesForRci(rciId);
+            var roomComponentTypesCommon = this.Dal.FetchRoomComponentTypesForRci(commonAreaRciId);
+
+            // Assert
+            Assert.NotEmpty(roomComponentTypesDorm);
+            Assert.NotEmpty(roomComponentTypesCommon);
+            Assert.True(roomComponentTypesDorm.TrueForAll(x => x.RciTypeName.Contains("Dorm")));
+            Assert.True(roomComponentTypesCommon.TrueForAll(x => x.RciTypeName.Contains("Common")));
+
+            // Cleanup 
+            this.Dal.DeleteRci(rciId);
+            this.Dal.DeleteRci(commonAreaRciId);
         }
     }
 }

@@ -170,11 +170,14 @@
     <Compile Include="Controllers\RciCheckoutController.cs" />
     <Compile Include="Controllers\RciComponentReassignController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
+    <Compile Include="DapperDal\Sql\Damage.cs" />
     <Compile Include="DapperDal\Sql\Fine.cs" />
     <Compile Include="DapperDal\IDbConnectionFactory.cs" />
     <Compile Include="DapperDal\SqlConnectionFactory.cs" />
     <Compile Include="DapperDal\Sql\Account.cs" />
     <Compile Include="DapperDal\Sql\Rci.cs" />
+    <Compile Include="DapperDal\Sql\RciTypeRoomComponentTypeMap.cs" />
+    <Compile Include="DapperDal\Sql\Room.cs" />
     <Compile Include="DapperDal\Sql\RoomAssign.cs" />
     <Compile Include="DapperDal\Types\Account.cs" />
     <Compile Include="DapperDal\Types\BigRci.cs" />
@@ -186,7 +189,8 @@
     <Compile Include="DapperDal\Types\HallGroup.cs" />
     <Compile Include="DapperDal\Types\Rci.cs" />
     <Compile Include="DapperDal\IDapperDal.cs" />
-    <Compile Include="DapperDal\Types\RciComponent.cs" />
+    <Compile Include="DapperDal\Types\Room.cs" />
+    <Compile Include="DapperDal\Types\RoomComponentType.cs" />
     <Compile Include="DapperDal\Types\RoomAssignment.cs" />
     <Compile Include="DapperDal\Types\Session.cs" />
     <Compile Include="DapperDal\SlapperAutoMapperInit.cs" />

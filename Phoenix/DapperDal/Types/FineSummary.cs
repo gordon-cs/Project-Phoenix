@@ -7,8 +7,8 @@
         public string BuildingCode { get; set; }
         public string RoomNumber { get; set; }
         public string SessionCode { get; set; }
-        public string RciComponentName { get; set; }
-        public string RciComponentDescription { get; set; }
+        public string RoomComponentName { get; set; }
+        public string RoomArea { get; set; }
         public string SuggestedCostsString { get; set; }
         public decimal FineAmount { get; set; }
         public string GordonId { get; set; }

@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
-using System.Xml.Linq;
-using System.Data.SqlClient;
-using System.Web;
 using System.Web.Mvc;
 using Phoenix.DapperDal;
 using System.Text;
+using Phoenix.DapperDal.Types;
 
 namespace Phoenix.Services
 {
     public class DashboardService : IDashboardService
     {
-        private RCIContext db;
-        private XDocument document;
         private IDal Dal { get; set; }
-        public DashboardService(IDal dal)
+
+        private ILoggerService Logger { get; set; }
+
+        public DashboardService(IDal dal, ILoggerService logger)
         {
-            db = new Models.RCIContext();
-            document = XDocument.Load(HttpContext.Current.Server.MapPath("~/App_Data/RoomComponents.xml"));
             this.Dal = dal;
+
+            this.Logger = logger;
         }
 
         public IEnumerable<HomeRciViewModel> GetCurrentRcisForResident(string gordonId)
@@ -62,47 +60,6 @@ namespace Phoenix.Services
             return currentCommonAreaRcis;
         }
 
-        ///<summary>
-        /// Create RCI Components that are associated with a single RCI, according to room type
-        ///</summary>
-        ///<param name="document">Xml document containing room components</param>
-        ///<param name="rciId">the id of the RCI to associate with </param>
-        ///<param name="roomType">string to indicate type of room, either "common area" or "dorm room" currently</param>
-        ///<param name="buildingCode">building code for the rci we are about to create</param>
-        public List<RciComponent> CreateRciComponents(XDocument document, int rciId, string roomType, string buildingCode)
-        {
-            List<RciComponent> created = new List<RciComponent>();
-
-            XElement rciTypes = document.Root;
-            IEnumerable<XElement> componentElements =
-                from rci in rciTypes.Elements("rci")
-                where ((string)rci.Attribute("roomType")).Equals(roomType) && (string) rci.Attribute("buildingCode") == buildingCode
-                from component in rci.Element("components").Elements("component")
-                select component;
-
-            foreach (var componentElement in componentElements)
-            {
-                var newComponent = new RciComponent();
-                newComponent.RciComponentName = (string)componentElement.Attribute("name");
-                newComponent.RciComponentDescription = (string)componentElement.Attribute("description");
-                newComponent.RciID = rciId;
-
-                var costString = "";
-                var costElements = componentElement.Elements("cost");
-                foreach(var costElement in costElements)
-                {
-                    var costReason = costElement.Attribute("name").Value;
-                    var costAmount = costElement.Attribute("approxCost").Value;
-                    costString += costReason + "," + costAmount + "|";
-                }
-
-                newComponent.SuggestedCosts = costString;
-                created.Add(newComponent);
-            }
-            return created;
-        }
-
-
          /// <summary>
          /// Generate a csv file of fines for rci's from current, according to buildings of RD
          /// </summary>
@@ -125,9 +82,9 @@ namespace Phoenix.Services
                 finesCsv.Append($"\"{fine.BuildingCode}\",");
                 finesCsv.Append($"\"{fine.FirstName} {fine.LastName}\",");
                 finesCsv.Append($"\"{fine.GordonId}\",");
-                finesCsv.Append($"\"{fine.RciComponentName}: {fine.Reason}\",");
+                finesCsv.Append($"\"{fine.RoomComponentName}: {fine.Reason}\",");
                 finesCsv.Append($"\"{fine.FineAmount}\",");
-                finesCsv.Append(fine.RciComponentDescription.Equals(Constants.FINE, StringComparison.OrdinalIgnoreCase) ? $"\"YES\"" : $"\"NO\"");
+                finesCsv.Append(fine.RoomArea.Equals(Constants.FINE, StringComparison.OrdinalIgnoreCase) ? $"\"YES\"" : $"\"NO\"");
                 finesCsv.AppendLine();
             }
 
@@ -165,51 +122,30 @@ namespace Phoenix.Services
         /// </summary>
         public void SyncRoomRcisFor(List<string> kingdom)
         {
-            var result = Enumerable.Empty<RoomAssign>();
-            var currentSession = GetCurrentSession();
+            var result = Enumerable.Empty<RoomAssignment>();
+
+            var currentSession = this.GetCurrentSession();
 
             // Find the room assign records that are missing rcis
             foreach (var building in kingdom)
             {
-                // Create sql parameters that we will pass to the stored procedure
-                var buildingParameter = new SqlParameter("@building", building);
-                var currentSessionParameter = new SqlParameter("@currentSession", currentSession);
-                
-                // call the stored procedure.
-                // We are using a stored procedure here because linq only supports equality joins. This operation uses a greater than join, so we execute it directly.
-                var query = db.Database.SqlQuery<RoomAssign>("FindMissingRcis @building, @currentSession", buildingParameter, currentSessionParameter).AsEnumerable();
-                result = result.Concat(query);
+                var query = this.Dal.FetchRoomAssignmentsThatDoNotHaveRcis(building, currentSession);
 
+                result = result.Concat(query);
             }
 
             // Create the rcis
-            var newRcis = new List<Rci>();
-
             foreach (var roomAssignment in result)
             {
-                var newRci = CreateRciObject(
-                    roomAssignment.BLDG_CDE.Trim(),
-                    roomAssignment.ROOM_CDE.Trim(),
-                    currentSession,
-                    roomAssignment.ID_NUM.ToString());
+                if (roomAssignment.GordonId == null || roomAssignment.BuildingCode == null || roomAssignment.RoomNumber == null)
+                {
+                    continue;
+                }
 
-                newRcis.Add(newRci);
+                var newRciId = this.Dal.CreateNewDormRci(roomAssignment.GordonId, roomAssignment.BuildingCode, roomAssignment.RoomNumber, currentSession);
+
+                this.Logger.Info($"New Rci Created by Rci Generation in DashboardService.SyncRoomRcisFor. RciId={newRciId}");
             }
-
-            db.Rci.AddRange(newRcis);
-
-            db.SaveChanges();
-
-            // Create the components
-            var newComponents = new List<RciComponent>();
-
-            foreach (var rci in newRcis)
-            {
-                newComponents.AddRange(CreateRciComponents(document, rci.RciID, "individual", rci.BuildingCode));
-            }
-
-            db.RciComponent.AddRange(newComponents);
-            db.SaveChanges();
         }
 
         /// <summary>
@@ -218,12 +154,11 @@ namespace Phoenix.Services
         public void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber, DateTime? roomAssignDate)
         {
             // Find all rcis for the person
-            var myRcis =
-                from rci in db.Rci
-                where rci.GordonID == idNumber
-                && rci.BuildingCode == buildingCode
-                && rci.RoomNumber == roomNumber
-                select rci;
+            var myRcis = this.Dal
+                .FetchRcisByGordonId(idNumber)
+                .Where(x => x.BuildingCode == buildingCode)
+                .Where(x => x.RoomNumber == roomNumber);
+
             // Get most recent rci.
             var mostRecentRci = myRcis.OrderByDescending(m => m.CreationDate).FirstOrDefault();
 
@@ -249,20 +184,7 @@ namespace Phoenix.Services
             
             if(createNewRci)
             {
-                var newRci = CreateRciObject(
-                    buildingCode,
-                    roomNumber,
-                    GetCurrentSession(),
-                    idNumber);
-
-                db.Rci.Add(newRci);
-                db.SaveChanges();
-
-                // Create Components
-                db.RciComponent.AddRange(CreateRciComponents(document, newRci.RciID, "individual", newRci.BuildingCode));
-                db.SaveChanges();
-
-                
+                this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, GetCurrentSession());
             }
         }
 
@@ -278,25 +200,16 @@ namespace Phoenix.Services
             var apartmentFlags = new List<string>() { "AP", "LV" };
 
             // Do I already have an active common area rci for the apartment I am in?
-            var activeCommonAreaRcis =
-                from rci in db.Rci
-                where rci.BuildingCode.Equals(buildingCode)
-                && rci.RoomNumber.Equals(apartmentNumber)
-                && rci.IsCurrent == true
-                && rci.GordonID == null // This is what indicates a common area rci
-                select rci;
+            var activeCommonAreaRcis = this.Dal
+                .FetchRcisForRoom(buildingCode, apartmentNumber)
+                .Where(x => x.IsCurrent)
+                .Where(x => x.GordonId == null); // This indicates a common area rci
 
             var commonAreaRciExists = activeCommonAreaRcis.Any();
 
             // Does the room I live in have a common area?
-            var commonArea =
-                from rm in db.Room
-                where rm.BLDG_CDE.Equals(buildingCode)
-                && rm.ROOM_CDE.Equals(apartmentNumber)
-                && apartmentFlags.Contains(rm.ROOM_TYPE)
-                select rm;
-
-            var commonAreaExists = commonArea.Any();
+            var thisRoom = this.Dal.FetchRoom(buildingCode, apartmentNumber);
+            var commonAreaExists = apartmentFlags.Contains(thisRoom.RoomType);
 
             // There is a common area rci to create if a common area exists for that room AND 
             // the person has no active common area rcis for that room
@@ -304,19 +217,9 @@ namespace Phoenix.Services
 
             if(createCommonAreaRci)
             {
-                var commonAreaRoom = commonArea.First();
-                    
-                var commonAreaRci = CreateRciObject(
-                    commonAreaRoom.BLDG_CDE.Trim(),
-                    commonAreaRoom.ROOM_CDE.Trim(),
-                    GetCurrentSession());
+                var commmonAreaRciId = this.Dal.CreateNewCommonAreaRci(thisRoom.BuildingCode, thisRoom.RoomNumber, GetCurrentSession());
 
-                db.Rci.Add(commonAreaRci);
-                db.SaveChanges();
-
-                // Create Components
-                db.RciComponent.AddRange(CreateRciComponents(document, commonAreaRci.RciID, "common", commonAreaRci.BuildingCode));
-                db.SaveChanges();
+                this.Logger.Info($"New Common Area Rci Created by Rci Generation in DashboardService.SyncCommonAreaRcisFor. RciId={commmonAreaRciId}");
             }
         }
 
@@ -325,29 +228,7 @@ namespace Phoenix.Services
         /// </summary>
         public void ArchiveRcis(List<int> rciIds)
         {
-            var rcis = db.Rci.Where(r => rciIds.Contains(r.RciID));
-            foreach(var rci in rcis)
-            {
-                rci.IsCurrent = false;
-            }
-            db.SaveChanges();
-        }
-
-        /// <summary>
-        /// Helper method to create and return an Rci Object. Makes no calls to the database
-        /// </summary>
-        public Rci CreateRciObject(string buildingCode, string roomNumber, string sessionCode, string idNumber = null)
-        {
-            var rci = new Rci
-            {
-                IsCurrent = true,
-                BuildingCode = buildingCode,
-                RoomNumber = roomNumber,
-                SessionCode = sessionCode,
-                GordonID = idNumber,
-                CreationDate = DateTime.Now
-            };
-            return rci;
+            this.Dal.SetRciIsCurrentColumn(rciIds, false);
         }
 
         /// <summary>

@@ -10,6 +10,7 @@ namespace Phoenix.DapperDal.Types
         public string GordonId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string AdUsername { get; set; }
         public string Email { get; set; }
         public bool IsRa { get; set; }
         public string RaBuildingCode { get; set; }

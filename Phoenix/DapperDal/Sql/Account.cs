@@ -8,6 +8,7 @@
 	select a.ID_NUM as GordonId,
 		a.firstname as FirstName,
 		a.lastname as LastName,
+		a.AD_Username as AdUsername,
 		a.email as Email,
 		case when cra.ID_NUM is null then 0 else 1 END as IsRa,
 		cra.Dorm as RaBuildingCode,
