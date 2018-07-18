@@ -54,7 +54,7 @@ namespace Phoenix.Models.ViewModels
 
             if (isAlumni)
             {
-                this.FirstName = "Alumni";
+                this.FirstName = "Unidentified User";
                 this.LastName = rci.GordonId;
             }
         }

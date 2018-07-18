@@ -21,10 +21,10 @@ function uploadPhoto() {
     // Make sure the file is a picture
             if (!fileType.test(file.type)) {
                 console.log(file.type);
-                alert("Oops! Please select an image file of type .jpg or .png.")
+                alert("Oops! Please select an image file of type .jpg or .png.");
             }
             else if (file.size > 10000000) { // Photo size > 10 MB
-                alert("Aw man, we're sorry! That photo is too big. Please use one that is 10 MB or smaller.")
+                alert("Aw man, we're sorry! That photo is too big. Please use one that is 10 MB or smaller.");
             }
             else {
                 console.log("Photo" + i + "size: " + file.size);
@@ -47,7 +47,7 @@ function addPhotoToDOM(file, savedPhotoData, rciComponentId)
     img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
     img.onload = function () {
         window.URL.revokeObjectURL(this.src);
-    }
+    };
     img.alt = "Damage Image Thumbnail";
 
     // Add the delete icon and wrap it in div for css purposs
@@ -71,7 +71,7 @@ function addPhotoToDOM(file, savedPhotoData, rciComponentId)
     slideImg.src = window.URL.createObjectURL(file);
     slideImg.onload = function () {
         window.URL.revokeObjectURL(this.src);
-    }
+    };
     let $newWrapperDiv = $("<div class='img-slide'></div>");
     $newWrapperDiv.append(slideImg);
     modalArea.append($newWrapperDiv);
@@ -91,11 +91,11 @@ function savePhoto(photoFile, rciComponentId) {
         data: formData,
         method: "POST",
         processData: false,
-        contentType: false,
+        contentType: false
     }).done(function (data) {
         // the ajax call returns the damage id, so here we pass the image's id (as data) to be used in the DOM
         console.log(data);
-        addPhotoToDOM(photoFile, data, rciComponentId)
+        addPhotoToDOM(photoFile, data, rciComponentId);
     }).fail(function (jqXHR, textStatus, errorThrown) {
         alert("Oops! We were unable to save that image to the database.");
         console.log("Status: " + jqXHR.status);
@@ -129,7 +129,6 @@ function deletePhoto(damageId) {
 
 /* Different signature submission methods, distinguished by role */
 function CommonAreaSubmit() {
-    var signature = "";
     var rciId = $("div[id^='rci-']").first().attr("id").substring(4);
 
     var signature = $("#rci-sig").val();
@@ -154,11 +153,12 @@ function CommonAreaSubmit() {
 
 function ResSigSubmit() {
     var rciSig = "";
-    var lacSig = "";
-    if ($("#rci-sig").attr("disabled") != "disabled") {
+    var lacSig = ""; // Life And Conduct Signature
+
+    if ($("#rci-sig").attr("disabled") !== "disabled") {
         rciSig = $("#rci-sig").val();
     }
-    if ($("#lac-sig").attr("disabled") != "disabled") {
+    if ($("#lac-sig").attr("disabled") !== "disabled") {
         lacSig = $("#lac-sig").val();
     }
     var id = $("h2[id^='rci-']").first().attr("id").substring(4);
@@ -185,13 +185,13 @@ function RASigSubmit() {
     var rciSig = "";
     var rciSigRes = "";
     var lacSig = "";
-    if ($("#rci-sig").attr("disabled") != "disabled") {
+    if ($("#rci-sig").attr("disabled") !== "disabled") {
         rciSig = $("#rci-sig").val();
     }
-    if ($("#rci-sig-res").attr("disabled") != "disabled") {
+    if ($("#rci-sig-res").attr("disabled") !== "disabled") {
         rciSigRes = $("#rci-sig-res").val();
     }
-    if ($("#lac-sig").attr("disabled") != "disabled") {
+    if ($("#lac-sig").attr("disabled") !== "disabled") {
         lacSig = $("#lac-sig").val();
     }
     var id = $("h2[id^='rci-']").first().attr("id").substring(4);
@@ -217,7 +217,7 @@ function RASigSubmit() {
 function RDSigSubmit() {
     var rciSig = "";
     var isChecked = $("#rci-sig-checkbox").prop("checked");
-    if ($("#rci-sig").attr("disabled") != "disabled") {
+    if ($("#rci-sig").attr("disabled") !== "disabled") {
         rciSig = $("#rci-sig").val();
     }
     var id = $("h2[id^='rci-']").first().attr("id").substring(4);
@@ -246,11 +246,12 @@ $("#rci-sig-checkbox").click(function () {
 });
 
 function check() {
+    var sigCheck = 0;
     if ($("#rci-sig-checkbox").is(":checked")) {
-        var sigCheck = 1;
+        sigCheck = 1;
     }
     else {
-        var sigCheck = 0;
+        sigCheck = 0;
     }
     var id = $("h2[id^='rci-']").first().attr("id").substring(4);
     $.ajax({
@@ -265,7 +266,7 @@ function check() {
             console.log(textStatus);
             console.log(errorThrown);
         }
-    })
+    });
 }
 
 
@@ -322,7 +323,7 @@ function deleteDamage(event, element)
 // Handler to allow users to add damages by simply pressing the enter key
 $(".adding-damages").on("keypress", function (e) {
     var key = e.keyCodd || e.which;
-    if (key == 13) {
+    if (key === 13) {
         e.preventDefault();
         $("#add-" + $(this).attr("id").substring(11)).click();
     }

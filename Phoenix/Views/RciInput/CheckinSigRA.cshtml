@@ -15,14 +15,11 @@
 <h2 id="rci-@Model.RciId">Signature</h2>
 
 <div class="pane">
-
     @if (Model.GordonId == ViewBag.GordonID) // Normal individual rci that belongs to the RA
     {
-
-
         if (Model.ResidentCheckinDate == null || Model.LifeAndConductSignatureDate == null)
         {
-            if (Model.ResidentCheckoutDate == null)
+            if (Model.ResidentCheckinDate == null)
             {
                 <p>@ViewBag.User, please sign your name to confirm the entered damages.</p>
                 <input data-selenium-id="signature-field" type="text" id="rci-sig-res" placeholder="@ViewBag.User" />

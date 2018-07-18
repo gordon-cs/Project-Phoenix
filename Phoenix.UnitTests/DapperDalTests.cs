@@ -192,6 +192,43 @@ namespace Phoenix.UnitTests
             this.Dal.DeleteRci(rciId3);
         }
 
+        [Fact]
+        public void UpdateRciCheckinDateAndGordonIdTests()
+        {
+            var today = DateTime.Now;
+
+            // Setup
+            var rciId1 = this.Dal.CreateNewCommonAreaRci("TAV", "104", "2000");
+            var rciId2 = this.Dal.CreateNewDormRci("50153295", "BRO", "900", "2000");
+
+            // Test 
+            this.Dal.SetRciCheckinDateColumns(new List<int> { rciId1, rciId2 }, today, today, today, today);
+            this.Dal.SetRciCheckinGordonIdColumns(new List<int> { rciId1, rciId2 }, "hello", "hello");
+
+            // Assert
+            var rci1 = this.Dal.FetchRciById(rciId1);
+            var rci2 = this.Dal.FetchRciById(rciId2);
+
+            Assert.NotNull(rci1.ResidentCheckinDate);
+            Assert.NotNull(rci1.RaCheckinDate);
+            Assert.NotNull(rci1.RdCheckinDate);
+            Assert.NotNull(rci1.CheckinRaGordonId);
+            Assert.NotNull(rci1.CheckinRdGordonId);
+
+            Assert.NotNull(rci2.ResidentCheckinDate);
+            Assert.NotNull(rci2.RaCheckinDate);
+            Assert.NotNull(rci2.RdCheckinDate);
+            Assert.NotNull(rci2.CheckinRaGordonId);
+            Assert.NotNull(rci2.CheckinRdGordonId);
+
+            Assert.NotNull(rci1.LifeAndConductSignatureDate);
+            Assert.NotNull(rci2.LifeAndConductSignatureDate);
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId1);
+            this.Dal.DeleteRci(rciId2);
+        }
+
         // Building Codes
         [Fact]
         public void FetchBuildingCodes_Success()

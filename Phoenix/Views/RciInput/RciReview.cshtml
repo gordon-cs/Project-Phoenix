@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.Rci
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
 @{
     ViewBag.Title = "Check-In Review";
@@ -19,7 +19,7 @@
 <div class="view">
     <div class="pane">
         <h2 class="pane-title">@ViewBag.ViewTitle</h2>
-        @{ var damagesExistInRci = Model.RciComponent.Where(x => x.Damage.Any()).Any(); }
+        @{ var damagesExistInRci = Model.RoomComponents.Where(x => x.Damages.Any()).Any(); }
 
         @if (!damagesExistInRci)
         {
@@ -28,26 +28,16 @@
                 <p>No damages were recorded on this RCI.</p>
             </div>
         }
-        else if (ViewBag.commonRooms == null)
-        {
-
-            foreach (var component in Model.RciComponent.Where(x => x.Damage.Any()))
-            {
-                @Html.Partial("RciReviewComponent", component);
-            }
-        }
         else
         {
-            foreach (var room in ViewBag.commonRooms)
+            var roomComponentsGroupedByArea = Model.RoomComponents.GroupBy(x => x.RoomArea);
+
+            foreach (var roomArea in roomComponentsGroupedByArea)
             {
-                var damageExistsInCommonRoom = Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()).Any();
-                if (damageExistsInCommonRoom)
+                <h2>@roomArea.Key</h2>
+                foreach (var component in Model.RoomComponents.Where(x => x.Damages.Any()))
                 {
-                    <h2>@room</h2>
-                    foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room) && x.Damage.Any()))
-                    {
-                        @Html.Partial("RciReviewComponent", component);
-                    }
+                    @Html.Partial("RciReviewComponent", component);
                 }
             }
         }

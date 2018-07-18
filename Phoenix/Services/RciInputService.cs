@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using System.Drawing.Drawing2D;
 using Phoenix.DapperDal;
+using Phoenix.Utilities;
 
 namespace Phoenix.Services
 {
@@ -55,66 +56,6 @@ namespace Phoenix.Services
             return buildingRCIs.OrderBy(m => m.RoomNumber);
         }
 
-        /// <summary>
-        /// Get the rci for a common area by id
-        /// </summary>
-        public CheckinCommonAreaRciViewModel GetCommonAreaRciById(int id)
-        {
-            var currentSession = this.DashboardService.GetCurrentSession();
-
-            var query =
-                from rci in db.Rci
-                where rci.RciID == id
-                select new CheckinCommonAreaRciViewModel
-                {
-                    RciID = rci.RciID,
-                    BuildingCode = rci.BuildingCode,
-                    RoomNumber = rci.RoomNumber,
-                    RciComponent = rci.RciComponent,
-                    CommonAreaMember =
-                                        (from rm in db.RoomAssign
-                                         join acct in db.Account
-                                         on rm.ID_NUM.ToString() equals acct.ID_NUM
-                                         where rm.SESS_CDE.Trim() == currentSession
-                                         && rm.BLDG_CDE.Trim() == rci.BuildingCode
-                                         && rm.ROOM_CDE.Trim().Contains(rci.RoomNumber)
-                                         select new CommonAreaMember
-                                         {
-                                             GordonID = acct.ID_NUM,
-                                             FirstName = acct.firstname,
-                                             LastName = acct.lastname,
-                                             HasSignedCommonAreaRci =
-                                                            ((from sigs in db.CommonAreaRciSignature
-                                                              where sigs.GordonID == acct.ID_NUM
-                                                              && sigs.RciID == rci.RciID
-                                                              && sigs.SignatureType == "CHECKIN"
-                                                              select sigs).Any() == true ? true : false),
-                                             Signature =
-                                                             ((from sigs in db.CommonAreaRciSignature
-                                                               where sigs.GordonID == acct.ID_NUM
-                                                               && sigs.RciID == rci.RciID
-                                                               && sigs.SignatureType == "CHECKIN"
-                                                               select sigs).FirstOrDefault().Signature)
-                                         }).ToList(),
-                    CheckinSigRes = rci.CheckinSigRes,
-                    CheckinSigRA = rci.CheckinSigRA,
-                    CheckinSigRD = rci.CheckinSigRD,
-                    CheckinSigRAGordonID = rci.CheckinSigRAGordonID,
-                    CheckinSigRDGordonID = rci.CheckinSigRDGordonID,
-                    CheckinSigRAName =
-                                        (from acct in db.Account
-                                         where acct.ID_NUM.Equals(rci.CheckinSigRAGordonID)
-                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
-                    CheckinSigRDName =
-                                         (from acct in db.Account
-                                          where acct.ID_NUM.Equals(rci.CheckinSigRDGordonID)
-                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
-
-                };
-
-            return query.FirstOrDefault();
-        }
-
         public void SignRcis(string gordonID)
         {
             var rcis =
@@ -131,7 +72,7 @@ namespace Phoenix.Services
 
         public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
         {
-            var rci = GetCommonAreaRciById(rciID);
+            var rci = this.Dal.FetchRciById(rciID);
             if (rciSig == user)
             {
                 var signature = new CommonAreaRciSignature
@@ -144,14 +85,24 @@ namespace Phoenix.Services
                 db.CommonAreaRciSignature.Add(signature);
                 db.SaveChanges();
 
-                rci = GetCommonAreaRciById(rciID); // Check to see if everyone has signed now.
-                if(rci.EveryoneHasSigned())
+                rci = this.Dal.FetchRciById(rciID); // Check to see if everyone has signed now.
+
+                var apartmentMemberGordonIds = rci.RoomOrApartmentResidents
+                    .Select(x => x.GordonId)
+                    .OrderBy(x => x);
+
+                var residentsWhoHaveCheckedIn = rci.CommonAreaSignatures
+                    .Where(x => x.SignatureType.Equals(Constants.CHECKIN) && x.SignatureDate != null)
+                    .Select(x => x.GordonId)
+                    .OrderBy(x => x);
+
+                bool everyoneHasSigned = residentsWhoHaveCheckedIn.SequenceEqual(apartmentMemberGordonIds);
+                
+                if(everyoneHasSigned)
                 {
-                    var genericRci = db.Rci.Find(rciID);
-                    if(genericRci.CheckinSigRes == null)
+                    if(rci.ResidentCheckinDate == null)
                     {
-                        genericRci.CheckinSigRes = DateTime.Now;
-                        db.SaveChanges();
+                        this.Dal.SetRciCheckinDateColumns(new List<int> { rci.RciId }, DateTime.Today, null, null, null);
                     }
                 }
                 return true;
@@ -164,60 +115,70 @@ namespace Phoenix.Services
 
         public bool SaveResSigs(string rciSig, string lacSig, string user, int id)
         {
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            var today = DateTime.Today;
 
-            if (rciSig == user)
+            if (rciSig == user && lacSig == user)
             {
-                rci.CheckinSigRes = DateTime.Today;
+                this.Dal.SetRciCheckinDateColumns(new List<int> { id }, today, null, null, today);
             }
-            if (lacSig == user)
+            else
             {
-                rci.LifeAndConductSigRes = DateTime.Today;
+                return false;
             }
-            db.SaveChanges();
-            return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null;
+
+            return true;
         }
 
         public bool SaveRASigs(string rciSig, string lacSig, string rciSigRes, string user, int id, string gordonID)
         {
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            var rci = this.Dal.FetchRciById(id);
 
-            if (rciSig == user || rci.GordonID == gordonID) // rciSig is null when it is the RA signing for himself. Make another check to see if the logged in RA is the owner of the rci.
+            var idList = new List<int> { id };
+
+            if (rciSig == user || rci.GordonId == gordonID) // rciSig is null when it is the RA signing for himself. Make another check to see if the logged in RA is the owner of the rci.
             {
-                rci.CheckinSigRA = DateTime.Today;
-                rci.CheckinSigRAGordonID = gordonID;
+                this.Dal.SetRciCheckinDateColumns(idList, null, DateTime.Today, null, null);
+                this.Dal.SetRciCheckinGordonIdColumns(idList, gordonID, null);
             }
             if (rciSigRes == user)
             {
-                rci.CheckinSigRes = DateTime.Today;
+                this.Dal.SetRciCheckinDateColumns(idList, DateTime.Today, null, null, null);
             }
             if (lacSig == user)
             {
-                rci.LifeAndConductSigRes = DateTime.Today;
+                this.Dal.SetRciCheckinDateColumns(idList, null, null, null, DateTime.Today);
             }
             db.SaveChanges();
+
+            rci = this.Dal.FetchRciById(id);
+
             // If it is a common area rci, don't look for the life and conduct statment signature.
-            if(rci.GordonID == null)
+            if(rci.GordonId == null)
             {
-                return rci.CheckinSigRes != null  && rci.CheckinSigRA != null;
+                return rci.ResidentCheckinDate != null  && rci.RaCheckinDate != null;
             }
             // If it is not a common area rci, look for the life and conduct signature.
             else
             {
-                return rci.CheckinSigRes != null && rci.LifeAndConductSigRes != null && rci.CheckinSigRA != null;
+                return rci.ResidentCheckinDate != null && rci.LifeAndConductSignatureDate != null && rci.RaCheckinDate != null;
             }
         }
 
         public bool SaveRDSigs(string rciSig, string user, int id, string gordonID)
         {
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            var rci = this.Dal.FetchRciById(id);
+
+            var idList = new List<int> { id };
+
             if (rciSig == user)
             {
-                rci.CheckinSigRD = DateTime.Today;
-                rci.CheckinSigRDGordonID = gordonID;
+                this.Dal.SetRciCheckinDateColumns(idList, null, null, DateTime.Today, null);
+                this.Dal.SetRciCheckinGordonIdColumns(idList, null, gordonID);
             }
-            db.SaveChanges();
-            return rci.CheckinSigRDGordonID != null;
+
+            rci = this.Dal.FetchRciById(id);
+
+            return rci.CheckinRdGordonId != null;
         }
 
         public void CheckRcis(int sigCheck, string gordonID, int id)

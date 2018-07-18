@@ -18,12 +18,18 @@
         public const string RCI_CHECKIN_STAGE = "CHECKIN";
         public const string RCI_CHECKOUT_STAGE = "CHECKOUT";
 
+        public const string CHECKIN = "CHECKIN";
+        public const string CHECKOUT = "CHECKOUT";
+
         public const string WORK_REQUEST_ENDPOINT = "/departments/physicalplant/ppwos/add_reqform.cfm";
         public const string GO_GORDON_URL = "https://go.gordon.edu";
 
         public const string FINE = "Fine";
         public const string RCI_TYPE_COMMON = "common";
         public const string RCI_TYPE_INDIVIDUAL = "individual";
+
+        public const string DAMAGE_TYPE_TEXT = "TEXT";
+        public const string DAMAGE_TYPE_IMAGE = "IMAGE";
 
         public static readonly char[] ROOM_NUMBER_SUFFIXES = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
     }

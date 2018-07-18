@@ -74,6 +74,50 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public void SetRciCheckinDateColumns(IEnumerable<int> rciIds, DateTime? residentCheckinDate, DateTime? raCheckinDate, DateTime? rdCheckinDate, DateTime? lifeAndConductStatementCheckinDate)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var updateSql = new StringBuilder();
+
+                if (residentCheckinDate != null) { updateSql.AppendLine($"update Rci set CheckinSigRes = @ResidentCheckinDate where RciId in @RciIds"); }
+                if (raCheckinDate != null) { updateSql.AppendLine($"update Rci set CheckinSigRA = @RaCheckinDate where RciId in @RciIds"); }
+                if (rdCheckinDate != null) { updateSql.AppendLine($"update Rci set CheckinSigRD = @RdCheckinDate where RciId in @RciIds"); }
+                if (lifeAndConductStatementCheckinDate != null) { updateSql.AppendLine($"update Rci set LifeAndConductSigRes = @LifeAndConductSignatureDate where RciId in @RciIds"); }
+
+                var inputParams = new
+                {
+                    ResidentCheckinDate = residentCheckinDate,
+                    RaCheckinDate = raCheckinDate,
+                    RdCheckinDate = rdCheckinDate,
+                    LifeAndConductSignatureDate = lifeAndConductStatementCheckinDate,
+                    RciIds = rciIds
+                };
+
+                connection.Execute(updateSql.ToString(), inputParams);
+            }
+        }
+
+        public void SetRciCheckinGordonIdColumns(IEnumerable<int> rciIds, string checkinRaGordonId, string checkingRdGordonId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var updateSql = new StringBuilder();
+
+                if (checkinRaGordonId != null) { updateSql.AppendLine("update Rci set CheckinSigRAGordonID = @CheckinRaGordonId where RciId in @RciIds"); }
+                if (checkingRdGordonId != null) { updateSql.AppendLine("update Rci set CheckinSigRDGordonID = @CheckinRdGordonId where RciId in @RciIds"); }
+
+                var inputParams = new
+                {
+                    CheckinRaGordonId = checkinRaGordonId,
+                    CheckinRdGordonId = checkingRdGordonId,
+                    RciIds = rciIds
+                };
+
+                connection.Execute(updateSql.ToString(), inputParams);
+            }
+        }
+
         public void DeleteRci(int rciId)
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
@@ -82,6 +126,44 @@ namespace Phoenix.DapperDal
 
                 connection.Execute(deleteSql, new { RciId = rciId });
             }
+        }
+
+        public int CreateNewDamage(string description, string imagepath, int rciId, string gordonId, int roomComponentTypeId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var insertSql = Sql.Damage.DamageInsertStatement;
+
+                string damageType = string.Empty;
+
+                if (description != null)
+                {
+                    damageType = Constants.DAMAGE_TYPE_TEXT;
+                }
+                else
+                {
+                    damageType = Constants.DAMAGE_TYPE_IMAGE;
+                }
+
+                var inputParams = new
+                {
+                    DamageDescription = description,
+                    DamageImagePath = imagepath,
+                    DamageType = damageType,
+                    RciId = rciId,
+                    GordonId = gordonId,
+                    RoomComponentTypeId = roomComponentTypeId
+                };
+
+                var insertedId = connection.Query<int>(insertSql, inputParams).Single();
+
+                return insertedId;
+            }
+        }
+
+        public void UpdateDamage(int damageId, string description, string imagepath, int? rciId, int? roomComponentTypeId)
+        {
+)=
         }
 
         public List<ResidentHallGrouping> FetchBuildingMap()
@@ -255,7 +337,18 @@ namespace Phoenix.DapperDal
                 }
                 catch (InvalidOperationException e)
                 {
-                    throw new Exception($"Excpected exactly one account result, got {queryResult.Count()}", e);
+                    if (queryResult.Count() == 0)
+                    {
+                        // User was not found, probably graduated. Set Gordon Id
+                        account = new Account
+                        {
+                            GordonId = gordonId
+                        };
+                    }
+                    else
+                    {
+                        throw new Exception($"Excpected exactly one account result, got {queryResult.Count()}", e);
+                    }
                 }
 
                 return account;

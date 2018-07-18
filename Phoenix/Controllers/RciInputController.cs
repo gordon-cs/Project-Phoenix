@@ -64,7 +64,7 @@ namespace Phoenix.Controllers
                 //ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
                 //var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
                 //ViewBag.CommonAreaModel = commonAreaRci;
-                ViewBag.RAIsMemberOfApartment = (role == Constants.RA) && (rci.CommonAreaMembers.Where(m => m.GordonID == gordon_id).Any());
+                ViewBag.RAIsMemberOfApartment = (role == Constants.RA) && (rci.CommonAreaMembers.Where(m => m.GordonId == gordon_id).Any());
             }
             else
             {
@@ -183,7 +183,7 @@ namespace Phoenix.Controllers
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
         {
             // Both can't be null when submitting.
-            if ((rciSig == null || rciSig.Trim() == "") && (lacSig == null || lacSig.Trim() == ""))
+            if (string.IsNullOrWhiteSpace(rciSig) && string.IsNullOrWhiteSpace(lacSig))
             {
                 return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
@@ -202,7 +202,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because there was an error with your signature, please try again.");
             }
         }
 
@@ -228,7 +228,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because there was an error with your signature, please try again.");
             }
         }
         
@@ -259,7 +259,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because there was an error with your signature, please try again.");
             }
         }
 

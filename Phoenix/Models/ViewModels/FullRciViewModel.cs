@@ -153,7 +153,7 @@ namespace Phoenix.Models.ViewModels
         public CommonAreaMemberViewModel(IEnumerable<DapperDal.Types.CommonAreaRciSignature> signaturesByThisMember, DapperDal.Types.Account thisMember)
         {
             this.GordonId = thisMember.GordonId;
-            this.FirstName = thisMember.FirstName ?? "Alumni";
+            this.FirstName = thisMember.FirstName ?? "Unidentified User";
             this.LastName = thisMember.LastName ?? thisMember.GordonId;
 
             var checkinSignature = signaturesByThisMember.FirstOrDefault(x => x.SignatureType.Equals("CHECKIN"));
@@ -192,7 +192,7 @@ namespace Phoenix.Models.ViewModels
             }
 
             this.GordonId = original.GordonId;
-            this.FirstName = original.FirstName ?? "Alumni";
+            this.FirstName = original.FirstName ?? "Unidentified User";
             this.LastName = original.LastName ?? original.GordonId;
             this.AdUsername = original.AdUsername;
             this.Email = original.Email;
