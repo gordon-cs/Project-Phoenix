@@ -18,6 +18,5 @@ SELECT CAST(SCOPE_IDENTITY() as int)
 		damage.GordonId as GordonId
 from Damage damage
 ";
-
     }
 }

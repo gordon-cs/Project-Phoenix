@@ -2,17 +2,16 @@
 
 /* Receive a photo from the <input> element, add it to the DOM, and save it to the db
 /* Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications */
-function uploadPhoto() {
+function uploadPhoto(fileUploadElement, rciId, roomComponentTypeId) {
     console.log("reached uploadPhoto");
-    console.log(this.files);
+    console.log(fileUploadElement.files);
     window.URL = window.URL || window.webkitURL;
-    let photoList = this.files;
-    let rciComponentId = this.id.slice(10);
+    let photoList = fileUploadElement.files;
     let fileQuantity = photoList.length;
     let fileType = /^image\//;
 
     if (!fileQuantity) {
-        let emptyPreviewArea = $("#no-images-message-" + rciComponentId);
+        let emptyPreviewArea = $("#no-images-message-" + roomComponentTypeId);
         emptyPreviewArea.innerHtml = "<p>No pictures uploaded</p>";
     }
     else {
@@ -28,7 +27,7 @@ function uploadPhoto() {
             }
             else {
                 console.log("Photo" + i + "size: " + file.size);
-                var response = savePhoto(file, rciComponentId);
+                var response = savePhoto(file, rciId, roomComponentTypeId);
                 console.log(response);
             }
         }
@@ -36,10 +35,10 @@ function uploadPhoto() {
 }
 
 // Add the photo to the DOM, including the modal and buttons
-function addPhotoToDOM(file, savedPhotoData, rciComponentId)
+function addPhotoToDOM(file, savedPhotoData, roomComponentTypeId)
 {
-    let previewArea = $("#img-preview-" + rciComponentId);
-    let modalArea = $("#modal-" + rciComponentId).find(".modal-content");
+    let previewArea = $("#img-preview-" + roomComponentTypeId);
+    let modalArea = $("#modal-" + roomComponentTypeId).find(".modal-content");
 
     let img = document.createElement("img");
     img.classList.add("uploaded-img");
@@ -82,9 +81,13 @@ function addPhotoToDOM(file, savedPhotoData, rciComponentId)
 }
 
 // Send the uploaded photo to the server via AJAX
-function savePhoto(photoFile, rciComponentId) {
+function savePhoto(photoFile, rciId, roomComponentTypeId) {
     let formData = new FormData();
-    formData.append('file', photoFile, rciComponentId);
+    formData.append('file', photoFile, roomComponentTypeId);
+    formData.append('rciId', rciId);
+    formData.append('roomComponentTypeid', roomComponentTypeId);
+
+    console.log(parseInt(rciId));
 
     $.ajax({
         url: '/RciInput/SavePhoto',
@@ -95,7 +98,7 @@ function savePhoto(photoFile, rciComponentId) {
     }).done(function (data) {
         // the ajax call returns the damage id, so here we pass the image's id (as data) to be used in the DOM
         console.log(data);
-        addPhotoToDOM(photoFile, data, rciComponentId);
+        addPhotoToDOM(photoFile, data, roomComponentTypeId);
     }).fail(function (jqXHR, textStatus, errorThrown) {
         alert("Oops! We were unable to save that image to the database.");
         console.log("Status: " + jqXHR.status);
@@ -270,14 +273,14 @@ function check() {
 }
 
 
-function addDamage(componentID) {
+function addDamage(componentID, rciId) {
     var damageDescription = $("#text-input-" + componentID).val();
     console.log(componentID);
     console.log(damageDescription);
 
     $.ajax({
         url: '/RciInput/SaveDamage',
-        data: { componentID: componentID, damageDescription: damageDescription },
+        data: { roomComponentTypeId: componentID, damageDescription: damageDescription, rciId : rciId },
         method: "POST"
     }).done(function (data) {
         // the ajax call returns the damage id
@@ -328,8 +331,6 @@ $(".adding-damages").on("keypress", function (e) {
         $("#add-" + $(this).attr("id").substring(11)).click();
     }
 });
-// Attach upload photo handler
-$("input[id^='dmg-input']").change(uploadPhoto);
 
 // Handler for deleting photos
 $(".img-thumbnails").on("click", ".delete", function () {

@@ -7,16 +7,17 @@ namespace Phoenix.Services
 {
     public interface IRciInputService
     {
-        void ApplyExifData(Image image);
         void CheckRcis(int sigCheck, string gordonID, int id);
-        CheckinCommonAreaRciViewModel GetCommonAreaRciById(int id);
         FullRciViewModel GetRci(int id);
         IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(List<string> buildingCode);
         Size NewImageSize(Size imageSize, Size newSize);
+        void ApplyExifData(Image image);
         void ResizeImage(Image origImg, Image newImage, Size imgSize);
+        string FetchDamageFilePath(int damageId);
+        int SaveTextDamage(string description, int rciId, string gordonId, int roomComponentTypeId);
+        int SavePhotoDamage(string imagePath, int rciId, string gordonId, int roomComponentTypeId);
+        void DeleteDamage(int damageId);
         bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID);
-        void SaveImagePath(string fullPath, Damage damage);
-        void SavePhotoDamage(Damage damage, string rciComponentId);
         bool SaveRASigs(string rciSig, string lacSig, string rciSigRes, string user, int id, string gordonID);
         bool SaveRDSigs(string rciSig, string user, int id, string gordonID);
         bool SaveResSigs(string rciSig, string lacSig, string user, int id);

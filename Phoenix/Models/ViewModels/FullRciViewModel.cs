@@ -82,7 +82,7 @@ namespace Phoenix.Models.ViewModels
                     var damagesToThisComponentType = original.Damages.Where(d => d.RoomComponentTypeId.Equals(x.RoomComponentTypeId));
                     var finesAddedToThisComponentType = original.Fines.Where(f => f.RoomComponentTypeId.Equals(x.RoomComponentTypeId));
 
-                    return new RoomComponentViewModel(x, damagesToThisComponentType, finesAddedToThisComponentType);
+                    return new RoomComponentViewModel(original.RciId, x, damagesToThisComponentType, finesAddedToThisComponentType);
                 })
                 .ToList();
 
@@ -120,6 +120,7 @@ namespace Phoenix.Models.ViewModels
 
     public class RoomComponentViewModel
     {
+        public int RciId { get; set; }
         public string BuildingCode { get; set; }
         public string RciTypeName { get; set; }
         public int RoomComponentTypeId { get; set; }
@@ -129,8 +130,9 @@ namespace Phoenix.Models.ViewModels
         public List<DapperDal.Types.Damage> Damages { get; set; }
         public List<DapperDal.Types.Fine> Fines { get; set; }
 
-        public RoomComponentViewModel(DapperDal.Types.RoomComponentType componentType, IEnumerable<DapperDal.Types.Damage> damages, IEnumerable<DapperDal.Types.Fine> fines)
+        public RoomComponentViewModel(int rciId, DapperDal.Types.RoomComponentType componentType, IEnumerable<DapperDal.Types.Damage> damages, IEnumerable<DapperDal.Types.Fine> fines)
         {
+            this.RciId = rciId;
             this.BuildingCode = componentType.BuildingCode;
             this.RciTypeName = componentType.RciTypeName;
             this.RoomComponentTypeId = componentType.RoomComponentTypeId;

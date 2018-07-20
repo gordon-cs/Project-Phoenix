@@ -1,5 +1,6 @@
 ﻿using Phoenix.DapperDal;
 using Phoenix.UnitTests.TestUtilities;
+using Phoenix.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -227,6 +228,54 @@ namespace Phoenix.UnitTests
             // Cleanup
             this.Dal.DeleteRci(rciId1);
             this.Dal.DeleteRci(rciId2);
+        }
+
+
+        // Damages
+        [Fact]
+        public void CreateUpdateAndDeleteDamageTests()
+        {
+            // Setup
+            var rciId = this.Dal.CreateNewDormRci("50153295", "BRO", "1000", "2000");
+
+            // Create a new damage
+            var damageId = this.Dal.CreateNewDamage("Tack on the wall", null, rciId, "50153295", 2);
+
+            Assert.NotEqual(0, damageId);
+
+            // Update said damage
+            this.Dal.UpdateDamage(damageId, null, "test", null, null);
+
+            var damage = this.Dal.FetchDamageById(damageId);
+
+            Assert.Equal("Tack on the wall", damage.Description);
+            Assert.Equal("test", damage.ImagePath);
+            Assert.Equal(rciId, damage.RciId);
+            Assert.Equal("50153295", damage.GordonId);
+            Assert.Equal(2, damage.RoomComponentTypeId);
+
+            // Cleanup
+            this.Dal.DeleteDamage(damageId); // Also serves as a test of the damage delete functionality.
+            this.Dal.DeleteRci(rciId);
+        }
+
+        // Common Are Rci Signatures
+        [Fact]
+        public void CreateAndDeleteCommonAreaRciTests()
+        {
+            // Setup
+            var rciId = this.Dal.CreateNewCommonAreaRci("BRO", "1000", "2000");
+
+            var commonAreaRciSignature = this.Dal.CreateNewCommonAreaRciSignature("50153295", rciId, DateTime.Now, Constants.CHECKIN);
+
+            Assert.NotNull(commonAreaRciSignature);
+            Assert.Equal(rciId, commonAreaRciSignature.RciId);
+            Assert.Equal(Constants.CHECKIN, commonAreaRciSignature.SignatureType);
+            Assert.Equal("50153295", commonAreaRciSignature.GordonId);
+
+            // Cleanup
+            this.Dal.DeleteCommonAreaRciSignature("50153295", rciId, Constants.CHECKIN);
+            this.Dal.DeleteRci(rciId);
         }
 
         // Building Codes

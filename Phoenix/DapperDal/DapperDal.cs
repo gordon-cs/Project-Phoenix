@@ -161,9 +161,96 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public Damage FetchDamageById(int damageId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = Sql.Damage.SimpleDamageSelectStatement + "where damage.DamageId = @DamageId";
+
+                var damage = connection.Query<Damage>(sql, new { DamageId = damageId }).Single();
+
+                return damage;
+            }
+        }
+
         public void UpdateDamage(int damageId, string description, string imagepath, int? rciId, int? roomComponentTypeId)
         {
-)=
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                bool allAreNull = description == null && imagepath == null && rciId == null && roomComponentTypeId == null;
+
+                // Nothing to do
+                if (allAreNull) { return; }
+
+                var fieldUpdateStatements = new List<string>();
+
+                if (description != null) { fieldUpdateStatements.Add("DamageDescription = @Description"); }
+                if (imagepath != null) { fieldUpdateStatements.Add("DamageImagePath = @ImagePath"); }
+                if (rciId != null) { fieldUpdateStatements.Add("RciId = @RciId"); }
+                if (roomComponentTypeId != null) { fieldUpdateStatements.Add("RoomComponentTypeId = @RoomComponentTypeId"); }
+
+                var updateSql = $"update Damage Set {string.Join(",", fieldUpdateStatements)} where DamageId = @DamageId";
+
+                var inputparams = new
+                {
+                    Description = description,
+                    ImagePath = imagepath,
+                    RciId = rciId,
+                    RoomComponentTypeId = roomComponentTypeId,
+                    DamageId = damageId
+                };
+
+                connection.Execute(updateSql, inputparams);
+            }
+        }
+
+        public void DeleteDamage(int damageId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var deleteDamageSql = "delete from Damage where DamageID = @DamageId";
+
+                connection.Execute(deleteDamageSql, new { DamageId = damageId });
+            }
+        }
+
+        public CommonAreaRciSignature CreateNewCommonAreaRciSignature(string gordonId, int rciId, DateTime signatureDate, string signatureType)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                // Since this table doesn't have a primary key (it has a composite key), just select the just inserted record and return it
+                var insertSql = Sql.CommonAreaRciSignature.InsertStatment +
+                    Sql.CommonAreaRciSignature.SimpleSelectStatement +  "where RciID = @RciId and GordonID = @GordonId and SignatureType = @SignatureType";
+
+                var inputParams = new
+                {
+                    GordonId = gordonId,
+                    RciId = rciId,
+                    Signature = signatureDate,
+                    SignatureType = signatureType
+                };
+
+                var insertedRecord = connection.Query<CommonAreaRciSignature>(insertSql, inputParams).Single();
+
+                return insertedRecord;
+            }
+        }
+
+        public void DeleteCommonAreaRciSignature(string gordonId, int rciId, string signatureType)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var deleteSql = "delete from CommonAreaRciSignature where RciID = @RciId and GordonID = @GordonId and SignatureType = @SignatureType";
+
+                var inputParams = new
+                {
+                    GordonId = gordonId,
+                    RciId = rciId,
+                    SignatureType = signatureType
+                };
+
+                connection.Execute(deleteSql, inputParams);
+            }
         }
 
         public List<ResidentHallGrouping> FetchBuildingMap()
@@ -216,7 +303,7 @@ namespace Phoenix.DapperDal
 
                 var roomComponentTypesSql = Sql.RciTypeRoomComponentTypeMap.MapSelectStatment + "where rci.RciId = @RciId";
 
-                var commonAreaRciSignaturesSql = Sql.Rci.CommonAreaRciSignatureManifest + "where sig.RciId = @RciId";
+                var commonAreaRciSignaturesSql = Sql.CommonAreaRciSignature.SimpleSelectStatement + "where sig.RciId = @RciId";
 
                 var sql = string.Join("\n\n", new List<string> { rciSql, damageSql, fineSql, roomComponentTypesSql, commonAreaRciSignaturesSql});
 

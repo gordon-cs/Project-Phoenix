@@ -38,6 +38,11 @@ namespace Phoenix.DapperDal
         void DeleteRci(int rciId);
 
         /// <summary>
+        /// Fetch damage record
+        /// </summary>
+        Damage FetchDamageById(int damageId);
+
+        /// <summary>
         /// Create a new Damage Record
         /// </summary>
         int CreateNewDamage(string description, string imagepath, int rciId, string gordonId, int roomComponentTypeId);
@@ -46,6 +51,23 @@ namespace Phoenix.DapperDal
         /// Update a damage record. If a value is null, it is not set
         /// </summary>
         void UpdateDamage(int damageId, string description, string imagepath, int? rciId, int? roomComponentTypeId);
+
+        /// <summary>
+        /// Delete a damage record. 
+        /// </summary>
+        /// <param name="damageId"></param>
+        void DeleteDamage(int damageId);
+
+        /// <summary>
+        /// Create a new common are signature record
+        /// </summary>
+        CommonAreaRciSignature CreateNewCommonAreaRciSignature(string gordonId, int rciId, DateTime signatureDate, string signatureType);
+
+        /// <summary>
+        /// Delete a common are rci signature record. 
+        /// </summary>
+        void DeleteCommonAreaRciSignature(string gordonId, int rciId, string signatureType);
+
 
         BigRci FetchRciById(int rciId);
         List<SmolRci> FetchRcisByGordonId(string gordonId);

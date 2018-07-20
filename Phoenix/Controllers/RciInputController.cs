@@ -20,13 +20,10 @@ namespace Phoenix.Controllers
     [CustomAuthentication]
     public class RciInputController : Controller
     {
-        // RCI context wrapper. It can be considered to be an object that represents the database.
-        private RCIContext db;
         private IRciInputService rciInputService;
 
         public RciInputController(IRciInputService service)
         {
-            db = new Models.RCIContext();
             rciInputService = service;
         }
 
@@ -57,18 +54,11 @@ namespace Phoenix.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
+            ViewBag.ViewTitle = $"Check-In: {rci.BuildingCode} {rci.RoomNumber} {rci.FirstName} {rci.LastName}";
+
             if (rci.GordonId == null) // A common area rci
             {
-                ViewBag.ViewTitle = $"Check-In: {rci.BuildingCode} {rci.RoomNumber} Common Area";
-                // Select rooms of common area RCIs to group the RCIs
-                //ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
-                //var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
-                //ViewBag.CommonAreaModel = commonAreaRci;
                 ViewBag.RAIsMemberOfApartment = (role == Constants.RA) && (rci.CommonAreaMembers.Where(m => m.GordonId == gordon_id).Any());
-            }
-            else
-            {
-                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " " + rci.FirstName + " " + rci.LastName;
             }
 
             return View(rci);
@@ -89,15 +79,7 @@ namespace Phoenix.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            if (rci.GordonId == null) // A common area rci
-            {
-                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
-                // CHANGE!!! ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
-            }
-            else
-            {
-                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " " + rci.FirstName + " " + rci.LastName; ;
-            }
+            ViewBag.ViewTitle = $"Check-In Review: {rci.BuildingCode} {rci.RoomNumber} {rci.FirstName} {rci.LastName}";
 
             return View(rci);
         }
@@ -165,6 +147,7 @@ namespace Phoenix.Controllers
             }
 
             var gordonID = (string)TempData["id"];
+
             var user = ((string)TempData["user"]).ToLower().Trim();
 
             bool complete = rciInputService.SaveCommonAreaMemberSig(rciSig, user, gordonID, rciID);
@@ -285,7 +268,7 @@ namespace Phoenix.Controllers
         /// For reference, see: http://codepedia.info/upload-image-using-jquery-ajax-asp-net-c-sharp/#jQuery_ajax_call
         /// </summary>
         [HttpPost]
-        public int SavePhoto()
+        public int SavePhoto(int rciId, int roomComponentTypeId)
         {
             try
             {
@@ -293,12 +276,6 @@ namespace Phoenix.Controllers
                 {
                     HttpPostedFileBase photoFile = Request.Files[s];
                     string rciComponentId = photoFile.FileName;
-
-                    Damage newDamage = new Damage();
-                    newDamage.DamageType = "IMAGE";
-                    newDamage.RciComponentID = Convert.ToInt32(rciComponentId);
-
-                    rciInputService.SavePhotoDamage(newDamage, rciComponentId );
                     
                     // First, resize the image, using pattern here: http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
 
@@ -313,7 +290,7 @@ namespace Phoenix.Controllers
                     rciInputService.ResizeImage(origImg, resizedImg, imgSize);
                     rciInputService.ApplyExifData(resizedImg);
 
-                    string imageName = "RciComponentId" + rciComponentId + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
+                    string imageName = "RciComponentId" + rciComponentId + "_DamageId" + Guid.NewGuid(); // newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
 
                     // Get today's date and format correctly for a folder name
                     string todayProperFormat = DateTime.Today.ToShortDateString().Replace("/", "_");
@@ -325,10 +302,10 @@ namespace Phoenix.Controllers
 
                     string fullPath = folderPath + imageName + ".jpg"; // Not sure exactly where we should store them. This path can change
 
-                    rciInputService.SaveImagePath(fullPath, newDamage);
+                    var damageid = rciInputService.SavePhotoDamage(fullPath, rciId, null, roomComponentTypeId);
                     resizedImg.Save(Server.MapPath(fullPath), resizedImg.RawFormat);
 
-                    return newDamage.DamageID;
+                    return damageid;
                 }
             }
             catch (Exception e)
@@ -346,48 +323,42 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult DeletePhoto(int damageId)
         {
-            var log = new LoggerService();
-            var message = new StringBuilder();
+            var damageImpagePath = rciInputService.FetchDamageFilePath(damageId);
 
-            var damage = db.Damage.Find(damageId);
-
-            if (damage == null)
+            if (string.IsNullOrWhiteSpace(damageImpagePath))
             {
-                message.AppendLine("User requested to delete photo with damage ID of " + damageId + ". But it was not found");
-                log.Error(message.ToString());
-
-                return new HttpStatusCodeResult(500, "Could not find photo of damage with ID " + damageId);
+                // No file path. Nothing to do here
             }
-            var filePath = Server.MapPath(damage.DamageImagePath);
+            else
+            {
+                try
+                {
+                    var filePath = Server.MapPath(damageImpagePath);
+                    System.IO.File.Delete(filePath); // Remove from server
+                }
+                catch (Exception e)
+                {
+                    return new HttpStatusCodeResult(500, "Error deleting photo. Error message: " + e.Message);
+                }
+            }
 
             try
             {
-                db.Damage.Remove(damage); // Remove from db
-                db.SaveChanges();
-                System.IO.File.Delete(filePath); // Remove from server
-                return new HttpStatusCodeResult(200, "Successfully deleted!");
+                rciInputService.DeleteDamage(damageId);
             }
             catch(Exception e)
             {
-                message.AppendLine("User requested to delete photo with damage ID of " + damageId + ". But an exception was thrown.");
-                message.AppendLine("Exception: " + e.Message);
-                message.AppendLine("Inner Exception: " + e.InnerException);
-                message.AppendLine("StackTrace: " + e.StackTrace);
-                log.Error(message.ToString());
-
                 return new HttpStatusCodeResult(500, "Error deleting photo. Error message: " + e.Message);
             }
 
+            return new HttpStatusCodeResult(200, "Successfully deleted!");
         }
 
         // save one damage to db and return damage id in response
         [HttpPost]
-        public int SaveDamage(int componentID, string damageDescription)
+        public int SaveDamage(int rciId, int roomComponentTypeId, string damageDescription)
         {
-            var newDamage = new Damage { RciComponentID = componentID, DamageDescription = damageDescription, DamageType = "TEXT" };
-            db.Damage.Add(newDamage);
-            db.SaveChanges();
-            return newDamage.DamageID;
+            return rciInputService.SaveTextDamage(damageDescription, rciId, null, roomComponentTypeId);
         }
 
         /// <summary>
@@ -397,11 +368,9 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult DeleteDamage(int damageID)
         {
-            var damage = db.Damage.Find(damageID);
             try
             {
-                db.Damage.Remove(damage); // Remove from db
-                db.SaveChanges();
+                rciInputService.DeleteDamage(damageID);
                 return new HttpStatusCodeResult(200, "Successfully deleted!");
             }
             catch (Exception e)

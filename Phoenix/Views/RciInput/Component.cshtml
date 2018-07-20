@@ -25,7 +25,7 @@
             </label>
             @*<span class="divAddOn-item">0 Picture(s)</span>*@
         </div>
-        <input id="dmg-input-@Model.RoomComponentTypeId" class="file-input" multiple type="file" accept="image/*;capture=camera">
+        <input id="dmg-input-@Model.RoomComponentTypeId" class="file-input" multiple type="file" accept="image/*;capture=camera" onchange="uploadPhoto(this,@Model.RciId, @Model.RoomComponentTypeId)">
         <div id="img-preview-@Model.RoomComponentTypeId" class="img-thumbnails">
             @foreach (var damage in Model.Damages)
             {
@@ -63,7 +63,7 @@
         <div class="divAddOn">
             <input class="divAddOn-field adding-damages" type="text" placeholder="Damage + Location"
                    id="text-input-@Model.RoomComponentTypeId" />
-            <button class="divAddOn-item" onclick="addDamage(@Model.RoomComponentTypeId);" id="add-@Model.RoomComponentTypeId">Add</button>
+            <button class="divAddOn-item" onclick="addDamage(@Model.RoomComponentTypeId, @Model.RciId);" id="add-@Model.RoomComponentTypeId">Add</button>
         </div>
         <div class="div-list" id="div-list-@Model.RoomComponentTypeId">
             

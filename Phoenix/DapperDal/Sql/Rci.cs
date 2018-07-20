@@ -8,14 +8,6 @@ values (@IsCurrent,@CreationDate,@BuildingCode, @RoomNumber, @GordonId,@SessionC
 SELECT CAST(SCOPE_IDENTITY() as int)
 ";
 
-        public const string CommonAreaRciSignatureManifest =
-            @"
-select sig.GordonID as GordonId,
-		sig.RciId as RciId,
-		sig.[Signature] as SignatureDate,
-		sig.SignatureType as SignatureType
-from CommonAreaRciSignature sig
-";
         public const string RciSelectstatement =
             @"select rci.RciId as RciId,
 		rci.GordonID as GordonId,

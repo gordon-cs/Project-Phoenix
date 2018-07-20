@@ -72,20 +72,11 @@ namespace Phoenix.Services
 
         public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
         {
-            var rci = this.Dal.FetchRciById(rciID);
             if (rciSig == user)
             {
-                var signature = new CommonAreaRciSignature
-                {
-                    RciID = rciID,
-                    GordonID = gordonID,
-                    Signature = DateTime.Now,
-                    SignatureType = "CHECKIN"
-                };
-                db.CommonAreaRciSignature.Add(signature);
-                db.SaveChanges();
+                this.Dal.CreateNewCommonAreaRciSignature(gordonID, rciID, DateTime.Now, Constants.CHECKIN);
 
-                rci = this.Dal.FetchRciById(rciID); // Check to see if everyone has signed now.
+                var rci = this.Dal.FetchRciById(rciID); // Check to see if everyone has signed now.
 
                 var apartmentMemberGordonIds = rci.RoomOrApartmentResidents
                     .Select(x => x.GordonId)
@@ -148,7 +139,6 @@ namespace Phoenix.Services
             {
                 this.Dal.SetRciCheckinDateColumns(idList, null, null, null, DateTime.Today);
             }
-            db.SaveChanges();
 
             rci = this.Dal.FetchRciById(id);
 
@@ -195,20 +185,24 @@ namespace Phoenix.Services
             db.SaveChanges();
         }
 
-        // Save a damage to the Damage table in the db
-        // @return the resulting image path that was saved to the db
-        public void SavePhotoDamage(Damage damage, string rciComponentId)
+        public string FetchDamageFilePath(int damageId)
         {
-            db.Damage.Add(damage);
-            db.SaveChanges();
+            return this.Dal.FetchDamageById(damageId).ImagePath;
         }
 
-        // Create the correct path for a photo damage
-        public void SaveImagePath(string fullPath, Damage damage)
+        public int SaveTextDamage(string description, int rciId, string gordonId, int roomComponentTypeId)
         {
-            damage.DamageImagePath = fullPath;
+            return this.Dal.CreateNewDamage(description, null, rciId, gordonId, roomComponentTypeId);
+        }
 
-            db.SaveChanges();
+        public int SavePhotoDamage(string imagePath, int rciId, string gordonId, int roomComponentTypeId)
+        {
+            return this.Dal.CreateNewDamage(null, imagePath, rciId, gordonId, roomComponentTypeId);
+        }
+
+        public void DeleteDamage(int damageId)
+        {
+            this.Dal.DeleteDamage(damageId);
         }
 
 
