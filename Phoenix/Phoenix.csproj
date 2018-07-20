@@ -250,7 +250,7 @@
     </Compile>
     <Compile Include="Services\AdminDashboardService.cs" />
     <Compile Include="Services\DashboardService.cs" />
-    <Compile Include="Services\ILoggerService.cs" />
+    <Compile Include="Services\Interfaces\ILoggerService.cs" />
     <Compile Include="Services\Interfaces\IDashboardService.cs" />
     <Compile Include="Services\Interfaces\ILoginService.cs" />
     <Compile Include="Services\Interfaces\IAdminDashboardService.cs" />
