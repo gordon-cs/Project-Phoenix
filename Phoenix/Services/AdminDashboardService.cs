@@ -1,16 +1,8 @@
-﻿using Dapper;
-using Newtonsoft.Json;
-using Phoenix.DapperDal;
+﻿using Phoenix.DapperDal;
 using Phoenix.DapperDal.Types;
-using Phoenix.DataAccessLayer;
-using Phoenix.Models;
 using Phoenix.Models.ViewModels;
-using Phoenix.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -18,9 +10,9 @@ namespace Phoenix.Services
 {
     public class AdminDashboardService : IAdminDashboardService
     {
-        private readonly IDal Dal;
+        private readonly IDatabaseDal Dal;
 
-        public AdminDashboardService(IDal _dal)
+        public AdminDashboardService(IDatabaseDal _dal)
         {
             this.Dal = _dal;
         }

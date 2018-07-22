@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DapperDalTests.cs" />
+    <Compile Include="FileSystemDalTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestUtilities\DatabaseFixture.cs" />
   </ItemGroup>

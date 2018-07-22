@@ -67,6 +67,27 @@ namespace Phoenix.Models.ViewModels
             this.CheckinRaGordonId = original.CheckinRaGordonId;
             this.CheckinRdGordonId = original.CheckinRdGordonId;
 
+            // Smooth out Common Area Rcis
+            // Common Area Rcis lack a gordonId
+            if (string.IsNullOrWhiteSpace(original.GordonId))
+            {
+                this.FirstName = "Common Area";
+                this.LastName = "Rci";
+            }
+
+            // Smooth out Rcis for Rcis for alumni.
+            // Once graduated, students are removed from the Accounts view.
+            // We can identify such Rcis because they have a GordonId, but no first or last name
+            var isAlumni = !string.IsNullOrWhiteSpace(original.GordonId) &&
+                string.IsNullOrWhiteSpace(original.FirstName) &&
+                string.IsNullOrWhiteSpace(original.LastName);
+
+            if (isAlumni)
+            {
+                this.FirstName = "Unidentified User";
+                this.LastName = original.GordonId;
+            }
+
             this.CommonAreaMembers = original.RoomOrApartmentResidents
                 .Select(x =>
                 {
@@ -86,10 +107,10 @@ namespace Phoenix.Models.ViewModels
                 })
                 .ToList();
 
-            this.CheckinRaAccount = new AccountInfoViewModel(original.CheckinRaAccount);
-            this.CheckinRdAccount = new AccountInfoViewModel(original.CheckinRdAccount);
-            this.CheckoutRaAccount = new AccountInfoViewModel(original.CheckoutRaAccount);
-            this.CheckoutRdAccount = new AccountInfoViewModel(original.CheckoutRdAccount);
+            if (original.CheckinRaGordonId != null) { this.CheckinRaAccount = new AccountInfoViewModel(original.CheckinRaAccount); }
+            if (original.CheckinRdGordonId != null) { this.CheckinRdAccount = new AccountInfoViewModel(original.CheckinRdAccount); }
+            if (original.CheckoutRaGordonId != null) { this.CheckoutRaAccount = new AccountInfoViewModel(original.CheckoutRaAccount); }
+            if (original.CheckoutRdGordonId != null) { this.CheckoutRdAccount = new AccountInfoViewModel(original.CheckoutRdAccount); }
         }
 
         public bool isViewableBy(string userID, string role, string currentRoomNumber, string currentBuilding)
@@ -158,17 +179,17 @@ namespace Phoenix.Models.ViewModels
             this.FirstName = thisMember.FirstName ?? "Unidentified User";
             this.LastName = thisMember.LastName ?? thisMember.GordonId;
 
-            var checkinSignature = signaturesByThisMember.FirstOrDefault(x => x.SignatureType.Equals("CHECKIN"));
-            var checkouSignature = signaturesByThisMember.FirstOrDefault(x => x.SignatureType.Equals("CHECKOUT"));
+            var checkinSignature = signaturesByThisMember.FirstOrDefault(x => x.SignatureType.Equals(Constants.CHECKIN));
+            var checkoutSignature = signaturesByThisMember.FirstOrDefault(x => x.SignatureType.Equals(Constants.CHECKOUT));
 
             if (checkinSignature != null)
             {
                 this.CheckinDate = checkinSignature.SignatureDate;
             }
 
-            if (checkinSignature != null)
+            if (checkoutSignature != null)
             {
-                this.CheckoutDate = checkouSignature.SignatureDate;
+                this.CheckoutDate = checkoutSignature.SignatureDate;
             }
         }
     }

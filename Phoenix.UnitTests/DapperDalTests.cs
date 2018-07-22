@@ -10,7 +10,7 @@ namespace Phoenix.UnitTests
 {
     public class DapperDalTests : IClassFixture<DatabaseFixture>
     {
-        private readonly IDal Dal;
+        private readonly IDatabaseDal Dal;
 
         private IDbConnectionFactory DbConnectionFactory { get; set; }
         
@@ -55,6 +55,28 @@ namespace Phoenix.UnitTests
             var exception = Assert.Throws<Exception>(() => this.Dal.FetchRciById(0));
 
             Assert.Contains("Expected a single result", exception.Message);
+        }
+
+        [Fact]
+        public void FetchRcisById_Success()
+        {
+            // Setup - Create 2 rcis
+            var rciId1 = this.Dal.CreateNewCommonAreaRci("TAV", "10000", "2000");
+            var rciId2 = this.Dal.CreateNewDormRci("50153295", "TAV", "20000", "2000");
+
+            var rciList = this.Dal.FetchRcisById(new List<int> { rciId1, rciId2 });
+
+            var rciIdlist = rciList.Select(x => x.RciId);
+
+            Assert.Equal(2, rciList.Count);
+            Assert.Contains(rciId1, rciIdlist);
+            Assert.Contains(rciId2, rciIdlist);
+
+            // Cleanup
+            foreach(var rciId in rciIdlist)
+            {
+                this.Dal.DeleteRci(rciId);
+            }
         }
 
         [Fact]
@@ -308,6 +330,15 @@ namespace Phoenix.UnitTests
             Assert.NotNull(results[0].SessionDescription);
             Assert.NotNull(results[0].SessionStartDate);
             Assert.NotNull(results[0].SessionEndDate);
+        }
+
+        [Fact]
+        public void FetchCurrentSession_Success()
+        {
+            // We just want to make sure the value is not null
+            var result = this.Dal.FetchCurrentSession();
+
+            Assert.NotNull(result);
         }
 
         // Account

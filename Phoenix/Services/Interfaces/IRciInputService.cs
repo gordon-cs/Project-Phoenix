@@ -7,9 +7,9 @@ namespace Phoenix.Services
 {
     public interface IRciInputService
     {
-        void CheckRcis(int sigCheck, string gordonID, int id);
+        void CheckRcis(int sigCheck, string gordonID, int rciId);
         FullRciViewModel GetRci(int id);
-        IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(List<string> buildingCode);
+        IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(string gordonId, List<string> buildingCodes);
         Size NewImageSize(Size imageSize, Size newSize);
         void ApplyExifData(Image image);
         void ResizeImage(Image origImg, Image newImage, Size imgSize);

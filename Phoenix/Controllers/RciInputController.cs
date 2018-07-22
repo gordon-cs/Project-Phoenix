@@ -2,17 +2,12 @@
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
-using Phoenix.Models;
 using Phoenix.Filters;
 using System;
 using Phoenix.Services;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using Newtonsoft.Json.Linq;
 using System.IO;
-using Phoenix.Exceptions;
-using System.Text;
 using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
@@ -105,7 +100,7 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
 
-            var buildingRcis = rciInputService.GetRcisForBuildingThatCanBeSignedByRD(kingdom);
+            var buildingRcis = rciInputService.GetRcisForBuildingThatCanBeSignedByRD(gordonID, kingdom);
 
 
             ViewBag.User = (string)TempData["user"];
@@ -161,6 +156,7 @@ namespace Phoenix.Controllers
                 return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
+
         // Save signatures for resident
         [HttpPost]
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
@@ -246,21 +242,21 @@ namespace Phoenix.Controllers
             }
         }
 
+
         /// <summary>
         /// When an RD wants to check on an RCI upon checking in, after they click the checkbox,
         /// an HttpPost request will be sent here and change CheckinSigRDGordonID but not fill
         /// in the date for CheckinSigRD.
         /// </summary>
-        /// <param name="sigCheck">1: checked, 0: unchecked</param>
-        /// <param name="id">RCI ID</param>
+        /// <param name="queueRciFlag">1: queue, 0: de-queue</param>
+        /// <param name="rciId">RCI ID</param>
         /// <returns></returns>
         [RD]
         [HttpPost]
-        public void CheckSigRD(int sigCheck, int id)
+        public void CheckSigRD(int queueRciFlag, int rciId)
         {
-            
             var gordonID = (string)TempData["id"];
-            rciInputService.CheckRcis(sigCheck, gordonID, id);
+            rciInputService.CheckRcis(queueRciFlag, gordonID, rciId);
         }
 
         /// <summary>
@@ -308,7 +304,7 @@ namespace Phoenix.Controllers
                     return damageid;
                 }
             }
-            catch (Exception e)
+            catch
             {
                 Response.Status = "500 Error saving photo";
             }

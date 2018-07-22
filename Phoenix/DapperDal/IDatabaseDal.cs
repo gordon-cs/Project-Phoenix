@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Phoenix.DapperDal
 {
-    public interface IDal
+    public interface IDatabaseDal
     {
         /// <summary>
         /// Create a new Dorm Room Rci 
@@ -15,7 +15,6 @@ namespace Phoenix.DapperDal
         /// Create a new Common Area Rci
         /// </summary>
         int CreateNewCommonAreaRci(string buildingCode, string roomNumber, string sessionCode);
-
 
         /// <summary>
         /// Set the value of the IsCurrent bool column
@@ -28,10 +27,22 @@ namespace Phoenix.DapperDal
         void SetRciCheckinDateColumns(IEnumerable<int> rciIds, DateTime? residentCheckinDate, DateTime? raCheckinDate, DateTime? rdCheckinDate, DateTime? lifeAndConductStatementCheckinDate);
 
         /// <summary>
+        /// Set the value of the checkout date columns. If a value is null, it is not set.
+        /// </summary>
+        void SetRciCheckoutDateColumns(IEnumerable<int> rciIds, DateTime? residentCheckoutDate, DateTime? raCheckoutDate, DateTime? rdCheckoutDate);
+
+        /// <summary>
         /// Set the value of the checkin gordon id columns. If a values is null, it is not set.
         /// </summary>
         void SetRciCheckinGordonIdColumns(IEnumerable<int> rciIds, string checkinRaGordonId, string checkingRdGordonId);
 
+        /// <summary>
+        /// Set the value of the checkout gordon id columsn. If a value is null, it is not set.
+        /// </summary>
+        /// <param name="rciIds"></param>
+        /// <param name="checkoutRaGordonId"></param>
+        /// <param name="checoutRdGordonId"></param>
+        void SetRciCheckoutGordonIdColumns(IEnumerable<int> rciIds, string checkoutRaGordonId, string checoutRdGordonId);
         /// <summary>
         /// Delete the rci with the id provided
         /// </summary>
@@ -59,6 +70,26 @@ namespace Phoenix.DapperDal
         void DeleteDamage(int damageId);
 
         /// <summary>
+        /// Fetch Fine Record
+        /// </summary>
+        Fine FetchFineById(int fineId);
+
+        /// <summary>
+        /// Create a new fine record
+        /// </summary>
+        int CreateNewFine(decimal amount, string gordonId, string reason, int rciId, int roomComponentTypeId);
+
+        /// <summary>
+        /// Update Fine record. Fields left null will not be updated.
+        /// </summary>
+        void UpdateFine(int fineId, decimal? amount, string gordonId, string reason, int? rciId, int? roomComponentTypeId);
+
+        /// <summary>
+        /// Delete Fine record
+        /// </summary>
+        void DeleteFine(int fineId);
+
+        /// <summary>
         /// Create a new common are signature record
         /// </summary>
         CommonAreaRciSignature CreateNewCommonAreaRciSignature(string gordonId, int rciId, DateTime signatureDate, string signatureType);
@@ -70,12 +101,13 @@ namespace Phoenix.DapperDal
 
 
         BigRci FetchRciById(int rciId);
+        List<SmolRci> FetchRcisById(IEnumerable<int> rciIds);
         List<SmolRci> FetchRcisByGordonId(string gordonId);
-        List<SmolRci> FetchRcisByBuilding(List<string> buildings);
-        List<SmolRci> FetchRcisBySessionAndBuilding(List<string> sessions, List<string> buildings);
+        List<SmolRci> FetchRcisByBuilding(IEnumerable<string> buildings);
+        List<SmolRci> FetchRcisBySessionAndBuilding(IEnumerable<string> sessions, IEnumerable<string> buildings);
         List<SmolRci> FetchRcisForRoom(string building, string room);
 
-        List<FineSummary> FetchFinesByBuilding(List<string> buildings);
+        List<FineSummary> FetchFinesByBuilding(IEnumerable<string> buildings);
 
         List<string> FetchBuildingCodes();
         List<ResidentHallGrouping> FetchBuildingMap();
@@ -88,6 +120,7 @@ namespace Phoenix.DapperDal
         List<RoomAssignment> FetchRoomAssignmentsThatDoNotHaveRcis(string buildingCode, string sessionCode);
 
         List<Session> FetchSessions();
+        string FetchCurrentSession();
         
         Account FetchAccountByGordonId(string gordonId);
         List<Account> FetchResidentAccounts(string builingCode, string roomNumber, string sessionCode);

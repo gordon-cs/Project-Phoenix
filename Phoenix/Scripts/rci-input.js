@@ -243,29 +243,21 @@ function RDSigSubmit() {
     });
 }
 
-
-$("#rci-sig-checkbox").click(function () {
-    check();
-});
-
 function check() {
-    var sigCheck = 0;
-    if ($("#rci-sig-checkbox").is(":checked")) {
-        sigCheck = 1;
-    }
-    else {
-        sigCheck = 0;
-    }
-    var id = $("h2[id^='rci-']").first().attr("id").substring(4);
+    var flag = 1;
+
+    var rciId = $("h2[id^='rci-']").first().attr("id").substring(4);
+
     $.ajax({
         sync: false,
         url: "/RciInput/CheckSigRD",
-        data: { sigCheck: sigCheck, id: id },
+        data: { queueRciFlag: flag, rciId: rciId },
         method: "POST",
-        /*success: function (data) {
-            window.location.href = data;
-        },*/
+        success: function (data) {
+            window.location.href = "/Dashboard/Index";
+        },
         error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         }
@@ -322,6 +314,10 @@ function deleteDamage(event, element)
 
 /* Register Handers */
 
+// Handler for queueing an rci to be signed later.
+$("#queue-rci-button").click(function () {
+    check();
+});
 
 // Handler to allow users to add damages by simply pressing the enter key
 $(".adding-damages").on("keypress", function (e) {

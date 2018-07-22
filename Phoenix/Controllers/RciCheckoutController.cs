@@ -32,34 +32,38 @@ namespace Phoenix.Controllers
         {
             // Redirect to other dashboards if role not correct
             var role = (string)TempData["role"];
+
             if (role == null)
             {
                 return RedirectToAction("Index", "Login");
             }
 
-            var temp = this.CheckoutService.GetBareRciByID(id);
+            var rci = this.CheckoutService.GetRciById(id);
 
-            // Preliminary check to figure out which method to call
-            var isIndividualRci = temp.IsIndividualRci();
+            var isCommonAreaRci = rci.GordonId == null;
 
-            if (!isIndividualRci) // A common area rci
+            if (isCommonAreaRci) // A common area rci
             {
-                ViewBag.commonRooms = this.CheckoutService.GetCommonRooms(id);
-                var rci = this.CheckoutService.GetCommonAreaRciByID(id);
-                if (rci.CheckoutSigRD != null)
+                if (rci.RdCheckoutDate == null)
+                {
+                    return View("CommonArea", rci);
+                }
+                else
                 {
                     return RedirectToAction("RciReview", new { id = id } );
                 }
-                return View("CommonArea", rci);
             }
             else // An individual room
             {
-                var rci = this.CheckoutService.GetIndividualRoomRciByID(id);
-                if (rci.CheckoutSigRD != null)
+                if (rci.RdCheckoutDate == null)
+                {
+                    return View("IndividualRoom", rci);
+                }
+                else
                 {
                     return RedirectToAction("RciReview", new { id = id });
                 }
-                return View("IndividualRoom", rci);
+                
             }
         }
 
@@ -70,35 +74,34 @@ namespace Phoenix.Controllers
         {
             // Redirect to other dashboards if role not correct
             var role = (string)TempData["role"];
+
             if (role == null)
             {
                 return RedirectToAction("Index", "Login");
             }
 
-            var temp = this.CheckoutService.GetBareRciByID(id);
+            var rci = this.CheckoutService.GetRciById(id);
 
             // Check to figure out if this RCI can be viewed by the logged in user
-            var isViewable = temp.isViewableBy((string)TempData["id"], role, (string)TempData["currentRoom"], (string)TempData["currentBuilding"]);
+            var isViewable = rci.isViewableBy((string)TempData["id"], role, (string)TempData["currentRoom"], (string)TempData["currentBuilding"]);
+
             if(!isViewable)
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            // Check to figure out which method to call
-            var isIndividualRci = temp.IsIndividualRci();
+            var isCommonAreaRci = rci.GordonId == null;
 
-            if (!isIndividualRci) // A common area rci
+            if (isCommonAreaRci) // A common area rci
             {
-                ViewBag.commonRooms = this.CheckoutService.GetCommonRooms(id);
-                var rci = this.CheckoutService.GetCommonAreaRciByID(id);
                 return View("RciReviewCommonArea", rci);
             }
             else // An individual room
             {
-                var rci = this.CheckoutService.GetIndividualRoomRciByID(id);
                 return View("RciReviewIndividualRoom", rci);
             }
         }
+
         /// <summary>
         /// Add a new fine and return its id
         /// </summary>
@@ -134,7 +137,8 @@ namespace Phoenix.Controllers
                 return RedirectToAction("Index", "LoginController");
             }
 
-            var rci = this.CheckoutService.GetCommonAreaRciByID(id);
+            var rci = this.CheckoutService.GetRciById(id);
+
             return View(rci);
         }
 
@@ -147,32 +151,36 @@ namespace Phoenix.Controllers
         public ActionResult CommonAreaSignature(int id, string[] signature)
         {
             var  signatures = new List<string>(signature);
-            signatures.RemoveAll( x => x == ""); // Remove empty strings.
+
+            signatures.RemoveAll(x => x == ""); // Remove empty strings.
 
             for (var i = 0; i < signatures.Count; i++)
             {
-                signatures[i] = signatures[i].ToLower();
+                signatures[i] = signatures[i].ToLower().Trim();
             }
             
 
-            var rci = this.CheckoutService.GetCommonAreaRciByID(id);
+            var rci = this.CheckoutService.GetRciById(id);
 
-            if (rci.EveryoneHasSigned()) // Already signed
+            bool everyoneHasSigned = rci.CommonAreaMembers.TrueForAll(x => x.CheckoutDate != null);
+
+            if (everyoneHasSigned) // Already signed
             {
-                    return RedirectToAction("RASignature", new { id = id });
+                return RedirectToAction("RASignature", new { id = id });
             }
 
             // Not yet signed
-            foreach (var member in rci.CommonAreaMember)
+            foreach (var member in rci.CommonAreaMembers)
             {
                 var expectedSignature = member.FirstName.ToLower() + " " + member.LastName.ToLower();
-                if(signatures.Contains(expectedSignature))
+
+                if (signatures.Contains(expectedSignature))
                 {
                     signatures.Remove(expectedSignature);
 
-                    if(!member.HasSignedCommonAreaRci)
+                    if (member.CheckoutDate == null)
                     {
-                        this.CheckoutService.CheckoutCommonAreaMemberSignRci(id, member.GordonID);
+                        this.CheckoutService.CheckoutCommonAreaMemberSignRci(id, member.GordonId);
                     }
                 }
             }
@@ -181,20 +189,27 @@ namespace Phoenix.Controllers
             if(signatures.Count > 0) 
             {
                 var errorMessages = new List<string>();
+
                 foreach(var sig in signatures)
                 {
                     errorMessages.Add("The name " + sig + " does not match.");
                 }
+
                 ViewBag.ErrorMessage = errorMessages;
-                rci = this.CheckoutService.GetCommonAreaRciByID(id); // Reload the rci to reflect those who have already signed.
+
+                rci = this.CheckoutService.GetRciById(id); // Reload the rci to reflect those who have already signed.
+
                 return View(rci);
             }
 
-            rci = this.CheckoutService.GetCommonAreaRciByID(id); // reload rci from db to see if everyone has now signed.
-            // If at the end of the loop, the boolean is still true, then everyone has signed.
-            if(rci.EveryoneHasSigned())
+            rci = this.CheckoutService.GetRciById(id); // reload rci from db to see if everyone has now signed.
+
+            everyoneHasSigned = rci.CommonAreaMembers.TrueForAll(x => x.CheckoutDate != null);
+
+            if (everyoneHasSigned)
             {
                 this.CheckoutService.CheckoutResidentSignRci(id); // This is set once everybody has signed
+
                 return RedirectToAction("RASignature", new { id = id });
             }
             else
@@ -212,7 +227,8 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult ResidentSignature(int id)
         {
-            var rci = this.CheckoutService.GetIndividualRoomRciByID(id);
+            var rci = this.CheckoutService.GetRciById(id);
+
             return View(rci);
         }
 
@@ -223,22 +239,25 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult ResidentSignature(int id, string signature)
         {
-            var rci = this.CheckoutService.GetIndividualRoomRciByID(id);
+            var rci = this.CheckoutService.GetRciById(id);
 
-            if(rci.CheckoutSigRes != null) // Already signed
+            if(rci.ResidentCheckoutDate != null) // Already signed
             {
-                    return RedirectToAction("RASignature", new { id = id });
+                return RedirectToAction("RASignature", new { id = id });
             }
 
             // Not yet signed.
             var signatureMatch = (rci.FirstName.ToLower() + " " + rci.LastName.ToLower()).Equals(signature.ToLower());
+
             if(!signatureMatch) // Signature provided doesn't match
             {
                 ViewBag.ErrorMessage = "The Signatures did not match! The signature should match the name indicated.";
+                
                 return View(rci);
             }
 
-            this.CheckoutService.CheckoutResidentSignRci(rci.RciID);
+            this.CheckoutService.CheckoutResidentSignRci(rci.RciId);
+
             return RedirectToAction("RASignature", new { id = id });
         }
 
@@ -251,8 +270,11 @@ namespace Phoenix.Controllers
         public ActionResult RASignature(int id)
         {
             var raName = (string)TempData["user"];
+
             ViewBag.ExpectedSignature = raName;
-            var rci = this.CheckoutService.GetGenericCheckoutRciByID(id);
+
+            var rci = this.CheckoutService.GetRciById(id);
+
             return View(rci);
         }
 
@@ -265,21 +287,26 @@ namespace Phoenix.Controllers
         {
             var role = (string)TempData["role"];
 
-            var rci = this.CheckoutService.GetGenericCheckoutRciByID(id);
-            if(rci.CheckoutSigRA != null) // Already signed
+            var rci = this.CheckoutService.GetRciById(id);
+
+            if(rci.RaCheckoutDate != null) // Already signed
             {
                 return RedirectToAction("RDSignature", new { id = id });
             }
 
             var signatureMatch = (((string)TempData["user"]).ToLower()).Equals(signature.ToLower());
+
             if(!signatureMatch) // Signature provided doesn't match
             {
                 ViewBag.ExpectedSignature = (string)TempData["user"];
+
                 ViewBag.ErrorMessage = "The Signatures did not match! The signature should match the name indicated.";
+
                 return View(rci);
             }
 
-            this.CheckoutService.CheckoutRASignRci(rci.RciID, (string)TempData["id"]);
+            this.CheckoutService.CheckoutRASignRci(rci.RciId, (string)TempData["id"]);
+
             return RedirectToAction("RDSignature", new { id = id });
         }
 
@@ -291,11 +318,15 @@ namespace Phoenix.Controllers
         public ActionResult RDSignature(int id)
         {
             var name = (string)TempData["user"];
+
             ViewBag.RDName = name;
 
             var userName = (string)TempData["login_username"];
+
             ViewBag.ExpectedUsername = userName;
-            var rci = this.CheckoutService.GetGenericCheckoutRciByID(id);
+
+            var rci = this.CheckoutService.GetRciById(id);
+
             return View(rci);
         }
 
@@ -306,8 +337,9 @@ namespace Phoenix.Controllers
         [RD]
         public ActionResult RDSignature(int id, string password, string username,  string phoneNumber, List<string> workRequest)
         {
-            var rci = this.CheckoutService.GetGenericCheckoutRciByID(id);
-            if (rci.CheckoutSigRD != null) // Already signed
+            var rci = this.CheckoutService.GetRciById(id);
+
+            if (rci.RdCheckoutDate != null) // Already signed
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
@@ -320,30 +352,39 @@ namespace Phoenix.Controllers
             var isValidLogin = this.LoginService.IsValidUser(username, password, this.LoginService.ConnectToADServer());
             if (!isValidLogin) // If this is not a valid user.
             {
-                ViewBag.RDName = (string)TempData["user"]; ;
+                ViewBag.RDName = (string)TempData["user"];
+
                 ViewBag.ExpectedUsername = username;
+
                 ViewBag.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
+
                 ViewBag.WorkRequests = workRequest == null ? new List<string>() : workRequest ; // Send back the list of work requests they wanted.
+
                 return View(rci);
             }
 
             // If they are submitting work requests, check to see that they provided a phone number
             if(workRequest != null && workRequest.Count > 0 && (phoneNumber == null || phoneNumber.Trim().Equals("")) )
             {
-                ViewBag.RDName = (string)TempData["user"]; ;
+                ViewBag.RDName = (string)TempData["user"];
+
                 ViewBag.ExpectedUsername = username;
+
                 ViewBag.ErrorMessage = "You are submitting work requests, but have not provided a phone number. Please enter a phone number.";
+
                 ViewBag.WorkRequests = workRequest; // Send back the list of work requests they wanted.
+
                 return View(rci);
             }
 
             var rciSigned = false;
 
-            rciSigned = this.CheckoutService.CheckoutRDSignRci(rci.RciID, (string)TempData["id"]);
+            rciSigned = this.CheckoutService.CheckoutRDSignRci(rci.RciId, (string)TempData["id"]);
 
             if (rciSigned) // Only do the rest if the rci was successfully signed.
             {
-                 this.CheckoutService.SendFineEmail(id, username + "@gordon.edu", password);
+                this.CheckoutService.SendFineEmail(id, username + "@gordon.edu", password);
+
                 if(workRequest != null)
                 {
                     this.CheckoutService.WorkRequestDamages(workRequest, username, password, id, phoneNumber);
@@ -352,8 +393,11 @@ namespace Phoenix.Controllers
             else
             {
                 ViewBag.RDName = (string)TempData["user"];
+
                 ViewBag.ExpectedUsername = username;
+
                 ViewBag.WorkRequests = workRequest == null ? new List<string>() : workRequest;
+
                 ViewBag.ErrorMessage = "There was a problem signing this rci. No emails or work requests have been sent. Please try again.";
 
                 return View(rci);

@@ -2,6 +2,12 @@
 {
     public class Fine
     {
+        public const string FineInsertStatement =
+            @"insert into Fine(FineAmount, GordonID, Reason, RciId, RoomComponentTypeId)
+values (@Amount, @GordonId, @Reason, @RciId, @RoomComponentTypeId)
+SELECT CAST(SCOPE_IDENTITY() as int)
+";
+
         public const string FineSelectStatement =
             @"select fine.FineID as FineId,
 		fine.FineAmount as Amount,
@@ -9,7 +15,7 @@
 		fine.Reason as Reason,
 		fine.RciId as RciId,
 		fine.RoomComponentTypeId as RoomComponentTypeId
-from Fine
+from Fine as fine
 ";
 
         public const string FineSummarySelectStatement =

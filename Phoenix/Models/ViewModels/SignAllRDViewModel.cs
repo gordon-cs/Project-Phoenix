@@ -12,6 +12,21 @@ namespace Phoenix.Models.ViewModels
         public string LastName { get; set; }
         public string BuildingCode { get; set; }
         public string RoomNumber { get; set; }
-        public string CheckinSigRDGordonID { get; set; }
+        public bool QueuedForSigning { get; set; }
+
+        public SignAllRDViewModel(Phoenix.DapperDal.Types.Rci rci, bool isQueued)
+        {
+            this.RciID = rci.RciId;
+
+            this.FirstName = rci.FirstName;
+
+            this.LastName = rci.LastName;
+
+            this.BuildingCode = rci.BuildingCode;
+
+            this.RoomNumber = rci.RoomNumber;
+
+            this.QueuedForSigning = isQueued;
+        }
     }
 }

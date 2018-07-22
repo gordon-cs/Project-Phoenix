@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using System.Drawing;
 using System.Collections.Generic;
@@ -12,20 +11,15 @@ namespace Phoenix.Services
 {
     public class RciInputService : IRciInputService
     {
-        private RCIContext db;
+        private readonly IDatabaseDal Dal;
 
-        private readonly IDal Dal;
+        private readonly IRciBatchService RciBatchService;
 
-        private IDashboardService DashboardService { get; set; }
-
-
-        public RciInputService(IDal dal, IDashboardService dashboardService)
+        public RciInputService(IDatabaseDal dal, IDashboardService dashboardService, IRciBatchService batchService)
         {
-            db = new Models.RCIContext();
-
             this.Dal = dal;
 
-            this.DashboardService = dashboardService;
+            this.RciBatchService = batchService;
         }
 
         public FullRciViewModel GetRci(int id)
@@ -35,39 +29,35 @@ namespace Phoenix.Services
             return new FullRciViewModel(rci);
         }
 
-        public IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(List<string> buildingCode)
+        public IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(string gordonId, List<string> buildingCodes)
         {
-            // Not sure if this will end up with duplicates for the RA's own RCI
-            var buildingRCIs =
-                from r in db.Rci
-                join account in db.Account on r.GordonID equals account.ID_NUM into rci
-                from account in rci.DefaultIfEmpty()
-                where buildingCode.Contains(r.BuildingCode) && r.IsCurrent == true
-                where r.CheckinSigRD == null && r.CheckinSigRA != null && r.CheckinSigRes != null
-                select new SignAllRDViewModel
+            // Fetch the rcis that can be signed by the Rd at this moment
+            var rcis = this.Dal.FetchRcisByBuilding(buildingCodes)
+                .Where(x => x.IsCurrent)
+                .Where(x => x.ResidentCheckinDate != null && x.RaCheckinDate != null && x.RdCheckinDate == null);
+
+            // Fetch the rcis that the rd has queued up for signing.
+            var queuedRcisToBeSigned = this.RciBatchService.GetRcis(gordonId);
+
+            var result = rcis
+                .Select(x =>
                 {
-                    RciID = r.RciID,
-                    BuildingCode = r.BuildingCode.Trim(),
-                    RoomNumber = r.RoomNumber.Trim(),
-                    FirstName = account.firstname == null ? "Common Area" : account.firstname,
-                    LastName = account.lastname == null ? "RCI" : account.lastname,
-                    CheckinSigRDGordonID = r.CheckinSigRDGordonID
-                };
-            return buildingRCIs.OrderBy(m => m.RoomNumber);
+                    var isQueued = queuedRcisToBeSigned.Contains(x.RciId);
+
+                    return new SignAllRDViewModel(x, isQueued);
+                })
+                .OrderBy(m => m.RoomNumber);
+
+            return result;
         }
 
         public void SignRcis(string gordonID)
         {
-            var rcis =
-                from r in db.Rci
-                where r.CheckinSigRDGordonID == gordonID
-                where r.CheckinSigRD == null
-                select r;
-            foreach (var rci in rcis)
-            {
-                rci.CheckinSigRD = DateTime.Today;
-            }
-            db.SaveChanges();
+            var rciIds = this.RciBatchService.GetRcis(gordonID);
+
+            this.Dal.SetRciCheckinDateColumns(rciIds, null, null, DateTime.Today, null);
+
+            this.Dal.SetRciCheckinGordonIdColumns(rciIds, null, gordonID);
         }
 
         public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
@@ -173,16 +163,15 @@ namespace Phoenix.Services
 
         public void CheckRcis(int sigCheck, string gordonID, int id)
         {
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
+            // Add this rci to the list that need to be signed.
             if (sigCheck == 1)
             {
-                rci.CheckinSigRDGordonID = gordonID;
+                this.RciBatchService.AddRciToBatch(gordonID, id);
             }
             else
             {
-                rci.CheckinSigRDGordonID = null;
+                this.RciBatchService.RemoveRciFromBatch(gordonID, id);
             }
-            db.SaveChanges();
         }
 
         public string FetchDamageFilePath(int damageId)
@@ -204,7 +193,6 @@ namespace Phoenix.Services
         {
             this.Dal.DeleteDamage(damageId);
         }
-
 
         // Get the new size for an image to be rescaled, taken mostly from  http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
         // Takes an original size, and returns proportional dimensions to be used in resizing the image

@@ -19,7 +19,7 @@
 
 
     @if ((Model.ResidentCheckinDate == null || Model.LifeAndConductSignatureDate == null) && Model.GordonId != null) // Individual rci not signed by resident
-            {
+    {
         <p>The resident hasn't signed yet. Please make sure the resident and RA have signed before signing.</p>
         <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciId })'">Back</button>
     }
@@ -37,18 +37,10 @@
     {
         <p>@ViewBag.User, please sign with your name to confirm the entered damages.</p>
         <input data-selenium-id="signature-field" type="text" id="rci-sig" />
-        <p>OR</p>
-        if (Model.CheckinRdAccount == null)
-        {
-            <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Queue for signing later</label>
-        }
-        else
-        {
-            <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Queue for signing later</label>
-        }
         <div class="distribute-evenly">
             <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciId })'">Back</button>
-            <button id="submit-button" onclick="RDSigSubmit()">Submit</button>
+            <button id="submit-button" onclick="RDSigSubmit()">Submit Signature Now</button>
+            <button id="queue-rci-button">Queue For Signing Later</button>
         </div>
     }
     else

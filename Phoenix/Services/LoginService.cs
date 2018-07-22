@@ -12,9 +12,9 @@ namespace Phoenix.Services
 
     public class LoginService : ILoginService
     {
-        private readonly IDal Dal;
+        private readonly IDatabaseDal Dal;
 
-        public LoginService(IDal dal)
+        public LoginService(IDatabaseDal dal)
         {
             this.Dal = dal;
         }

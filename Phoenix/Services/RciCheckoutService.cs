@@ -1,4 +1,5 @@
 ﻿using Phoenix.DapperDal;
+using Phoenix.DapperDal.Types;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
@@ -16,11 +17,11 @@ namespace Phoenix.Services
     {
         private RCIContext db;
 
-        private IDal Dal { get; set; }
+        private IDatabaseDal Dal { get; set; }
         
         private IDashboardService DashboardService { get; set; }
 
-        public RciCheckoutService(IDal dal, IDashboardService dashboardService)
+        public RciCheckoutService(IDatabaseDal dal, IDashboardService dashboardService)
         {
             db = new RCIContext();
 
@@ -32,141 +33,9 @@ namespace Phoenix.Services
         /// <summary>
         /// Fetch the rci straight from the db without mapping it to a model.
         /// </summary>
-        public Rci GetBareRciByID(int id)
+        public FullRciViewModel GetRciById(int id)
         {
-            return db.Rci.Find(id);
-        }
-        /// <summary>
-        /// Get a generic checkout rci view model.
-        /// The RA and RD views use this since they don't need the other information
-        /// </summary>
-        public GenericCheckoutViewModel GetGenericCheckoutRciByID(int id)
-        {
-            var query =
-                from r in db.Rci
-                where r.RciID == id
-                select new GenericCheckoutViewModel()
-                {
-                    RciID = r.RciID,
-                    BuildingCode = r.BuildingCode,
-                    RoomNumber = r.RoomNumber,
-                    CheckoutSigRes = r.CheckoutSigRes,
-                    CheckoutSigRA = r.CheckoutSigRA,
-                    CheckoutSigRD = r.CheckoutSigRD,
-                    CheckoutSigRAGordonID = r.CheckoutSigRAGordonID,
-                    CheckoutSigRDGordonID = r.CheckoutSigRDGordonID,
-                    CheckoutSigRAName =
-                                        (from acct in db.Account
-                                         where acct.ID_NUM.Equals(r.CheckoutSigRAGordonID)
-                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
-                    CheckoutSigRDName =
-                                         (from acct in db.Account
-                                          where acct.ID_NUM.Equals(r.CheckoutSigRDGordonID)
-                                          select acct.firstname + " " + acct.lastname).FirstOrDefault(),
-                    RciComponent = r.RciComponent
-
-                };
-
-            return query.FirstOrDefault();
-        }
-        /// <summary>
-        /// Get the rci for a person by RciID
-        /// 
-        /// TODO: Make sure this method works for Alumni Rcis. We should still be able to display them
-        /// </summary>
-        public CheckoutIndividualRoomRciViewModel GetIndividualRoomRciByID(int id)
-        {
-            var query =
-                from r in db.Rci
-                join a in db.Account on r.GordonID equals a.ID_NUM
-                where r.RciID == id
-                select new CheckoutIndividualRoomRciViewModel()
-                {
-                    RciID = r.RciID,
-                    GordonID = r.GordonID,
-                    FirstName = a.firstname,
-                    LastName = a.lastname,
-                    BuildingCode = r.BuildingCode,
-                    RoomNumber = r.RoomNumber,
-                    RciComponent = r.RciComponent,
-                    CheckoutSigRes = r.CheckoutSigRes,
-                    CheckoutSigRA = r.CheckoutSigRA,
-                    CheckoutSigRD = r.CheckoutSigRD,
-                    CheckoutSigRAGordonID = r.CheckoutSigRAGordonID,
-                    CheckoutSigRDGordonID = r.CheckoutSigRDGordonID,
-                    CheckoutSigRAName =
-                                        (from acct in db.Account
-                                         where acct.ID_NUM.Equals(r.CheckoutSigRAGordonID)
-                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
-                    CheckoutSigRDName =
-                                         (from acct in db.Account
-                                          where acct.ID_NUM.Equals(r.CheckoutSigRDGordonID)
-                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
-
-                };
-
-            return query.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Get the rci for a common area by ID
-        /// </summary>
-        public CheckoutCommonAreaRciViewModel GetCommonAreaRciByID(int id)
-        {
-            var currentSession = this.DashboardService.GetCurrentSession();
-
-            var query =
-                from rci in db.Rci
-                where rci.RciID == id
-                select new CheckoutCommonAreaRciViewModel
-                {
-                    RciID = rci.RciID,
-                    BuildingCode = rci.BuildingCode,
-                    RoomNumber = rci.RoomNumber,
-                    RciComponent = rci.RciComponent,
-                    CommonAreaMember =
-                                        (from rm in db.RoomAssign
-                                         join acct in db.Account
-                                         on rm.ID_NUM.ToString() equals acct.ID_NUM
-                                         where rm.SESS_CDE.Trim() == currentSession
-                                         && rm.BLDG_CDE.Trim() == rci.BuildingCode
-                                         && rm.ROOM_CDE.Trim().Contains(rci.RoomNumber)
-                                         select new CommonAreaMember
-                                         {
-                                             GordonID = acct.ID_NUM,
-                                             FirstName = acct.firstname,
-                                             LastName = acct.lastname,
-                                             HasSignedCommonAreaRci =
-                                                            ((from sigs in db.CommonAreaRciSignature
-                                                              where sigs.GordonID == acct.ID_NUM
-                                                              && sigs.RciID == rci.RciID
-                                                              && sigs.SignatureType == "CHECKOUT"
-                                                              select sigs).Any() == true ? true : false),
-                                             Signature =
-                                                             ((from sigs in db.CommonAreaRciSignature
-                                                               where sigs.GordonID == acct.ID_NUM
-                                                               && sigs.RciID == rci.RciID
-                                                               && sigs.SignatureType == "CHECKOUT"
-                                                               select sigs).FirstOrDefault().Signature)
-                                         }).ToList(),
-                    CheckoutSigRes = rci.CheckoutSigRes,
-                    CheckoutSigRA = rci.CheckoutSigRA,
-                    CheckoutSigRD = rci.CheckoutSigRD,
-                    CheckoutSigRAGordonID = rci.CheckoutSigRAGordonID,
-                    CheckoutSigRDGordonID = rci.CheckoutSigRDGordonID,
-                    CheckoutSigRAName =
-                                        (from acct in db.Account
-                                         where acct.ID_NUM.Equals(rci.CheckoutSigRAGordonID)
-                                         select acct.firstname + " " + acct.lastname).FirstOrDefault(),
-                    CheckoutSigRDName =
-                                         (from acct in db.Account
-                                          where acct.ID_NUM.Equals(rci.CheckoutSigRDGordonID)
-                                          select acct.firstname + " " + acct.lastname).FirstOrDefault()
-
-                };
-
-            return query.FirstOrDefault();
-
+            return new FullRciViewModel(this.Dal.FetchRciById(id));
         }
 
         /// <summary>
@@ -389,13 +258,5 @@ namespace Phoenix.Services
 
             return statusCode;
         }
-
-
-        public IEnumerable<string> GetCommonRooms(int id)
-        {
-            var rci = db.Rci.Where(m => m.RciID == id).FirstOrDefault();
-            return rci.RciComponent.GroupBy(x => x.RciComponentDescription).Select(x => x.First()).Select(x => x.RciComponentDescription);
-        }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.ViewModels.CheckoutCommonAreaRciViewModel
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
 @{
     ViewBag.Title = "Checkout";
@@ -18,18 +18,23 @@
 
 <div class="view">
     <h2>@ViewBag.ViewTitle</h2>
-    @foreach (var room in ViewBag.commonRooms)
+
+    @{ var roomComponentsGroupedByArea = Model.RoomComponents.GroupBy(x => x.RoomArea); }
+
+    @foreach (var roomArea in roomComponentsGroupedByArea)
     {
-        <h2>@room</h2>
-        foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room)))
+        <h2>@roomArea.Key</h2>
+
+        foreach (var component in roomArea)
         {
             var visible = "hide";
-            if (component.Damage.Any() || component.Fine.Any())
+
+            if (component.Damages.Any() || component.Fines.Any())
             {
                 visible = "show";
             }
-            <div class="pane component" id="@component.RciComponentID">
-                <h2 class="pane-title div-list-toggle component-title">@component.RciComponentName<i class="material-icons">arrow_drop_down</i></h2>
+            <div class="pane component" id="@component.RoomComponentTypeId">
+                <h2 class="pane-title div-list-toggle component-title">@component.RoomComponentName<i class="material-icons">arrow_drop_down</i></h2>
                 <div class="checkout pane-content @visible">
                     <div class="component-cost">
                         @{
@@ -43,35 +48,35 @@
                         }
                     </div>
                     <div class="div-list">
-                        <div id="img-preview-@component.RciComponentID" class="img-thumbnails">
-                            @foreach (var damage in component.Damage)
+                        <div id="img-preview-@component.RoomComponentTypeId" class="img-thumbnails">
+                            @foreach (var damage in component.Damages)
                             {
-                                if (damage.DamageType.Equals("IMAGE"))
+                                if (damage.ImagePath != null)
                                 {
-                                    <div><img class="uploaded-img thumbnail" src=@damage.DamageImagePath alt="Damage Image Thumbnail"></div>
+                                    <div><img class="uploaded-img thumbnail" src=@damage.ImagePath alt="Damage Image Thumbnail"></div>
                                 }
                             }
                         </div>
-                        <div id="modal-@component.RciComponentID" class="img-modal">
+                        <div id="modal-@component.RoomComponentTypeId" class="img-modal">
                             <div class="modal-header"><i class="material-icons clear">clear</i></div>
                             <div class="modal-content">
-                                @foreach (var damage in component.Damage)
+                                @foreach (var damage in component.Damages)
                                 {
-                                    if (damage.DamageType.Equals("IMAGE"))
+                                    if (damage.ImagePath != null)
                                     {
-                                        <div class="img-slide"><img class="uploaded-img" src=@damage.DamageImagePath alt="Damage Image Enlarged"></div>
+                                        <div class="img-slide"><img class="uploaded-img" src=@damage.ImagePath alt="Damage Image Enlarged"></div>
                                     }
                                 }
                                 <i class="material-icons backward">navigate_before</i>
                                 <i class="material-icons forward">navigate_next</i>
                             </div>
                         </div>
-                        @foreach (var damage in component.Damage)
+                        @foreach (var damage in component.Damages)
                         {
-                            if (damage.DamageDescription != null)
+                            if (damage.Description != null)
                             {
                                 <div class="divAddOn existing-damage-wrapper">
-                                    <p class="divAddOn-field existing-damage">@damage.DamageDescription</p>
+                                    <p class="divAddOn-field existing-damage">@damage.Description</p>
                                 </div>
                             }
                         }
@@ -82,48 +87,48 @@
                     <div class="divAddOn-vert">
                         <div class="divAddOn-vert-field">
                             <div class="divAddOn">
-                                <input class="divAddOn-field adding-fines" type="text" placeholder="Charge" id="text-input-@component.RciComponentID" />
-                                <input class="divAddOn-item adding-fines" type="number" placeholder="$" id="fine-amount-input-@component.RciComponentID" />
+                                <input class="divAddOn-field adding-fines" type="text" placeholder="Charge" id="text-input-@component.RoomComponentTypeId" />
+                                <input class="divAddOn-item adding-fines" type="number" placeholder="$" id="fine-amount-input-@component.RoomComponentTypeId" />
                             </div>
                         </div>
                         <div class="divAddOn-vert-row">
                             <label class="divAddOn-item">Charge to:</label>
-                            <select class="divAddOn-field" id="fine-owner-@component.RciComponentID">
+                            <select class="divAddOn-field" id="fine-owner-@component.RoomComponentTypeId">
                                 <option value="0">All - Split the charge</option>
-                                @foreach (var person in Model.CommonAreaMember)
+                                @foreach (var person in Model.CommonAreaMembers)
                                 {
-                                    <option value="@person.GordonID">@person.FirstName @person.LastName</option>
+                                    <option value="@person.GordonId">@person.FirstName @person.LastName</option>
                                 }
                             </select>
                         </div>
-                        <button class="divAddOn-vert-field" onclick="addFine(@component.RciComponentID);" id="add-@component.RciComponentID">Add</button>
+                        <button class="divAddOn-vert-field" onclick="addFine(@component.RoomComponentTypeId);" id="add-@component.RoomComponentTypeId">Add</button>
                     </div>
                     <div class="horizontal-scroll-wrapper">
-                        <table class="fine-table" id="fine-list-@component.RciComponentID">
+                        <table class="fine-table" id="fine-list-@component.RoomComponentTypeId">
                             <tr>
                                 <th>Charge</th>
                                 <th>Amount ($)</th>
                                 <th>Charge To:</th>
                                 <th>Delete</th>
                             </tr>
-                            @foreach (var fine in component.Fine)
+                            @foreach (var fine in component.Fines)
                             {
                                 <tr>
                                     <td>@fine.Reason</td>
-                                    <td class="center-table-col">@fine.FineAmount</td>
-                                    <td>@Model.CommonAreaMember.Where(x => x.GordonID == fine.GordonID).Select(m => m.FirstName + " " + m.LastName).FirstOrDefault()</td>
-                                    <td class="center-table-col"><i class="material-icons" onclick="deleteFine(event, this, @fine.FineID)">close</i></td>
+                                    <td class="center-table-col">@fine.Amount</td>
+                                    <td>@Model.CommonAreaMembers.Where(x => x.GordonId == fine.GordonId).Select(m => m.FirstName + " " + m.LastName).FirstOrDefault()</td>
+                                    <td class="center-table-col"><i class="material-icons" onclick="deleteFine(event, this, @fine.FineId)">close</i></td>
                                 </tr>
                             }
                         </table>
                     </div>
                 </div>
             </div>
-                                }
-                            }
+        }
+    }
 
 
     <div class="distribute-evenly">
-        <button id="next-button" onclick="window.location.href = '@Url.Action(actionName:"CommonAreaSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciID })'">Next</button>
+        <button id="next-button" onclick="window.location.href = '@Url.Action(actionName:"CommonAreaSignature", controllerName:"RciCheckout", routeValues: new { id = Model.RciId })'">Next</button>
     </div>
 </div>

@@ -12,11 +12,11 @@ namespace Phoenix.Services
 {
     public class DashboardService : IDashboardService
     {
-        private IDal Dal { get; set; }
+        private IDatabaseDal Dal { get; set; }
 
         private ILoggerService Logger { get; set; }
 
-        public DashboardService(IDal dal, ILoggerService logger)
+        public DashboardService(IDatabaseDal dal, ILoggerService logger)
         {
             this.Dal = dal;
 
@@ -93,28 +93,7 @@ namespace Phoenix.Services
 
         public string GetCurrentSession()
         {
-            var today = DateTime.Now;
-
-            var allSessions = this.Dal.FetchSessions();
-
-            var sessions = allSessions
-                .Where(m => m.SessionStartDate.HasValue && m.SessionEndDate.HasValue)
-                .Where(x => today.CompareTo(x.SessionStartDate.Value) >= 0
-                            &&
-                            today.CompareTo(x.SessionEndDate.Value) <= 0); // We are assuming sessions don't overlap
-
-            var currentSession = sessions.FirstOrDefault();
-
-            // If we are within a session.
-            if(currentSession != null)
-            {
-                return currentSession.SessionCode.Trim();
-            }
-            // If the table doesn't have a session for the date we are within
-            else
-            {
-                return allSessions.OrderByDescending(m => m.SessionStartDate).First().SessionCode.Trim();
-            }
+            return this.Dal.FetchCurrentSession();
         } 
 
         /// <summary>

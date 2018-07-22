@@ -31,6 +31,8 @@
         public const string DAMAGE_TYPE_TEXT = "TEXT";
         public const string DAMAGE_TYPE_IMAGE = "IMAGE";
 
+        public const string QUEUED_RCI_SIGNATURES_FOLDER = "QueuedRciSignatures";
+
         public static readonly char[] ROOM_NUMBER_SUFFIXES = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
     }
 }

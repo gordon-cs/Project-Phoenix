@@ -11,7 +11,7 @@ using System.Web;
 
 namespace Phoenix.DapperDal
 {
-    public class DapperDal : IDal
+    public class DapperDal : IDatabaseDal
     {
         public readonly IDbConnectionFactory _dbConnectionFactory;
 
@@ -66,6 +66,11 @@ namespace Phoenix.DapperDal
 
         public void SetRciIsCurrentColumn(IEnumerable<int> rciIds, bool isCurrent)
         {
+            if (rciIds.Count() <= 0)
+            {
+                return;
+            }
+
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var updateSql = "update Rci set IsCurrent = @IsCurrent where RciId in @RciIds";
@@ -76,6 +81,11 @@ namespace Phoenix.DapperDal
 
         public void SetRciCheckinDateColumns(IEnumerable<int> rciIds, DateTime? residentCheckinDate, DateTime? raCheckinDate, DateTime? rdCheckinDate, DateTime? lifeAndConductStatementCheckinDate)
         {
+            if (rciIds.Count() <= 0)
+            {
+                return;
+            }
+
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var updateSql = new StringBuilder();
@@ -100,6 +110,11 @@ namespace Phoenix.DapperDal
 
         public void SetRciCheckinGordonIdColumns(IEnumerable<int> rciIds, string checkinRaGordonId, string checkingRdGordonId)
         {
+            if (rciIds.Count() <= 0)
+            {
+                return;
+            }
+
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var updateSql = new StringBuilder();
@@ -214,6 +229,81 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public Fine FetchFineById(int fineId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = Sql.Fine.FineSelectStatement + "where fine.FineId = @FineId";
+
+                var fine = connection.Query<Fine>(sql, new { FineId = fineId }).Single();
+
+                return fine;
+            }
+        }
+
+        public int CreateNewFine(decimal amount, string gordonId, string reason, int rciId, int roomComponentTypeId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var insertSql = Sql.Fine.FineInsertStatement;
+
+                var inputParams = new
+                {
+                    Amount = amount,
+                    GordonId = gordonId,
+                    Reason = reason,
+                    RciId = rciId,
+                    RoomComponentTypeId = roomComponentTypeId
+                };
+
+                var fineId = connection.Query<int>(insertSql, inputParams).Single();
+
+                return fineId;
+            }
+        }
+
+        public void UpdateFine(int fineId, decimal? amount, string gordonId, string reason, int? rciId, int? roomComponentTypeId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                bool allAreNull = amount == null && gordonId == null && reason == null && rciId == null && roomComponentTypeId == null;
+
+                if (allAreNull) { return; }
+
+                var fieldUpdateStatements = new List<string>();
+
+                if (amount != null) { fieldUpdateStatements.Add("FineAmount = @Amount"); }
+                if (gordonId != null) { fieldUpdateStatements.Add("GordonID = @GordonId"); }
+                if (reason != null) { fieldUpdateStatements.Add("Reason = @Reason"); }
+                if (rciId != null) { fieldUpdateStatements.Add("RciId = @RciId"); }
+                if (roomComponentTypeId != null) { fieldUpdateStatements.Add("RoomComponentTypeId = @RoomComponentTypeId"); };
+
+                var updateSql = $"update Fine set {string.Join(",", fieldUpdateStatements)} where FineID = @FineId";
+
+                var inputParams = new
+                {
+                    Amount = amount,
+                    GordonId = gordonId,
+                    Reason = reason,
+                    RciId = rciId,
+                    RoomComponentTypeId = roomComponentTypeId,
+                    FineId = fineId
+                };
+
+                connection.Execute(updateSql, inputParams);
+            }
+        }
+
+        public void DeleteFine(int fineId)
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var deleteFineSql = "delete from Fine where FineID = @FineId";
+
+                connection.Execute(deleteFineSql, new { FineId = fineId });
+            }
+        }
+
         public CommonAreaRciSignature CreateNewCommonAreaRciSignature(string gordonId, int rciId, DateTime signatureDate, string signatureType)
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
@@ -291,6 +381,29 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public string FetchCurrentSession()
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                // We are not simply selecting the session in which we fall in.
+                // GETDATE() >= SESS_BEGN_DTE makes sure we select a session where the current date is after that session's start date.
+                // RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09') narrows the list of sessions considered to those that are Fall or Spring terms.
+                // The -14 effectively lets us "kick in" sessions earlier than they actually are. That part is important because Residence life 
+                // gets to campus before the fall session officially starts.
+                // This logic is brought to you by Jay Whitehouse of CTS, quite brilliant.
+                
+                var currentSessionSql = @"
+select top 1 SESS_CDE
+from Session
+where GETDATE() >= SESS_BEGN_DTE - 39 and RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09')
+order by SESS_CDE desc
+";
+                var currentSession = connection.Query<string>(currentSessionSql).Single();
+
+                return currentSession.Trim();
+            }
+        }
+
         public BigRci FetchRciById(int rciId)
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
@@ -356,6 +469,23 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public List<SmolRci> FetchRcisById(IEnumerable<int> rciIds)
+        {
+            if (rciIds.Count() <= 0)
+            {
+                return new List<SmolRci>();
+            }
+
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = Sql.Rci.RciSelectstatement + "where rci.RciId in @RciIds";
+
+                var queryResult = connection.Query<SmolRci>(sql, new { RciIds = rciIds });
+
+                return queryResult.ToList();
+            }
+        }
+
         public List<SmolRci> FetchRcisByGordonId(string gordonId)
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
@@ -368,8 +498,13 @@ namespace Phoenix.DapperDal
             }
         }
 
-        public List<SmolRci> FetchRcisByBuilding(List<string> buildings)
+        public List<SmolRci> FetchRcisByBuilding(IEnumerable<string> buildings)
         {
+            if (buildings.Count() <= 0)
+            {
+                return new List<SmolRci>();
+            }
+
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = Sql.Rci.RciSelectstatement +
@@ -381,8 +516,13 @@ namespace Phoenix.DapperDal
             }
         }
 
-        public List<SmolRci> FetchRcisBySessionAndBuilding(List<string> sessions, List<string> buildings)
+        public List<SmolRci> FetchRcisBySessionAndBuilding(IEnumerable<string> sessions, IEnumerable<string> buildings)
         {
+            if (buildings.Count() <= 0 && sessions.Count() <= 0)
+            {
+                return new List<SmolRci>();
+            }
+
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = Sql.Rci.RciSelectstatement +
@@ -394,8 +534,13 @@ namespace Phoenix.DapperDal
             }
         }
 
-        public List<FineSummary> FetchFinesByBuilding(List<string> buildings)
+        public List<FineSummary> FetchFinesByBuilding(IEnumerable<string> buildings)
         {
+            if (buildings.Count() <= 0)
+            {
+                return new List<FineSummary>();
+            }
+
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = Sql.Fine.FineSummarySelectStatement +
