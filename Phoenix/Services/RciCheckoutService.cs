@@ -97,7 +97,7 @@ namespace Phoenix.Services
         /// Send the fine email(s) associated with the corresponding rci
         /// </summary>
         /// <param name="rciID"></param>
-        public Task SendFineEmail(int rciID, string emailAddress, string password)
+        public void SendFineEmail(int rciID, string emailAddress, string password)
         {
             var rci = new FullRciViewModel(this.Dal.FetchRciById(rciID));
 
