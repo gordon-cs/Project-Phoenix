@@ -252,6 +252,40 @@ namespace Phoenix.UnitTests
             this.Dal.DeleteRci(rciId2);
         }
 
+        [Fact]
+        public void UpdateRciCheckoutDateAndGordonIdTests()
+        {
+            var today = DateTime.Now;
+
+            // Setup
+            var rciId1 = this.Dal.CreateNewCommonAreaRci("TAV", "104", "2000");
+            var rciId2 = this.Dal.CreateNewDormRci("50153295", "BRO", "900", "2000");
+
+            //Test 
+            this.Dal.SetRciCheckoutDateColumns(new List<int> { rciId1, rciId2 }, today, today, today);
+            this.Dal.SetRciCheckoutGordonIdColumns(new List<int> { rciId1, rciId2 }, "hello", "hello2");
+
+            // Assert
+            var rci1 = this.Dal.FetchRciById(rciId1);
+            var rci2 = this.Dal.FetchRciById(rciId2);
+
+            Assert.Equal("hello", rci1.CheckoutRaGordonId);
+            Assert.Equal("hello", rci2.CheckoutRaGordonId);
+            Assert.Equal("hello2", rci1.CheckoutRdGordonId);
+            Assert.Equal("hello2", rci2.CheckoutRdGordonId);
+
+            Assert.NotNull(rci1.ResidentCheckoutDate);
+            Assert.NotNull(rci1.RaCheckoutDate);
+            Assert.NotNull(rci1.RdCheckoutDate);
+
+            Assert.NotNull(rci2.ResidentCheckoutDate);
+            Assert.NotNull(rci2.RaCheckoutDate);
+            Assert.NotNull(rci2.RdCheckoutDate);
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId1);
+            this.Dal.DeleteRci(rciId2);
+        }
 
         // Damages
         [Fact]
@@ -308,6 +342,16 @@ namespace Phoenix.UnitTests
 
             Assert.NotNull(results);
             Assert.NotEmpty(results);
+        }
+
+        [Fact]
+        public void FetchBuildingCoddeToBuildingDescription_Success()
+        {
+            var result = this.Dal.FetchBuildingCodeToBuildingNameMap();
+
+            Assert.NotNull(result);
+
+            Assert.Equal("Rider Hall", result["RID"]);
         }
 
         [Fact]
@@ -442,6 +486,33 @@ namespace Phoenix.UnitTests
         }
 
         // Fines
+        [Fact]
+        public void CreateUpdateAndDeleteFine_Tests()
+        {
+            // Setup
+            var rciId = this.Dal.CreateNewDormRci("50153295", "BRO", "1000", "2000");
+
+            // Create a new fine
+            var fineId = this.Dal.CreateNewFine(10, "50153295", "No reason", rciId, 1);
+
+            Assert.NotEqual(0, fineId);
+
+            // Update said damage
+            this.Dal.UpdateFine(fineId, null, null, "A reason", null, 3);
+
+            var fine = this.Dal.FetchFineById(fineId);
+
+            Assert.Equal("A reason", fine.Reason);
+            Assert.Equal("50153295", fine.GordonId);
+            Assert.Equal(rciId, fine.RciId);
+            Assert.Equal(10, fine.Amount);
+            Assert.Equal(3, fine.RoomComponentTypeId);
+
+            // Cleanup
+            this.Dal.DeleteFine(fineId); // Also serves as a test of the fine delete functionality.
+            this.Dal.DeleteRci(rciId);
+        }
+
         [Fact]
         public void FineSummary_Tests()
         {

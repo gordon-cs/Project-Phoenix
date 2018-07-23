@@ -39,10 +39,8 @@ namespace Phoenix.DapperDal
         /// <summary>
         /// Set the value of the checkout gordon id columsn. If a value is null, it is not set.
         /// </summary>
-        /// <param name="rciIds"></param>
-        /// <param name="checkoutRaGordonId"></param>
-        /// <param name="checoutRdGordonId"></param>
         void SetRciCheckoutGordonIdColumns(IEnumerable<int> rciIds, string checkoutRaGordonId, string checoutRdGordonId);
+
         /// <summary>
         /// Delete the rci with the id provided
         /// </summary>
@@ -111,6 +109,7 @@ namespace Phoenix.DapperDal
 
         List<string> FetchBuildingCodes();
         List<ResidentHallGrouping> FetchBuildingMap();
+        Dictionary<string, string> FetchBuildingCodeToBuildingNameMap();
 
         Room FetchRoom(string buildingCode, string roomNumber);
 

@@ -27,6 +27,13 @@ namespace Phoenix.Models.ViewModels
             this.RoomNumber = rci.RoomNumber;
 
             this.QueuedForSigning = isQueued;
+
+            // Smooth out how the common area rcis are displayed
+            if (rci.GordonId == null)
+            {
+                this.FirstName = "Common Area";
+                this.LastName = "Rci";
+            }
         }
     }
 }

@@ -133,6 +133,58 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public void SetRciCheckoutDateColumns(IEnumerable<int> rciIds, DateTime? residentCheckoutDate, DateTime? raCheckoutDate, DateTime? rdCheckoutDate)
+        {
+            if (rciIds.Count() <= 0)
+            {
+                return;
+            }
+
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var updateSql = new StringBuilder();
+
+                if (residentCheckoutDate != null) { updateSql.AppendLine($"update Rci set CheckoutSigRes = @ResidentCheckoutDate where RciId in @RciIds"); }
+                if (raCheckoutDate != null) { updateSql.AppendLine($"update Rci set CheckoutSigRA = @RaCheckoutDate where RciId in @RciIds"); }
+                if (rdCheckoutDate != null) { updateSql.AppendLine($"update Rci set CheckoutSigRD = @RdCheckoutDate where RciId in @RciIds"); }
+
+                var inputParams = new
+                {
+                    ResidentCheckoutDate = residentCheckoutDate,
+                    RaCheckoutDate = raCheckoutDate,
+                    RdCheckoutDate = rdCheckoutDate,
+                    RciIds = rciIds
+                };
+
+                connection.Execute(updateSql.ToString(), inputParams);
+            }
+        }
+
+        public void SetRciCheckoutGordonIdColumns(IEnumerable<int> rciIds, string checkoutRaGordonId, string checoutRdGordonId)
+        {
+            if (rciIds.Count() <= 0)
+            {
+                return;
+            }
+
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var updateSql = new StringBuilder();
+
+                if (checkoutRaGordonId != null) { updateSql.AppendLine("update Rci set CheckoutSigRAGordonID = @CheckoutRaGordonId where RciId in @RciIds"); }
+                if (checoutRdGordonId != null) { updateSql.AppendLine("update Rci set CheckoutSigRDGordonID = @CheckoutRdGordonId where RciId in @RciIds"); }
+
+                var inputParams = new
+                {
+                    CheckoutRaGordonId = checkoutRaGordonId,
+                    CheckoutRdGordonId = checoutRdGordonId,
+                    RciIds = rciIds
+                };
+
+                connection.Execute(updateSql.ToString(), inputParams);
+            }
+        }
+
         public void DeleteRci(int rciId)
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
@@ -343,6 +395,16 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public List<string> FetchBuildingCodes()
+        {
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var sql = @"select BuildingCode from BuildingAssign group by BuildingCode";
+
+                return connection.Query<string>(sql).ToList();
+            }
+        }
+
         public List<ResidentHallGrouping> FetchBuildingMap()
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
@@ -357,13 +419,15 @@ namespace Phoenix.DapperDal
             }
         }
 
-        public List<string> FetchBuildingCodes()
+        public Dictionary<string, string> FetchBuildingCodeToBuildingNameMap()
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
-                var sql = @"select BuildingCode from BuildingAssign group by BuildingCode";
+                var sql = Sql.Room.BuildingCodeToBuildingMapSelectStatement;
 
-                return connection.Query<string>(sql).ToList();
+                var map = connection.Query<Building>(sql);
+
+                return map.ToDictionary(x => x.BuildingCode.Trim(), y => y.BuildingDescription.Trim());
             }
         }
 

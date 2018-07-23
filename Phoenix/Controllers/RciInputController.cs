@@ -219,9 +219,9 @@ namespace Phoenix.Controllers
         /// <returns>Redirect to dashboard if signed or checked</returns>
         [RD]
         [HttpPost]
-        public ActionResult SaveSigRD(string rciSig, int id, bool isChecked)
+        public ActionResult SaveSigRD(string rciSig, int id)
         {
-            if ((rciSig == null || rciSig.Trim() == "") && !isChecked)
+            if (string.IsNullOrWhiteSpace(rciSig))
             {
                 return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }

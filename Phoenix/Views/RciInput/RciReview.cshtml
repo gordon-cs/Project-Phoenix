@@ -35,7 +35,7 @@
             foreach (var roomArea in roomComponentsGroupedByArea)
             {
                 <h2>@roomArea.Key</h2>
-                foreach (var component in Model.RoomComponents.Where(x => x.Damages.Any()))
+                foreach (var component in roomArea.Where(x => x.Damages.Any()))
                 {
                     @Html.Partial("RciReviewComponent", component);
                 }

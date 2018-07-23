@@ -15,16 +15,12 @@ namespace Phoenix.Services
 {
     public class RciCheckoutService : IRciCheckoutService
     {
-        private RCIContext db;
-
         private IDatabaseDal Dal { get; set; }
         
         private IDashboardService DashboardService { get; set; }
 
         public RciCheckoutService(IDatabaseDal dal, IDashboardService dashboardService)
         {
-            db = new RCIContext();
-
             this.Dal = dal;
 
             this.DashboardService = dashboardService;
@@ -43,10 +39,7 @@ namespace Phoenix.Services
         /// </summary>
         public int AddFine(RciNewFineViewModel newFine)
         {
-            var obj = new Fine { RciComponentID = newFine.ComponentID, Reason = newFine.FineReason, FineAmount = newFine.FineAmount, GordonID = newFine.FineOwner };
-            db.Fine.Add(obj);
-            db.SaveChanges();
-            return obj.FineID;
+            return this.Dal.CreateNewFine(newFine.FineAmount, newFine.FineOwner, newFine.FineReason, newFine.RciId, newFine.RoomComponentTypeId);
         }
 
         /// <summary>
@@ -54,9 +47,7 @@ namespace Phoenix.Services
         /// </summary>
         public void RemoveFine(int fineID)
         {
-            var fine = db.Fine.Find(fineID);
-            db.Fine.Remove(fine);
-            db.SaveChanges();
+            this.Dal.DeleteFine(fineID);
         }
 
         /// <summary>
@@ -65,27 +56,14 @@ namespace Phoenix.Services
         /// </summary>
         public void CheckoutCommonAreaMemberSignRci(int rciID, string gordonID)
         {
-            var signature = new CommonAreaRciSignature
-            {
-                RciID = rciID,
-                GordonID = gordonID,
-                Signature = DateTime.Now,
-                SignatureType = "CHECKOUT"
-            };
-            db.CommonAreaRciSignature.Add(signature);
-            db.SaveChanges();
+            this.Dal.CreateNewCommonAreaRciSignature(gordonID, rciID, DateTime.Now, Constants.CHECKOUT);
         }
         /// <summary>
         /// Sign the resident portion of the rci during the checkout process
         /// </summary>
         public void CheckoutResidentSignRci(int rciID)
         {
-            var rci = db.Rci.Find(rciID);
-
-            rci.CheckoutSigRes = System.DateTime.Today;
-
-            db.SaveChanges();
-
+            this.Dal.SetRciCheckoutDateColumns(new List<int> { rciID }, DateTime.Today, null, null);
         }
 
         /// <summary>
@@ -93,13 +71,8 @@ namespace Phoenix.Services
         /// </summary>
         public void CheckoutRASignRci(int rciID, string raGordonID)
         {
-            var rci = db.Rci.Find(rciID);
-
-            rci.CheckoutSigRA = System.DateTime.Today;
-            rci.CheckoutSigRAGordonID = raGordonID;
-
-            db.SaveChanges();
-
+            this.Dal.SetRciCheckoutDateColumns(new List<int> { rciID }, null, DateTime.Today, null);
+            this.Dal.SetRciCheckoutGordonIdColumns(new List<int> { rciID }, raGordonID, null);
         }
 
         /// <summary>
@@ -108,13 +81,9 @@ namespace Phoenix.Services
         public bool CheckoutRDSignRci(int rciID, string rdGordonID)
         {
             try
-            {
-                var rci = db.Rci.Find(rciID);
-
-                rci.CheckoutSigRD = System.DateTime.Today;
-                rci.CheckoutSigRDGordonID = rdGordonID;
-
-                db.SaveChanges();
+            {  
+                this.Dal.SetRciCheckoutDateColumns(new List<int> { rciID }, null, null, DateTime.Today);
+                this.Dal.SetRciCheckoutGordonIdColumns(new List<int> { rciID }, null, rdGordonID);
             }
             catch
             {
@@ -122,38 +91,38 @@ namespace Phoenix.Services
             }
 
             return true;
-
         }
 
         /// <summary>
         /// Send the fine email(s) associated with the corresponding rci
         /// </summary>
         /// <param name="rciID"></param>
-        public void SendFineEmail(int rciID, string emailAddress, string password)
+        public Task SendFineEmail(int rciID, string emailAddress, string password)
         {
-            var rci = db.Rci.Find(rciID);
+            var rci = new FullRciViewModel(this.Dal.FetchRciById(rciID));
+
             var fineEmailDictionary = new Dictionary<string, Dictionary<string, string>>();
 
-            foreach (var component in rci.RciComponent)
+            foreach (var component in rci.RoomComponents)
             {
-                foreach (var fine in component.Fine.Where(x => x.FineAmount > 0))// Work requests get input as $0 charges. We don't want to confuse students by emailng them $0 charges.
+                foreach (var fine in component.Fines.Where(x => x.Amount > 0))// Work requests get input as $0 charges. We don't want to confuse students by emailng them $0 charges.
                 {
-                    if (fineEmailDictionary.ContainsKey(fine.GordonID))
+                    if (fineEmailDictionary.ContainsKey(fine.GordonId))
                     {
-                        fineEmailDictionary[fine.GordonID]["body"] += "<p>" + component.RciComponentName + " - " + fine.Reason + ": $" + fine.FineAmount + "</p>";
-                        var total = decimal.Parse(fineEmailDictionary[fine.GordonID]["total"]);
-                        total = total + fine.FineAmount;
-                        fineEmailDictionary[fine.GordonID]["total"] = total.ToString();
+                        fineEmailDictionary[fine.GordonId]["body"] += "<p>" + component.RoomComponentName + " - " + fine.Reason + ": $" + fine.Amount + "</p>";
+                        var total = decimal.Parse(fineEmailDictionary[fine.GordonId]["total"]);
+                        total = total + fine.Amount;
+                        fineEmailDictionary[fine.GordonId]["total"] = total.ToString();
                     }
                     else
                     {
 
                         var newFineEmailContents = new Dictionary<string, string>
                         {
-                            {"body",  "<p>" + component.RciComponentName + " - " + fine.Reason + ": $" + fine.FineAmount + "</p>" },
-                            {"total", fine.FineAmount.ToString() }
+                            {"body",  "<p>" + component.RoomComponentName + " - " + fine.Reason + ": $" + fine.Amount + "</p>" },
+                            {"total", fine.Amount.ToString() }
                         };
-                        fineEmailDictionary.Add(fine.GordonID, newFineEmailContents);
+                        fineEmailDictionary.Add(fine.GordonId, newFineEmailContents);
 
                     }
                 }
@@ -173,11 +142,11 @@ namespace Phoenix.Services
                 foreach (KeyValuePair<string, Dictionary<string, string>> entry in fineEmailDictionary)
                 {
                     var message = new MailMessage();
-                    var recepientAccount = db.Account.Where(r => r.ID_NUM.Equals(entry.Key)).FirstOrDefault();
-                    var to = recepientAccount.email;
+                    var recepientAccount = this.Dal.FetchAccountByGordonId(entry.Key);
+                    var to = recepientAccount.Email;
                     var from = emailAddress;
                     var today = DateTime.Now.ToLongDateString();
-                    var recepientName = recepientAccount.firstname;
+                    var recepientName = recepientAccount.FirstName;
                     message.To.Add(new MailAddress(to));
                     message.From = new MailAddress(from);
                     message.Subject = "Checkout Fines - " + rci.BuildingCode + " " + rci.RoomNumber;
@@ -193,15 +162,15 @@ namespace Phoenix.Services
             }
         }
 
-        public void WorkRequestDamages(List<string> workRequests, string username, string password, int rciID, string phoneNumber)
+        public void WorkRequestDamages(List<string> workRequests, string username, string password, string gordonId, int rciID, string phoneNumber)
         {
             // Go.gordon.edu can be accessed using Basic authentication. I found this out via trial and error xD
             string authenticationInfo = username + ":" + password;
             authenticationInfo = Convert.ToBase64String(Encoding.Default.GetBytes(authenticationInfo));
 
-            var acct = db.Account.Where(x => x.AD_Username.Equals(username)).FirstOrDefault();
-            var rci = db.Rci.Find(rciID);
-            var buildingName = db.Room.Where(x => x.BLDG_CDE.Equals(rci.BuildingCode)).First().BUILDING_DESC;
+            var acct = this.Dal.FetchAccountByGordonId(gordonId);
+            var rci = this.Dal.FetchRciById(rciID);
+            var buildingName = this.Dal.FetchBuildingCodeToBuildingNameMap()[rci.BuildingCode];
 
             // Set up the Http client
             using (var client = new HttpClient())
@@ -213,7 +182,7 @@ namespace Phoenix.Services
 
                 foreach (var request in workRequests)
                 {
-                    PostWorkRequest(client, request, acct.AD_Username, buildingName, rci.RoomNumber, phoneNumber, acct.firstname, acct.lastname, acct.ID_NUM);
+                    PostWorkRequest(client, request, acct.AdUsername, buildingName, rci.RoomNumber, phoneNumber, acct.FirstName, acct.LastName, acct.GordonId);
                 }
             }
         }
@@ -228,28 +197,30 @@ namespace Phoenix.Services
                                                                         string lastname,
                                                                         string gordonID)
         {
-            var data = new List<KeyValuePair<string, string>>();
-            data.Add(new KeyValuePair<string, string>("submitted_by", ADUsername));
-            data.Add(new KeyValuePair<string, string>("ad_username", ADUsername));
-            data.Add(new KeyValuePair<string, string>("building", fullBuildingName));
-            data.Add(new KeyValuePair<string, string>("location", roomNumber));
-            data.Add(new KeyValuePair<string, string>("strdescription", workRequest));
-            data.Add(new KeyValuePair<string, string>("phone", phoneNumber));
-            data.Add(new KeyValuePair<string, string>("fname", firstname));
-            data.Add(new KeyValuePair<string, string>("lname", lastname));
-            data.Add(new KeyValuePair<string, string>("gordon_id", gordonID));
-            data.Add(new KeyValuePair<string, string>("m_date_needed", "1"));
-            data.Add(new KeyValuePair<string, string>("d_date_needed", "1"));
-            data.Add(new KeyValuePair<string, string>("y_date_needed", "1900"));
-            data.Add(new KeyValuePair<string, string>("hr_date_needed", "00"));
-            data.Add(new KeyValuePair<string, string>("mm_date_needed", "00"));
-            data.Add(new KeyValuePair<string, string>("tt_date_needed", "AM"));
-            data.Add(new KeyValuePair<string, string>("m_date_to", "1"));
-            data.Add(new KeyValuePair<string, string>("d_date_to", "1"));
-            data.Add(new KeyValuePair<string, string>("y_date_to", "1900"));
-            data.Add(new KeyValuePair<string, string>("hr_date_to", "00"));
-            data.Add(new KeyValuePair<string, string>("mm_date_to", "00"));
-            data.Add(new KeyValuePair<string, string>("tt_date_to", "AM"));
+            var data = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("submitted_by", ADUsername),
+                new KeyValuePair<string, string>("ad_username", ADUsername),
+                new KeyValuePair<string, string>("building", fullBuildingName),
+                new KeyValuePair<string, string>("location", roomNumber),
+                new KeyValuePair<string, string>("strdescription", workRequest),
+                new KeyValuePair<string, string>("phone", phoneNumber),
+                new KeyValuePair<string, string>("fname", firstname),
+                new KeyValuePair<string, string>("lname", lastname),
+                new KeyValuePair<string, string>("gordon_id", gordonID),
+                new KeyValuePair<string, string>("m_date_needed", "1"),
+                new KeyValuePair<string, string>("d_date_needed", "1"),
+                new KeyValuePair<string, string>("y_date_needed", "1900"),
+                new KeyValuePair<string, string>("hr_date_needed", "00"),
+                new KeyValuePair<string, string>("mm_date_needed", "00"),
+                new KeyValuePair<string, string>("tt_date_needed", "AM"),
+                new KeyValuePair<string, string>("m_date_to", "1"),
+                new KeyValuePair<string, string>("d_date_to", "1"),
+                new KeyValuePair<string, string>("y_date_to", "1900"),
+                new KeyValuePair<string, string>("hr_date_to", "00"),
+                new KeyValuePair<string, string>("mm_date_to", "00"),
+                new KeyValuePair<string, string>("tt_date_to", "AM")
+            };
 
             var content = new FormUrlEncodedContent(data);
 

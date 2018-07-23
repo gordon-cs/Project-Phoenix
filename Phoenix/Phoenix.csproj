@@ -54,31 +54,11 @@
       <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="jose-jwt, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jose-jwt.2.1.0\lib\net461\jose-jwt.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Logging.1.1.0\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -168,7 +148,6 @@
     <Compile Include="Controllers\ManageRciComponentController.cs" />
     <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RciCheckoutController.cs" />
-    <Compile Include="Controllers\RciComponentReassignController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
     <Compile Include="DapperDal\Sql\CommonAreaRciSignature.cs" />
     <Compile Include="DapperDal\Sql\Damage.cs" />
@@ -182,6 +161,7 @@
     <Compile Include="DapperDal\Sql\RoomAssign.cs" />
     <Compile Include="DapperDal\Types\Account.cs" />
     <Compile Include="DapperDal\Types\BigRci.cs" />
+    <Compile Include="DapperDal\Types\Building.cs" />
     <Compile Include="DapperDal\Types\CommonAreaRciSignature.cs" />
     <Compile Include="DapperDal\Types\Damage.cs" />
     <Compile Include="DapperDal\DapperDal.cs" />
@@ -209,12 +189,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\RoomAssign.cs" />
     <Compile Include="Models\ViewModels\AdminDashboardViewModel.cs" />
     <Compile Include="Models\ViewModels\FullRciViewModel.cs" />
     <Compile Include="Models\ViewModels\HomeRciViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
-    <Compile Include="Models\ViewModels\PotentialRciReassignTarget.cs" />
-    <Compile Include="Models\ViewModels\RciReassignViewModel.cs" />
+    <Compile Include="Models\ViewModels\RciNewFineViewModel.cs" />
     <Compile Include="Models\ViewModels\SearchResultsViewModel.cs" />
     <Compile Include="Models\ViewModels\SignAllRDViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -235,7 +215,6 @@
     <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\RciBatchService.cs" />
-    <Compile Include="Services\RciComponentReassignService.cs" />
     <Compile Include="Services\RciInputService.cs" />
     <Compile Include="Services\RciCheckoutService.cs" />
     <Compile Include="Utilities\Constants.cs" />
@@ -333,7 +312,6 @@
     <Content Include="Views\AdminDashboard\SearchRcis.cshtml" />
     <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
     <Content Include="Views\Dashboard\ArchiveRcis.cshtml" />
-    <Content Include="Views\ManageRciComponent\Index.cshtml" />
     <None Include="Web.Base.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

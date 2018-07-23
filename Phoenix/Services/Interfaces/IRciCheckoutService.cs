@@ -16,6 +16,6 @@ namespace Phoenix.Services
         void CheckoutResidentSignRci(int rciID);
         HttpStatusCode PostWorkRequest(HttpClient client, string workRequest, string ADUsername, string fullBuildingName, string roomNumber, string phoneNumber, string firstname, string lastname, string gordonID);
         void SendFineEmail(int rciID, string emailAddress, string password);
-        void WorkRequestDamages(List<string> workRequests, string username, string password, int rciID, string phoneNumber);
+        void WorkRequestDamages(List<string> workRequests, string username, string password, string gordonId, int rciID, string phoneNumber);
     }
 }

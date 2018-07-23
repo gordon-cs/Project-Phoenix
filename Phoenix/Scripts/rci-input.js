@@ -219,7 +219,6 @@ function RASigSubmit() {
 
 function RDSigSubmit() {
     var rciSig = "";
-    var isChecked = $("#rci-sig-checkbox").prop("checked");
     if ($("#rci-sig").attr("disabled") !== "disabled") {
         rciSig = $("#rci-sig").val();
     }
@@ -228,7 +227,7 @@ function RDSigSubmit() {
     $.ajax({
         sync: false,
         url: "/RciInput/SaveSigRD",
-        data: { rciSig: rciSig, id: id, isChecked: isChecked },
+        data: { rciSig: rciSig, id: id},
         method: "POST",
         success: function (data) {
             window.location.href = data;

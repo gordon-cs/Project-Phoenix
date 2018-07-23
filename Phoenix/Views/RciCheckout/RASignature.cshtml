@@ -21,7 +21,7 @@
             @using (Html.BeginForm(actionName: "RASignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
-                    @if (Model.CheckoutSigRA == null)
+                    @if (Model.RaCheckoutDate == null)
                     {
                         <p class="padded-paragraph-vertical">I, @ViewBag.ExpectedSignature, hereby agree that I have assessed preliminary charges to the best of my ability. I understand that these charges are subject to change at the discretion of the Resident Director.</p>
                         <div class="divAddOn">
@@ -32,8 +32,8 @@
                     {
                         <p class="padded-paragraph-vertical">This RCI has been signed by the Resident Advisor/Apartment Coordinator</p>
                         <div class="divAddOn">
-                            <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.CheckoutSigRAName" />
-                            <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRA.Value.ToString("yyyy-MM-dd")" />
+                            <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@Model.CheckoutRaAccount.FirstName @Model.CheckoutRaAccount.LastName" />
+                            <input class="divAddOn-item" type="text" disabled value="@Model.RaCheckoutDate.Value.ToString("yyyy-MM-dd")" />
                         </div>
                     }
                 </div>

@@ -50,7 +50,7 @@ namespace Phoenix.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("RciReview", new { id = id } );
+                    return RedirectToAction("RciReview", new { id } );
                 }
             }
             else // An individual room
@@ -61,7 +61,7 @@ namespace Phoenix.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("RciReview", new { id = id });
+                    return RedirectToAction("RciReview", new { id });
                 }
                 
             }
@@ -166,13 +166,13 @@ namespace Phoenix.Controllers
 
             if (everyoneHasSigned) // Already signed
             {
-                return RedirectToAction("RASignature", new { id = id });
+                return RedirectToAction("RASignature", new { id });
             }
 
             // Not yet signed
             foreach (var member in rci.CommonAreaMembers)
             {
-                var expectedSignature = member.FirstName.ToLower() + " " + member.LastName.ToLower();
+                var expectedSignature = $"{member.FirstName} {member.LastName}".ToLower().Trim();
 
                 if (signatures.Contains(expectedSignature))
                 {
@@ -210,7 +210,7 @@ namespace Phoenix.Controllers
             {
                 this.CheckoutService.CheckoutResidentSignRci(id); // This is set once everybody has signed
 
-                return RedirectToAction("RASignature", new { id = id });
+                return RedirectToAction("RASignature", new { id });
             }
             else
             {
@@ -243,7 +243,7 @@ namespace Phoenix.Controllers
 
             if(rci.ResidentCheckoutDate != null) // Already signed
             {
-                return RedirectToAction("RASignature", new { id = id });
+                return RedirectToAction("RASignature", new { id });
             }
 
             // Not yet signed.
@@ -258,7 +258,7 @@ namespace Phoenix.Controllers
 
             this.CheckoutService.CheckoutResidentSignRci(rci.RciId);
 
-            return RedirectToAction("RASignature", new { id = id });
+            return RedirectToAction("RASignature", new { id });
         }
 
 
@@ -291,7 +291,7 @@ namespace Phoenix.Controllers
 
             if(rci.RaCheckoutDate != null) // Already signed
             {
-                return RedirectToAction("RDSignature", new { id = id });
+                return RedirectToAction("RDSignature", new { id });
             }
 
             var signatureMatch = (((string)TempData["user"]).ToLower()).Equals(signature.ToLower());
@@ -307,7 +307,7 @@ namespace Phoenix.Controllers
 
             this.CheckoutService.CheckoutRASignRci(rci.RciId, (string)TempData["id"]);
 
-            return RedirectToAction("RDSignature", new { id = id });
+            return RedirectToAction("RDSignature", new { id });
         }
 
         /// <summary>
@@ -349,7 +349,10 @@ namespace Phoenix.Controllers
                 username = username.Remove(username.IndexOf('@'));
             }
 
-            var isValidLogin = this.LoginService.IsValidUser(username, password, this.LoginService.ConnectToADServer());
+            var adServer = this.LoginService.ConnectToADServer();
+
+            var isValidLogin = this.LoginService.IsValidUser(username, password, adServer);
+
             if (!isValidLogin) // If this is not a valid user.
             {
                 ViewBag.RDName = (string)TempData["user"];
@@ -358,10 +361,12 @@ namespace Phoenix.Controllers
 
                 ViewBag.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
 
-                ViewBag.WorkRequests = workRequest == null ? new List<string>() : workRequest ; // Send back the list of work requests they wanted.
+                ViewBag.WorkRequests = workRequest ?? new List<string>(); // Send back the list of work requests they wanted.
 
                 return View(rci);
             }
+
+            var gordonId = this.LoginService.FindUser(username, adServer).EmployeeId;
 
             // If they are submitting work requests, check to see that they provided a phone number
             if(workRequest != null && workRequest.Count > 0 && (phoneNumber == null || phoneNumber.Trim().Equals("")) )
@@ -387,7 +392,7 @@ namespace Phoenix.Controllers
 
                 if(workRequest != null)
                 {
-                    this.CheckoutService.WorkRequestDamages(workRequest, username, password, id, phoneNumber);
+                    this.CheckoutService.WorkRequestDamages(workRequest, username, password, gordonId, id, phoneNumber);
                 }
             }
             else
@@ -396,7 +401,7 @@ namespace Phoenix.Controllers
 
                 ViewBag.ExpectedUsername = username;
 
-                ViewBag.WorkRequests = workRequest == null ? new List<string>() : workRequest;
+                ViewBag.WorkRequests = workRequest ?? new List<string>();
 
                 ViewBag.ErrorMessage = "There was a problem signing this rci. No emails or work requests have been sent. Please try again.";
 
