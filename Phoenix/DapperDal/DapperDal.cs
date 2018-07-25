@@ -459,7 +459,7 @@ namespace Phoenix.DapperDal
                 var currentSessionSql = @"
 select top 1 SESS_CDE
 from Session
-where GETDATE() >= SESS_BEGN_DTE - 39 and RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09')
+where GETDATE() >= SESS_BEGN_DTE - 14 and RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09')
 order by SESS_CDE desc
 ";
                 var currentSession = connection.Query<string>(currentSessionSql).Single();
