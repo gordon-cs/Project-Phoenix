@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.ViewModels.CheckoutCommonAreaRciViewModel
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
 @{
     ViewBag.Title = "Checkout";
@@ -24,14 +24,14 @@
             @using (Html.BeginForm(actionName: "CommonAreaSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
                 <div>
-                    @foreach (var person in Model.CommonAreaMember)
+                    @foreach (var person in Model.CommonAreaMembers)
                     {
-                        if (person.HasSignedCommonAreaRci)
+                        if (person.CheckoutDate != null)
                         {
                             <p>This Common Area RCI has been signed by the resident @person.FirstName @person.LastName</p>
                             <div class="divAddOn">
                                 <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@person.FirstName @person.LastName" />
-                                <input class="divAddOn-item" type="text" disabled value="@person.Signature.Value.ToString("yyyy-MM-dd")" />
+                                <input class="divAddOn-item" type="text" disabled value="@person.CheckoutDate.Value.ToString("yyyy-MM-dd")" />
                             </div>
                         }
                         else

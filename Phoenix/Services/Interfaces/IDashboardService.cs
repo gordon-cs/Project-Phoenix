@@ -13,8 +13,6 @@ namespace Phoenix.Services
         IEnumerable<HomeRciViewModel> GetCurrentRcisForResident(string gordonId);
         IEnumerable<HomeRciViewModel> GetCurrentCommonAreaRcisForRoom(string currentRoom, string building);
         void ArchiveRcis(List<int> rciIds);
-        List<RciComponent> CreateRciComponents(XDocument document, int rciId, string roomType, string buildingCode);
-        Rci CreateRciObject(string buildingCode, string roomNumber, string sessionCode, string idNumber = null);
         string GenerateFinesSpreadsheet(List<string> buildingCodes);
         string GetCurrentSession();
         Dictionary<string, Dictionary<string, ActionResult>> GetRciRouteDictionary(int rciID);

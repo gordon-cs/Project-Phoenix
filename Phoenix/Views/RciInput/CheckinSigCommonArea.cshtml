@@ -1,16 +1,16 @@
-﻿@model Phoenix.Models.ViewModels.CheckinCommonAreaRciViewModel
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
-<div id="rci-@Model.RciID">
+<div id="rci-@Model.RciId">
     <h2>Signature</h2>
-    @foreach (var member in Model.CommonAreaMember)
+    @foreach (var member in Model.CommonAreaMembers)
             {
-                if (member.HasSignedCommonAreaRci)
+                if (member.CheckinDate != null)
                 {
             <div class="pane">
                 <p>This Common Area RCI has been signed by the resident @member.FirstName @member.LastName</p>
                 <div class="divAddOn">
                     <input class="divAddOn-field" type="text" readonly="readonly" value="@member.FirstName @member.LastName" />
-                    <input class="divAddOn-item" type="text" disabled value="@member.Signature" />
+                    <input class="divAddOn-item" type="text" disabled value="@member.CheckinDate" />
                 </div>
             </div>
         }
@@ -19,7 +19,7 @@
             <div class="pane">
                 <p>I, @member.FirstName @member.LastName, confirm, by signing below that I have recorded  all the pre-existing damages to the room in this RCI to the best of my ability. I am responsible for any substantial damage found in the room, but absent from this RCI.</p>
                 <div class="divAddOn">
-                    @if (member.GordonID == ViewBag.GordonID)
+                    @if (member.GordonId == ViewBag.GordonID)
                     {
                         <input data-selenium-id="signature-field" id="rci-sig" class="divAddOn-field" type="text" placeholder="@member.FirstName @member.LastName" />
                     }

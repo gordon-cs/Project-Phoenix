@@ -2,17 +2,16 @@
 
 /* Receive a photo from the <input> element, add it to the DOM, and save it to the db
 /* Helpful link: https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications */
-function uploadPhoto() {
+function uploadPhoto(fileUploadElement, rciId, roomComponentTypeId) {
     console.log("reached uploadPhoto");
-    console.log(this.files);
+    console.log(fileUploadElement.files);
     window.URL = window.URL || window.webkitURL;
-    let photoList = this.files;
-    let rciComponentId = this.id.slice(10);
+    let photoList = fileUploadElement.files;
     let fileQuantity = photoList.length;
     let fileType = /^image\//;
 
     if (!fileQuantity) {
-        let emptyPreviewArea = $("#no-images-message-" + rciComponentId);
+        let emptyPreviewArea = $("#no-images-message-" + roomComponentTypeId);
         emptyPreviewArea.innerHtml = "<p>No pictures uploaded</p>";
     }
     else {
@@ -21,14 +20,14 @@ function uploadPhoto() {
     // Make sure the file is a picture
             if (!fileType.test(file.type)) {
                 console.log(file.type);
-                alert("Oops! Please select an image file of type .jpg or .png.")
+                alert("Oops! Please select an image file of type .jpg or .png.");
             }
             else if (file.size > 10000000) { // Photo size > 10 MB
-                alert("Aw man, we're sorry! That photo is too big. Please use one that is 10 MB or smaller.")
+                alert("Aw man, we're sorry! That photo is too big. Please use one that is 10 MB or smaller.");
             }
             else {
                 console.log("Photo" + i + "size: " + file.size);
-                var response = savePhoto(file, rciComponentId);
+                var response = savePhoto(file, rciId, roomComponentTypeId);
                 console.log(response);
             }
         }
@@ -36,10 +35,10 @@ function uploadPhoto() {
 }
 
 // Add the photo to the DOM, including the modal and buttons
-function addPhotoToDOM(file, savedPhotoData, rciComponentId)
+function addPhotoToDOM(file, savedPhotoData, roomComponentTypeId)
 {
-    let previewArea = $("#img-preview-" + rciComponentId);
-    let modalArea = $("#modal-" + rciComponentId).find(".modal-content");
+    let previewArea = $("#img-preview-" + roomComponentTypeId);
+    let modalArea = $("#modal-" + roomComponentTypeId).find(".modal-content");
 
     let img = document.createElement("img");
     img.classList.add("uploaded-img");
@@ -47,7 +46,7 @@ function addPhotoToDOM(file, savedPhotoData, rciComponentId)
     img.src = window.URL.createObjectURL(file); // I am not entirely sure how this works
     img.onload = function () {
         window.URL.revokeObjectURL(this.src);
-    }
+    };
     img.alt = "Damage Image Thumbnail";
 
     // Add the delete icon and wrap it in div for css purposs
@@ -71,7 +70,7 @@ function addPhotoToDOM(file, savedPhotoData, rciComponentId)
     slideImg.src = window.URL.createObjectURL(file);
     slideImg.onload = function () {
         window.URL.revokeObjectURL(this.src);
-    }
+    };
     let $newWrapperDiv = $("<div class='img-slide'></div>");
     $newWrapperDiv.append(slideImg);
     modalArea.append($newWrapperDiv);
@@ -82,20 +81,24 @@ function addPhotoToDOM(file, savedPhotoData, rciComponentId)
 }
 
 // Send the uploaded photo to the server via AJAX
-function savePhoto(photoFile, rciComponentId) {
+function savePhoto(photoFile, rciId, roomComponentTypeId) {
     let formData = new FormData();
-    formData.append('file', photoFile, rciComponentId);
+    formData.append('file', photoFile, roomComponentTypeId);
+    formData.append('rciId', rciId);
+    formData.append('roomComponentTypeid', roomComponentTypeId);
+
+    console.log(parseInt(rciId));
 
     $.ajax({
         url: '/RciInput/SavePhoto',
         data: formData,
         method: "POST",
         processData: false,
-        contentType: false,
+        contentType: false
     }).done(function (data) {
         // the ajax call returns the damage id, so here we pass the image's id (as data) to be used in the DOM
         console.log(data);
-        addPhotoToDOM(photoFile, data, rciComponentId)
+        addPhotoToDOM(photoFile, data, roomComponentTypeId);
     }).fail(function (jqXHR, textStatus, errorThrown) {
         alert("Oops! We were unable to save that image to the database.");
         console.log("Status: " + jqXHR.status);
@@ -129,7 +132,6 @@ function deletePhoto(damageId) {
 
 /* Different signature submission methods, distinguished by role */
 function CommonAreaSubmit() {
-    var signature = "";
     var rciId = $("div[id^='rci-']").first().attr("id").substring(4);
 
     var signature = $("#rci-sig").val();
@@ -154,11 +156,12 @@ function CommonAreaSubmit() {
 
 function ResSigSubmit() {
     var rciSig = "";
-    var lacSig = "";
-    if ($("#rci-sig").attr("disabled") != "disabled") {
+    var lacSig = ""; // Life And Conduct Signature
+
+    if ($("#rci-sig").attr("disabled") !== "disabled") {
         rciSig = $("#rci-sig").val();
     }
-    if ($("#lac-sig").attr("disabled") != "disabled") {
+    if ($("#lac-sig").attr("disabled") !== "disabled") {
         lacSig = $("#lac-sig").val();
     }
     var id = $("h2[id^='rci-']").first().attr("id").substring(4);
@@ -185,13 +188,13 @@ function RASigSubmit() {
     var rciSig = "";
     var rciSigRes = "";
     var lacSig = "";
-    if ($("#rci-sig").attr("disabled") != "disabled") {
+    if ($("#rci-sig").attr("disabled") !== "disabled") {
         rciSig = $("#rci-sig").val();
     }
-    if ($("#rci-sig-res").attr("disabled") != "disabled") {
+    if ($("#rci-sig-res").attr("disabled") !== "disabled") {
         rciSigRes = $("#rci-sig-res").val();
     }
-    if ($("#lac-sig").attr("disabled") != "disabled") {
+    if ($("#lac-sig").attr("disabled") !== "disabled") {
         lacSig = $("#lac-sig").val();
     }
     var id = $("h2[id^='rci-']").first().attr("id").substring(4);
@@ -216,8 +219,7 @@ function RASigSubmit() {
 
 function RDSigSubmit() {
     var rciSig = "";
-    var isChecked = $("#rci-sig-checkbox").prop("checked");
-    if ($("#rci-sig").attr("disabled") != "disabled") {
+    if ($("#rci-sig").attr("disabled") !== "disabled") {
         rciSig = $("#rci-sig").val();
     }
     var id = $("h2[id^='rci-']").first().attr("id").substring(4);
@@ -225,7 +227,7 @@ function RDSigSubmit() {
     $.ajax({
         sync: false,
         url: "/RciInput/SaveSigRD",
-        data: { rciSig: rciSig, id: id, isChecked: isChecked },
+        data: { rciSig: rciSig, id: id},
         method: "POST",
         success: function (data) {
             window.location.href = data;
@@ -240,43 +242,36 @@ function RDSigSubmit() {
     });
 }
 
-
-$("#rci-sig-checkbox").click(function () {
-    check();
-});
-
 function check() {
-    if ($("#rci-sig-checkbox").is(":checked")) {
-        var sigCheck = 1;
-    }
-    else {
-        var sigCheck = 0;
-    }
-    var id = $("h2[id^='rci-']").first().attr("id").substring(4);
+    var flag = 1;
+
+    var rciId = $("h2[id^='rci-']").first().attr("id").substring(4);
+
     $.ajax({
         sync: false,
         url: "/RciInput/CheckSigRD",
-        data: { sigCheck: sigCheck, id: id },
+        data: { queueRciFlag: flag, rciId: rciId },
         method: "POST",
-        /*success: function (data) {
-            window.location.href = data;
-        },*/
+        success: function (data) {
+            window.location.href = "/Dashboard/Index";
+        },
         error: function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
         }
-    })
+    });
 }
 
 
-function addDamage(componentID) {
+function addDamage(componentID, rciId) {
     var damageDescription = $("#text-input-" + componentID).val();
     console.log(componentID);
     console.log(damageDescription);
 
     $.ajax({
         url: '/RciInput/SaveDamage',
-        data: { componentID: componentID, damageDescription: damageDescription },
+        data: { roomComponentTypeId: componentID, damageDescription: damageDescription, rciId : rciId },
         method: "POST"
     }).done(function (data) {
         // the ajax call returns the damage id
@@ -318,17 +313,19 @@ function deleteDamage(event, element)
 
 /* Register Handers */
 
+// Handler for queueing an rci to be signed later.
+$("#queue-rci-button").click(function () {
+    check();
+});
 
 // Handler to allow users to add damages by simply pressing the enter key
 $(".adding-damages").on("keypress", function (e) {
     var key = e.keyCodd || e.which;
-    if (key == 13) {
+    if (key === 13) {
         e.preventDefault();
         $("#add-" + $(this).attr("id").substring(11)).click();
     }
 });
-// Attach upload photo handler
-$("input[id^='dmg-input']").change(uploadPhoto);
 
 // Handler for deleting photos
 $(".img-thumbnails").on("click", ".delete", function () {

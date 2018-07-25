@@ -2,30 +2,23 @@
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
-using Phoenix.Models;
 using Phoenix.Filters;
 using System;
 using Phoenix.Services;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using Newtonsoft.Json.Linq;
 using System.IO;
-using Phoenix.Exceptions;
-using System.Text;
+using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
 {
     [CustomAuthentication]
     public class RciInputController : Controller
     {
-        // RCI context wrapper. It can be considered to be an object that represents the database.
-        private RCIContext db;
         private IRciInputService rciInputService;
 
         public RciInputController(IRciInputService service)
         {
-            db = new Models.RCIContext();
             rciInputService = service;
         }
 
@@ -42,7 +35,7 @@ namespace Phoenix.Controllers
             var rci = rciInputService.GetRci(id);
 
             //  Redirect to the review page if this is already signed by the RD
-            if(rci.CheckinSigRD != null)
+            if(rci.RdCheckinDate != null)
             {
                 return RedirectToAction("RciReview", new { id = id });
             }
@@ -56,19 +49,11 @@ namespace Phoenix.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            if (rci.GordonID == null) // A common area rci
+            ViewBag.ViewTitle = $"Check-In: {rci.BuildingCode} {rci.RoomNumber} {rci.FirstName} {rci.LastName}";
+
+            if (rci.GordonId == null) // A common area rci
             {
-                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
-                // Select rooms of common area RCIs to group the RCIs
-                ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
-                var commonAreaRci = rciInputService.GetCommonAreaRciById(id);
-                ViewBag.CommonAreaModel = commonAreaRci;
-                ViewBag.RAIsMemberOfApartment = (role == "RA") && (commonAreaRci.CommonAreaMember.Where(m => m.GordonID == gordon_id).Any());
-            }
-            else
-            {
-                var name = rciInputService.GetName(rci.GordonID);
-                ViewBag.ViewTitle = "Check-In: " + rci.BuildingCode + rci.RoomNumber + " " + name;
+                ViewBag.RAIsMemberOfApartment = (role == Constants.RA) && (rci.CommonAreaMembers.Where(m => m.GordonId == gordon_id).Any());
             }
 
             return View(rci);
@@ -89,16 +74,7 @@ namespace Phoenix.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            if (rci.GordonID == null) // A common area rci
-            {
-                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " Common Area";
-                ViewBag.commonRooms = rciInputService.GetCommonRooms(id);
-            }
-            else
-            {
-                var name = rciInputService.GetName(rci.GordonID);
-                ViewBag.ViewTitle = "Check-In Review: " + rci.BuildingCode + rci.RoomNumber + " " + name;
-            }
+            ViewBag.ViewTitle = $"Check-In Review: {rci.BuildingCode} {rci.RoomNumber} {rci.FirstName} {rci.LastName}";
 
             return View(rci);
         }
@@ -124,7 +100,7 @@ namespace Phoenix.Controllers
             var temp = (JArray)TempData["kingdom"];
             List<string> kingdom = temp.ToObject<List<string>>();
 
-            var buildingRcis = rciInputService.GetRcisForBuildingThatCanBeSignedByRD(kingdom);
+            var buildingRcis = rciInputService.GetRcisForBuildingThatCanBeSignedByRD(gordonID, kingdom);
 
 
             ViewBag.User = (string)TempData["user"];
@@ -166,6 +142,7 @@ namespace Phoenix.Controllers
             }
 
             var gordonID = (string)TempData["id"];
+
             var user = ((string)TempData["user"]).ToLower().Trim();
 
             bool complete = rciInputService.SaveCommonAreaMemberSig(rciSig, user, gordonID, rciID);
@@ -179,12 +156,13 @@ namespace Phoenix.Controllers
                 return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
             }
         }
+
         // Save signatures for resident
         [HttpPost]
         public ActionResult SaveSigRes(string rciSig, string lacSig, int id)
         {
             // Both can't be null when submitting.
-            if ((rciSig == null || rciSig.Trim() == "") && (lacSig == null || lacSig.Trim() == ""))
+            if (string.IsNullOrWhiteSpace(rciSig) && string.IsNullOrWhiteSpace(lacSig))
             {
                 return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
@@ -203,7 +181,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because there was an error with your signature, please try again.");
             }
         }
 
@@ -229,7 +207,7 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because there was an error with your signature, please try again.");
             }
         }
         
@@ -241,9 +219,9 @@ namespace Phoenix.Controllers
         /// <returns>Redirect to dashboard if signed or checked</returns>
         [RD]
         [HttpPost]
-        public ActionResult SaveSigRD(string rciSig, int id, bool isChecked)
+        public ActionResult SaveSigRD(string rciSig, int id)
         {
-            if ((rciSig == null || rciSig.Trim() == "") && !isChecked)
+            if (string.IsNullOrWhiteSpace(rciSig))
             {
                 return new HttpStatusCodeResult(400, "You didn't enter a signature. If you have already signed, you are all set! If you have not,  please sign as it appears in the text box.");
             }
@@ -260,25 +238,25 @@ namespace Phoenix.Controllers
             }
             else
             {
-                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because you made a typo with the signature, please try again.");
+                return new HttpStatusCodeResult(400, "There was an error processing your signature. This might be because there was an error with your signature, please try again.");
             }
         }
+
 
         /// <summary>
         /// When an RD wants to check on an RCI upon checking in, after they click the checkbox,
         /// an HttpPost request will be sent here and change CheckinSigRDGordonID but not fill
         /// in the date for CheckinSigRD.
         /// </summary>
-        /// <param name="sigCheck">1: checked, 0: unchecked</param>
-        /// <param name="id">RCI ID</param>
+        /// <param name="queueRciFlag">1: queue, 0: de-queue</param>
+        /// <param name="rciId">RCI ID</param>
         /// <returns></returns>
         [RD]
         [HttpPost]
-        public void CheckSigRD(int sigCheck, int id)
+        public void CheckSigRD(int queueRciFlag, int rciId)
         {
-            
             var gordonID = (string)TempData["id"];
-            rciInputService.CheckRcis(sigCheck, gordonID, id);
+            rciInputService.CheckRcis(queueRciFlag, gordonID, rciId);
         }
 
         /// <summary>
@@ -286,7 +264,7 @@ namespace Phoenix.Controllers
         /// For reference, see: http://codepedia.info/upload-image-using-jquery-ajax-asp-net-c-sharp/#jQuery_ajax_call
         /// </summary>
         [HttpPost]
-        public int SavePhoto()
+        public int SavePhoto(int rciId, int roomComponentTypeId)
         {
             try
             {
@@ -294,12 +272,6 @@ namespace Phoenix.Controllers
                 {
                     HttpPostedFileBase photoFile = Request.Files[s];
                     string rciComponentId = photoFile.FileName;
-
-                    Damage newDamage = new Damage();
-                    newDamage.DamageType = "IMAGE";
-                    newDamage.RciComponentID = Convert.ToInt32(rciComponentId);
-
-                    rciInputService.SavePhotoDamage(newDamage, rciComponentId );
                     
                     // First, resize the image, using pattern here: http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size
 
@@ -314,7 +286,7 @@ namespace Phoenix.Controllers
                     rciInputService.ResizeImage(origImg, resizedImg, imgSize);
                     rciInputService.ApplyExifData(resizedImg);
 
-                    string imageName = "RciComponentId" + rciComponentId + "_DamageId" + newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
+                    string imageName = "RciComponentId" + rciComponentId + "_DamageId" + Guid.NewGuid(); // newDamage.DamageID.ToString(); // Image names of the format: RciComponent324_DamageId23
 
                     // Get today's date and format correctly for a folder name
                     string todayProperFormat = DateTime.Today.ToShortDateString().Replace("/", "_");
@@ -326,13 +298,13 @@ namespace Phoenix.Controllers
 
                     string fullPath = folderPath + imageName + ".jpg"; // Not sure exactly where we should store them. This path can change
 
-                    rciInputService.SaveImagePath(fullPath, newDamage);
+                    var damageid = rciInputService.SavePhotoDamage(fullPath, rciId, null, roomComponentTypeId);
                     resizedImg.Save(Server.MapPath(fullPath), resizedImg.RawFormat);
 
-                    return newDamage.DamageID;
+                    return damageid;
                 }
             }
-            catch (Exception e)
+            catch
             {
                 Response.Status = "500 Error saving photo";
             }
@@ -347,48 +319,42 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult DeletePhoto(int damageId)
         {
-            var log = new LoggerService();
-            var message = new StringBuilder();
+            var damageImpagePath = rciInputService.FetchDamageFilePath(damageId);
 
-            var damage = db.Damage.Find(damageId);
-
-            if (damage == null)
+            if (string.IsNullOrWhiteSpace(damageImpagePath))
             {
-                message.AppendLine("User requested to delete photo with damage ID of " + damageId + ". But it was not found");
-                log.Error(message.ToString());
-
-                return new HttpStatusCodeResult(500, "Could not find photo of damage with ID " + damageId);
+                // No file path. Nothing to do here
             }
-            var filePath = Server.MapPath(damage.DamageImagePath);
+            else
+            {
+                try
+                {
+                    var filePath = Server.MapPath(damageImpagePath);
+                    System.IO.File.Delete(filePath); // Remove from server
+                }
+                catch (Exception e)
+                {
+                    return new HttpStatusCodeResult(500, "Error deleting photo. Error message: " + e.Message);
+                }
+            }
 
             try
             {
-                db.Damage.Remove(damage); // Remove from db
-                db.SaveChanges();
-                System.IO.File.Delete(filePath); // Remove from server
-                return new HttpStatusCodeResult(200, "Successfully deleted!");
+                rciInputService.DeleteDamage(damageId);
             }
             catch(Exception e)
             {
-                message.AppendLine("User requested to delete photo with damage ID of " + damageId + ". But an exception was thrown.");
-                message.AppendLine("Exception: " + e.Message);
-                message.AppendLine("Inner Exception: " + e.InnerException);
-                message.AppendLine("StackTrace: " + e.StackTrace);
-                log.Error(message.ToString());
-
                 return new HttpStatusCodeResult(500, "Error deleting photo. Error message: " + e.Message);
             }
 
+            return new HttpStatusCodeResult(200, "Successfully deleted!");
         }
 
         // save one damage to db and return damage id in response
         [HttpPost]
-        public int SaveDamage(int componentID, string damageDescription)
+        public int SaveDamage(int rciId, int roomComponentTypeId, string damageDescription)
         {
-            var newDamage = new Damage { RciComponentID = componentID, DamageDescription = damageDescription, DamageType = "TEXT" };
-            db.Damage.Add(newDamage);
-            db.SaveChanges();
-            return newDamage.DamageID;
+            return rciInputService.SaveTextDamage(damageDescription, rciId, null, roomComponentTypeId);
         }
 
         /// <summary>
@@ -398,11 +364,9 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult DeleteDamage(int damageID)
         {
-            var damage = db.Damage.Find(damageID);
             try
             {
-                db.Damage.Remove(damage); // Remove from db
-                db.SaveChanges();
+                rciInputService.DeleteDamage(damageID);
                 return new HttpStatusCodeResult(200, "Successfully deleted!");
             }
             catch (Exception e)

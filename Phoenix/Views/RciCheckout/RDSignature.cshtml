@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.ViewModels.GenericCheckoutViewModel
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
 @{
     ViewBag.Title = "Checkout";
@@ -29,7 +29,7 @@
         @using (Html.BeginForm(actionName: "RDSignature", controllerName: "RciCheckout", method: FormMethod.Post))
             {
             <div>
-                @if (Model.CheckoutSigRD == null)
+                @if (Model.RdCheckoutDate == null)
                 {
                     <p class="padded-paragraph-vertical">I, @ViewBag.RDName, hereby agree to all of the fines and charges that have been recorded.</p>
                         <p class="padded-paragraph-vertical">I understand that by entering my username and password below, I give the system permission to send fine emails to the resident(s) if any fines/charges were assessed.</p>
@@ -49,12 +49,12 @@
                             }
                             else
                             {
-                                foreach (var component in Model.RciComponent)
+                                foreach (var component in Model.RoomComponents)
                                 {
-                                    foreach (var fine in component.Fine)
+                                    foreach (var fine in component.Fines)
                                     {
                                         <div class="divAddOn">
-                                            <input class="divAddOn-field" type="text" name="workRequest" value="@component.RciComponentName - @fine.Reason">
+                                            <input class="divAddOn-field" type="text" name="workRequest" value="@component.RoomComponentName - @fine.Reason">
                                             <div class="divAddOn-item"><i class="material-icons" onclick="removeWorkRequest(event, this);">close</i></div>
                                         </div>
                                     }
@@ -82,7 +82,7 @@
                 {
                     <p>This RCI has been signed by the Resident Director</p>
                         <div class="divAddOn">
-                            <input class="divAddOn-item" type="text" disabled value="@Model.CheckoutSigRD.Value.ToString("yyyy-MM-dd")" />
+                            <input class="divAddOn-item" type="text" disabled value="@Model.RdCheckoutDate.Value.ToString("yyyy-MM-dd")" />
                         </div>
                 }
             </div>

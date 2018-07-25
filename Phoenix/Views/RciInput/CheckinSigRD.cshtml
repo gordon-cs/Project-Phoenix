@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.Rci
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
 @{
     ViewBag.Title = "Check-In Signature";
@@ -13,48 +13,40 @@
 }
 
 
-<h2 id="rci-@Model.RciID">Signature</h2>
+<h2 id="rci-@Model.RciId">Signature</h2>
 
 <div class="pane">
 
 
-    @if ((Model.CheckinSigRes == null || Model.LifeAndConductSigRes == null) && Model.GordonID != null) // Individual rci not signed by resident
-            {
+    @if ((Model.ResidentCheckinDate == null || Model.LifeAndConductSignatureDate == null) && Model.GordonId != null) // Individual rci not signed by resident
+    {
         <p>The resident hasn't signed yet. Please make sure the resident and RA have signed before signing.</p>
-        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciId })'">Back</button>
     }
-    else if (Model.CheckinSigRes == null && Model.GordonID == null) // Common area rci not signed by resident
+    else if (Model.ResidentCheckinDate == null && Model.GordonId == null) // Common area rci not signed by resident
     {
         <p>The residents haven't signed yet. Please make sure the residents and AC have signed before signing.</p>
-        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciId })'">Back</button>
     }
-    else if (Model.CheckinSigRA == null)
+    else if (Model.RaCheckinDate == null)
     {
         <p>The RA/AC hasn't signed yet. Please make sure the RA/AC has signed before signing.</p>
-        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciId })'">Back</button>
     }
-    else if (Model.CheckinSigRD == null)
+    else if (Model.RdCheckinDate == null)
     {
         <p>@ViewBag.User, please sign with your name to confirm the entered damages.</p>
         <input data-selenium-id="signature-field" type="text" id="rci-sig" />
-        <p>OR</p>
-        if (Model.CheckinSigRDGordonID == null)
-        {
-            <input type="checkbox" id="rci-sig-checkbox" /><label for="rci-sig-checkbox">Queue for signing later</label>
-        }
-        else
-        {
-            <input type="checkbox" id="rci-sig-checkbox" checked="checked" /><label for="rci-sig-checkbox">Queue for signing later</label>
-        }
         <div class="distribute-evenly">
-            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
-            <button id="submit-button" onclick="RDSigSubmit()">Submit</button>
+            <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciId })'">Back</button>
+            <button id="submit-button" onclick="RDSigSubmit()">Submit Signature Now</button>
+            <button id="queue-rci-button">Queue For Signing Later</button>
         </div>
     }
     else
     {
         <p>You've already signed! You're all set.</p>
-        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciID })'">Back</button>
+        <button onclick="window.location.href = '@Url.Action(actionName:"Index", controllerName:"RciInput", routeValues: new { id = Model.RciId })'">Back</button>
     }
 
 </div>

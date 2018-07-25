@@ -37,7 +37,7 @@
                             </div>
                         </a>
                         <div class="divAddOn-item">
-                            @if (rci.CheckinSigRDGordonID == null)
+                            @if (!rci.QueuedForSigning)
                             {
                                 <input type="checkbox" id="rci-sig-checkbox-@rci.RciID" />
                             }

@@ -4,7 +4,7 @@
   * Since there is no dropdown for indivudial views, it won't be defined 
   * It seems hacky, but I couldn't think of an easier way that wouldn't require two seperate js files
   */
-function addFine(componentID) {
+function addFine(componentID, rciId) {
     let $finesArea = $("#fine-list-" + componentID);
     let fineText = $("#text-input-" + componentID).val();
     let fineAmount = Number($("#fine-amount-input-" + componentID).val());
@@ -18,7 +18,7 @@ function addFine(componentID) {
             let $element = $(element);
             if ($element.val() === "0") { return; }
 
-            addFineToDb(componentID, fineText, (fineAmount / numberOfPeople).toFixed(2), $element.val())
+            addFineToDb(rciId, componentID, fineText, (fineAmount / numberOfPeople).toFixed(2), $element.val())
             .then(function (data) {
                 let row = $("<tr />");
                 row.append("<td >" + fineText + "</td>");
@@ -30,7 +30,7 @@ function addFine(componentID) {
         });        
     }
     else if (fineOwnerName) { // A person was selected
-        addFineToDb(componentID, fineText, fineAmount, fineOwnerID)
+        addFineToDb(rciId, componentID, fineText, fineAmount, fineOwnerID)
         .then(function (data) {
             let row = $("<tr />");
             row.append("<td >" + fineText + "</td>");
@@ -42,7 +42,7 @@ function addFine(componentID) {
     }
     else { // fineOwnerName is not defined, which means this is an individual checkout
         let gordonID = $(".view").attr("data");
-        addFineToDb(componentID, fineText, fineAmount, gordonID )
+        addFineToDb(rciId, componentID, fineText, fineAmount, gordonID )
         .then(function (data) {
             let row = $("<tr />");
             row.append("<td >" + fineText + "</td>");
@@ -64,11 +64,11 @@ function deleteFine(event, element, id) {
 }
 
 /* Helper method to make the ajax call and return the promise */
-function addFineToDb(componentId, reason, amount, owner) {
+function addFineToDb(rciId, componentId, reason, amount, owner) {
     return $.ajax({
         method: "POST",
         url: "/RciCheckout/AddFine",
-        data: {componentId: componentId, fineReason: reason, fineAmount: amount, fineOwner: owner}
+        data: {rciId: rciId, roomComponentTypeId: componentId, fineReason: reason, fineAmount: amount, fineOwner: owner}
     });
 }
 

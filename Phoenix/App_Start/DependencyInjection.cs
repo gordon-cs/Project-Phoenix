@@ -27,7 +27,11 @@ namespace Phoenix
 
             builder
                 .RegisterType<DapperDal.DapperDal>()
-                .As<IDal>();
+                .As<IDatabaseDal>();
+
+            builder
+                .RegisterType<FileSystemDal.FileSystemDal>()
+                .As<FileSystemDal.IFileSystemDal>();
 
             // Register services
             builder
@@ -49,6 +53,14 @@ namespace Phoenix
             builder
                 .RegisterType<LoginService>()
                 .As<ILoginService>();
+
+            builder
+                .RegisterType<LoggerService>()
+                .As<ILoggerService>();
+
+            builder
+                .RegisterType<RciBatchService>()
+                .As<IRciBatchService>();
 
             //Register Controllers
             builder

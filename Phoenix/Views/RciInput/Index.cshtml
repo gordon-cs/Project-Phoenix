@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.Rci
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
 @{
     ViewBag.Title = "Check-In";
@@ -18,23 +18,16 @@
 
 <div class="view">
     <h2>@ViewBag.ViewTitle</h2>
-    @if (ViewBag.commonRooms == null)
-    {
 
-        foreach (var component in Model.RciComponent)
-        {
-            @Html.Partial("Component", component);
-        }
-    }
-    else
+    @{ var roomComponentsGroupedByArea = Model.RoomComponents.GroupBy(x => x.RoomArea); }
+
+   
+    @foreach (var roomArea in roomComponentsGroupedByArea)
     {
-        foreach (var room in ViewBag.commonRooms)
+        <h2>@roomArea.Key</h2>
+        foreach (var roomComponent in roomArea)
         {
-            <h2>@room</h2>
-            foreach (var component in Model.RciComponent.Where(x => x.RciComponentDescription.Equals(room)))
-            {
-                @Html.Partial("Component", component);
-            }
+            @Html.Partial("Component", roomComponent);
         }
     }
 
@@ -48,22 +41,22 @@
 
 </div>
 <div id="signature-container">
-    @if (ViewBag.Role == "Resident")
+    @if (ViewBag.Role == "Resident") // If this is a resident
     {
-        if (Model.GordonID == null)
+        if (Model.GordonId == null) // We are displaying a common area rci
         {
-            @Html.Partial("CheckinSigCommonArea", (Phoenix.Models.ViewModels.CheckinCommonAreaRciViewModel)ViewBag.CommonAreaModel)
+            @Html.Partial("CheckinSigCommonArea", Model) // Load the common area signature container
         }
-        else
+        else // We are displaying an Individual's Rci
         {
-            @Html.Partial("CheckinSigRes", Model)
+            @Html.Partial("CheckinSigRes", Model) // Load the resident signature container
         }
     }
-    else if (ViewBag.Role == "RA")
+    else if (ViewBag.Role == "RA") // If This is an RA
     {
-        if(Model.GordonID == null && ViewBag.RAIsMemberOfApartment && Model.CheckinSigRes == null)
+        if(Model.GordonId == null && ViewBag.RAIsMemberOfApartment && Model.ResidentCheckinDate == null) // And we are displaying a common are And the Ra is part of the apartment AND not all residents have signed.
         {
-            @Html.Partial("CheckinSigCommonArea", (Phoenix.Models.ViewModels.CheckinCommonAreaRciViewModel)ViewBag.CommonAreaModel)
+            @Html.Partial("CheckinSigCommonArea", Model)
         }
         else
         {

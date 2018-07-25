@@ -54,31 +54,11 @@
       <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="jose-jwt, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jose-jwt.2.1.0\lib\net461\jose-jwt.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Logging.1.1.0\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -168,32 +148,39 @@
     <Compile Include="Controllers\ManageRciComponentController.cs" />
     <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RciCheckoutController.cs" />
-    <Compile Include="Controllers\RciComponentReassignController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
+    <Compile Include="DapperDal\Sql\CommonAreaRciSignature.cs" />
+    <Compile Include="DapperDal\Sql\Damage.cs" />
+    <Compile Include="DapperDal\Sql\Fine.cs" />
     <Compile Include="DapperDal\IDbConnectionFactory.cs" />
     <Compile Include="DapperDal\SqlConnectionFactory.cs" />
     <Compile Include="DapperDal\Sql\Account.cs" />
     <Compile Include="DapperDal\Sql\Rci.cs" />
+    <Compile Include="DapperDal\Sql\RciTypeRoomComponentTypeMap.cs" />
+    <Compile Include="DapperDal\Sql\Room.cs" />
     <Compile Include="DapperDal\Sql\RoomAssign.cs" />
     <Compile Include="DapperDal\Types\Account.cs" />
     <Compile Include="DapperDal\Types\BigRci.cs" />
+    <Compile Include="DapperDal\Types\Building.cs" />
     <Compile Include="DapperDal\Types\CommonAreaRciSignature.cs" />
     <Compile Include="DapperDal\Types\Damage.cs" />
     <Compile Include="DapperDal\DapperDal.cs" />
     <Compile Include="DapperDal\Types\Fine.cs" />
+    <Compile Include="DapperDal\Types\FineSummary.cs" />
     <Compile Include="DapperDal\Types\HallGroup.cs" />
     <Compile Include="DapperDal\Types\Rci.cs" />
-    <Compile Include="DapperDal\IDapperDal.cs" />
-    <Compile Include="DapperDal\Types\RciComponent.cs" />
+    <Compile Include="DapperDal\IDatabaseDal.cs" />
+    <Compile Include="DapperDal\Types\Room.cs" />
+    <Compile Include="DapperDal\Types\RoomComponentType.cs" />
     <Compile Include="DapperDal\Types\RoomAssignment.cs" />
     <Compile Include="DapperDal\Types\Session.cs" />
     <Compile Include="DapperDal\SlapperAutoMapperInit.cs" />
     <Compile Include="DapperDal\Types\SmolRci.cs" />
-    <Compile Include="DataAccessLayer\QueryTypes.cs" />
-    <Compile Include="DataAccessLayer\RciQueries.cs" />
     <Compile Include="Exceptions\DatabaseEntryNotFound.cs" />
     <Compile Include="Exceptions\InvalidUserException.cs" />
     <Compile Include="Exceptions\UserNotFoundException.cs" />
+    <Compile Include="FileSystemDal\FileSystemDal.cs" />
+    <Compile Include="FileSystemDal\IFileSystemDal.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
     <Compile Include="Filters\AdminAttribute.cs" />
     <Compile Include="Filters\ExceptionLogAttribute.cs" />
@@ -202,36 +189,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Account.cs" />
-    <Compile Include="Models\Admin.cs" />
-    <Compile Include="Models\BuildingAssign.cs" />
-    <Compile Include="Models\CommonAreaRciSignature.cs" />
-    <Compile Include="Models\CurrentRA.cs" />
-    <Compile Include="Models\CurrentRD.cs" />
-    <Compile Include="Models\Damage.cs" />
-    <Compile Include="Models\Fine.cs" />
-    <Compile Include="Models\PartialClasses\Rci.cs" />
-    <Compile Include="Models\Rci.cs" />
-    <Compile Include="Models\RciComponent.cs" />
-    <Compile Include="Models\RCIContext.cs" />
-    <Compile Include="Models\Room.cs" />
     <Compile Include="Models\RoomAssign.cs" />
-    <Compile Include="Models\RoomChangeHistory.cs" />
-    <Compile Include="Models\Session.cs" />
     <Compile Include="Models\ViewModels\AdminDashboardViewModel.cs" />
-    <Compile Include="Models\ViewModels\CheckinCommonAreaRciViewModel.cs" />
-    <Compile Include="Models\ViewModels\GenericCheckoutViewModel.cs" />
-    <Compile Include="Models\ViewModels\CheckoutCommonAreaRciViewModel.cs" />
-    <Compile Include="Models\ViewModels\CheckoutIndividualRoomRciViewModel.cs" />
-    <Compile Include="Models\ViewModels\CommonAreaMember.cs" />
+    <Compile Include="Models\ViewModels\FullRciViewModel.cs" />
     <Compile Include="Models\ViewModels\HomeRciViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
-    <Compile Include="Models\ViewModels\PotentialRciReassignTarget.cs" />
-    <Compile Include="Models\ViewModels\RciFinesForm.cs" />
-    <Compile Include="Models\ViewModels\RciForm.cs" />
-    <Compile Include="Models\ViewModels\RciNewDamageViewModel.cs" />
     <Compile Include="Models\ViewModels\RciNewFineViewModel.cs" />
-    <Compile Include="Models\ViewModels\RciReassignViewModel.cs" />
     <Compile Include="Models\ViewModels\SearchResultsViewModel.cs" />
     <Compile Include="Models\ViewModels\SignAllRDViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -242,14 +205,16 @@
     </Compile>
     <Compile Include="Services\AdminDashboardService.cs" />
     <Compile Include="Services\DashboardService.cs" />
+    <Compile Include="Services\Interfaces\ILoggerService.cs" />
     <Compile Include="Services\Interfaces\IDashboardService.cs" />
     <Compile Include="Services\Interfaces\ILoginService.cs" />
     <Compile Include="Services\Interfaces\IAdminDashboardService.cs" />
     <Compile Include="Services\Interfaces\IRciInputService.cs" />
     <Compile Include="Services\Interfaces\IRciCheckoutService.cs" />
+    <Compile Include="Services\Interfaces\IRciBatchService.cs" />
     <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\LoginService.cs" />
-    <Compile Include="Services\RciComponentReassignService.cs" />
+    <Compile Include="Services\RciBatchService.cs" />
     <Compile Include="Services\RciInputService.cs" />
     <Compile Include="Services\RciCheckoutService.cs" />
     <Compile Include="Utilities\Constants.cs" />
@@ -347,7 +312,6 @@
     <Content Include="Views\AdminDashboard\SearchRcis.cshtml" />
     <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
     <Content Include="Views\Dashboard\ArchiveRcis.cshtml" />
-    <Content Include="Views\ManageRciComponent\Index.cshtml" />
     <None Include="Web.Base.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

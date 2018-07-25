@@ -45,7 +45,7 @@ namespace Phoenix.Controllers
             {
                 _ADContext = loginService.ConnectToADServer();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 loginViewModel.ErrorMessage = "There was a problem connecting to the server. We are sorry. Please try again later or contact the project maintainer.";
                 return View("Index", loginViewModel);
@@ -56,13 +56,13 @@ namespace Phoenix.Controllers
             {
                 userEntry = loginService.FindUser(username, _ADContext);
             }
-            catch(UserNotFoundException ex)
+            catch(UserNotFoundException)
             {
                 _ADContext.Dispose();
                 loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
                 return View("Index", loginViewModel);
             }
-            catch(ArgumentNullException ex)
+            catch(ArgumentNullException)
             {
                 _ADContext.Dispose();
                 loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
@@ -77,17 +77,20 @@ namespace Phoenix.Controllers
                 {
                     jwtToken = loginService.GenerateToken(username, userEntry.EmployeeId);
                 }
-                catch(InvalidUserException ex)
+                catch(InvalidUserException)
                 {
                     // e.g. user is a staff member.
                     _ADContext.Dispose();
                     loginViewModel.ErrorMessage = "Sorry, you are not a student or a member of the Residence Life Staff, so you do not have access to this system.";
                     return View("Index", loginViewModel);
-                } 
+                }
 
-                HttpCookie tokenCookie = new HttpCookie("Authentication");
-                tokenCookie.Value = jwtToken;
-                tokenCookie.Expires = DateTime.Now.AddHours(2.0);
+                HttpCookie tokenCookie = new HttpCookie("Authentication")
+                {
+                    Value = jwtToken,
+                    Expires = DateTime.Now.AddHours(2.0)
+                };
+
                 Response.Cookies.Add(tokenCookie);
 
                 _ADContext.Dispose();

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Phoenix.Utilities;
+using System;
+using System.Collections.Generic;
 
 namespace Phoenix.DapperDal.Types
 {
@@ -16,6 +18,8 @@ namespace Phoenix.DapperDal.Types
         public string BuildingCode { get; set; }
         public string RoomNumber { get; set; }
         public string SessionCode { get; set; }
+        public int RciTypeId { get; set; }
+        public string RciTypeName { get; set; }
         public DateTime? ResidentCheckinDate { get; set; }
         public DateTime? RaCheckinDate { get; set; }
         public DateTime? RdCheckinDate { get; set; }

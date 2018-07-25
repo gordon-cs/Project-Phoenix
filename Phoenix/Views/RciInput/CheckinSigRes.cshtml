@@ -1,4 +1,4 @@
-﻿@model Phoenix.Models.Rci
+﻿@model Phoenix.Models.ViewModels.FullRciViewModel
 
 @{
     ViewBag.Title = "Check-In Signature";
@@ -13,11 +13,11 @@
 }
 
 
-<h2 id="rci-@Model.RciID">Signature</h2>
+<h2 id="rci-@Model.RciId">Signature</h2>
 
 <div class="pane">
 
-    @if (Model.CheckinSigRes == null && Model.LifeAndConductSigRes == null)
+    @if (Model.ResidentCheckinDate == null && Model.LifeAndConductSignatureDate == null)
     {
         <p>@ViewBag.User, please sign with your name to confirm the entered damages.</p>
         <input data-selenium-id="signature-field" type="text" id="rci-sig" placeholder="@ViewBag.User" />
@@ -60,12 +60,12 @@
             <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
         </div>
     }
-    else if (Model.CheckinSigRes != null && Model.LifeAndConductSigRes == null)
+    else if (Model.ResidentCheckinDate != null && Model.LifeAndConductSignatureDate == null)
     {
         <p>You have signed and confirmed your entered damages.</p>
         <div class="divAddOn">
             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.User" />
-            <input class="divAddOn-item" type="text" disabled value="@Model.CheckinSigRes.Value.ToString("yyyy-MM-dd")" />
+            <input class="divAddOn-item" type="text" disabled value="@Model.ResidentCheckinDate.Value.ToString("yyyy-MM-dd")" />
         </div>
 
         <div class="life-and-conduct">
@@ -107,7 +107,7 @@
             <button id="submit-button" onclick="ResSigSubmit()">Submit</button>
         </div>
     }
-    else if (Model.CheckinSigRes == null && Model.LifeAndConductSigRes != null)
+    else if (Model.ResidentCheckinDate == null && Model.LifeAndConductSignatureDate != null)
     {
         <p>@ViewBag.User, please sign with your name to confirm the entered damages.</p>
         <input data-selenium-id="signature-field" type="text" id="rci-sig" placeholder="@ViewBag.User" />
@@ -115,7 +115,7 @@
         <p>You have signed the life and conduct statement.</p>
         <div class="divAddOn">
             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.User" />
-            <input class="divAddOn-item" type="text" disabled value="@Model.LifeAndConductSigRes.Value.ToString("yyyy-MM-dd")" />
+            <input class="divAddOn-item" type="text" disabled value="@Model.LifeAndConductSignatureDate.Value.ToString("yyyy-MM-dd")" />
         </div>
 
         <div class="distribute-evenly">
@@ -127,13 +127,13 @@
         <p>You have signed and confirmed your entered damages.</p>
         <div class="divAddOn">
             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.User" />
-            <input class="divAddOn-item" type="text" disabled value="@Model.CheckinSigRes.Value.ToString("yyyy-MM-dd")" />
+            <input class="divAddOn-item" type="text" disabled value="@Model.ResidentCheckinDate.Value.ToString("yyyy-MM-dd")" />
         </div>
 
         <p>You have signed the life and conduct statement.</p>
         <div class="divAddOn">
             <input class="divAddOn-field" name="signature" type="text" readonly="readonly" value="@ViewBag.User" />
-            <input class="divAddOn-item" type="text" disabled value="@Model.LifeAndConductSigRes.Value.ToString("yyyy-MM-dd")" />
+            <input class="divAddOn-item" type="text" disabled value="@Model.LifeAndConductSignatureDate.Value.ToString("yyyy-MM-dd")" />
         </div>
 
         <p>You've already signed both your RCI and the Life and Conduct Statement. You're good to go!</p>
