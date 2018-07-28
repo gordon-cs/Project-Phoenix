@@ -64,8 +64,23 @@ $(".dropdown").click(function () {
  * inside. We use a regular expression to remove that whitespace.
  */
 
+$(window).load(function () {
+    // If there is a search bar, apply whatever is in it
+    var searchBar = document.querySelector(".search-bar");
+
+    console.log(searchBar);
+
+    if (searchBar) {
+        search(searchBar);
+    }
+})
+
 $(".search-bar").keyup(function () {
-    let textToMatch = $(this).find("input[type='text']").val();
+    search(this);
+});
+
+function search(searchBarElement) {
+    let textToMatch = $(searchBarElement).find("input[type='text']").val();
     textToMatch = textToMatch.toLowerCase().trim();
     let content = "";
 
@@ -86,7 +101,7 @@ $(".search-bar").keyup(function () {
             return false;
         }
     }).parent().parent().hide()
-});
+}
 
 /*** Admin dashboard DOM manipulation **/
 

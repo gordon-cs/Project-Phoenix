@@ -18,18 +18,11 @@
     <div id="page-container">
         <header id="header">
             <div class="logo-box">
-               @if (ViewBag.NeedsLogo == true)
-                                {
-                                    <a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")"><img src="~/Content/Images/gordon-logo-horizontal.svg" /></a>
-                }
-                else
-                {<a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")">
-                    <i class="material-icons back-button">keyboard_backspace</i>
-                </a>}
+                <img src="~/Content/Images/gordon-logo-horizontal.svg" />
             </div>                   
             <div class="view-title">
                 <a href="@Url.Action(actionName: "Index", controllerName: "Dashboard")"><h2>Online RCI</h2></a>
-</div>
+            </div>
             @if (ViewBag.MenuExists != null)
             {
                 <button class="dropdown">
