@@ -63,6 +63,9 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.7\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="Slapper, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Slapper.AutoMapper.1.0.0.9\lib\Slapper.dll</HintPath>
       <Private>True</Private>
@@ -75,8 +78,11 @@
     </Reference>
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -176,14 +182,19 @@
     <Compile Include="DapperDal\Types\Session.cs" />
     <Compile Include="DapperDal\SlapperAutoMapperInit.cs" />
     <Compile Include="DapperDal\Types\SmolRci.cs" />
+    <Compile Include="Exceptions\CurrentSessionNotFoundException.cs" />
+    <Compile Include="Exceptions\DamageNotFoundException.cs" />
     <Compile Include="Exceptions\DatabaseEntryNotFound.cs" />
+    <Compile Include="Exceptions\FineNotFoundException.cs" />
     <Compile Include="Exceptions\InvalidUserException.cs" />
+    <Compile Include="Exceptions\RciNotFoundException.cs" />
+    <Compile Include="Exceptions\RoomAssignNotFoundException.cs" />
+    <Compile Include="Exceptions\RoomNotFoundException.cs" />
     <Compile Include="Exceptions\UserNotFoundException.cs" />
     <Compile Include="FileSystemDal\FileSystemDal.cs" />
     <Compile Include="FileSystemDal\IFileSystemDal.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
     <Compile Include="Filters\AdminAttribute.cs" />
-    <Compile Include="Filters\ExceptionLogAttribute.cs" />
     <Compile Include="Filters\RDAttribute.cs" />
     <Compile Include="Filters\ResLifeStaffAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -191,6 +202,7 @@
     </Compile>
     <Compile Include="Models\RoomAssign.cs" />
     <Compile Include="Models\ViewModels\AdminDashboardViewModel.cs" />
+    <Compile Include="Models\ViewModels\FriendlyErrorViewModel.cs" />
     <Compile Include="Models\ViewModels\FullRciViewModel.cs" />
     <Compile Include="Models\ViewModels\HomeRciViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
@@ -205,14 +217,12 @@
     </Compile>
     <Compile Include="Services\AdminDashboardService.cs" />
     <Compile Include="Services\DashboardService.cs" />
-    <Compile Include="Services\Interfaces\ILoggerService.cs" />
     <Compile Include="Services\Interfaces\IDashboardService.cs" />
     <Compile Include="Services\Interfaces\ILoginService.cs" />
     <Compile Include="Services\Interfaces\IAdminDashboardService.cs" />
     <Compile Include="Services\Interfaces\IRciInputService.cs" />
     <Compile Include="Services\Interfaces\IRciCheckoutService.cs" />
     <Compile Include="Services\Interfaces\IRciBatchService.cs" />
-    <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\LoginService.cs" />
     <Compile Include="Services\RciBatchService.cs" />
     <Compile Include="Services\RciInputService.cs" />
@@ -242,6 +252,9 @@
     <Content Include="css\under_construction.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\RCIPublish.pubxml">
       <SubType>Designer</SubType>
     </None>
@@ -312,6 +325,7 @@
     <Content Include="Views\AdminDashboard\SearchRcis.cshtml" />
     <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
     <Content Include="Views\Dashboard\ArchiveRcis.cshtml" />
+    <Content Include="Views\Shared\FriendlyErrorPage.cshtml" />
     <None Include="Web.Base.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

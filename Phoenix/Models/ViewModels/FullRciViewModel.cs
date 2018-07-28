@@ -17,8 +17,10 @@ namespace Phoenix.Models.ViewModels
         public bool IsCurrent { get; set; }
         public DateTime CreationDate { get; set; }
         public string BuildingCode { get; set; }
+        public string BuildingDescription { get; set; }
         public string RoomNumber { get; set; }
         public string SessionCode { get; set; }
+        public string SessionDescription { get; set; }
         public int RciTypeId { get; set; }
         public string RciTypeName { get; set; }
         public DateTime? ResidentCheckinDate { get; set; }
@@ -51,8 +53,10 @@ namespace Phoenix.Models.ViewModels
             this.IsCurrent = original.IsCurrent;
             this.CreationDate = original.CreationDate;
             this.BuildingCode = original.BuildingCode;
+            this.BuildingDescription = original.BuildingDescription;
             this.RoomNumber = original.RoomNumber;
             this.SessionCode = original.SessionCode;
+            this.SessionDescription = original.SessionDescription;
             this.RciTypeId = original.RciTypeId;
             this.RciTypeName = original.RciTypeName;
             this.ResidentCheckinDate = original.ResidentCheckinDate;
@@ -101,6 +105,7 @@ namespace Phoenix.Models.ViewModels
                 .Select(x =>
                 {
                     var damagesToThisComponentType = original.Damages.Where(d => d.RoomComponentTypeId.Equals(x.RoomComponentTypeId));
+
                     var finesAddedToThisComponentType = original.Fines.Where(f => f.RoomComponentTypeId.Equals(x.RoomComponentTypeId));
 
                     return new RoomComponentViewModel(original.RciId, x, damagesToThisComponentType, finesAddedToThisComponentType);

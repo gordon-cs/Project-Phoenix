@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Check-In Review";
+    ViewBag.Header = Model.FirstName + " " + Model.LastName + " " + Model.BuildingDescription + " " + Model.RoomNumber;
     ViewBag.MenuExists = "T";
     ViewBag.Name = TempData["user"];
     ViewBag.Role = TempData["role"];
@@ -18,7 +19,7 @@
 
 <div class="view">
     <div class="pane">
-        <h2 class="pane-title">@ViewBag.ViewTitle</h2>
+        <h2 class="pane-title">@ViewBag.Header</h2>
         @{ var damagesExistInRci = Model.RoomComponents.Where(x => x.Damages.Any()).Any(); }
 
         @if (!damagesExistInRci)

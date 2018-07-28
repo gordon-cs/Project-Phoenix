@@ -10,8 +10,11 @@ namespace Phoenix.Controllers
 {
     public class LoginController : Controller
     {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         // Global Variables
         private PrincipalContext _ADContext;
+
         private ILoginService loginService;
 
         public LoginController(ILoginService service)
@@ -36,10 +39,11 @@ namespace Phoenix.Controllers
         [HttpPost]
         public ActionResult Authenticate(LoginViewModel loginViewModel)
         {
-
             // Get the username and password from the view model
             string username = loginViewModel.Username;
             string password = loginViewModel.Password;
+
+            logger.Info("User {0} is attempting to log in....", username);
 
             try
             {
@@ -81,7 +85,11 @@ namespace Phoenix.Controllers
                 {
                     // e.g. user is a staff member.
                     _ADContext.Dispose();
+
                     loginViewModel.ErrorMessage = "Sorry, you are not a student or a member of the Residence Life Staff, so you do not have access to this system.";
+
+                    logger.Warn("User {0} was not allowed to log in...", username);
+
                     return View("Index", loginViewModel);
                 }
 

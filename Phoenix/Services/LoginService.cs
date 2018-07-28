@@ -14,6 +14,8 @@ namespace Phoenix.Services
     {
         private readonly IDatabaseDal Dal;
 
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public LoginService(IDatabaseDal dal)
         {
             this.Dal = dal;
@@ -94,6 +96,7 @@ namespace Phoenix.Services
             string currentRoomNumber = null;
             DateTime? currentRoomAssignDate = null;
 
+            // Most Recent room assign will be null for non-students and that's ok.
             if (mostRecentRoomAssign != null)
             {
                 currentBuildingCode = mostRecentRoomAssign.BuildingCode.Trim();
@@ -199,7 +202,21 @@ namespace Phoenix.Services
         /* Get the most recent room assign information for the person  */
         public RoomAssignment GetCurrentRoomAssign(string id)
         {
-            return this.Dal.FetchLatestRoomAssignmentForId(id);
+            try
+            {
+                return this.Dal.FetchLatestRoomAssignmentForId(id);
+            }
+            catch (RoomAssignNotFoundException)
+            {
+                // Some people won't have a room assignment e.g. RDs This is OK.
+                return null;
+            }
+            catch(Exception e)
+            {
+                logger.Error(e, $"Unexpected exception when getting current room Assignment!");
+
+                throw;
+            }
         }
 
     }

@@ -7,9 +7,11 @@ namespace Phoenix.Models.ViewModels
     {
         public int RciID { get; set; }
         public string BuildingCode { get; set; }
+        public string BuildingName { get; set; }
         public string RoomNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string SessionName { get; set; }
         public string RciStage { get; set; }
         public DateTime? CheckinSigRes { get; set; }
         public DateTime? CheckinSigRA { get; set; }
@@ -26,9 +28,11 @@ namespace Phoenix.Models.ViewModels
         {
             this.RciID = rci.RciId;
             this.BuildingCode = rci.BuildingCode.Trim();
+            this.BuildingName = rci.BuildingDescription;
             this.RoomNumber = rci.RoomNumber.Trim();
             this.FirstName = rci.FirstName;
             this.LastName = rci.LastName;
+            this.SessionName = rci.SessionDescription;
             this.RciStage = rci.RdCheckinDate == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE;
             this.CheckinSigRes = rci.ResidentCheckinDate;
             this.CheckinSigRA = rci.RaCheckinDate;

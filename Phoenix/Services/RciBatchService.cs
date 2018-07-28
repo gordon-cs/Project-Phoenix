@@ -19,6 +19,8 @@ namespace Phoenix.Services
 
         private const string RciBatchesFolder = "RciBatches";
 
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public RciBatchService(IFileSystemDal fsDal)
         {
             this.FsDal = fsDal;
@@ -29,64 +31,97 @@ namespace Phoenix.Services
         // Add this rciId to the batch belonging to this gordonId. If it already exists, nothing happends.
         public void AddRciToBatch(string gordonId, int rciId)
         {
-            var fullPath = System.IO.Path.Combine(this.RootFolder, RciBatchesFolder, gordonId);
-
-            string stringContents;
-
-            if (!this.FsDal.TryGetFileContents(fullPath, out stringContents))
+            try
             {
-                // File Does not exist, create a new one.
-                var newList = new HashSet<int> { rciId };
+                logger.Debug($"Adding rci {rciId} to batch for user with id {gordonId}");
 
-                this.FsDal.WriteToFile(fullPath, JsonConvert.SerializeObject(newList));
+                var fullPath = System.IO.Path.Combine(this.RootFolder, RciBatchesFolder, gordonId);
+
+                string stringContents;
+
+                if (!this.FsDal.TryGetFileContents(fullPath, out stringContents))
+                {
+                    logger.Debug($"New batch! User={gordonId}, RciId{rciId}");
+
+                    // File Does not exist, create a new one.
+                    var newList = new HashSet<int> { rciId };
+
+                    this.FsDal.WriteToFile(fullPath, JsonConvert.SerializeObject(newList));
+                }
+                else
+                {
+                    // File exists, read from it, add to it, then update it.
+                    var existingList = JsonConvert.DeserializeObject<HashSet<int>>(stringContents);
+
+                    logger.Debug($"Existing batch! User {gordonId}, Rciid={rciId}, BatchContents={string.Join(",", existingList)}");
+
+                    existingList.Add(rciId);
+
+                    this.FsDal.WriteToFile(fullPath, JsonConvert.SerializeObject(existingList));
+                }
             }
-            else
+            catch (Exception e)
             {
-                // File exists, read from it, add to it, then update it.
-                var existingList = JsonConvert.DeserializeObject<HashSet<int>>(stringContents);
+                logger.Error(e, $"Unexpected error when trying to add rci {rciId} to batch for user {gordonId}...");
 
-                existingList.Add(rciId);
-
-                this.FsDal.WriteToFile(fullPath, JsonConvert.SerializeObject(existingList));
+                throw;
             }
         }
 
         // Remove the rci from this gordonId's batch. If it doesn't exist, nothing happens.
         public void RemoveRciFromBatch(string gordonId, int rciId)
         {
-            var fullPath = System.IO.Path.Combine(this.RootFolder, RciBatchesFolder, gordonId);
-
-            string stringContents;
-
-            if (!this.FsDal.TryGetFileContents(fullPath, out stringContents))
+            try
             {
-                // File does not exists, nothing to do.
+                var fullPath = System.IO.Path.Combine(this.RootFolder, RciBatchesFolder, gordonId);
+
+                string stringContents;
+
+                if (!this.FsDal.TryGetFileContents(fullPath, out stringContents))
+                {
+                    // File does not exists, nothing to do.
+                }
+                else
+                {
+                    // File Exists, read from it, remove the id and update
+                    var existingList = JsonConvert.DeserializeObject<HashSet<int>>(stringContents);
+
+                    existingList.Remove(rciId);
+
+                    this.FsDal.WriteToFile(fullPath, JsonConvert.SerializeObject(existingList));
+                }
             }
-            else
+            catch (Exception e)
             {
-                // File Exists, read from it, remove the id and update
-                var existingList = JsonConvert.DeserializeObject<HashSet<int>>(stringContents);
+                logger.Error(e, $"Unexpected exception when trying to remove rci RciId={rciId} from {gordonId}'s batch.");
 
-                existingList.Remove(rciId);
-
-                this.FsDal.WriteToFile(fullPath, JsonConvert.SerializeObject(existingList));
+                throw;
             }
         }
 
         // Fetch all the rcis in the batch for this gordonId
         public HashSet<int> GetRcis(string gordonId)
         {
-            var fullPath = System.IO.Path.Combine(this.RootFolder, RciBatchesFolder, gordonId);
-
-            string stringContents;
-
-            if (!this.FsDal.TryGetFileContents(fullPath, out stringContents))
+            try
             {
-                return new HashSet<int>();
+                var fullPath = System.IO.Path.Combine(this.RootFolder, RciBatchesFolder, gordonId);
+
+                string stringContents;
+
+                if (!this.FsDal.TryGetFileContents(fullPath, out stringContents))
+                {
+                    return new HashSet<int>();
+                }
+                else
+                {
+                    return JsonConvert.DeserializeObject<HashSet<int>>(stringContents);
+                }
             }
-            else
+            catch (Exception e)
             {
-                return JsonConvert.DeserializeObject<HashSet<int>>(stringContents);
+                logger.Debug(e, $"Unexpected exception while getting rcis in {gordonId}'s batch.");
+
+                throw;
             }
         }
     }

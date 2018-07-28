@@ -108,8 +108,7 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public int AddFine(RciNewFineViewModel fine)
         {
-            var fineID = this.CheckoutService.AddFine(fine);
-            return fineID;
+            return this.CheckoutService.AddFine(fine);
         }
 
         /// <summary>
@@ -119,6 +118,7 @@ namespace Phoenix.Controllers
         public ActionResult RemoveFine(int fineID)
         {
             this.CheckoutService.RemoveFine(fineID);
+
             return new HttpStatusCodeResult(200, "OK");
         }
 
@@ -172,7 +172,7 @@ namespace Phoenix.Controllers
             // Not yet signed
             foreach (var member in rci.CommonAreaMembers)
             {
-                var expectedSignature = $"{member.FirstName} {member.LastName}".ToLower().Trim();
+                var expectedSignature = $"{member.FirstName.Trim()} {member.LastName.Trim()}".ToLower().Trim();
 
                 if (signatures.Contains(expectedSignature))
                 {
@@ -246,8 +246,9 @@ namespace Phoenix.Controllers
                 return RedirectToAction("RASignature", new { id });
             }
 
-            // Not yet signed.
-            var signatureMatch = (rci.FirstName.ToLower() + " " + rci.LastName.ToLower()).Equals(signature.ToLower());
+            var residentName = $"{rci.FirstName.Trim()} {rci.LastName.Trim()}".ToLower().Trim();
+
+            var signatureMatch = residentName.Equals(signature.ToLower());
 
             if(!signatureMatch) // Signature provided doesn't match
             {
@@ -294,7 +295,7 @@ namespace Phoenix.Controllers
                 return RedirectToAction("RDSignature", new { id });
             }
 
-            var signatureMatch = (((string)TempData["user"]).ToLower()).Equals(signature.ToLower());
+            var signatureMatch = (((string)TempData["user"]).ToLower().Trim()).Equals(signature.ToLower().Trim());
 
             if(!signatureMatch) // Signature provided doesn't match
             {
@@ -382,31 +383,11 @@ namespace Phoenix.Controllers
                 return View(rci);
             }
 
-            var rciSigned = false;
+            this.CheckoutService.CheckoutRDSignRci(rci.RciId, (string)TempData["id"]);
 
-            rciSigned = this.CheckoutService.CheckoutRDSignRci(rci.RciId, (string)TempData["id"]);
+            this.CheckoutService.SendFineEmail(id, username + "@gordon.edu", password);
 
-            if (rciSigned) // Only do the rest if the rci was successfully signed.
-            {
-                this.CheckoutService.SendFineEmail(id, username + "@gordon.edu", password);
-
-                if(workRequest != null)
-                {
-                    this.CheckoutService.WorkRequestDamages(workRequest, username, password, gordonId, id, phoneNumber);
-                }
-            }
-            else
-            {
-                ViewBag.RDName = (string)TempData["user"];
-
-                ViewBag.ExpectedUsername = username;
-
-                ViewBag.WorkRequests = workRequest ?? new List<string>();
-
-                ViewBag.ErrorMessage = "There was a problem signing this rci. No emails or work requests have been sent. Please try again.";
-
-                return View(rci);
-            }
+            this.CheckoutService.WorkRequestDamages(workRequest, username, password, gordonId, id, phoneNumber);
 
             return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
         }

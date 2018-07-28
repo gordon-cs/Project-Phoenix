@@ -2,7 +2,7 @@
 {
     public class FineSummary
     {
-        public string FineId { get; set; }
+        public int FineId { get; set; }
         public bool IsCurrent { get; set; }
         public string BuildingCode { get; set; }
         public string RoomNumber { get; set; }

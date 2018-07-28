@@ -15,17 +15,13 @@
 @section Scripts{
     @Scripts.Render("~/bundles/page_specific/js/admin")
 }
-<div class="admin view">
+<div class="view">
     <h3>Hi @ViewBag.Name!</h3>
-    <section class="admin-actions">
-        <button id="find-rci-button"class="divAddOn-vert-field">Find RCI(s)</button>
-        <button id="update-furniture-button" class="divAddOn-vert-field">Update Furniture</button>
-    </section>
     <section id="find-rci-view">
         <div class="pane">
             @Html.Partial("Legend")
             <h3>
-               Find RCIs
+                Find RCIs
             </h3>
             <section class="filters">
                 <select id="session-select" class="divAddOn-field">
@@ -51,67 +47,11 @@
                     }
                 </select>
             </section>
-
             <div class="divAddOn">
-                <input id="search-bar-input" class="divAddOn-field" type="text" placeholder="Search..." />
+                <input id="search-bar-input"autofocus class="divAddOn-field" type="text" placeholder="Search..." />
             </div>
             <button id="search-button">Search</button>
-            <section id="search-results-section">@Html.Partial("SearchRcis", Model.SearchResults)</section>
-               
+            <section id="search-results-section">@Html.Partial("SearchRcis", Model.SearchResults)</section>        
         </div>
-      </section>
-    <section id="update-furniture-view">
-        <h3>RCI Types:</h3>
-        <div class="rci-types-flex">
-            @{
-                foreach (var type in Model.RciTypes)
-                {
-                    if (type.Item2.Equals("common"))
-                    {
-                        <button class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponent", routeValues: new { buildingCode = type.Item1, roomType = type.Item2 })'">@type.Item1 - Common Area</button>  
-                    }
-                    else
-                    {
-                        <button class="divAddOn-vert-field" onclick="location.href='@Url.Action(actionName:"Index", controllerName:"ManageRciComponent", routeValues: new { buildingCode = type.Item1, roomType = type.Item2 })'">@type.Item1</button>
-
-                    }
-                    <i class="material-icons delete" id="delete-@type.Item1-@type.Item2">clear</i>
-                }
-            }            
-        </div>
-        <button id="add-type-button" class="divAddOn-vert-field search-field">+ Add New Type</button>
-
     </section>
-    </div>
-<div class="signature-overlay">
-
-</div>
-<div id="signature-container" class="add-type-dialog-box">
-    <h3>Create New RCI Type</h3>
-    <section class="rci-info-fields">
-        <label for="new-building-code-input">Building:</label><input id="new-building-code-input" placeholder="Building Code" />
-        <br />
-        <select id="room-type-select" class="divAddOn-field">
-            <option>Individual</option>
-            <option>Common</option>
-        </select>
-        <p>Select an existing RCI from which to copy. If you select none, you will begin with an empty RCI, with no furniture, etc.</p>
-        <select id="copy-building-select" class="divAddOn-field">
-            <option value="0">None</option>
-            @{
-                j = 1;
-                foreach (var building in Model.Buildings)
-                {
-                    <option value=@j>@building</option>
-                    j++;
-                }
-            }
-        </select>
-    </section>
-    <div class="admin-actions">
-        <button id="create-new-type">Create New RCI Type</button>
-        <button id="cancel-add-type">Cancel</button>
-    </div>
-
-
 </div>

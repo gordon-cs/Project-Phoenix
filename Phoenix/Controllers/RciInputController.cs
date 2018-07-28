@@ -49,8 +49,6 @@ namespace Phoenix.Controllers
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
 
-            ViewBag.ViewTitle = $"Check-In: {rci.BuildingCode} {rci.RoomNumber} {rci.FirstName} {rci.LastName}";
-
             if (rci.GordonId == null) // A common area rci
             {
                 ViewBag.RAIsMemberOfApartment = (role == Constants.RA) && (rci.CommonAreaMembers.Where(m => m.GordonId == gordon_id).Any());
@@ -73,8 +71,6 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction(actionName: "Index", controllerName: "Dashboard");
             }
-
-            ViewBag.ViewTitle = $"Check-In Review: {rci.BuildingCode} {rci.RoomNumber} {rci.FirstName} {rci.LastName}";
 
             return View(rci);
         }

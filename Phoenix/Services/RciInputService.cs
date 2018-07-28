@@ -6,6 +6,7 @@ using System;
 using System.Drawing.Drawing2D;
 using Phoenix.DapperDal;
 using Phoenix.Utilities;
+using Phoenix.Exceptions;
 
 namespace Phoenix.Services
 {
@@ -14,6 +15,8 @@ namespace Phoenix.Services
         private readonly IDatabaseDal Dal;
 
         private readonly IRciBatchService RciBatchService;
+
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public RciInputService(IDatabaseDal dal, IDashboardService dashboardService, IRciBatchService batchService)
         {
@@ -24,174 +27,330 @@ namespace Phoenix.Services
 
         public FullRciViewModel GetRci(int id)
         {
-            var rci =  this.Dal.FetchRciById(id);
+            try
+            {
+                logger.Debug($"Fetching rci {id}...");
 
-            return new FullRciViewModel(rci);
+                var rci = this.Dal.FetchRciById(id);
+
+                return new FullRciViewModel(rci);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while fetching rci with id {id}...");
+
+                throw;
+            }
         }
 
         public IEnumerable<SignAllRDViewModel> GetRcisForBuildingThatCanBeSignedByRD(string gordonId, List<string> buildingCodes)
         {
-            // Fetch the rcis that can be signed by the Rd at this moment
-            var rcis = this.Dal.FetchRcisByBuilding(buildingCodes)
-                .Where(x => x.IsCurrent)
-                .Where(x => x.ResidentCheckinDate != null && x.RaCheckinDate != null && x.RdCheckinDate == null);
+            try
+            {
+                logger.Debug($"Fetching Rcis that can be currently signed by the RD user {gordonId} ... ");
 
-            // Fetch the rcis that the rd has queued up for signing.
-            var queuedRcisToBeSigned = this.RciBatchService.GetRcis(gordonId);
+                // Fetch the rcis that can be signed by the Rd at this moment
+                var rcis = this.Dal.FetchRcisByBuilding(buildingCodes)
+                    .Where(x => x.IsCurrent)
+                    .Where(x => x.ResidentCheckinDate != null && x.RaCheckinDate != null && x.RdCheckinDate == null);
 
-            var result = rcis
-                .Select(x =>
-                {
-                    var isQueued = queuedRcisToBeSigned.Contains(x.RciId);
+                logger.Debug($"Fetching the rcis that the RD user {gordonId} has queued up for signing...");
 
-                    return new SignAllRDViewModel(x, isQueued);
-                })
-                .OrderBy(m => m.RoomNumber);
+                // Fetch the rcis that the rd has queued up for signing.
+                var queuedRcisToBeSigned = this.RciBatchService.GetRcis(gordonId);
 
-            return result;
+                logger.Debug($"Rcis that can be signed by the RD user {gordonId}: {rcis.Count()}...");
+
+                logger.Debug($"Rcis that have been queued by the RD user {gordonId}: {queuedRcisToBeSigned.Count()}");
+
+                var result = rcis
+                    .Select(x =>
+                    {
+                        var isQueued = queuedRcisToBeSigned.Contains(x.RciId);
+
+                        return new SignAllRDViewModel(x, isQueued);
+                    })
+                    .OrderBy(m => m.RoomNumber);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while fetching rcis that RD user {gordonId} can sign at the moment");
+
+                throw;
+            }
         }
 
         public void SignRcis(string gordonID)
         {
-            var rciIds = this.RciBatchService.GetRcis(gordonID);
+            try
+            {
+                logger.Debug($"User {gordonID} has requested to sign all queued Rcis...");
 
-            this.Dal.SetRciCheckinDateColumns(rciIds, null, null, DateTime.Today, null);
+                var rciIds = this.RciBatchService.GetRcis(gordonID);
 
-            this.Dal.SetRciCheckinGordonIdColumns(rciIds, null, gordonID);
+                logger.Debug($"The following Rcis were found in user {gordonID}'s batch: {string.Join(",", rciIds)}");
+
+                this.Dal.SetRciCheckinDateColumns(rciIds, null, null, DateTime.Today, null);
+
+                this.Dal.SetRciCheckinGordonIdColumns(rciIds, null, gordonID);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected error occured while trying to sign rcis in batch. GordonId={gordonID}");
+
+                throw;
+            }
         }
 
         public bool SaveCommonAreaMemberSig(string rciSig, string user, string gordonID, int rciID)
         {
-            if (rciSig == user)
+            try
             {
-                this.Dal.CreateNewCommonAreaRciSignature(gordonID, rciID, DateTime.Now, Constants.CHECKIN);
+                logger.Debug($"A common area member requested to sign an rci for checkin. RciId={rciID}, GordonId={gordonID}, User={user}, Signature={rciSig}");
 
-                var rci = this.Dal.FetchRciById(rciID); // Check to see if everyone has signed now.
-
-                var apartmentMemberGordonIds = rci.RoomOrApartmentResidents
-                    .Select(x => x.GordonId)
-                    .OrderBy(x => x);
-
-                var residentsWhoHaveCheckedIn = rci.CommonAreaSignatures
-                    .Where(x => x.SignatureType.Equals(Constants.CHECKIN) && x.SignatureDate != null)
-                    .Select(x => x.GordonId)
-                    .OrderBy(x => x);
-
-                bool everyoneHasSigned = residentsWhoHaveCheckedIn.SequenceEqual(apartmentMemberGordonIds);
-                
-                if(everyoneHasSigned)
+                if (rciSig == user)
                 {
-                    if(rci.ResidentCheckinDate == null)
+                    this.Dal.CreateNewCommonAreaRciSignature(gordonID, rciID, DateTime.Now, Constants.CHECKIN);
+
+                    var rci = this.Dal.FetchRciById(rciID); // Check to see if everyone has signed now.
+
+                    var apartmentMemberGordonIds = rci.RoomOrApartmentResidents
+                        .Select(x => x.GordonId)
+                        .OrderBy(x => x);
+
+                    var residentsWhoHaveCheckedIn = rci.CommonAreaSignatures
+                        .Where(x => x.SignatureType.Equals(Constants.CHECKIN) && x.SignatureDate != null)
+                        .Select(x => x.GordonId)
+                        .OrderBy(x => x);
+
+                    logger.Debug($"User {gordonID} has signed. There are {apartmentMemberGordonIds.Count()} people in the apartment. {residentsWhoHaveCheckedIn.Count()} of whom have signed.");
+
+                    bool everyoneHasSigned = residentsWhoHaveCheckedIn.SequenceEqual(apartmentMemberGordonIds);
+
+                    if (everyoneHasSigned)
                     {
-                        this.Dal.SetRciCheckinDateColumns(new List<int> { rci.RciId }, DateTime.Today, null, null, null);
+                        if (rci.ResidentCheckinDate == null)
+                        {
+                            logger.Debug($"Everyone in the apartment of user {gordonID} has signed! Updating the resident checkin column...");
+
+                            this.Dal.SetRciCheckinDateColumns(new List<int> { rci.RciId }, DateTime.Today, null, null, null);
+                        }
                     }
+                    return true;
                 }
-                return true;
+                else
+                {
+                    return false;
+                }
             }
-            else
+            catch (Exception e)
             {
-                return false;
+                logger.Error(e, $"Unexpected exception submitting a common area signature....");
+
+                throw;
             }
         }
 
         public bool SaveResSigs(string rciSig, string lacSig, string user, int id)
         {
-            var today = DateTime.Today;
-
-            if (rciSig == user && lacSig == user)
+            try
             {
-                this.Dal.SetRciCheckinDateColumns(new List<int> { id }, today, null, null, today);
-            }
-            else
-            {
-                return false;
-            }
+                logger.Debug($"User {user} has requested to sign his checkin rci. RciId={id}, Signature={rciSig}, LifeAndConductStatementSignatures={lacSig}");
 
-            return true;
+                var today = DateTime.Today;
+
+                if (rciSig == user && lacSig == user)
+                {
+                    this.Dal.SetRciCheckinDateColumns(new List<int> { id }, today, null, null, today);
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while trying to sign individual rci. User={user}, RciId={id}, RciSig={rciSig}, LacSig={lacSig}");
+
+                throw;
+            }
         }
 
         public bool SaveRASigs(string rciSig, string lacSig, string rciSigRes, string user, int id, string gordonID)
         {
-            var rci = this.Dal.FetchRciById(id);
+            try
+            {
+                logger.Debug($"RA user {user} with gordonId {gordonID} is requesting to sign an Rci. RciSignature={rciSig}, RciSignatureRes={rciSigRes}");
 
-            var idList = new List<int> { id };
+                var rci = this.Dal.FetchRciById(id);
 
-            if (rciSig == user || rci.GordonId == gordonID) // rciSig is null when it is the RA signing for himself. Make another check to see if the logged in RA is the owner of the rci.
-            {
-                this.Dal.SetRciCheckinDateColumns(idList, null, DateTime.Today, null, null);
-                this.Dal.SetRciCheckinGordonIdColumns(idList, gordonID, null);
-            }
-            if (rciSigRes == user)
-            {
-                this.Dal.SetRciCheckinDateColumns(idList, DateTime.Today, null, null, null);
-            }
-            if (lacSig == user)
-            {
-                this.Dal.SetRciCheckinDateColumns(idList, null, null, null, DateTime.Today);
-            }
+                var idList = new List<int> { id };
 
-            rci = this.Dal.FetchRciById(id);
+                if (rciSig == user || rci.GordonId == gordonID) // rciSig is null when it is the RA signing for himself. Make another check to see if the logged in RA is the owner of the rci.
+                {
+                    this.Dal.SetRciCheckinDateColumns(idList, null, DateTime.Today, null, null);
 
-            // If it is a common area rci, don't look for the life and conduct statment signature.
-            if(rci.GordonId == null)
-            {
-                return rci.ResidentCheckinDate != null  && rci.RaCheckinDate != null;
+                    this.Dal.SetRciCheckinGordonIdColumns(idList, gordonID, null);
+                }
+                if (rciSigRes == user)
+                {
+                    this.Dal.SetRciCheckinDateColumns(idList, DateTime.Today, null, null, null);
+                }
+                if (lacSig == user)
+                {
+                    this.Dal.SetRciCheckinDateColumns(idList, null, null, null, DateTime.Today);
+                }
+
+                rci = this.Dal.FetchRciById(id);
+
+                // If it is a common area rci, don't look for the life and conduct statment signature.
+                if (rci.GordonId == null)
+                {
+                    return rci.ResidentCheckinDate != null && rci.RaCheckinDate != null;
+                }
+                // If it is not a common area rci, look for the life and conduct signature.
+                else
+                {
+                    return rci.ResidentCheckinDate != null && rci.LifeAndConductSignatureDate != null && rci.RaCheckinDate != null;
+                }
             }
-            // If it is not a common area rci, look for the life and conduct signature.
-            else
+            catch (Exception e)
             {
-                return rci.ResidentCheckinDate != null && rci.LifeAndConductSignatureDate != null && rci.RaCheckinDate != null;
+                logger.Error(e, $"Unexpected exception while signing an rci as RD user {gordonID}");
+
+                throw;
             }
         }
 
         public bool SaveRDSigs(string rciSig, string user, int id, string gordonID)
         {
-            var rci = this.Dal.FetchRciById(id);
-
-            var idList = new List<int> { id };
-
-            if (rciSig == user)
+            try
             {
-                this.Dal.SetRciCheckinDateColumns(idList, null, null, DateTime.Today, null);
-                this.Dal.SetRciCheckinGordonIdColumns(idList, null, gordonID);
+                logger.Debug($"RD user {user}, with gordon Id {gordonID} is about to sign rci {id}. RciSig={rciSig}...");
+
+                var rci = this.Dal.FetchRciById(id);
+
+                var idList = new List<int> { id };
+
+                if (rciSig == user)
+                {
+                    this.Dal.SetRciCheckinDateColumns(idList, null, null, DateTime.Today, null);
+
+                    this.Dal.SetRciCheckinGordonIdColumns(idList, null, gordonID);
+                }
+
+                rci = this.Dal.FetchRciById(id);
+
+                return rci.CheckinRdGordonId != null;
             }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected error while signing rcis as RD user {user}, with gordonId = {gordonID}");
 
-            rci = this.Dal.FetchRciById(id);
-
-            return rci.CheckinRdGordonId != null;
+                throw;
+            }
         }
 
         public void CheckRcis(int sigCheck, string gordonID, int id)
         {
-            // Add this rci to the list that need to be signed.
-            if (sigCheck == 1)
+            try
             {
-                this.RciBatchService.AddRciToBatch(gordonID, id);
+                // Add this rci to the list that need to be signed.
+                if (sigCheck == 1)
+                {
+                    logger.Debug($"Adding Rci {id} to rci batch for userId {gordonID}...");
+
+                    this.RciBatchService.AddRciToBatch(gordonID, id);
+                }
+                else
+                {
+                    logger.Debug($"Removing Rci {id} from rci batch for userId {gordonID}...");
+
+                    this.RciBatchService.RemoveRciFromBatch(gordonID, id);
+                }
             }
-            else
+            catch (Exception e)
             {
-                this.RciBatchService.RemoveRciFromBatch(gordonID, id);
+                logger.Error(e, $"Unexpected error while adding or removing rci {id} to user {gordonID}'s rci batch.");
+
+                throw;
             }
         }
 
         public string FetchDamageFilePath(int damageId)
         {
-            return this.Dal.FetchDamageById(damageId).ImagePath;
+            try
+            {
+                logger.Debug($"Fetching damage {damageId}...");
+
+                var damage = this.Dal.FetchDamageById(damageId);
+
+                return damage.ImagePath;
+            }
+            catch (DamageNotFoundException e)
+            {
+                logger.Error(e, $"Damage {damageId} does not exist!");
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while getting the damage file path for damage {damageId}...");
+
+                throw;
+            }
         }
 
         public int SaveTextDamage(string description, int rciId, string gordonId, int roomComponentTypeId)
         {
-            return this.Dal.CreateNewDamage(description, null, rciId, gordonId, roomComponentTypeId);
+            try
+            {
+                logger.Debug($"Creating new damage. RciId={rciId}, GordonId={gordonId}, RoomComponentTypeId={roomComponentTypeId}");
+
+                return this.Dal.CreateNewDamage(description, null, rciId, gordonId, roomComponentTypeId);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while saving damage. GordonId={gordonId}, RciId={rciId}, RoomComponentTypeId={roomComponentTypeId}");
+
+                throw;
+            }
         }
 
         public int SavePhotoDamage(string imagePath, int rciId, string gordonId, int roomComponentTypeId)
         {
-            return this.Dal.CreateNewDamage(null, imagePath, rciId, gordonId, roomComponentTypeId);
+            try
+            {
+                logger.Debug($"Creating new image damage... RciId={rciId}, GordonId={gordonId}, ImagePath={imagePath}, RoomComponentTypeId={roomComponentTypeId}");
+
+                return this.Dal.CreateNewDamage(null, imagePath, rciId, gordonId, roomComponentTypeId);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while saving damage. GordonId={gordonId}, RciId={rciId}, RoomComponentTypeId={roomComponentTypeId}");
+
+                throw;
+            }
         }
 
         public void DeleteDamage(int damageId)
         {
-            this.Dal.DeleteDamage(damageId);
+            try
+            {
+                logger.Debug($"Deleting damage with id {damageId}");
+
+                this.Dal.DeleteDamage(damageId);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while deleting damage {damageId}...");
+                
+                throw;
+            }
         }
 
         // Get the new size for an image to be rescaled, taken mostly from  http://www.advancesharp.com/blog/1130/image-gallery-in-asp-net-mvc-with-multiple-file-and-size

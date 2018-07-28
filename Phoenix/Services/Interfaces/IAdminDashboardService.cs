@@ -8,7 +8,6 @@ namespace Phoenix.Services
     public interface IAdminDashboardService
     {
         IEnumerable<string> GetBuildingCodes();
-        IEnumerable<Tuple<string, string>> GetRciTypes(XDocument document);
         IDictionary<string, string> GetSessions();
         List<HomeRciViewModel> Search(IEnumerable<string> sessions, IEnumerable<string> buildings, string keyword);
     }

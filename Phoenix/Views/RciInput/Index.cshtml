@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Check-In";
+    ViewBag.Header = Model.FirstName + " " + Model.LastName + " " + Model.BuildingDescription + " " + Model.RoomNumber;
     ViewBag.MenuExists = "T";
     ViewBag.Name = TempData["user"];
     ViewBag.Role = TempData["role"];
@@ -17,14 +18,14 @@
 }
 
 <div class="view">
-    <h2>@ViewBag.ViewTitle</h2>
+    <h3>@ViewBag.Header</h3>
 
     @{ var roomComponentsGroupedByArea = Model.RoomComponents.GroupBy(x => x.RoomArea); }
 
    
     @foreach (var roomArea in roomComponentsGroupedByArea)
     {
-        <h2>@roomArea.Key</h2>
+        <h3>@roomArea.Key</h3>
         foreach (var roomComponent in roomArea)
         {
             @Html.Partial("Component", roomComponent);

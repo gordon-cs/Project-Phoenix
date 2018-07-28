@@ -12,7 +12,7 @@ namespace Phoenix.Services
         void RemoveFine(int fineID);
         void CheckoutCommonAreaMemberSignRci(int rciID, string gordonID);
         void CheckoutRASignRci(int rciID, string raGordonID);
-        bool CheckoutRDSignRci(int rciID, string rdGordonID);
+        void CheckoutRDSignRci(int rciID, string rdGordonID);
         void CheckoutResidentSignRci(int rciID);
         HttpStatusCode PostWorkRequest(HttpClient client, string workRequest, string ADUsername, string fullBuildingName, string roomNumber, string phoneNumber, string firstname, string lastname, string gordonID);
         void SendFineEmail(int rciID, string emailAddress, string password);
