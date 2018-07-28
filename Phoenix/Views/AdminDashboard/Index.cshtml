@@ -16,7 +16,6 @@
     @Scripts.Render("~/bundles/page_specific/js/admin")
 }
 <div class="view">
-    <h3>Hi @ViewBag.Name!</h3>
     <section id="find-rci-view">
         <div class="pane">
             @Html.Partial("Legend")
@@ -25,7 +24,6 @@
             </h3>
             <section class="filters">
                 <select id="session-select" class="divAddOn-field">
-                    <option value="0">All Sessions</option>
                     @{
                         int i = 1;
                         foreach (var session in Model.Sessions)
@@ -33,17 +31,18 @@
                             <option value=@i id="@session.Key">@session.Value</option>
                             i++;
                         }
+                        <option value=@i>All Sessions</option>
                     }
                 </select>        
                 <select id="building-select" class="divAddOn-field">
-                    <option value="0">All Buildings</option>
                     @{
                         int j = 1;
                         foreach (var building in Model.Buildings)
                         {
-                            <option value=@j>@building</option>
+                            <option value=@j id="@building.Key">@building.Value</option>
                             j++;
                         }
+                        <option value=@j>All Buildings</option>
                     }
                 </select>
             </section>

@@ -67,9 +67,6 @@ $(".dropdown").click(function () {
 $(window).load(function () {
     // If there is a search bar, apply whatever is in it
     var searchBar = document.querySelector(".search-bar");
-
-    console.log(searchBar);
-
     if (searchBar) {
         search(searchBar);
     }
