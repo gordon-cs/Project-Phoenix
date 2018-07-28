@@ -1,0 +1,17 @@
+﻿@model Phoenix.Models.ViewModels.FriendlyErrorViewModel
+@{
+    ViewBag.MenuExists = "T";
+}
+
+<div class="view">
+    <div class="pane">
+        <h3>It looks like an error occured while processing your request</h3>
+        <div class="div-list">
+            <div>I have been notified of this error.</div>
+            <div>If you need this functionality in a time sensitive manner, send me a follow up email referring to this id: @Model.CorrelationId</div>
+        </div>
+        <div>
+            <a class="fake-link" href="mailto:ezeanyinabia.anyanwu@gmail.com?subject=Online Rci error">Ezeanyinabia.Anyanwu@gordon.edu</a>
+        </div>
+    </div>
+</div>

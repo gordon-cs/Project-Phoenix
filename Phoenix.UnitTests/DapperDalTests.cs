@@ -1,4 +1,6 @@
-﻿using Phoenix.DapperDal;
+﻿using Dapper;
+using Phoenix.DapperDal;
+using Phoenix.Exceptions;
 using Phoenix.UnitTests.TestUtilities;
 using Phoenix.Utilities;
 using System;
@@ -13,7 +15,25 @@ namespace Phoenix.UnitTests
         private readonly IDatabaseDal Dal;
 
         private IDbConnectionFactory DbConnectionFactory { get; set; }
-        
+
+        // Some handy values to use for testing.
+        // Some of these values matter, meaning they need to be real values that exist in the database.
+        // e.g. Session -> We do an inner join on it to fetch rcis, so it needs to be a valid session. Same for GordonId and BuildingCode
+        // The other values could probably be made up, but we still choose to use "sane" values for them.
+        private const string TestSession = "201809";
+
+        private const string TestGordonId = "999999097";
+
+        private const string TestBuildingCode = "FER";
+
+        private const string TestBuildingCode2 = "BRO";
+
+        private const string TestRoomNumber = "109";
+
+        private const string TestRoomNumber2 = "200";
+
+        private const int TestRoomComponentTypeId = 1;
+
         public DapperDalTests(DatabaseFixture fixture)
         {
             this.DbConnectionFactory = fixture.DbFactory;
@@ -25,10 +45,28 @@ namespace Phoenix.UnitTests
 
         // Rcis
         [Fact]
+        public void FetchRcisComparisonTests()
+        {
+            // We want to make sure that we get the same number of rows back when we do a normal select statement vs when we qualify it with inner joins etc...
+            string simpleSelectStatement = "select * from Rci";
+
+            string selecteStatementToBeTested = DapperDal.Sql.Rci.RciSelectstatement;
+
+            using (var connection = this.DbConnectionFactory.CreateConnection())
+            {
+                var first = connection.Query(simpleSelectStatement);
+
+                var second = connection.Query(selecteStatementToBeTested);
+
+                Assert.Equal(first.Count(), second.Count());
+            }
+        }
+
+        [Fact]
         public void FetchRciById_Succeeds()
         {
             // Arrange
-            var rciId = this.Dal.CreateNewDormRci("50184689", "TAV", "104A", "201809");
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
 
             // Test
             var result = this.Dal.FetchRciById(rciId);
@@ -52,17 +90,16 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FetchRciById_Throws_When_No_Rci_Exists_For_The_RciId()
         {
-            var exception = Assert.Throws<Exception>(() => this.Dal.FetchRciById(0));
-
-            Assert.Contains("Expected a single result", exception.Message);
+            var exception = Assert.Throws<RciNotFoundException>(() => this.Dal.FetchRciById(0));
         }
 
         [Fact]
         public void FetchRcisById_Success()
         {
             // Setup - Create 2 rcis
-            var rciId1 = this.Dal.CreateNewCommonAreaRci("TAV", "10000", "2000");
-            var rciId2 = this.Dal.CreateNewDormRci("50153295", "TAV", "20000", "2000");
+            var rciId1 = this.Dal.CreateNewCommonAreaRci(TestBuildingCode, TestRoomNumber, TestSession);
+            var rciId2 = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode2, TestRoomNumber2, TestSession);
+
 
             var rciList = this.Dal.FetchRcisById(new List<int> { rciId1, rciId2 });
 
@@ -82,12 +119,16 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FetchRcisByBuilding_Success()
         {
-            var buildings = new List<string> { "TAV" };
+            // Setup
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+
+            var buildings = new List<string> { TestBuildingCode };
 
             var result = this.Dal.FetchRcisByBuilding(buildings);
 
             Assert.NotEmpty(result);
-            Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("TAV")));
+
+            Assert.Contains(result, x => x.BuildingCode.Equals(TestBuildingCode) && x.RoomNumber.Equals(TestRoomNumber) && x.GordonId.Equals(TestGordonId));
         }
 
         [Fact]
@@ -102,17 +143,17 @@ namespace Phoenix.UnitTests
         public void FetchRcisBySessionAndBuilding_Success()
         {
             // Setup
-            var rciId = this.Dal.CreateNewDormRci("4343", "TAV", "32", "201709");
-            var sessions = new List<string> { "201709" };
-            var buildings = new List<string> { "TAV" };
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+            var sessions = new List<string> { TestSession };
+            var buildings = new List<string> { TestBuildingCode };
 
             // Test
             var result = this.Dal.FetchRcisBySessionAndBuilding(sessions, buildings);
 
             // Assert
             Assert.NotEmpty(result);
-            Assert.True(result.TrueForAll(x => x.SessionCode.Equals("201709")));
-            Assert.True(result.TrueForAll(x => x.BuildingCode.Equals("TAV")));
+
+            Assert.Contains(result, x => x.BuildingCode.Equals(TestBuildingCode) && x.RoomNumber.Equals(TestRoomNumber) && x.GordonId.Equals(TestGordonId));
 
             // Cleanup
             this.Dal.DeleteRci(rciId);
@@ -122,16 +163,14 @@ namespace Phoenix.UnitTests
         public void FetchRcisByRoom_Success()
         {
             // Arrange
-            var buildingCode = "GRA";
-            var roomNumber = "113";
-            var rciId = this.Dal.CreateNewDormRci("TESTID", buildingCode, roomNumber, "TESTSESSION");
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
 
             // Test
-            var result = this.Dal.FetchRcisForRoom(buildingCode, roomNumber);
+            var result = this.Dal.FetchRcisForRoom(TestBuildingCode, TestRoomNumber);
 
             Assert.NotEmpty(result);
-            Assert.True(result.TrueForAll(x => x.BuildingCode.Equals(buildingCode)));
-            Assert.True(result.TrueForAll(x => x.RoomNumber.Equals(roomNumber)));
+
+            Assert.Contains(result, x => x.BuildingCode.Equals(TestBuildingCode) && x.RoomNumber.Equals(TestRoomNumber) && x.GordonId.Equals(TestGordonId));
 
             // Cleanup
             this.Dal.DeleteRci(rciId);
@@ -141,44 +180,69 @@ namespace Phoenix.UnitTests
         public void CreateAndDeleteTests()
         {
             // Create an Rci
-            var rciId = this.Dal.CreateNewDormRci("0101", "Hello", "20", "2020");
-            var commonAreaRciId = this.Dal.CreateNewCommonAreaRci("Common", "2", "32");
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+            var commonAreaRciId = this.Dal.CreateNewCommonAreaRci(TestBuildingCode2, TestRoomNumber2, TestSession);
 
             var rci = this.Dal.FetchRciById(rciId);
             var commonAreaRci = this.Dal.FetchRciById(commonAreaRciId);
 
             Assert.NotEqual(0, rciId);
-            Assert.Equal("0101", rci.GordonId);
-            Assert.Equal("Hello", rci.BuildingCode);
-            Assert.Equal("20", rci.RoomNumber);
-            Assert.Equal("2020", rci.SessionCode);
+            Assert.Equal(TestGordonId, rci.GordonId);
+            Assert.Equal(TestBuildingCode, rci.BuildingCode);
+            Assert.Equal(TestRoomNumber, rci.RoomNumber);
+            Assert.Equal(TestSession, rci.SessionCode);
             Assert.Equal(1, rci.RciTypeId);
 
             Assert.NotEqual(0, commonAreaRciId);
             Assert.Null(commonAreaRci.GordonId);
-            Assert.Equal("Common", commonAreaRci.BuildingCode);
-            Assert.Equal("2", commonAreaRci.RoomNumber);
-            Assert.Equal("32", commonAreaRci.SessionCode);
+            Assert.Equal(TestBuildingCode2, commonAreaRci.BuildingCode);
+            Assert.Equal(TestRoomNumber2, commonAreaRci.RoomNumber);
+            Assert.Equal(TestSession, commonAreaRci.SessionCode);
             Assert.Equal(2, commonAreaRci.RciTypeId);
 
             // Delete it
             this.Dal.DeleteRci(rciId);
             this.Dal.DeleteRci(commonAreaRciId);
 
-            var exception = Assert.Throws<Exception>(() => this.Dal.FetchRciById(rciId));
-            var commonAreaException = Assert.Throws<Exception>(() => this.Dal.FetchRciById(commonAreaRciId));
+            var exception = Assert.Throws<RciNotFoundException>(() => this.Dal.FetchRciById(rciId));
+            var commonAreaException = Assert.Throws<RciNotFoundException>(() => this.Dal.FetchRciById(commonAreaRciId));
+        }
 
-            Assert.Contains("Expected a single result", exception.Message);
-            Assert.Contains("Expected a single result", commonAreaException.Message);
+        [Fact]
+        public void RciCascadeDeleteTests()
+        {
+            // We want to test the DB cascade delete functionality.
+            // If everything goes well, we should be able to create an rci,
+            // and create a bunch of fines and damages using that rciId.
+            // If that rci is deleted, all the fines and damages we created should also be deleted.
+
+            var rciId = this.Dal.CreateNewCommonAreaRci(TestBuildingCode, TestRoomNumber, TestSession);
+
+            var fineId = this.Dal.CreateNewFine(10, TestGordonId, "NO", rciId, TestRoomComponentTypeId);
+            var damageId = this.Dal.CreateNewDamage("NO", null, rciId, TestGordonId, TestRoomComponentTypeId);
+
+            // First check to make sure we can fetch both the fine and damage
+            var fine = this.Dal.FetchFineById(fineId);
+            var damage = this.Dal.FetchDamageById(damageId);
+
+            Assert.NotNull(fine);
+            Assert.NotNull(damage);
+
+            // Now delete the rci
+            this.Dal.DeleteRci(rciId);
+
+            // Now try to re-fetch our fine and damage, we should get exceptions
+            var fineException = Assert.Throws<FineNotFoundException>(() => this.Dal.FetchFineById(fineId));
+            var damageException = Assert.Throws<DamageNotFoundException>(() => this.Dal.FetchDamageById(damageId));
         }
 
         [Fact]
         public void UpdateRciIsCurrentColumnTests()
         {
             // Create an rci
-            var rciId1 = this.Dal.CreateNewDormRci("010101", "Test", "2020202", "2020202");
-            var rciId2 = this.Dal.CreateNewDormRci("939393", "Test", "4434334", "3233232");
-            var rciId3 = this.Dal.CreateNewDormRci("49494", "Test", "3444", "3232332");
+            var rciId1 = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+            var rciId2 = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+            var rciId3 = this.Dal.CreateNewCommonAreaRci(TestBuildingCode, TestRoomNumber, TestSession);
 
             // Now Fetch the rcis
             var rci1 = this.Dal.FetchRciById(rciId1);
@@ -221,8 +285,8 @@ namespace Phoenix.UnitTests
             var today = DateTime.Now;
 
             // Setup
-            var rciId1 = this.Dal.CreateNewCommonAreaRci("TAV", "104", "2000");
-            var rciId2 = this.Dal.CreateNewDormRci("50153295", "BRO", "900", "2000");
+            var rciId1 = this.Dal.CreateNewCommonAreaRci(TestBuildingCode, TestRoomNumber, TestSession);
+            var rciId2 = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
 
             // Test 
             this.Dal.SetRciCheckinDateColumns(new List<int> { rciId1, rciId2 }, today, today, today, today);
@@ -258,8 +322,8 @@ namespace Phoenix.UnitTests
             var today = DateTime.Now;
 
             // Setup
-            var rciId1 = this.Dal.CreateNewCommonAreaRci("TAV", "104", "2000");
-            var rciId2 = this.Dal.CreateNewDormRci("50153295", "BRO", "900", "2000");
+            var rciId1 = this.Dal.CreateNewCommonAreaRci(TestBuildingCode, TestRoomNumber, TestSession);
+            var rciId2 = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
 
             //Test 
             this.Dal.SetRciCheckoutDateColumns(new List<int> { rciId1, rciId2 }, today, today, today);
@@ -292,7 +356,7 @@ namespace Phoenix.UnitTests
         public void CreateUpdateAndDeleteDamageTests()
         {
             // Setup
-            var rciId = this.Dal.CreateNewDormRci("50153295", "BRO", "1000", "2000");
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
 
             // Create a new damage
             var damageId = this.Dal.CreateNewDamage("Tack on the wall", null, rciId, "50153295", 2);
@@ -320,7 +384,7 @@ namespace Phoenix.UnitTests
         public void CreateAndDeleteCommonAreaRciTests()
         {
             // Setup
-            var rciId = this.Dal.CreateNewCommonAreaRci("BRO", "1000", "2000");
+            var rciId = this.Dal.CreateNewCommonAreaRci(TestBuildingCode, TestRoomNumber, TestSession);
 
             var commonAreaRciSignature = this.Dal.CreateNewCommonAreaRciSignature("50153295", rciId, DateTime.Now, Constants.CHECKIN);
 
@@ -389,6 +453,10 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FetchAccount_Success()
         {
+            // The following values need to be chosen carefullly.
+            // They need to be ids of actual people in the Accounts table with the right permissions. Meaning one needs to be a student,
+            // one needs to be an ra and the third an rd.
+
             // Tavilla Resident
             var studentId = "50196746";
 
@@ -433,6 +501,7 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FetchResidentAccounts()
         {
+            // These values were intentionally chosen. If you change them, make sure you change the assert statements accordingly
             var buildingCode = "BRO";
             var apartmentNumber = "203";
             var session = "201509";
@@ -446,19 +515,17 @@ namespace Phoenix.UnitTests
 
         // Room Assign
         [Fact]
-        public void FetchLatestRoomAssign_Invalid_Id_Returns_Null()
+        public void FetchLatestRoomAssign_Invalid_Id_Throws()
         {
             var id = "43";
 
-            var result = this.Dal.FetchLatestRoomAssignmentForId(id);
-
-            Assert.Null(result);
+            Assert.Throws<RoomAssignNotFoundException>(() => this.Dal.FetchLatestRoomAssignmentForId(id));
         }
 
         [Fact]
         public void FetchLatestRoomAssign_Success()
         {
-            var id = "50196746";
+            var id = TestGordonId;
 
             var result = this.Dal.FetchLatestRoomAssignmentForId(id);
 
@@ -490,10 +557,10 @@ namespace Phoenix.UnitTests
         public void CreateUpdateAndDeleteFine_Tests()
         {
             // Setup
-            var rciId = this.Dal.CreateNewDormRci("50153295", "BRO", "1000", "2000");
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
 
             // Create a new fine
-            var fineId = this.Dal.CreateNewFine(10, "50153295", "No reason", rciId, 1);
+            var fineId = this.Dal.CreateNewFine(10, "50153295", "No reason", rciId, TestRoomComponentTypeId);
 
             Assert.NotEqual(0, fineId);
 
@@ -516,38 +583,43 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FineSummary_Tests()
         {
+            // Setup
             var noBuildings = new List<string>();
+            var oneBuilding = new List<string> { TestBuildingCode };
 
-            var oneBuilding = new List<string> { "FUL" };
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+            var fineId = this.Dal.CreateNewFine(10, TestGordonId, "NO REASON", rciId, TestRoomComponentTypeId);
+
 
             var noBuildingResult = this.Dal.FetchFinesByBuilding(noBuildings);
             var oneBuildingResult = this.Dal.FetchFinesByBuilding(oneBuilding);
 
             Assert.Empty(noBuildingResult);
-
             Assert.NotEmpty(oneBuildingResult);
 
-            var fineSummary = oneBuildingResult.First();
-            Assert.NotNull(fineSummary.FineId);
-            Assert.NotNull(fineSummary.GordonId);
+            var fineSummary = oneBuildingResult.Where(x => x.FineId.Equals(fineId)).First();
+            Assert.Equal(TestGordonId, fineSummary.GordonId);
             Assert.NotNull(fineSummary.LastName);
             Assert.NotNull(fineSummary.FirstName);
-            Assert.NotNull(fineSummary.BuildingCode);
-            Assert.NotNull(fineSummary.RoomNumber);
+            Assert.Equal(TestBuildingCode, fineSummary.BuildingCode);
+            Assert.Equal(TestRoomNumber, fineSummary.RoomNumber);
             Assert.NotNull(fineSummary.RoomComponentName);
-            Assert.NotNull(fineSummary.SessionCode);
+            Assert.Equal(TestSession, fineSummary.SessionCode);
             Assert.NotNull(fineSummary.SuggestedCostsString);
-            Assert.Contains(fineSummary.BuildingCode, oneBuilding);
+
+            // Cleanup
+            this.Dal.DeleteFine(fineId);
+            this.Dal.DeleteRci(rciId);
         }
 
         // Rooms
         [Fact]
         public void FetchRoom_Success()
         {
-            var room = this.Dal.FetchRoom("TAV", "104");
+            var room = this.Dal.FetchRoom(TestBuildingCode, TestRoomNumber);
 
-            Assert.Equal("TAV", room.BuildingCode);
-            Assert.Equal("104", room.RoomNumber);
+            Assert.Equal(TestBuildingCode, room.BuildingCode);
+            Assert.Equal(TestRoomNumber, room.RoomNumber);
         }
 
         // Room Component Types
@@ -555,8 +627,8 @@ namespace Phoenix.UnitTests
         public void FetchRoomComponentTypesForRci_Success()
         {
             // Setup
-            var rciId = this.Dal.CreateNewDormRci("40404", "TAV", "201", "230230");
-            var commonAreaRciId = this.Dal.CreateNewCommonAreaRci("TAV", "201", "30202");
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+            var commonAreaRciId = this.Dal.CreateNewCommonAreaRci(TestBuildingCode, TestRoomNumber, TestSession);
 
             // Test
             var roomComponentTypesDorm = this.Dal.FetchRoomComponentTypesForRci(rciId);

@@ -16,8 +16,10 @@ namespace Phoenix.DapperDal.Types
         public bool IsCurrent { get; set; }
         public DateTime CreationDate { get; set; }
         public string BuildingCode { get; set; }
+        public string BuildingDescription { get; set; }
         public string RoomNumber { get; set; }
         public string SessionCode { get; set; }
+        public string SessionDescription { get; set; }
         public int RciTypeId { get; set; }
         public string RciTypeName { get; set; }
         public DateTime? ResidentCheckinDate { get; set; }

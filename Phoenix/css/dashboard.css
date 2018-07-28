@@ -44,22 +44,10 @@
 }
 
 /* Admin view */
-.admin-actions {
-    margin: 15px;
-}
-.admin-actions button {
-    margin: 5px;
-}
-#find-rci-view, #update-furniture-view {
-    display: none;
-}
 .filters {
     margin-bottom: 15px;
     margin-top:15px;
 }
 .filters select {
     margin: 5px 0;
-}
-#update-furniture-view .divAddOn-vert-field {
-    margin: 15px 10px;
 }

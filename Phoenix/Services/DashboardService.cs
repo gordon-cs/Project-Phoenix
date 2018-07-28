@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Phoenix.DapperDal;
 using System.Text;
 using Phoenix.DapperDal.Types;
+using Phoenix.Exceptions;
 
 namespace Phoenix.Services
 {
@@ -14,50 +15,87 @@ namespace Phoenix.Services
     {
         private IDatabaseDal Dal { get; set; }
 
-        private ILoggerService Logger { get; set; }
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public DashboardService(IDatabaseDal dal, ILoggerService logger)
+        public DashboardService(IDatabaseDal dal)
         {
             this.Dal = dal;
-
-            this.Logger = logger;
         }
 
         public IEnumerable<HomeRciViewModel> GetCurrentRcisForResident(string gordonId)
         {
-            if (gordonId == null)
+            try
             {
-                return null;
+                if (gordonId == null)
+                {
+                    throw new ArgumentNullException(gordonId);
+                }
+
+                logger.Debug($"Fetching Rcis for resident {gordonId}");
+
+                var currentRcis = this.Dal.FetchRcisByGordonId(gordonId)
+                    .Where(x => x.IsCurrent)
+                    .Select(x => new HomeRciViewModel(x));
+
+                logger.Debug($"Got {currentRcis.Count()} back for resident {gordonId}");
+
+                return currentRcis;
             }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception happened while trying to get rcis for resident {gordonId}.");
 
-            var currentRcis = this.Dal.FetchRcisByGordonId(gordonId)
-                .Where(x => x.IsCurrent)
-                .Select(x => new HomeRciViewModel(x));
-
-            return currentRcis;
+                throw;
+            }
         }
 
         public IEnumerable<HomeRciViewModel> GetCurrentRcisForBuilding(List<string> buildingCodes)
         {
-            var currentRcis = this.Dal
-                .FetchRcisByBuilding(buildingCodes)
-                .Where(x => x.IsCurrent)
-                .Select(x => new HomeRciViewModel(x))
-                .OrderBy(m => m.RoomNumber);
+            try
+            {
+                logger.Debug($"Fetching rcis for buildings : {string.Join(",", buildingCodes)}...");
 
-            return currentRcis;
+                var currentRcis = this.Dal
+                    .FetchRcisByBuilding(buildingCodes)
+                    .Where(x => x.IsCurrent)
+                    .Select(x => new HomeRciViewModel(x))
+                    .OrderBy(m => m.RoomNumber);
+
+                logger.Debug($"Got {currentRcis.Count()} back for buildings : {string.Join(",", buildingCodes)}...");
+
+                return currentRcis;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception happened while trying to fetch rcis for buildings: {string.Join(",", buildingCodes)}");
+
+                throw;
+            }
         }
 
         public IEnumerable<HomeRciViewModel> GetCurrentCommonAreaRcisForRoom(string currentRoom, string building)
         {
-            var apartmentNumber = currentRoom.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
+            try
+            {
+                var apartmentNumber = currentRoom.TrimEnd(Constants.ROOM_NUMBER_SUFFIXES);
 
-            var currentCommonAreaRcis = this.Dal.FetchRcisForRoom(building, apartmentNumber)
-                .Where(x => x.IsCurrent) // Current
-                .Where(x => x.GordonId == null) // Common Area
-                .Select(x => new HomeRciViewModel(x));
+                logger.Debug($"Fetching Common Area Rcis for room {building} {currentRoom}. Apartment name was determined to be {apartmentNumber}");
 
-            return currentCommonAreaRcis;
+                var currentCommonAreaRcis = this.Dal.FetchRcisForRoom(building, apartmentNumber)
+                    .Where(x => x.IsCurrent) // Current
+                    .Where(x => x.GordonId == null) // Common Area
+                    .Select(x => new HomeRciViewModel(x));
+
+                logger.Debug($"Got {currentCommonAreaRcis.Count()} rcis back for room {building} {currentRoom}");
+
+                return currentCommonAreaRcis;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while fetching rcis for room {building} {currentRoom}");
+
+                throw;
+            }
         }
 
          /// <summary>
@@ -66,34 +104,71 @@ namespace Phoenix.Services
          /// <param name="buildingCodes">The building for which to generate a fines spreadsheet</param>
         public string GenerateFinesSpreadsheet(List<string> buildingCodes)
         {
-            var currentSession = GetCurrentSession();
-            var finesCsv = new StringBuilder();
-            finesCsv.AppendLine(@"""Room Number"",""Building Code"",""Name"",""ID"",""Detailed Reason"",""Charge Amount"",""Behavioral Fine""");
-
-            var fines = this.Dal.FetchFinesByBuilding(buildingCodes)
-                .Where(x => x.IsCurrent)
-                .Where(x => x.FineAmount > 0); // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
-                                               // charge the resident for it e.g. Window blinds need to be replaced.
-
-            foreach (var fine in fines)
+            try
             {
-                // All the fields are quoted because some fields will contain the comma separater in them, which will throw things off if the quotes are not present.
-                finesCsv.Append($"\"{fine.RoomNumber}\",");
-                finesCsv.Append($"\"{fine.BuildingCode}\",");
-                finesCsv.Append($"\"{fine.FirstName} {fine.LastName}\",");
-                finesCsv.Append($"\"{fine.GordonId}\",");
-                finesCsv.Append($"\"{fine.RoomComponentName}: {fine.Reason}\",");
-                finesCsv.Append($"\"{fine.FineAmount}\",");
-                finesCsv.Append(fine.RoomArea.Equals(Constants.FINE, StringComparison.OrdinalIgnoreCase) ? $"\"YES\"" : $"\"NO\"");
-                finesCsv.AppendLine();
-            }
+                var currentSession = GetCurrentSession();
 
-            return finesCsv.ToString();
+                logger.Debug($"Generating fines spreadsheet. The current session is {currentSession}");
+
+                var finesCsv = new StringBuilder();
+
+                finesCsv.AppendLine(@"""Room Number"",""Building Code"",""Name"",""ID"",""Detailed Reason"",""Charge Amount"",""Behavioral Fine""");
+
+                var fines = this.Dal.FetchFinesByBuilding(buildingCodes)
+                    .Where(x => x.IsCurrent)
+                    .Where(x => x.FineAmount > 0); // Don't include $0 fines in the query. These will be present when an RD wants to work request something, but not
+                                                   // charge the resident for it e.g. Window blinds need to be replaced.
+
+                logger.Debug($"Got {fines.Count()} fines for buildings {string.Join(",", buildingCodes)}");
+
+                foreach (var fine in fines)
+                {
+                    // All the fields are quoted because some fields will contain the comma separater in them, which will throw things off if the quotes are not present.
+                    finesCsv.Append($"\"{fine.RoomNumber}\",");
+                    finesCsv.Append($"\"{fine.BuildingCode}\",");
+                    finesCsv.Append($"\"{fine.FirstName} {fine.LastName}\",");
+                    finesCsv.Append($"\"{fine.GordonId}\",");
+                    finesCsv.Append($"\"{fine.RoomComponentName}: {fine.Reason}\",");
+                    finesCsv.Append($"\"{fine.FineAmount}\",");
+                    finesCsv.Append(fine.RoomArea.Equals(Constants.FINE, StringComparison.OrdinalIgnoreCase) ? $"\"YES\"" : $"\"NO\"");
+                    finesCsv.AppendLine();
+                }
+
+                return finesCsv.ToString();
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while generating fine summary for buildings {string.Join(",", buildingCodes)}");
+
+                throw;
+            }
         } 
 
         public string GetCurrentSession()
         {
-            return this.Dal.FetchCurrentSession();
+            try
+            {
+                var currentSession = this.Dal.FetchCurrentSession();
+
+                logger.Debug($"Call to GetCurrentSession - {currentSession}");
+
+                return currentSession;
+            }
+            catch (CurrentSessionNotFoundException e)
+            {
+                // We could just return the most recent session but that would mess up things that require sessions to match? I don't currently have a good example though.
+                // So for now, just throw.
+
+                logger.Error(e, $"Could not determine the current session! Date is {DateTime.Now}");
+
+                throw;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while trying to get current session");
+
+                throw;
+            }
         } 
 
         /// <summary>
@@ -101,29 +176,42 @@ namespace Phoenix.Services
         /// </summary>
         public void SyncRoomRcisFor(List<string> kingdom)
         {
-            var result = Enumerable.Empty<RoomAssignment>();
-
-            var currentSession = this.GetCurrentSession();
-
-            // Find the room assign records that are missing rcis
-            foreach (var building in kingdom)
+            try
             {
-                var query = this.Dal.FetchRoomAssignmentsThatDoNotHaveRcis(building, currentSession);
+                logger.Info($"Rci Generation for the following buildings is about to begin: {string.Join(",", kingdom)}...");
 
-                result = result.Concat(query);
-            }
+                var result = Enumerable.Empty<RoomAssignment>();
 
-            // Create the rcis
-            foreach (var roomAssignment in result)
-            {
-                if (roomAssignment.GordonId == null || roomAssignment.BuildingCode == null || roomAssignment.RoomNumber == null)
+                var currentSession = this.GetCurrentSession();
+
+                // Find the room assign records that are missing rcis
+                foreach (var building in kingdom)
                 {
-                    continue;
+                    var query = this.Dal.FetchRoomAssignmentsThatDoNotHaveRcis(building, currentSession);
+
+                    result = result.Concat(query);
                 }
 
-                var newRciId = this.Dal.CreateNewDormRci(roomAssignment.GordonId, roomAssignment.BuildingCode, roomAssignment.RoomNumber, roomAssignment.SessionCode);
+                logger.Info($"For buildings {string.Join(",", kingdom)}, there were {result.Count()} room assignments without matching Rcis...");
 
-                this.Logger.Info($"New Rci Created by Rci Generation in DashboardService.SyncRoomRcisFor. RciId={newRciId}");
+                // Create the rcis
+                foreach (var roomAssignment in result)
+                {
+                    if (roomAssignment.GordonId == null || roomAssignment.BuildingCode == null || roomAssignment.RoomNumber == null)
+                    {
+                        logger.Warn($"Encountered room assignment with null values for either GordonId, Building Code or RoomNumber. GordonId{roomAssignment.GordonId}, BuildingCode={roomAssignment.BuildingCode}, RoomNumber={roomAssignment.RoomNumber}..");
+
+                        continue;
+                    }
+
+                    var newRciId = this.Dal.CreateNewDormRci(roomAssignment.GordonId, roomAssignment.BuildingCode, roomAssignment.RoomNumber, roomAssignment.SessionCode);
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception during Rci Generation process...");
+
+                throw;
             }
         }
 
@@ -132,40 +220,56 @@ namespace Phoenix.Services
         /// </summary>
         public void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber, DateTime? roomAssignDate)
         {
-            // Find all rcis for the person
-            var myRcis = this.Dal
-                .FetchRcisByGordonId(idNumber)
-                .Where(x => x.BuildingCode == buildingCode)
-                .Where(x => x.RoomNumber == roomNumber);
-
-            // Get most recent rci.
-            var mostRecentRci = myRcis.OrderByDescending(m => m.CreationDate).FirstOrDefault();
-
-
-            var createNewRci = false;
-
-            // There are room assign records for this person but no rcis.
-            if(mostRecentRci == null && roomAssignDate != null) 
+            try
             {
-                createNewRci = true;
+                logger.Debug($"Rci Generation process for room {buildingCode} {roomNumber} is starting. GordonId is {idNumber}...");
+
+                // Find all rcis for the person
+                var myRcis = this.Dal
+                    .FetchRcisByGordonId(idNumber)
+                    .Where(x => x.BuildingCode == buildingCode)
+                    .Where(x => x.RoomNumber == roomNumber);
+
+                logger.Debug($"Person {idNumber} has {myRcis.Count()} total Rcis (Including archived ones)");
+
+                // Get most recent rci.
+                var mostRecentRci = myRcis.OrderByDescending(m => m.CreationDate).FirstOrDefault();
+
+                logger.Debug($"Most recent Rci for Person {idNumber} is  {mostRecentRci?.RciId}. Their most recent room assignment date is {mostRecentRci}");
+
+                var createNewRci = false;
+
+                // There are room assign records for this person but no rcis.
+                if (mostRecentRci == null && roomAssignDate != null)
+                {
+                    createNewRci = true;
+                }
+                // This will happen if there is no room assign record for the person
+                else if (mostRecentRci != null && roomAssignDate == null)
+                {
+                    createNewRci = false;
+                }
+                // Both values are non-null.
+                else
+                {
+                    // Compare Creation date of rci and assign date of room assign record
+                    createNewRci = mostRecentRci.CreationDate < roomAssignDate;
+                }
+
+                logger.Debug($"The boolean variable createNewRci for person {idNumber} is {createNewRci}...");
+
+                if (createNewRci)
+                {
+                    var roomAssignment = this.Dal.FetchLatestRoomAssignmentForId(idNumber);
+
+                    this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, roomAssignment.SessionCode);
+                }
             }
-            // This will happen if there is no room assign record for the person
-            else if(mostRecentRci != null && roomAssignDate == null)
+            catch (Exception e)
             {
-                createNewRci = false;
-            }
-            // Both values are non-null.
-            else
-            {
-                // Compare Creation date of rci and assign date of room assign record
-                createNewRci = mostRecentRci.CreationDate < roomAssignDate;
-            }
-            
-            if(createNewRci)
-            {
-                var roomAssignment = this.Dal.FetchLatestRoomAssignmentForId(idNumber);
+                logger.Error(e, $"Unexpected exception while going through the rci generation process for room {buildingCode} {roomNumber} for person {idNumber}");
 
-                this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, roomAssignment.SessionCode);
+                throw;
             }
         }
 
@@ -175,32 +279,64 @@ namespace Phoenix.Services
         /// </summary>
         public void SyncCommonAreaRcisFor(string buildingCode, string roomNumber)
         {
-            var apartmentNumber = roomNumber.TrimEnd(new char[] { 'A', 'B', 'C', 'D' });
-
-            // Room types that would flag apartment-style room records
-            var apartmentFlags = new List<string>() { "AP", "LV" };
-
-            // Do I already have an active common area rci for the apartment I am in?
-            var activeCommonAreaRcis = this.Dal
-                .FetchRcisForRoom(buildingCode, apartmentNumber)
-                .Where(x => x.IsCurrent)
-                .Where(x => x.GordonId == null); // This indicates a common area rci
-
-            var commonAreaRciExists = activeCommonAreaRcis.Any();
-
-            // Does the room I live in have a common area?
-            var thisRoom = this.Dal.FetchRoom(buildingCode, apartmentNumber);
-            var commonAreaExists = apartmentFlags.Contains(thisRoom.RoomType);
-
-            // There is a common area rci to create if a common area exists for that room AND 
-            // the person has no active common area rcis for that room
-            var createCommonAreaRci = commonAreaExists && !commonAreaRciExists;
-
-            if(createCommonAreaRci)
+            try
             {
-                var commmonAreaRciId = this.Dal.CreateNewCommonAreaRci(thisRoom.BuildingCode, thisRoom.RoomNumber, this.GetCurrentSession());
+                logger.Debug($"Starting Rci Generation process for the common area {buildingCode} {roomNumber}...");
 
-                this.Logger.Info($"New Common Area Rci Created by Rci Generation in DashboardService.SyncCommonAreaRcisFor. RciId={commmonAreaRciId}");
+                var apartmentNumber = roomNumber.TrimEnd(Constants.ROOM_NUMBER_SUFFIXES);
+
+                logger.Debug($"{roomNumber} -> {apartmentNumber}");
+
+                // Room types that would flag apartment-style room records
+                var apartmentFlags = new List<string>() { "AP", "LV" };
+
+                // Do I already have an active common area rci for the apartment I am in?
+                var activeCommonAreaRcis = this.Dal
+                    .FetchRcisForRoom(buildingCode, apartmentNumber)
+                    .Where(x => x.IsCurrent)
+                    .Where(x => x.GordonId == null); // This indicates a common area rci
+
+                logger.Debug($"Got {activeCommonAreaRcis.Count()} active (current) rcis for room {buildingCode} {apartmentNumber}...");
+
+                var commonAreaRciExists = activeCommonAreaRcis.Any();
+
+                // Does the room I live in have a common area?
+                Room thisRoom;
+
+                try
+                {
+                    thisRoom = this.Dal.FetchRoom(buildingCode, apartmentNumber);
+                }
+                catch (RoomNotFoundException e)
+                {
+                    logger.Error($"Room {buildingCode} {apartmentNumber} was not found! Common Area won't be created for it...", e);
+
+                    // Well with this exception, clearly this room cannot be found in the Room table.
+                    // I choose to take a simple, safe route: if i can't find the room, i ain't creating a common area for it :)
+
+                    return;
+                }
+
+                var commonAreaExists = apartmentFlags.Contains(thisRoom.RoomType);
+
+                logger.Debug($"Found room {buildingCode} {apartmentNumber}. It was of type {thisRoom.RoomType}");
+
+                // There is a common area rci to create if a common area exists for that room AND 
+                // the person has no active common area rcis for that room
+                var createCommonAreaRci = commonAreaExists && !commonAreaRciExists;
+
+                if (createCommonAreaRci)
+                {
+                    logger.Debug($"Common Area Rci is being created for room {buildingCode} {apartmentNumber}...");
+
+                    var commmonAreaRciId = this.Dal.CreateNewCommonAreaRci(thisRoom.BuildingCode, thisRoom.RoomNumber, this.GetCurrentSession());
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception when performing Rci Generation process for Common Areas. Building={buildingCode}, RoomNumber={roomNumber}");
+
+                throw;
             }
         }
 
@@ -209,7 +345,18 @@ namespace Phoenix.Services
         /// </summary>
         public void ArchiveRcis(List<int> rciIds)
         {
-            this.Dal.SetRciIsCurrentColumn(rciIds, false);
+            try
+            {
+                logger.Debug($"Archiving the following Ids... {string.Join(",", rciIds)}");
+
+                this.Dal.SetRciIsCurrentColumn(rciIds, false);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while archiving rcis {string.Join(",", rciIds)}");
+
+                throw;
+            }
         }
 
         /// <summary>

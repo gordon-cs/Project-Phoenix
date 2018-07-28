@@ -41,38 +41,6 @@ namespace Phoenix.Services
 
             return sessionDictionary;
         }
-    
-        // Load all the different types of RCIs from the RoomComponents.xml doc
-        // Returns a tuple of strings representing each type of RCI, 
-        //where Item 1 is the building code and Item 2 is the room type (either common (area) or individual)
-        public IEnumerable<Tuple<string, string>> GetRciTypes(XDocument document)
-        {
-            IEnumerable<XElement> rciTypes = document.Root.Elements("rci");
-
-            List<Tuple<string, string>> result = new List<Tuple<string, string>>();
-
-            foreach (var e in rciTypes)
-            {
-                var buildingCode = e.Attribute("buildingCode").Value;
-                string dormStyle;
-                
-                if (e.Attribute("roomType").Value.Equals("common"))
-                {
-                    dormStyle = "common";
-                }
-                else
-                {
-                    dormStyle = "individual";
-                }
-
-                result.Add(new Tuple<string, string>(buildingCode, dormStyle));
-
-            }
-
-            return result;
-                       
-           
-    }
 
         public List<HomeRciViewModel> Search(IEnumerable<string> sessions, IEnumerable<string> buildings, string keyword)
         {

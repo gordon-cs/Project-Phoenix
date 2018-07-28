@@ -10,9 +10,6 @@ namespace Phoenix
     {
         protected void Application_Start()
         {
-            // Register global filters
-            GlobalFilters.Filters.Add(new ExceptionLogAttribute());
-
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

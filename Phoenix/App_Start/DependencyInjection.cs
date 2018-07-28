@@ -55,10 +55,6 @@ namespace Phoenix
                 .As<ILoginService>();
 
             builder
-                .RegisterType<LoggerService>()
-                .As<ILoggerService>();
-
-            builder
                 .RegisterType<RciBatchService>()
                 .As<IRciBatchService>();
 

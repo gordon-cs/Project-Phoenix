@@ -3,9 +3,10 @@
  *
  * 1.................. DivListDropDown
  * 2.................. Drawer Menu
- * 3.................. Damage Image Slides Modal
- * 4.................. Signature overlay
- * 5.................. Select all
+ * 3.................. Search Bar
+ * 4.................. Damage Image Slides Modal
+ * 5.................. Signature overlay
+ * 6.................. Select all
  *
 /***********************************************/
 
@@ -65,7 +66,7 @@ $(".dropdown").click(function () {
 
 $(".search-bar").keyup(function () {
     let textToMatch = $(this).find("input[type='text']").val();
-    textToMatch = textToMatch.toLowerCase();
+    textToMatch = textToMatch.toLowerCase().trim();
     let content = "";
 
     $(".search-field").parent().parent().show();

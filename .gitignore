@@ -245,3 +245,7 @@ ModelManifest.xml
 .fake/
 /Phoenix/secrets.config
 **/Damages/*
+**/RciBatches/*
+
+# Logs
+Log.txt

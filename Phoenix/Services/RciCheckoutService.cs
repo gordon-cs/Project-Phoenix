@@ -19,6 +19,8 @@ namespace Phoenix.Services
         
         private IDashboardService DashboardService { get; set; }
 
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
         public RciCheckoutService(IDatabaseDal dal, IDashboardService dashboardService)
         {
             this.Dal = dal;
@@ -31,7 +33,16 @@ namespace Phoenix.Services
         /// </summary>
         public FullRciViewModel GetRciById(int id)
         {
-            return new FullRciViewModel(this.Dal.FetchRciById(id));
+            try
+            {
+                return new FullRciViewModel(this.Dal.FetchRciById(id));
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while fetching rci {id}");
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -39,7 +50,16 @@ namespace Phoenix.Services
         /// </summary>
         public int AddFine(RciNewFineViewModel newFine)
         {
-            return this.Dal.CreateNewFine(newFine.FineAmount, newFine.FineOwner, newFine.FineReason, newFine.RciId, newFine.RoomComponentTypeId);
+            try
+            {
+                return this.Dal.CreateNewFine(newFine.FineAmount, newFine.FineOwner, newFine.FineReason, newFine.RciId, newFine.RoomComponentTypeId);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while trying to add fine. FineReason={newFine.FineReason}, Amount={newFine.FineAmount}, GordonId={newFine.FineOwner}, RciId={newFine.RciId}, RoomComponentTypeId={newFine.RoomComponentTypeId}");
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -47,7 +67,16 @@ namespace Phoenix.Services
         /// </summary>
         public void RemoveFine(int fineID)
         {
-            this.Dal.DeleteFine(fineID);
+            try
+            {
+                this.Dal.DeleteFine(fineID);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while trying to remove fine {fineID}");
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -56,14 +85,33 @@ namespace Phoenix.Services
         /// </summary>
         public void CheckoutCommonAreaMemberSignRci(int rciID, string gordonID)
         {
-            this.Dal.CreateNewCommonAreaRciSignature(gordonID, rciID, DateTime.Now, Constants.CHECKOUT);
+            try
+            {
+                this.Dal.CreateNewCommonAreaRciSignature(gordonID, rciID, DateTime.Now, Constants.CHECKOUT);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while trying to create a new common area member signature for checkout. RciId={rciID} GordonId={gordonID}");
+
+                throw;
+            }
         }
+
         /// <summary>
         /// Sign the resident portion of the rci during the checkout process
         /// </summary>
         public void CheckoutResidentSignRci(int rciID)
         {
-            this.Dal.SetRciCheckoutDateColumns(new List<int> { rciID }, DateTime.Today, null, null);
+            try
+            {
+                this.Dal.SetRciCheckoutDateColumns(new List<int> { rciID }, DateTime.Today, null, null);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while trying to sign the checkout for rciId={rciID}");
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -71,26 +119,36 @@ namespace Phoenix.Services
         /// </summary>
         public void CheckoutRASignRci(int rciID, string raGordonID)
         {
-            this.Dal.SetRciCheckoutDateColumns(new List<int> { rciID }, null, DateTime.Today, null);
-            this.Dal.SetRciCheckoutGordonIdColumns(new List<int> { rciID }, raGordonID, null);
+            try
+            {
+                this.Dal.SetRciCheckoutDateColumns(new List<int> { rciID }, null, DateTime.Today, null);
+                this.Dal.SetRciCheckoutGordonIdColumns(new List<int> { rciID }, raGordonID, null);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected error when RA user {raGordonID} tried to sign the checkout for rciId={rciID}");
+
+                throw;
+            }
         }
 
         /// <summary>
         /// Sign the RD portion of the rci during the checkout process and make the rci non-current.
         /// </summary>
-        public bool CheckoutRDSignRci(int rciID, string rdGordonID)
+        public void CheckoutRDSignRci(int rciID, string rdGordonID)
         {
             try
             {  
                 this.Dal.SetRciCheckoutDateColumns(new List<int> { rciID }, null, null, DateTime.Today);
+
                 this.Dal.SetRciCheckoutGordonIdColumns(new List<int> { rciID }, null, rdGordonID);
             }
-            catch
+            catch(Exception e)
             {
-                return false;
-            }
+                logger.Error(e, $"Unexpected error when RD user {rdGordonID} tried to sign the checkout for rciId={rciID}");
 
-            return true;
+                throw;
+            }
         }
 
         /// <summary>
@@ -99,6 +157,8 @@ namespace Phoenix.Services
         /// <param name="rciID"></param>
         public void SendFineEmail(int rciID, string emailAddress, string password)
         {
+            logger.Debug($"User {emailAddress} is about to send fine emails for rciId={rciID}");
+
             var rci = new FullRciViewModel(this.Dal.FetchRciById(rciID));
 
             var fineEmailDictionary = new Dictionary<string, Dictionary<string, string>>();
@@ -116,17 +176,16 @@ namespace Phoenix.Services
                     }
                     else
                     {
-
                         var newFineEmailContents = new Dictionary<string, string>
                         {
                             {"body",  "<p>" + component.RoomComponentName + " - " + fine.Reason + ": $" + fine.Amount + "</p>" },
                             {"total", fine.Amount.ToString() }
                         };
                         fineEmailDictionary.Add(fine.GordonId, newFineEmailContents);
-
                     }
                 }
             }
+
             using (var smtp = new SmtpClient())
             {
                 var credential = new NetworkCredential
@@ -164,26 +223,48 @@ namespace Phoenix.Services
 
         public void WorkRequestDamages(List<string> workRequests, string username, string password, string gordonId, int rciID, string phoneNumber)
         {
-            // Go.gordon.edu can be accessed using Basic authentication. I found this out via trial and error xD
-            string authenticationInfo = username + ":" + password;
-            authenticationInfo = Convert.ToBase64String(Encoding.Default.GetBytes(authenticationInfo));
-
-            var acct = this.Dal.FetchAccountByGordonId(gordonId);
-            var rci = this.Dal.FetchRciById(rciID);
-            var buildingName = this.Dal.FetchBuildingCodeToBuildingNameMap()[rci.BuildingCode];
-
-            // Set up the Http client
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri(Constants.GO_GORDON_URL);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authenticationInfo);
-                client.DefaultRequestHeaders.ExpectContinue = false;
-                client.DefaultRequestHeaders.ConnectionClose = false;
+                logger.Debug($"Sending work requests for rci={rciID}.");
 
-                foreach (var request in workRequests)
+                if (workRequests == null || workRequests.Count <= 0)
                 {
-                    PostWorkRequest(client, request, acct.AdUsername, buildingName, rci.RoomNumber, phoneNumber, acct.FirstName, acct.LastName, acct.GordonId);
+                    // No work requests
+                    logger.Debug($"No work requests entered for rci={rciID}");
+
+                    return;
                 }
+
+                // Go.gordon.edu can be accessed using Basic authentication. I found this out via trial and error xD
+                string authenticationInfo = username + ":" + password;
+
+                authenticationInfo = Convert.ToBase64String(Encoding.Default.GetBytes(authenticationInfo));
+
+                var acct = this.Dal.FetchAccountByGordonId(gordonId);
+
+                var rci = this.Dal.FetchRciById(rciID);
+
+                var buildingName = this.Dal.FetchBuildingCodeToBuildingNameMap()[rci.BuildingCode];
+
+                // Set up the Http client
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(Constants.GO_GORDON_URL);
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authenticationInfo);
+                    client.DefaultRequestHeaders.ExpectContinue = false;
+                    client.DefaultRequestHeaders.ConnectionClose = false;
+
+                    foreach (var request in workRequests)
+                    {
+                        PostWorkRequest(client, request, acct.AdUsername, buildingName, rci.RoomNumber, phoneNumber, acct.FirstName, acct.LastName, acct.GordonId);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while posting a work request for rciId={rciID}. User={username}, PhoneNumber={phoneNumber}, GordonId={gordonId}. WorkRequests={string.Join(";", workRequests)}");
+
+                throw;
             }
         }
 
@@ -222,9 +303,21 @@ namespace Phoenix.Services
                 new KeyValuePair<string, string>("tt_date_to", "AM")
             };
 
+            var logMessage = new StringBuilder();
+
+            logMessage.AppendLine($"The following form values are being sent to the go.gordon site: ");
+
+            foreach (var kvp in data)
+            {
+                logMessage.AppendLine($"{kvp.Key}={kvp.Value}");
+            }
+
+            logger.Info(logMessage.ToString());
+
             var content = new FormUrlEncodedContent(data);
 
             var response = client.PostAsync(Constants.WORK_REQUEST_ENDPOINT, content).Result;
+
             var statusCode = response.StatusCode;
 
             return statusCode;

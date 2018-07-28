@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Phoenix.DapperDal.Types;
+using Phoenix.Exceptions;
 using Phoenix.Utilities;
 using System;
 using System.Collections.Generic;
@@ -234,9 +235,16 @@ namespace Phoenix.DapperDal
             {
                 var sql = Sql.Damage.SimpleDamageSelectStatement + "where damage.DamageId = @DamageId";
 
-                var damage = connection.Query<Damage>(sql, new { DamageId = damageId }).Single();
+                try
+                {
+                    var damage = connection.Query<Damage>(sql, new { DamageId = damageId }).Single();
 
-                return damage;
+                    return damage;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new DamageNotFoundException($"Could not find damage with id {damageId}", ex);
+                }
             }
         }
 
@@ -287,9 +295,16 @@ namespace Phoenix.DapperDal
             {
                 var sql = Sql.Fine.FineSelectStatement + "where fine.FineId = @FineId";
 
-                var fine = connection.Query<Fine>(sql, new { FineId = fineId }).Single();
+                try
+                {
+                    var fine = connection.Query<Fine>(sql, new { FineId = fineId }).Single();
 
-                return fine;
+                    return fine;
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new FineNotFoundException($"Could not find fine with id {fineId}", ex);
+                }
             }
         }
 
@@ -459,12 +474,19 @@ namespace Phoenix.DapperDal
                 var currentSessionSql = @"
 select top 1 SESS_CDE
 from Session
-where GETDATE() >= SESS_BEGN_DTE - 14 and RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09')
+where GETDATE() >= SESS_BEGN_DTE - 39 and RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09')
 order by SESS_CDE desc
 ";
-                var currentSession = connection.Query<string>(currentSessionSql).Single();
+                try
+                {
+                    var currentSession = connection.Query<string>(currentSessionSql).Single();
 
-                return currentSession.Trim();
+                    return currentSession.Trim();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new CurrentSessionNotFoundException($"Could not get current session!", ex);
+                }
             }
         }
 
@@ -499,7 +521,7 @@ order by SESS_CDE desc
                 {
                     var errorMessage = $"Expected a single result to be returned for RciId {rciId}. Got {allRciResults.Count()}";
 
-                    throw new Exception(errorMessage, e);
+                    throw new RciNotFoundException(errorMessage, e);
                 }
 
                 var damages = queryResult.Read<Damage>();
@@ -643,7 +665,9 @@ order by SESS_CDE desc
                     }
                     else
                     {
-                        throw new Exception($"Excpected exactly one account result, got {queryResult.Count()}", e);
+                        e.Data["Reason"] = $"Excpected exactly one account result, got {queryResult.Count()}";
+
+                        throw;
                     }
                 }
 
@@ -707,7 +731,7 @@ order by SESS_CDE desc
                 {
                     var errorMessage = $"Expected a single result to be returned for BuildingCode {buildingCode} and RoomNumber {roomNumber}. Got {queryResult.Count()}";
 
-                    throw new Exception(errorMessage, ex);
+                    throw new RoomNotFoundException(errorMessage, ex);
                 }
             }
         }
@@ -734,10 +758,16 @@ order by SESS_CDE desc
 
                 var queryResult = connection.Query<RoomAssignment>(sql, new { Id = id }).ToList();
 
-                var latestRoomAssign = queryResult.FirstOrDefault();
+                try
+                {
+                    var latestRoomAssign = queryResult.Single();
 
-                // For now, we are ok with returning nulls
-                return latestRoomAssign;
+                    return latestRoomAssign;
+                }
+                catch (InvalidOperationException)
+                {
+                    throw new RoomAssignNotFoundException();
+                }
             }
         }
 

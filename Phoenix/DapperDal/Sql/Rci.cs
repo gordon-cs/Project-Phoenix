@@ -19,8 +19,10 @@ SELECT CAST(SCOPE_IDENTITY() as int)
 		rci.IsCurrent as IsCurrent,
 		rci.CreationDate as CreationDate,
 		rci.BuildingCode as BuildingCode,
+		building.BuildingDescription as BuildingDescription,
 		rci.RoomNumber as RoomNumber,
 		rci.SessionCode as SessionCode,
+		sess.SESS_DESC as SessionDescription,
 		rci.CheckinSigRes as ResidentCheckinDate,
 		rci.CheckinSigRA as RaCheckinDate,
 		rci.CheckinSigRD as RdCheckinDate,
@@ -39,6 +41,10 @@ left join Account as account
 on rci.GordonID = account.ID_NUM
 inner join RciType rciType
 on rci.RciTypeId = rciType.RciTypeId
+inner join [Session] sess
+on rci.SessionCode = sess.SESS_CDE
+inner join (select BLDG_CDE as BuildingCode, BUILDING_DESC as BuildingDescription from Room group by BLDG_CDE, BUILDING_DESC) as building
+on rci.BuildingCode = building.BuildingCode
  ";
     }
 }
