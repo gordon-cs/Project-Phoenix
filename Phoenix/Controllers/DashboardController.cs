@@ -6,6 +6,7 @@ using Phoenix.Services;
 using Newtonsoft.Json.Linq;
 using System;
 using Phoenix.Utilities;
+using Phoenix.Models.ViewModels;
 
 namespace Phoenix.Controllers
 {
@@ -25,10 +26,6 @@ namespace Phoenix.Controllers
             // TempData stores object, so always cast to string.
             var role = (string)TempData["role"];
 
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
             if (role.Equals(Constants.ADMIN))
             {
                 return RedirectToAction("Index", "AdminDashboard");
@@ -52,63 +49,46 @@ namespace Phoenix.Controllers
         // GET: Home/Resident
         public ActionResult Resident()
         {
-            // Redirect to other dashboards if role not correct
-            var role = (string)TempData["role"];
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
             // TempData stores object, so always cast to string.
             var strID = (string)TempData["id"];
+
             if (strID == null)
             {
                 throw new ArgumentNullException("Couldn't find the Gordon ID for  resident. It was null.");
             }
 
             var currentBuilding = (string)TempData["currentBuilding"];
-            if (currentBuilding == null)
-            {
-                throw new ArgumentNullException("Couldn't find current building for resident. It was null.");
-            }
 
             var currentRoom = (string)TempData["currentRoom"];
-            if (currentRoom == null)
+
+            // These values will be null for RD, Staff and Faculty.
+            // We'll let them log in, we just won't show them anything.
+            if (currentBuilding != null && currentRoom != null)
             {
-                throw new ArgumentNullException("Couldn't find current room for resident. It was null.");
-            }
+                dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID);
 
-            var temp = (JValue)TempData["currentRoomAssignDate"];
-            if (temp == null)
+                dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom); 
+
+                var RCIs = dashboardService.GetCurrentRcisForResident(strID);
+
+                var commonAreaRcis = dashboardService.GetCurrentCommonAreaRcisForRoom(currentRoom, currentBuilding);
+
+                return View(RCIs.Concat(commonAreaRcis));
+            }
+            else
             {
-                throw new ArgumentNullException("Couldn't get the most recent room assign date for resident. It was null");
+                return View(Enumerable.Empty<HomeRciViewModel>());
             }
-
-            DateTime currentRoomAssignDate = temp.ToObject<DateTime>();
-
-            dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID, currentRoomAssignDate);
-            dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom);
-
-            var RCIs = dashboardService.GetCurrentRcisForResident(strID);
-            var commonAreaRcis = dashboardService.GetCurrentCommonAreaRcisForRoom(currentRoom, currentBuilding);
-
-            return View(RCIs.Concat(commonAreaRcis));
         }
 
         // GET: Home/RA
         [ResLifeStaff]
         public ActionResult RA()
         {
-            // Redirect to login if role not correct
-            var role = (string)TempData["role"];
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
+            List<string> kingdom = ((JArray)TempData["kingdom"]).ToObject<List<string>>();
 
-            var temp = (JArray)TempData["kingdom"];
-            List<string> kingdom = temp.ToObject<List<string>>();
             dashboardService.SyncRoomRcisFor(kingdom);
+
             var buildingRCIs = dashboardService.GetCurrentRcisForBuilding(kingdom);
 
             return View(buildingRCIs);
@@ -118,18 +98,12 @@ namespace Phoenix.Controllers
         [RD]
         public ActionResult RD()
         {
-            // Redirect to login if role not correct
-            var role = (string)TempData["role"];
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
             // Display all RCI's for the corresponding building
             // RD is not in RoomAssign, so there will be nothing under currentRoomNumber and currentBuilding.
-            var temp = (JArray)TempData["kingdom"];
-            List<string> kingdom = temp.ToObject<List<string>>();
+            List<string> kingdom = ((JArray)TempData["kingdom"]).ToObject<List<string>>();
+
             dashboardService.SyncRoomRcisFor(kingdom);
+
             var buildingRcis = dashboardService.GetCurrentRcisForBuilding(kingdom);
             
             return View(buildingRcis);
@@ -153,12 +127,30 @@ namespace Phoenix.Controllers
         [HttpGet]
         public ActionResult ArchiveRcis()
         {
-            var temp = (JArray)TempData["kingdom"];
-            List<string> kingdom = temp.ToObject<List<string>>();
+            List<string> kingdom = ((JArray)TempData["kingdom"]).ToObject<List<string>>();
 
             var buildingRcis = dashboardService.GetCurrentRcisForBuilding(kingdom);
 
             return View(buildingRcis);
+        }
+
+        /// <summary>
+        /// Receives a list of rcis and sets their IsCurrent column to false.
+        /// </summary>
+        [RD]
+        [HttpPost]
+        public void ArchiveRcis(List<int> rciID)
+        {
+            dashboardService.ArchiveRcis(rciID);
+        }
+
+        [ResLifeStaff]
+        [HttpPost]
+        public ActionResult SwapRcis(int firstRciId, int secondRciId)
+        {
+            this.dashboardService.SwapRciDamages(firstRciId, secondRciId);
+
+            return RedirectToAction(controllerName: "Dashboard", actionName: "Index");
         }
 
         [ResLifeStaff]
@@ -174,24 +166,7 @@ namespace Phoenix.Controllers
             return View(buildingRcis);
         }
 
-        [ResLifeStaff]
-        [HttpPost]
-        public ActionResult SwapRcis(int firstRciId, int secondRciId)
-        {
-            this.dashboardService.SwapRciOwners(firstRciId, secondRciId);
-
-            return RedirectToAction(controllerName: "Dashboard", actionName: "Index");
-        }
-
-        /// <summary>
-        /// Receives a list of rcis and sets their IsCurrent column to false.
-        /// </summary>
-        [RD]
-        [HttpPost]
-        public void ArchiveRcis(List<int> rciID)
-        {
-            dashboardService.ArchiveRcis(rciID);
-        }
+        
 
         /// <summary>
         /// Export all the fines and charges recorded to a spreadsheet
@@ -201,8 +176,7 @@ namespace Phoenix.Controllers
         [HttpGet]
         public FileContentResult ExportFines()
         {
-            var temp = (JArray)TempData["kingdom"];
-            List<string> kingdom = temp.ToObject<List<string>>();
+            List<string> kingdom = ((JArray)TempData["kingdom"]).ToObject<List<string>>();
 
             string finesString = dashboardService.GenerateFinesSpreadsheet(kingdom);
 

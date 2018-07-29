@@ -49,27 +49,39 @@ namespace Phoenix.Controllers
             {
                 _ADContext = loginService.ConnectToADServer();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logger.Error(e, $"Exception while trying to connect to the Active Directory Server. User={username}");
+
                 loginViewModel.ErrorMessage = "There was a problem connecting to the server. We are sorry. Please try again later or contact the project maintainer.";
+
                 return View("Index", loginViewModel);
             }
       
             UserPrincipal userEntry;
+
             try
             {
                 userEntry = loginService.FindUser(username, _ADContext);
             }
-            catch(UserNotFoundException)
+            catch(UserNotFoundException e)
             {
+                logger.Error(e, $"User {username} was not found!");
+
                 _ADContext.Dispose();
+
                 loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
+
                 return View("Index", loginViewModel);
             }
-            catch(ArgumentNullException)
+            catch(ArgumentNullException e)
             {
+                logger.Error(e, $"Username or Active Directory Context was null. Username={username}");
+
                 _ADContext.Dispose();
+
                 loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
+
                 return View("Index", loginViewModel);
             }
 
@@ -77,18 +89,19 @@ namespace Phoenix.Controllers
             {
                 // Generate token and attach to header
                 string jwtToken;
+
                 try
                 {
                     jwtToken = loginService.GenerateToken(username, userEntry.EmployeeId);
                 }
-                catch(InvalidUserException)
+                catch (UserNotFoundException e)
                 {
-                    // e.g. user is a staff member.
+                    // e.g. user is not in accounts table for some reason
                     _ADContext.Dispose();
 
-                    loginViewModel.ErrorMessage = "Sorry, you are not a student or a member of the Residence Life Staff, so you do not have access to this system.";
+                    loginViewModel.ErrorMessage = "Ther username/password combination provided is not valid.";
 
-                    logger.Warn("User {0} was not allowed to log in...", username);
+                    logger.Error(e, $"Username={username} provided correct credientials but was not found in the Accounts table, so was denied login.");
 
                     return View("Index", loginViewModel);
                 }
@@ -102,11 +115,15 @@ namespace Phoenix.Controllers
                 Response.Cookies.Add(tokenCookie);
 
                 _ADContext.Dispose();
+
                 return RedirectToAction("Index", "Dashboard");
             }
             else
             {
+                logger.Error($"The username/password combination provided was not valid. Username={username}");
+
                 loginViewModel.ErrorMessage = "Oh dear, it seems that username or password is invalid.";
+
                 return View("Index", loginViewModel);
             }
         }

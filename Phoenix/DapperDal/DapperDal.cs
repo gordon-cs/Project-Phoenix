@@ -263,8 +263,13 @@ namespace Phoenix.DapperDal
             }
         }
 
-        public void UpdateDamage(int damageId, string description, string imagepath, int? rciId, int? roomComponentTypeId)
+        public void UpdateDamage(IEnumerable<int> damageIds, string description, string imagepath, int? rciId, int? roomComponentTypeId)
         {
+            if (damageIds.Count() <= 0)
+            {
+                return;
+            }
+
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 bool allAreNull = description == null && imagepath == null && rciId == null && roomComponentTypeId == null;
@@ -279,7 +284,7 @@ namespace Phoenix.DapperDal
                 if (rciId != null) { fieldUpdateStatements.Add("RciId = @RciId"); }
                 if (roomComponentTypeId != null) { fieldUpdateStatements.Add("RoomComponentTypeId = @RoomComponentTypeId"); }
 
-                var updateSql = $"update Damage Set {string.Join(",", fieldUpdateStatements)} where DamageId = @DamageId";
+                var updateSql = $"update Damage Set {string.Join(",", fieldUpdateStatements)} where DamageId in @DamageIds";
 
                 var inputparams = new
                 {
@@ -287,7 +292,7 @@ namespace Phoenix.DapperDal
                     ImagePath = imagepath,
                     RciId = rciId,
                     RoomComponentTypeId = roomComponentTypeId,
-                    DamageId = damageId
+                    DamageIds = damageIds
                 };
 
                 connection.Execute(updateSql, inputparams);
@@ -344,8 +349,13 @@ namespace Phoenix.DapperDal
             }
         }
 
-        public void UpdateFine(int fineId, decimal? amount, string gordonId, string reason, int? rciId, int? roomComponentTypeId)
+        public void UpdateFine(IEnumerable<int> fineIds, decimal? amount, string gordonId, string reason, int? rciId, int? roomComponentTypeId)
         {
+            if (fineIds.Count() <= 0)
+            {
+                return;
+            }
+
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 bool allAreNull = amount == null && gordonId == null && reason == null && rciId == null && roomComponentTypeId == null;
@@ -360,7 +370,7 @@ namespace Phoenix.DapperDal
                 if (rciId != null) { fieldUpdateStatements.Add("RciId = @RciId"); }
                 if (roomComponentTypeId != null) { fieldUpdateStatements.Add("RoomComponentTypeId = @RoomComponentTypeId"); };
 
-                var updateSql = $"update Fine set {string.Join(",", fieldUpdateStatements)} where FineID = @FineId";
+                var updateSql = $"update Fine set {string.Join(",", fieldUpdateStatements)} where FineID in @FineIds";
 
                 var inputParams = new
                 {
@@ -369,7 +379,7 @@ namespace Phoenix.DapperDal
                     Reason = reason,
                     RciId = rciId,
                     RoomComponentTypeId = roomComponentTypeId,
-                    FineId = fineId
+                    FineIds = fineIds
                 };
 
                 connection.Execute(updateSql, inputParams);
@@ -482,14 +492,14 @@ namespace Phoenix.DapperDal
                 // We are not simply selecting the session in which we fall in.
                 // GETDATE() >= SESS_BEGN_DTE makes sure we select a session where the current date is after that session's start date.
                 // RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09') narrows the list of sessions considered to those that are Fall or Spring terms.
-                // The -14 effectively lets us "kick in" sessions earlier than they actually are. That part is important because Residence life 
+                // The -15 effectively lets us "kick in" sessions earlier than they actually are. That part is important because Residence life 
                 // gets to campus before the fall session officially starts.
                 // This logic is brought to you by Jay Whitehouse of CTS, quite brilliant.
                 
                 var currentSessionSql = @"
 select top 1 SESS_CDE
 from Session
-where GETDATE() >= SESS_BEGN_DTE - 39 and RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09')
+where GETDATE() >= SESS_BEGN_DTE - 15 and RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09')
 order by SESS_CDE desc
 ";
                 try
@@ -556,10 +566,40 @@ order by SESS_CDE desc
                 rci.CommonAreaSignatures = commonAreaSignatures.ToList();
 
                 // Also fetch Account Information for Checkin and Checkout Ra and Rd
-                if (rci.CheckinRaGordonId != null) { rci.CheckinRaAccount = this.FetchAccountByGordonId(rci.CheckinRaGordonId); }
-                if (rci.CheckinRdGordonId != null) { rci.CheckinRdAccount = this.FetchAccountByGordonId(rci.CheckinRdGordonId); }
-                if (rci.CheckoutRaGordonId != null) { rci.CheckoutRaAccount = this.FetchAccountByGordonId(rci.CheckoutRaGordonId); }
-                if (rci.CheckoutRdGordonId != null) { rci.CheckoutRdAccount = this.FetchAccountByGordonId(rci.CheckoutRdGordonId); }
+                // If the fields are not null, but we are unable to find the account in the accounts table,
+                // it probably means the user is an alumni. So we just set the account id.
+                try
+                {
+                    if (rci.CheckinRaGordonId != null) { rci.CheckinRaAccount = this.FetchAccountByGordonId(rci.CheckinRaGordonId); }
+                }
+                catch (UserNotFoundException)
+                {
+                    rci.CheckinRaAccount = new Account { GordonId = rci.CheckinRaGordonId };
+                }
+                try
+                {
+                    if (rci.CheckinRdGordonId != null) { rci.CheckinRdAccount = this.FetchAccountByGordonId(rci.CheckinRdGordonId); }
+                }
+                catch (UserNotFoundException)
+                {
+                    rci.CheckinRdAccount = new Account { GordonId = rci.CheckinRdGordonId };
+                }
+                try
+                {
+                    if (rci.CheckoutRaGordonId != null) { rci.CheckoutRaAccount = this.FetchAccountByGordonId(rci.CheckoutRaGordonId); }
+                }
+                catch (UserNotFoundException)
+                {
+                    rci.CheckoutRaAccount = new Account { GordonId = rci.CheckoutRaGordonId };
+                }
+                try
+                {
+                    if (rci.CheckoutRdGordonId != null) { rci.CheckoutRdAccount = this.FetchAccountByGordonId(rci.CheckoutRdGordonId); }
+                }
+                catch (UserNotFoundException)
+                {
+                    rci.CheckoutRdAccount = new Account { GordonId = rci.CheckoutRdGordonId };
+                }
 
                 // Also fetch Account information for Apartment Mates in the case of an Apartment or Roommates in the case of a Dorm
                 var normalizedRoomNumber = rci.RoomNumber.TrimEnd(Constants.ROOM_NUMBER_SUFFIXES);
@@ -667,26 +707,13 @@ order by SESS_CDE desc
                 try
                 {
                     account = queryResult.Single();
+
+                    return account;
                 }
                 catch (InvalidOperationException e)
                 {
-                    if (queryResult.Count() == 0)
-                    {
-                        // User was not found, probably graduated. Set Gordon Id
-                        account = new Account
-                        {
-                            GordonId = gordonId
-                        };
-                    }
-                    else
-                    {
-                        e.Data["Reason"] = $"Excpected exactly one account result, got {queryResult.Count()}";
-
-                        throw;
-                    }
+                    throw new UserNotFoundException($"User with gordon id={gordonId} was not found in the Accounts table.");
                 }
-
-                return account;
             }
         }
 
@@ -775,7 +802,7 @@ order by SESS_CDE desc
 
                 try
                 {
-                    var latestRoomAssign = queryResult.Single();
+                    var latestRoomAssign = queryResult.First();
 
                     return latestRoomAssign;
                 }

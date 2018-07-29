@@ -1,15 +1,16 @@
-﻿using System.Web.Mvc;
+﻿using Phoenix.Utilities;
+using System.Web.Mvc;
 
 namespace Phoenix.Filters
 {
-    public class ResLifeStaffAttribute : ActionFilterAttribute, IAuthorizationFilter
+    public class ResLifeStaffAttribute : FilterAttribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             var role = (string)filterContext.Controller.TempData["role"];
-            var isRD = role == "RD";
-            var isRA = role == "RA";
-            var isAdmin = role == "ADMIN";
+            var isRD = role == Constants.RD;
+            var isRA = role == Constants.RA;
+            var isAdmin = role == Constants.ADMIN;
 
             if (!(isRD || isRA || isAdmin))
             {

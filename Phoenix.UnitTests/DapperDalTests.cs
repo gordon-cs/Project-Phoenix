@@ -131,6 +131,9 @@ namespace Phoenix.UnitTests
             Assert.NotEmpty(result);
 
             Assert.Contains(result, x => x.BuildingCode.Equals(TestBuildingCode) && x.RoomNumber.Equals(TestRoomNumber) && x.GordonId.Equals(TestGordonId));
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId);
         }
 
         [Fact]
@@ -386,7 +389,7 @@ namespace Phoenix.UnitTests
             Assert.NotEqual(0, damageId);
 
             // Update said damage
-            this.Dal.UpdateDamage(damageId, null, "test", null, null);
+            this.Dal.UpdateDamage(new List<int> { damageId }, null, "test", null, null);
 
             var damage = this.Dal.FetchDamageById(damageId);
 
@@ -547,7 +550,8 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FetchLatestRoomAssign_Success()
         {
-            var id = TestGordonId;
+            // This is the id of someone who has multiple room assignments (unlike the test accounts)
+            var id = "50153295";
 
             var result = this.Dal.FetchLatestRoomAssignmentForId(id);
 
@@ -587,7 +591,7 @@ namespace Phoenix.UnitTests
             Assert.NotEqual(0, fineId);
 
             // Update said damage
-            this.Dal.UpdateFine(fineId, null, null, "A reason", null, 3);
+            this.Dal.UpdateFine(new List<int> { fineId }, null, null, "A reason", null, 3);
 
             var fine = this.Dal.FetchFineById(fineId);
 

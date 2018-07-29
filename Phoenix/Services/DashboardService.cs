@@ -218,7 +218,7 @@ namespace Phoenix.Services
         /// <summary>
         /// Make sure the rci table is up to date with the room assign table for the specified room
         /// </summary>
-        public void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber, DateTime? roomAssignDate)
+        public void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber)
         {
             try
             {
@@ -230,22 +230,39 @@ namespace Phoenix.Services
                     .Where(x => x.BuildingCode == buildingCode)
                     .Where(x => x.RoomNumber == roomNumber);
 
+                RoomAssignment mostRecentRoomAssign;
+
+                try
+                {
+                    mostRecentRoomAssign = this.Dal.FetchLatestRoomAssignmentForId(idNumber);
+                }
+                catch(RoomAssignNotFoundException)
+                {
+                    // This person has no previous room assignments.
+                    mostRecentRoomAssign = null;
+                }
+
                 logger.Debug($"Person {idNumber} has {myRcis.Count()} total Rcis (Including archived ones)");
 
                 // Get most recent rci.
                 var mostRecentRci = myRcis.OrderByDescending(m => m.CreationDate).FirstOrDefault();
 
-                logger.Debug($"Most recent Rci for Person {idNumber} is  {mostRecentRci?.RciId}. Their most recent room assignment date is {mostRecentRci}");
+                logger.Debug($"Most recent Rci for Person {idNumber} is  {mostRecentRci?.RciId}. Their most recent room assignment date is {mostRecentRoomAssign?.AssignmentDate}");
 
                 var createNewRci = false;
 
                 // There are room assign records for this person but no rcis.
-                if (mostRecentRci == null && roomAssignDate != null)
+                if (mostRecentRci == null && mostRecentRoomAssign != null)
                 {
                     createNewRci = true;
                 }
                 // This will happen if there is no room assign record for the person
-                else if (mostRecentRci != null && roomAssignDate == null)
+                else if (mostRecentRci != null && mostRecentRoomAssign == null)
+                {
+                    createNewRci = false;
+                }
+                // For people who have no room assignments and no rcis.
+                else if (mostRecentRci == null && mostRecentRoomAssign == null)
                 {
                     createNewRci = false;
                 }
@@ -253,7 +270,7 @@ namespace Phoenix.Services
                 else
                 {
                     // Compare Creation date of rci and assign date of room assign record
-                    createNewRci = mostRecentRci.CreationDate < roomAssignDate;
+                    createNewRci = mostRecentRci.CreationDate < mostRecentRoomAssign.AssignmentDate;
                 }
 
                 logger.Debug($"The boolean variable createNewRci for person {idNumber} is {createNewRci}...");
@@ -360,32 +377,25 @@ namespace Phoenix.Services
         }
 
         /// <summary>
-        /// Swap the owners of these two rcis.
+        /// Swap the damages in these two rcis.
         /// </summary>
-        public void SwapRciOwners(int rciId1, int rciId2)
+        public void SwapRciDamages(int rciId1, int rciId2)
         {
             try
             {
                 logger.Debug($"Swapping rcis {rciId1} {rciId2}");
 
-                var rcis = this.Dal.FetchRcisById(new List<int> { rciId1, rciId2 });
+                var rci1 = this.Dal.FetchRciById(rciId1);
 
-                if (rcis.Count < 2)
-                {
-                    var errorMessage = $"One or more of the rcis {rciId2}, {rciId1} was not found.";
-                    
-                    logger.Error(errorMessage);
+                var rci2 = this.Dal.FetchRciById(rciId2);
 
-                    throw new RciNotFoundException(errorMessage);
-                }
+                var firstRciDamages = rci1.Damages.Select(x => x.DamageId);
 
-                var firstGordonId = rcis[0].GordonId;
+                var secondRciDamages = rci2.Damages.Select(x => x.DamageId);
 
-                var secondGordonId = rcis[1].GordonId;
+                this.Dal.UpdateDamage(firstRciDamages, null, null, rci2.RciId, null);
 
-                this.Dal.SetRciGordonIdColumn(new List<int> { rcis[1].RciId }, firstGordonId);
-
-                this.Dal.SetRciGordonIdColumn(new List<int> { rcis[0].RciId }, secondGordonId);
+                this.Dal.UpdateDamage(secondRciDamages, null, null, rci1.RciId, null);
             }
             catch (Exception e)
             {

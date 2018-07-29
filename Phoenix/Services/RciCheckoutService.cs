@@ -1,5 +1,6 @@
 ﻿using Phoenix.DapperDal;
 using Phoenix.DapperDal.Types;
+using Phoenix.Exceptions;
 using Phoenix.Models;
 using Phoenix.Models.ViewModels;
 using Phoenix.Utilities;
@@ -200,8 +201,20 @@ namespace Phoenix.Services
 
                 foreach (KeyValuePair<string, Dictionary<string, string>> entry in fineEmailDictionary)
                 {
+                    Account recepientAccount;
+
+                    try
+                    {
+                        recepientAccount = this.Dal.FetchAccountByGordonId(entry.Key);
+                    }
+                    catch(UserNotFoundException e)
+                    {
+                        logger.Warn(e, $"Fine email is not being sent to user with id={entry.Key} because the user could not be found in the account table.");
+
+                        continue;
+                    }
+
                     var message = new MailMessage();
-                    var recepientAccount = this.Dal.FetchAccountByGordonId(entry.Key);
                     var to = recepientAccount.Email;
                     var from = emailAddress;
                     var today = DateTime.Now.ToLongDateString();

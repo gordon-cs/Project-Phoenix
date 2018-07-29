@@ -87,21 +87,34 @@ namespace Phoenix.Services
 
         public string GenerateToken(string username, string id)
         {
-            var account = this.Dal.FetchAccountByGordonId(id);
+            Account account;
+
+            try
+            {
+                account = this.Dal.FetchAccountByGordonId(id);
+            }
+            catch (UserNotFoundException e)
+            {
+                // Log and rethrow so that the controller uphill can handle this exception properly.
+                logger.Error(e, $"Account for username={username}, id={id} was not found!.");
+
+                throw;
+            }
 
             var accountPermissions = GetAccountPermissions(account);
+
             var mostRecentRoomAssign = GetCurrentRoomAssign(id);
 
             string currentBuildingCode = null;
+
             string currentRoomNumber = null;
-            DateTime? currentRoomAssignDate = null;
 
             // Most Recent room assign will be null for non-students and that's ok.
             if (mostRecentRoomAssign != null)
             {
                 currentBuildingCode = mostRecentRoomAssign.BuildingCode.Trim();
+
                 currentRoomNumber = mostRecentRoomAssign.RoomNumber.Trim();
-                currentRoomAssignDate = mostRecentRoomAssign.AssignmentDate;
             }
 
             var name = account.FirstName + " " + account.LastName;
@@ -110,7 +123,9 @@ namespace Phoenix.Services
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
 
             DateTime issued = DateTime.Now;
+
             DateTime expire = DateTime.Now.AddHours(2);
+
             var payload = new Dictionary<string, object>()
             {
                 {"sub", username  },
@@ -123,9 +138,7 @@ namespace Phoenix.Services
                 {"role", accountPermissions.Role.ToString() },
                 {"kingdom", accountPermissions.Kingdom },
                 {"currentRoom", currentRoomNumber},
-                {"currentBuilding",  currentBuildingCode },
-                {"currentRoomAssignDate", currentRoomAssignDate }
-
+                {"currentBuilding",  currentBuildingCode }
             };
 
             string token = JWT.Encode(payload, secretKey, JwsAlgorithm.HS256);
@@ -137,10 +150,6 @@ namespace Phoenix.Services
         {
             return (int)(dateTime.ToUniversalTime().Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
         }
-
-        /*
-         * Get the role of a user
-         */
         
         public AccountPermission GetAccountPermissions(Account account)
         {
@@ -193,6 +202,7 @@ namespace Phoenix.Services
             else
             {
                 permission.Role = Role.Resident;
+
                 permission.Kingdom = null;
 
                 return permission;
@@ -208,7 +218,7 @@ namespace Phoenix.Services
             }
             catch (RoomAssignNotFoundException)
             {
-                // Some people won't have a room assignment e.g. RDs This is OK.
+                // Some people won't have a room assignment e.g. RD, faculty and staff. This is OK.
                 return null;
             }
             catch(Exception e)

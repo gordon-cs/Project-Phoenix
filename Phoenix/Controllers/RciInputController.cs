@@ -24,13 +24,7 @@ namespace Phoenix.Controllers
 
         public ActionResult Index(int id)
         {
-            // Redirect to other dashboards if role not correct
             var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
 
             var rci = rciInputService.GetRci(id);
 
@@ -78,28 +72,16 @@ namespace Phoenix.Controllers
         [RD]
         public ActionResult SignAllRD()
         {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
             var gordonID = (string)TempData["id"];
 
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
-            if (role.Equals("Resident") || role.Equals("RA"))
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-
-
             var temp = (JArray)TempData["kingdom"];
+
             List<string> kingdom = temp.ToObject<List<string>>();
 
             var buildingRcis = rciInputService.GetRcisForBuildingThatCanBeSignedByRD(gordonID, kingdom);
 
-
             ViewBag.User = (string)TempData["user"];
+
             return View(buildingRcis);
         }
 
@@ -108,11 +90,15 @@ namespace Phoenix.Controllers
         public ActionResult SubmitSignAllRD(string rciSig)
         {
             if (rciSig != null) rciSig = rciSig.ToLower().Trim();
+
             var gordonID = (string)TempData["id"];
+
             var user = ((string)TempData["user"]).ToLower().Trim();
+
             if (rciSig == user)
             {
                 rciInputService.SignRcis(gordonID);
+
                 return Json(Url.Action("Index", "Dashboard"));
             }
             

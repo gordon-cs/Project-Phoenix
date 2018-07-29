@@ -30,14 +30,6 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult Index(int id)
         {
-            // Redirect to other dashboards if role not correct
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
             var rci = this.CheckoutService.GetRciById(id);
 
             var isCommonAreaRci = rci.GordonId == null;
@@ -72,15 +64,9 @@ namespace Phoenix.Controllers
         /// </summary>
         public ActionResult RciReview(int id)
         {
-            // Redirect to other dashboards if role not correct
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "Login");
-            }
-
             var rci = this.CheckoutService.GetRciById(id);
+
+            var role = (string)TempData["role"];
 
             // Check to figure out if this RCI can be viewed by the logged in user
             var isViewable = rci.isViewableBy((string)TempData["id"], role, (string)TempData["currentRoom"], (string)TempData["currentBuilding"]);
@@ -129,14 +115,6 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult CommonAreaSignature(int id)
         {
-            // TempData stores object, so always cast to string.
-            var role = (string)TempData["role"];
-
-            if (role == null)
-            {
-                return RedirectToAction("Index", "LoginController");
-            }
-
             var rci = this.CheckoutService.GetRciById(id);
 
             return View(rci);
@@ -150,7 +128,7 @@ namespace Phoenix.Controllers
         [ResLifeStaff]
         public ActionResult CommonAreaSignature(int id, string[] signature)
         {
-            var  signatures = new List<string>(signature);
+            var signatures = new List<string>(signature);
 
             signatures.RemoveAll(x => x == ""); // Remove empty strings.
 
@@ -158,7 +136,6 @@ namespace Phoenix.Controllers
             {
                 signatures[i] = signatures[i].ToLower().Trim();
             }
-            
 
             var rci = this.CheckoutService.GetRciById(id);
 
