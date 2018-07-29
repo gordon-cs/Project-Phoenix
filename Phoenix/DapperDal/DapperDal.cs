@@ -449,13 +449,25 @@ namespace Phoenix.DapperDal
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
-                var sql = @"select JobTitleHall as HallGroup, BuildingCode as BuildingCodes_$ from BuildingAssign";
+                var sql = @"select JobTitleHall as HallGroup, BuildingCode as BuildingCode from BuildingAssign";
 
                 var queryResult = connection.Query(sql).ToList();
 
-                var mapperResult = Slapper.AutoMapper.MapDynamic<ResidentHallGrouping>(queryResult).ToList();
+                var dict = new Dictionary<string, List<string>>();
 
-                return mapperResult;
+                foreach (dynamic row in queryResult)
+                {
+                    if (dict.ContainsKey(Convert.ToString(row.HallGroup)))
+                    {
+                        dict[Convert.ToString(row.HallGroup)].Add(Convert.ToString(row.BuildingCode));
+                    }
+                    else
+                    {
+                        dict[Convert.ToString(row.HallGroup)] = new List<string> { Convert.ToString(row.BuildingCode) };
+                    }
+                }
+
+                return dict.Select(x => new ResidentHallGrouping { HallGroup = x.Key, BuildingCodes = x.Value }).ToList();
             }
         }
 

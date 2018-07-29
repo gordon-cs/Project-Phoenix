@@ -41,8 +41,6 @@ namespace Phoenix.UnitTests
             this.DbConnectionFactory = fixture.DbFactory;
 
             this.Dal = new DapperDal.DapperDal(this.DbConnectionFactory);
-
-            SlapperAutoMapperInit.Initialize();
         }
 
         // Rcis

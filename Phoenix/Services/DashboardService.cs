@@ -277,9 +277,7 @@ namespace Phoenix.Services
 
                 if (createNewRci)
                 {
-                    var roomAssignment = this.Dal.FetchLatestRoomAssignmentForId(idNumber);
-
-                    this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, roomAssignment.SessionCode);
+                    this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, mostRecentRoomAssign.SessionCode);
                 }
             }
             catch (Exception e)
