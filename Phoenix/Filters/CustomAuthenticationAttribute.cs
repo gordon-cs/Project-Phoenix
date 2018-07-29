@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Phoenix.Filters
 {
-    public class CustomAuthenticationAttribute : ActionFilterAttribute, IAuthenticationFilter
+    public class CustomAuthenticationAttribute : FilterAttribute, IAuthenticationFilter
     {
         public void OnAuthentication(AuthenticationContext filterContext)
         {            
@@ -58,7 +58,6 @@ namespace Phoenix.Filters
             filterContext.Controller.TempData["id"] = decodedJson["gordonId"].ToString();
             filterContext.Controller.TempData["currentBuilding"] = decodedJson["currentBuilding"].ToString();
             filterContext.Controller.TempData["currentRoom"] = decodedJson["currentRoom"].ToString();
-            filterContext.Controller.TempData["currentRoomAssignDate"] = decodedJson["currentRoomAssignDate"];
             filterContext.Controller.TempData["kingdom"] = decodedJson["kingdom"];
             filterContext.Controller.TempData["login_username"] = decodedJson["sub"].ToString();           
 

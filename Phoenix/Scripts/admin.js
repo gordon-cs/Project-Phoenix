@@ -1,16 +1,14 @@
 ﻿/* Send a search query to the database
 */
 function sendSearch() {
-    let sessionsSelected = [];
-    let buildingsSelected = [];
-    let sessionCode = $("#session-select option:selected");
+    var sessionsSelected = [];
+    var buildingsSelected = [];
+    var sessionCode = $("#session-select option:selected");
     if (sessionCode.text() === "All Sessions")
     {
         $("#session-select").children().each(function (index, element) {
-            if (index == 0)
-            { return; }
+            if (index == 0) { return; }
 
-            console.log($(element));
             sessionsSelected.push($(element).attr("id"));
         });
     }
@@ -18,30 +16,26 @@ function sendSearch() {
     {
         sessionsSelected.push(sessionCode.attr("id"));
     }
-    console.log("Session code: " + sessionCode);
-    let buildingCode = $("#building-select option:selected");
+
+    var buildingCode = $("#building-select option:selected");
     if (buildingCode.text() === "All Buildings") {
         $("#building-select").children().each(function (index, element) {
-            if (index == 0)
-            { return; }
+            if (index == 0) { return; }
 
-            console.log($(element));
-            buildingsSelected.push($(element).text());
+            buildingsSelected.push($(element).attr("id"));
         });
     }
     else {
-        buildingsSelected.push(buildingCode.text());
+        buildingsSelected.push(buildingCode.attr("id"));
     }
 
-    let keyword = $("#search-bar-input").val();
+    var keyword = $("#search-bar-input").val();
 
-    $.ajax(
-        {
-            method: "POST",
-            url: "/AdminDashboard/SearchRcis",
-            data: { sessions: sessionsSelected, buildings: buildingsSelected, keyword: keyword }
-        })
-    .then(function (result) {
+    $.ajax({
+        method: "POST",
+        url: "/AdminDashboard/SearchRcis",
+        data: { sessions: sessionsSelected, buildings: buildingsSelected, keyword: keyword }
+    }).then(function (result) {
         // first clear out an old search results
         $("#search-results-section").empty();
 
@@ -49,10 +43,12 @@ function sendSearch() {
         $("#search-results-section").append(result);
     });
 
+
 }
 
 
 /**** Register event handlers ****/
+$(window).load(sendSearch);
 $("#search-button").click(sendSearch);
 
 $("#search-bar-input").on("keypress", function (e) {

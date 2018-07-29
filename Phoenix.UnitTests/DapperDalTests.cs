@@ -24,6 +24,8 @@ namespace Phoenix.UnitTests
 
         private const string TestGordonId = "999999097";
 
+        private const string TestGordonId2 = "999999098";
+
         private const string TestBuildingCode = "FER";
 
         private const string TestBuildingCode2 = "BRO";
@@ -39,8 +41,6 @@ namespace Phoenix.UnitTests
             this.DbConnectionFactory = fixture.DbFactory;
 
             this.Dal = new DapperDal.DapperDal(this.DbConnectionFactory);
-
-            SlapperAutoMapperInit.Initialize();
         }
 
         // Rcis
@@ -129,6 +129,9 @@ namespace Phoenix.UnitTests
             Assert.NotEmpty(result);
 
             Assert.Contains(result, x => x.BuildingCode.Equals(TestBuildingCode) && x.RoomNumber.Equals(TestRoomNumber) && x.GordonId.Equals(TestGordonId));
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId);
         }
 
         [Fact]
@@ -280,6 +283,26 @@ namespace Phoenix.UnitTests
         }
 
         [Fact]
+        public void UpdateRciGordonIdColumnTests()
+        {
+            // Setup
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+
+            var rci = this.Dal.FetchRciById(rciId);
+
+            Assert.Equal(TestGordonId, rci.GordonId);
+
+            // Test
+            this.Dal.SetRciGordonIdColumn(new List<int> { rciId }, TestGordonId2);
+
+            // Assert
+            Assert.Equal(TestGordonId2, this.Dal.FetchRciById(rciId).GordonId);
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId);
+        }
+
+        [Fact]
         public void UpdateRciCheckinDateAndGordonIdTests()
         {
             var today = DateTime.Now;
@@ -364,7 +387,7 @@ namespace Phoenix.UnitTests
             Assert.NotEqual(0, damageId);
 
             // Update said damage
-            this.Dal.UpdateDamage(damageId, null, "test", null, null);
+            this.Dal.UpdateDamage(new List<int> { damageId }, null, "test", null, null);
 
             var damage = this.Dal.FetchDamageById(damageId);
 
@@ -525,7 +548,8 @@ namespace Phoenix.UnitTests
         [Fact]
         public void FetchLatestRoomAssign_Success()
         {
-            var id = TestGordonId;
+            // This is the id of someone who has multiple room assignments (unlike the test accounts)
+            var id = "50153295";
 
             var result = this.Dal.FetchLatestRoomAssignmentForId(id);
 
@@ -565,7 +589,7 @@ namespace Phoenix.UnitTests
             Assert.NotEqual(0, fineId);
 
             // Update said damage
-            this.Dal.UpdateFine(fineId, null, null, "A reason", null, 3);
+            this.Dal.UpdateFine(new List<int> { fineId }, null, null, "A reason", null, 3);
 
             var fine = this.Dal.FetchFineById(fineId);
 

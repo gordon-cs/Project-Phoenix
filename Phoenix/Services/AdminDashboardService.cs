@@ -17,9 +17,9 @@ namespace Phoenix.Services
             this.Dal = _dal;
         }
         
-        public IEnumerable<string> GetBuildingCodes()
+        public Dictionary<string, string> GetBuildingCodes()
         {
-            return this.Dal.FetchBuildingCodes();
+            return this.Dal.FetchBuildingCodeToBuildingNameMap();
         }
 
         /* Get a list of session codes for the last 4 years

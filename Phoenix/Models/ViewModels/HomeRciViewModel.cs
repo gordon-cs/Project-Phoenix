@@ -11,6 +11,7 @@ namespace Phoenix.Models.ViewModels
         public string RoomNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string GordonId { get; set; }
         public string SessionName { get; set; }
         public string RciStage { get; set; }
         public DateTime? CheckinSigRes { get; set; }
@@ -32,6 +33,7 @@ namespace Phoenix.Models.ViewModels
             this.RoomNumber = rci.RoomNumber.Trim();
             this.FirstName = rci.FirstName;
             this.LastName = rci.LastName;
+            this.GordonId = rci.GordonId;
             this.SessionName = rci.SessionDescription;
             this.RciStage = rci.RdCheckinDate == null ? Constants.RCI_CHECKIN_STAGE : Constants.RCI_CHECKOUT_STAGE;
             this.CheckinSigRes = rci.ResidentCheckinDate;

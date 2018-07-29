@@ -1,17 +1,17 @@
-﻿using System.Web.Mvc;
+﻿using Phoenix.Utilities;
+using System.Web.Mvc;
 
 namespace Phoenix.Filters
 {
-    public class AdminAttribute : ActionFilterAttribute, IAuthorizationFilter
+    public class AdminAttribute : FilterAttribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             var role = (string)filterContext.Controller.TempData["role"];
 
-            var isAdmin = role == "ADMIN";
-            // String comparison doesn't seem as good as bool comparison, but I wasn't sure how 
-            // to parse out a bool from the decoded JSON object
-           if (!isAdmin)
+            var isAdmin = role == Constants.ADMIN;
+            
+            if (!isAdmin)
             {
                 filterContext.Result = new RedirectToRouteResult(
                    new System.Web.Routing.RouteValueDictionary(

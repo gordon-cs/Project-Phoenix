@@ -13,12 +13,13 @@ namespace Phoenix.Services
         IEnumerable<HomeRciViewModel> GetCurrentRcisForResident(string gordonId);
         IEnumerable<HomeRciViewModel> GetCurrentCommonAreaRcisForRoom(string currentRoom, string building);
         void ArchiveRcis(List<int> rciIds);
+        void SwapRciDamages(int rci1, int rci2);
         string GenerateFinesSpreadsheet(List<string> buildingCodes);
         string GetCurrentSession();
         Dictionary<string, Dictionary<string, ActionResult>> GetRciRouteDictionary(int rciID);
         string GetRciState(int rciID);
         void SyncCommonAreaRcisFor(string buildingCode, string roomNumber);
         void SyncRoomRcisFor(List<string> kingdom);
-        void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber, DateTime? roomAssignDate);
+        void SyncRoomRcisFor(string buildingCode, string roomNumber, string idNumber);
     }
 }

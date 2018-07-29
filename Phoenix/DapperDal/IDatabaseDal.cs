@@ -22,6 +22,11 @@ namespace Phoenix.DapperDal
         void SetRciIsCurrentColumn(IEnumerable<int> rciIds, bool isCurrent);
 
         /// <summary>
+        /// Set the value of the GordonId column.
+        /// </summary>
+        void SetRciGordonIdColumn(IEnumerable<int> rciIds, string gordonId);
+
+        /// <summary>
         /// Set the value of the checkin date columns. If a value is null, it is not set.
         /// </summary>
         void SetRciCheckinDateColumns(IEnumerable<int> rciIds, DateTime? residentCheckinDate, DateTime? raCheckinDate, DateTime? rdCheckinDate, DateTime? lifeAndConductStatementCheckinDate);
@@ -57,9 +62,9 @@ namespace Phoenix.DapperDal
         int CreateNewDamage(string description, string imagepath, int rciId, string gordonId, int roomComponentTypeId);
 
         /// <summary>
-        /// Update a damage record. If a value is null, it is not set
+        /// Update damage records. If a value is null, it is not set
         /// </summary>
-        void UpdateDamage(int damageId, string description, string imagepath, int? rciId, int? roomComponentTypeId);
+        void UpdateDamage(IEnumerable<int> damageIds, string description, string imagepath, int? rciId, int? roomComponentTypeId);
 
         /// <summary>
         /// Delete a damage record. 
@@ -78,9 +83,9 @@ namespace Phoenix.DapperDal
         int CreateNewFine(decimal amount, string gordonId, string reason, int rciId, int roomComponentTypeId);
 
         /// <summary>
-        /// Update Fine record. Fields left null will not be updated.
+        /// Update Fine records. Fields left null will not be updated.
         /// </summary>
-        void UpdateFine(int fineId, decimal? amount, string gordonId, string reason, int? rciId, int? roomComponentTypeId);
+        void UpdateFine(IEnumerable<int> fineIds, decimal? amount, string gordonId, string reason, int? rciId, int? roomComponentTypeId);
 
         /// <summary>
         /// Delete Fine record

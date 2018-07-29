@@ -66,10 +66,6 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.7\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="Slapper, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Slapper.AutoMapper.1.0.0.9\lib\Slapper.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices">
@@ -151,8 +147,6 @@
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\LogoutController.cs" />
-    <Compile Include="Controllers\ManageRciComponentController.cs" />
-    <Compile Include="Controllers\PlaceholderController.cs" />
     <Compile Include="Controllers\RciCheckoutController.cs" />
     <Compile Include="Controllers\RciInputController.cs" />
     <Compile Include="DapperDal\Sql\CommonAreaRciSignature.cs" />
@@ -180,7 +174,6 @@
     <Compile Include="DapperDal\Types\RoomComponentType.cs" />
     <Compile Include="DapperDal\Types\RoomAssignment.cs" />
     <Compile Include="DapperDal\Types\Session.cs" />
-    <Compile Include="DapperDal\SlapperAutoMapperInit.cs" />
     <Compile Include="DapperDal\Types\SmolRci.cs" />
     <Compile Include="Exceptions\CurrentSessionNotFoundException.cs" />
     <Compile Include="Exceptions\DamageNotFoundException.cs" />
@@ -326,13 +319,13 @@
     <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
     <Content Include="Views\Dashboard\ArchiveRcis.cshtml" />
     <Content Include="Views\Shared\FriendlyErrorPage.cshtml" />
+    <Content Include="Views\Dashboard\SwapRcis.cshtml" />
     <None Include="Web.Base.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />
-    <Folder Include="Views\Logout\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
