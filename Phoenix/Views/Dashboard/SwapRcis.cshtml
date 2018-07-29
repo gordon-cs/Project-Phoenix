@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Phoenix.Models.ViewModels.HomeRciViewModel>
+
+@{ 
+    ViewBag.Title = "Rci Swap";
+}
+
+<div class="pane">
+    <h3 class="pane-title">Swap Two Rcis</h3>
+    <div class="pane-content">
+        @using (Html.BeginForm(actionName: "SwapRcis", controllerName: "Dashboard", method: FormMethod.Post))
+        {
+            <div class="divAddOn">
+                <p class="divAddOn-item">Person #1</p>
+                <select id="first-rci" name="firstRciId" class="divAddOn-field">
+                    @foreach (var rci in @Model)
+                    {
+                        <option value="@rci.RciID">@rci.FirstName @rci.LastName</option>
+                    }
+                </select>
+            </div>
+            <div class="divAddOn">
+                <p class="divAddOn-item">Person #2</p>
+                <select id="second-rci" name="secondRciId" class="divAddOn-field">
+                    @foreach (var rci in @Model)
+                    {
+                        <option value="@rci.RciID">@rci.FirstName @rci.LastName</option>
+                    }
+                </select>
+            </div>
+            <div class="distribute-evenly">
+                <button id="rci-swap-button" type="submit">Swap Rcis</button>
+            </div>
+        }
+    </div>
+</div>

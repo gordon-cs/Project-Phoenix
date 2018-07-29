@@ -31,19 +31,14 @@ function sendSearch() {
 
     var keyword = $("#search-bar-input").val();
 
-    $.ajax(
-        {
-            method: "POST",
-            url: "/AdminDashboard/SearchRcis",
-            data: { sessions: sessionsSelected, buildings: buildingsSelected, keyword: keyword }
-        })
-    .then(function (result) {
-        // first clear out an old search results
-        $("#search-results-section").empty();
-
-        // searchResults will be a partial view, which is a chunk of HTML we now want to insert into the DOM
-        $("#search-results-section").append(result);
+    $.ajax({
+        method: "POST",
+        url: "/AdminDashboard/SearchRcis",
+        data: { sessions: sessionsSelected, buildings: buildingsSelected, keyword: keyword }
+    }).done(function (result) {
+        console.log(result);
     });
+
 
 }
 

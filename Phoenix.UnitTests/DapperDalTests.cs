@@ -24,6 +24,8 @@ namespace Phoenix.UnitTests
 
         private const string TestGordonId = "999999097";
 
+        private const string TestGordonId2 = "999999098";
+
         private const string TestBuildingCode = "FER";
 
         private const string TestBuildingCode2 = "BRO";
@@ -277,6 +279,26 @@ namespace Phoenix.UnitTests
             this.Dal.DeleteRci(rciId1);
             this.Dal.DeleteRci(rciId2);
             this.Dal.DeleteRci(rciId3);
+        }
+
+        [Fact]
+        public void UpdateRciGordonIdColumnTests()
+        {
+            // Setup
+            var rciId = this.Dal.CreateNewDormRci(TestGordonId, TestBuildingCode, TestRoomNumber, TestSession);
+
+            var rci = this.Dal.FetchRciById(rciId);
+
+            Assert.Equal(TestGordonId, rci.GordonId);
+
+            // Test
+            this.Dal.SetRciGordonIdColumn(new List<int> { rciId }, TestGordonId2);
+
+            // Assert
+            Assert.Equal(TestGordonId2, this.Dal.FetchRciById(rciId).GordonId);
+
+            // Cleanup
+            this.Dal.DeleteRci(rciId);
         }
 
         [Fact]

@@ -22,6 +22,11 @@ namespace Phoenix.DapperDal
         void SetRciIsCurrentColumn(IEnumerable<int> rciIds, bool isCurrent);
 
         /// <summary>
+        /// Set the value of the GordonId column.
+        /// </summary>
+        void SetRciGordonIdColumn(IEnumerable<int> rciIds, string gordonId);
+
+        /// <summary>
         /// Set the value of the checkin date columns. If a value is null, it is not set.
         /// </summary>
         void SetRciCheckinDateColumns(IEnumerable<int> rciIds, DateTime? residentCheckinDate, DateTime? raCheckinDate, DateTime? rdCheckinDate, DateTime? lifeAndConductStatementCheckinDate);

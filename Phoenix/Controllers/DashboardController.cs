@@ -161,6 +161,28 @@ namespace Phoenix.Controllers
             return View(buildingRcis);
         }
 
+        [ResLifeStaff]
+        [HttpGet]
+        public ActionResult SwapRcis()
+        {
+            var kingdom = ((JArray)TempData["kingdom"]).ToObject<List<string>>();
+
+            var buildingRcis = dashboardService.GetCurrentRcisForBuilding(kingdom)
+                .Where(x => !string.IsNullOrWhiteSpace(x.GordonId)) // We are only interested in individual rooms.
+                .Where(x => x.CheckinSigRD == null); // Once the RD signs. No one can swap rcis anymore. It just seems right, but i could be convinced otherwise
+
+            return View(buildingRcis);
+        }
+
+        [ResLifeStaff]
+        [HttpPost]
+        public ActionResult SwapRcis(int firstRciId, int secondRciId)
+        {
+            this.dashboardService.SwapRciOwners(firstRciId, secondRciId);
+
+            return RedirectToAction(controllerName: "Dashboard", actionName: "Index");
+        }
+
         /// <summary>
         /// Receives a list of rcis and sets their IsCurrent column to false.
         /// </summary>

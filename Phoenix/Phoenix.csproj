@@ -269,6 +269,7 @@
     <Content Include="Scripts\rci-input.js" />
     <None Include="Properties\PublishProfiles\RCIPublish_DEV.pubxml" />
     <None Include="Scripts\third_party\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\rci-swap.js" />
     <Content Include="Scripts\sign-all-rd.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.js" />
     <Content Include="Scripts\third_party\jquery-1.10.2.min.js" />
@@ -326,13 +327,13 @@
     <Content Include="Views\Shared\_DashboardRciButton.cshtml" />
     <Content Include="Views\Dashboard\ArchiveRcis.cshtml" />
     <Content Include="Views\Shared\FriendlyErrorPage.cshtml" />
+    <Content Include="Views\Dashboard\SwapRcis.cshtml" />
     <None Include="Web.Base.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="css\third_party\" />
-    <Folder Include="Views\Logout\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

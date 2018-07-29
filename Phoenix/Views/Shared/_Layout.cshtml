@@ -30,6 +30,10 @@
                     <i class="material-icons hamburger">menu</i>    
                 </button>
                 <ul class="dropdown-menu">
+                    @if (ViewBag.Role == "RD" || ViewBag.Role == "RA")
+                    {
+                        <li class="dropdown-menu-item"><a href="@Url.Action(actionName: "SwapRcis", controllerName: "Dashboard")">Swap Rcis</a></li>
+                    }
                     @if (ViewBag.Role == "RD" || ViewBag.Role == "ADMIN")
                     {
                         <li data-selenium-id="batch-signature-button" class="dropdown-menu-item"><a href="@Url.Action(actionName: "SignAllRD", controllerName: "RciInput")">Batch Sign RCI Checkins</a></li>

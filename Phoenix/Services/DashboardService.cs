@@ -360,6 +360,42 @@ namespace Phoenix.Services
         }
 
         /// <summary>
+        /// Swap the owners of these two rcis.
+        /// </summary>
+        public void SwapRciOwners(int rciId1, int rciId2)
+        {
+            try
+            {
+                logger.Debug($"Swapping rcis {rciId1} {rciId2}");
+
+                var rcis = this.Dal.FetchRcisById(new List<int> { rciId1, rciId2 });
+
+                if (rcis.Count < 2)
+                {
+                    var errorMessage = $"One or more of the rcis {rciId2}, {rciId1} was not found.";
+                    
+                    logger.Error(errorMessage);
+
+                    throw new RciNotFoundException(errorMessage);
+                }
+
+                var firstGordonId = rcis[0].GordonId;
+
+                var secondGordonId = rcis[1].GordonId;
+
+                this.Dal.SetRciGordonIdColumn(new List<int> { rcis[1].RciId }, firstGordonId);
+
+                this.Dal.SetRciGordonIdColumn(new List<int> { rcis[0].RciId }, secondGordonId);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Unexpected exception while trying to swap rcis {rciId2} and {rciId1}");
+
+                throw;
+            }
+        }
+
+        /// <summary>
         /// Get a string that represents the state of the rci.
         /// </summary>
         public string GetRciState(int rciID)

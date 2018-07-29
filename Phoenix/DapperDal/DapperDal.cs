@@ -80,6 +80,21 @@ namespace Phoenix.DapperDal
             }
         }
 
+        public void SetRciGordonIdColumn(IEnumerable<int> rciIds, string gordonId)
+        {
+            if (rciIds.Count() <= 0)
+            {
+                return;
+            }
+
+            using (var connection = this._dbConnectionFactory.CreateConnection())
+            {
+                var updateSql = "update Rci set GordonID = @GordonId where RciId in @RciIds";
+
+                connection.Execute(updateSql, new { GordonId = gordonId, RciIds = rciIds });
+            }
+        }
+
         public void SetRciCheckinDateColumns(IEnumerable<int> rciIds, DateTime? residentCheckinDate, DateTime? raCheckinDate, DateTime? rdCheckinDate, DateTime? lifeAndConductStatementCheckinDate)
         {
             if (rciIds.Count() <= 0)
