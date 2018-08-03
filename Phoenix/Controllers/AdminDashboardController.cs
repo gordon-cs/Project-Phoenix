@@ -6,6 +6,7 @@ using Phoenix.Services;
 
 namespace Phoenix.Controllers
 {
+    [ControllerLog]
     [CustomAuthentication]
     [Admin]
     public class AdminDashboardController : Controller

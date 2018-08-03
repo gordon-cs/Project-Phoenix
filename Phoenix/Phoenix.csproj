@@ -188,6 +188,7 @@
     <Compile Include="FileSystemDal\IFileSystemDal.cs" />
     <Compile Include="Filters\CustomAuthenticationAttribute.cs" />
     <Compile Include="Filters\AdminAttribute.cs" />
+    <Compile Include="Filters\ControllerLogAttribute.cs" />
     <Compile Include="Filters\RDAttribute.cs" />
     <Compile Include="Filters\ResLifeStaffAttribute.cs" />
     <Compile Include="Global.asax.cs">

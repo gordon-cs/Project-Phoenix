@@ -10,6 +10,7 @@ using Phoenix.Models.ViewModels;
 
 namespace Phoenix.Controllers
 {
+    [ControllerLog]
     [CustomAuthentication]
     public class DashboardController : Controller
     {

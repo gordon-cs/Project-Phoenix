@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace Phoenix.Controllers
 {
+    [ControllerLog]
     [CustomAuthentication]
     public class RciCheckoutController : Controller
     {

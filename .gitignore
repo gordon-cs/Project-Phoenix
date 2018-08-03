@@ -249,3 +249,4 @@ ModelManifest.xml
 
 # Logs
 Log.txt
+Log.*.txt
