@@ -70,15 +70,14 @@ The code for this project is hosted in this repository. It is part of the projec
 #### How do I make changes and run the project to test? 
 This assumes you have a working understanding of the basics of git and the way github works. If you don’t, we suggest you start there before moving forward.
 
-If you were not already aware, the project is written in C# using the ASP.NET framework. We are using the 4.6 version of the .NET framework, so the project can only be run on a windows machine with Visual Studio. If you are reading this, chances are that you have been given access to a Virtual Machine to do development work on the project.
+This project is written in C# using the ASP.NET framework. We are using the 4.6 version of the .NET framework, so the project can only be run on a windows machine with Visual Studio. If you are reading this, chances are that you have been given access to a Virtual Machine to do development work on the project.
 
 - Clone the project from the github repository. This should give you all the code you need to work on the project. 
 - Start up Visual Studio. Open Project => Navigate to the folder you just cloned => Select the “Phoenix.sln” file. 
 - When the project finishes loading, you should see the project files and folders on the right. 
-- Make whatever changes you want and save.
-- On the right-hand side, select the Phoenix node, then click on the properties tab on the far-right. Make note of the SSL URL, specifically the port number.
+- Make whatever changes you want, save and build.
 - Start debugging by clicking on the Green play button on the top, or Debug => Start Debugging.
-- After a few moments, the bottom status bar should turn orange, and the browser should start. Initially, it will try to go to “https://localhost:SOMEPORT”. It will get the port wrong, correct it with the port number you took note of earlier and you should be set. 
+- After a few moments, the bottom status bar should turn orange, and the browser should start.
 
 <a name="how-do-i-publish-my-changes-to-the-live-websites"></a>
 #### How do I publish my changes to the live websites? 
@@ -90,7 +89,7 @@ This is an example of the workflow:
 - As the name might suggest, rcitrain.gordon.edu is the development site. Use it to make sure the changes work as expected on the web
 - Once you are sure everything works on rcitrain.gordon.edu, publish to rci.gordon.edu
 
-Publish profiles have been set up to make publishing hassle free. When you publish to rcitrain.gordon.edu, the published web application will access the RCITrain database. When you publish to rci.gordon.edu, the published web applicatoin will access the main RCI database. This should happen automatically.
+Publish profiles have been set up to make publishing hassle free. When you publish to rcitrain.gordon.edu, the published web application will access the RCITrain database. When you publish to rci.gordon.edu, the published web applicatoin will access the main RCI database. This should happen automatically thanks to the publish profiles.
 
 To publish:
 - Open Visual Studio as **an administrator**.
