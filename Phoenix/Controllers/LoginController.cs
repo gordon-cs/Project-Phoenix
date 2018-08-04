@@ -8,6 +8,7 @@ using Phoenix.Exceptions;
 
 namespace Phoenix.Controllers
 {
+    [Filters.ExceptionLog]
     public class LoginController : Controller
     {
         private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();

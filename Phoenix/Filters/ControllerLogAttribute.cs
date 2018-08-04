@@ -27,6 +27,9 @@ namespace Phoenix.Filters
 
             foreach (var kvp in actionArguments)
             {
+                // Try not to log passwords lol
+                if (kvp.Key.Equals("password", System.StringComparison.OrdinalIgnoreCase)) { continue; }
+
                 logStatement.Append($"{kvp.Key}={kvp.Value} ");
             }
 

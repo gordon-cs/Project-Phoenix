@@ -6,6 +6,7 @@ using Phoenix.Services;
 
 namespace Phoenix.Controllers
 {
+    [ExceptionLog]
     [ControllerLog]
     [CustomAuthentication]
     [Admin]

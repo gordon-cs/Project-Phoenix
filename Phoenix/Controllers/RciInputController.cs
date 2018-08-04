@@ -12,6 +12,7 @@ using Phoenix.Utilities;
 
 namespace Phoenix.Controllers
 {
+    [ExceptionLog]
     [ControllerLog]
     [CustomAuthentication]
     public class RciInputController : Controller
