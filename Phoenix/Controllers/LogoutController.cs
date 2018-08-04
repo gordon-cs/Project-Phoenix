@@ -4,6 +4,8 @@ using System.Web.Mvc;
 
 namespace Phoenix.Controllers
 {
+    [ExceptionLog]
+    [ControllerLog]
     [CustomAuthentication]
     public class LogoutController : Controller
     {
