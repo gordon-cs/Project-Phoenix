@@ -309,8 +309,6 @@ namespace Phoenix.Services
         {
             try
             {
-                logger.Debug($"Creating new damage. RciId={rciId}, GordonId={gordonId}, RoomComponentTypeId={roomComponentTypeId}");
-
                 return this.Dal.CreateNewDamage(description, null, rciId, gordonId, roomComponentTypeId);
             }
             catch (Exception e)
@@ -325,8 +323,6 @@ namespace Phoenix.Services
         {
             try
             {
-                logger.Debug($"Creating new image damage... RciId={rciId}, GordonId={gordonId}, ImagePath={imagePath}, RoomComponentTypeId={roomComponentTypeId}");
-
                 return this.Dal.CreateNewDamage(null, imagePath, rciId, gordonId, roomComponentTypeId);
             }
             catch (Exception e)
@@ -341,8 +337,6 @@ namespace Phoenix.Services
         {
             try
             {
-                logger.Debug($"Deleting damage with id {damageId}");
-
                 this.Dal.DeleteDamage(damageId);
             }
             catch (Exception e)
