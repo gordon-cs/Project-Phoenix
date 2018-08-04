@@ -23,7 +23,7 @@ namespace Phoenix.Filters
 
             var logStatement = new StringBuilder();
 
-            logStatement.Append($"User {user} at {controllerName}.{controllerActionName}.");
+            logStatement.Append($"User {user} at {controllerName}.{controllerActionName}. Arguments: ");
 
             foreach (var kvp in actionArguments)
             {
