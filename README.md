@@ -10,21 +10,30 @@
     - [Team](#team)
     - [Problem Statement](#problem-statement)
 
-- [Technical Documentation](#technical-documentation)
-    - [How to](#how-to)
-        - [How do I find the project?](#how-do-i-find-the-project)
-        - [How do I make changes and run the project to test?](#how-do-i-make-changes-and-run-the-project-to-test)
-        - [How do I publish my changes to the live websites?](#how-do-i-publish-my-changes-to-the-live-websites)
-        - [How do I change the format of the fine email?](#how-do-I-change-the-format-of-the-fine-email)
-        - [How do I manually change the furniture that RCIs have?](#how-do-i-manually-change-the-furniture-that-rcis-have)
-        - [How do I find the user-uploaded pictures?](#how-do-i-find-user-uploaded-pictures)
-        - [How do I manually query the database?](#how-do-i-manually-query-the-database)
-        - [How do I update or add a table to be used in the application?](#how-do-i-update-or-add-a-table-to-be-used-in-the-application)
-    - [Deep Dive](#deep-dive)
-        - [The Database](#the-database)
-        - [Authentication](#authentication)
-        - [Controllers and Views](#controllers-and-views)
-        - [RCI Generation](#rci-generation)
+- [Project-Phoenix](#project-phoenix)
+    - [Table of Contents](#table-of-contents)
+    - [Introduction:](#introduction)
+        - [Clients:](#clients)
+        - [Team:](#team)
+        - [Problem Statement:](#problem-statement)
+    - [Technical Documentation:](#technical-documentation)
+        - [Setup:](#setup)
+        - [How To:](#how-to)
+            - [How do I find the project?](#how-do-i-find-the-project)
+            - [How do I make changes and run the project to test?](#how-do-i-make-changes-and-run-the-project-to-test)
+            - [How do I publish my changes to the live websites?](#how-do-i-publish-my-changes-to-the-live-websites)
+            - [How do I change the format of the fine email?](#how-do-i-change-the-format-of-the-fine-email)
+            - [How do I manually change the furniture that RCIs have?](#how-do-i-manually-change-the-furniture-that-rcis-have)
+            - [How do I find the user-uploaded pictures?](#how-do-i-find-the-user-uploaded-pictures)
+            - [How do I manually query the database?](#how-do-i-manually-query-the-database)
+        - [Deep Dive](#deep-dive)
+            - [The Database](#the-database)
+            - [Authentication](#authentication)
+            - [Controllers and Views](#controllers-and-views)
+            - [RCI Generation](#rci-generation)
+            - [Unit Tests](#unit-tests)
+            - [Querying the Database](#querying-the-database)
+            - [Exception Handling](#exception-handling)
         
         
     
@@ -59,6 +68,16 @@ As further ( but important ) enhancements, the system will also provide an admin
 interface will assist Residence Life staff in doing manual tasks ( e.g. finding who hasn’t submitted RCI’s and compiling fines ).
 
 ## Technical Documentation:
+
+### Setup:
+
+Throughout this readme, I'll be assuming that you have been given access to some VM that has permission to access the RCI database. I further assume that you have been given credentials with permission to log in to said Virtual Machine, publish to IIS and access the different tables that the online RCI uses.  
+If you are not sure, ask whoever your contact at CTS is.
+
+Generally speaking, the online RCI application runs as a Windows process under the user Rci.Service@gordon.edu (as of August 4th 2018). This user has read/write permissions to the Rci and RciTrain site folders as well as to the Rci and RciTrain databases. 
+
+When you are debugging with Visual Studio, make sure that the user you open Visual Studio as also has permissions to read and write to the RCI and RCITrain databases. You'll get Login errors if that is not the case.
+
 
 ### How To:
 
@@ -125,10 +144,13 @@ Point of imporvement: Allow Admins to change the fine email from the web portal.
 
 RCIs come by default with a set of furniture to which you can add damages. It is possible to change that. One of the Admins should be capable of doing this through the web portal, so there should never be a need for you to do it manually. However, we will talk about this here to help introduce you to the different parts of the project.
 
-Each dorm has a different set of furniture and the system reflects this. We use an XML document as a template to tell the system what furniture needs to be generated for each type of room. This XML document is found under the `App_Data` folder. It’s called RoomComponents.xml. Take a look at it. XML is usually self-descriptive, so we’ll let you figure it out.
+Each dorm has a different set of furniture and the system reflects this. We use an SQL table as a template to tell the system what furniture needs to be generated for each type of room. The table in question is the `RciTypeRoomComponnentTypeMap` As the convoluted name suggest, this table maps each type of rci to the different room component types it will have.
 
-Obviously, if you are adding new furniture to an rci, make sure it follows the same syntax as everything else. 
-You will notice that we never really use the word “Furniture” in the code. We refer to the the items on the RCI as “Rci Components”. Rci Components are created when an rci is initially created, so modifying the XML document will modify the RciComponents of future rcis.
+There are currently two Rci Types (as of August 4th 2018): Common Area and Dorm Room.  
+A Room Component is a fancy name for "Furniture". It also refers to more general things like Incomplete checkout and Lost key fins that are "attached" to an Rci.
+
+To add a new Room Component Type to Ferring Dorm Room Rcis, you'll need to add a new row in the `RciTypeRoomComponentTypeMap` table. 
+
 
 <a name="how-do-i-find-user-uploaded-pictures"></a>
 #### How do I find the user-uploaded pictures? 
@@ -139,46 +161,11 @@ When you type in “rci.gordon.edu” you are actually accessing files on some r
 
 <a name="how-do-i-manually-query-the-database"></a>
 #### How do I manually query the database? 
-As you start working in earnest on the project, it will often prove useful to examine the database or update it directly via queries. This can also be done using Microsoft Sql Server Manager (MSSQL). Open it up and login to the `adminprodsql.gordon.edu` server using Windows authentication. 
+As you start working in earnest on the project, it will often prove useful to examine the database or update it directly via queries. This can also be done using Microsoft Sql Server Management Studio. Open it up and log in to the `adminprodsql.gordon.edu` server using Windows authentication.
+"Windows Authentication" means "Use the same credentials I used to log into Windows".
 
-This is assuming that you are logged into the Virtual Machine using your Gordon credentials. If you are not, do so. If you don't seem to have access to it using your credentials, ask your supervisor at CTS to try to get you permission. Things are much more straightforward when your account has the appropriate permissions. 
-
-So assuming you are logged in with your Gordon Credentials, accessing MSSQL should be automatic. "Windows Authentication" means "Use the same credentials I used to log into Windows to access MSSQL". Again, if you can't seem to access MSSQL, contact your CTS supervisor.
-
-Both the RCI database or the RCITrain database exist on this server. I would stay away from editing the RCI database completely since it contains real user data (unless you know what you are doing). 
-Naturally, you will need to be familiar with some SQL query the database, and as this is not an SQL tutorial, you will find no help with that here.
-
-
-<a name="how-do-i-update-or-add-a-table-to-be-used-in-the-application"></a>
-#### How do I update or add a table to be used in the application? 
-
-You were given the task of storing the side of the room an RCI is for. Let's assume you only need to do this for regular doubles. Currently the database doesn't store that information.
-
-There are always multiple options when thinking about how to implement a new feature. One way of getting this information is to add a new column to the Rci table. Once the new column is added, you'll need to use it in the application code.
-
-
-- Create a new column in the Rci Table using MSSQL. You will need to let this new column accept null values since it wasn't there initially.
-- Back in Visual Studio, with your project open, go to the Models folder.
-- Delete all top level files (not folders) in the Models folder. So everything from Account.cs to .... Session.cs
-- Right click on the Models folder => Add => New Item
-- On the navigation menu on the left, choose Data, then select ADO.NET Entity Data Model
-- Change the Name to "RCIContext". The spelling needs to be exact.
-- On the next screen, select "Code First from Database", then click Next
-- Uncheck the "Save connection string in WebConfig as" option, then click Next.
-- Select all the Views and Tables and uncheck the "Pluralize table and view names" option. Click Finish
-
-All the files you deleted should not re-appear. The Rci.cs file should now have a new field corresponding to the new column you created.
-
-_What did we just do?_
-
-Let's step back a bit. To interact with a relational database, you need to use SQL. However manually writing SQL strings in C# code can be very error prone and messy. Let's not even talk about retrieving the results. To help, Object Relational Mappers (ORM) were developed. They create an abstraction layer between the application code and the database so programmers like yourself don't have to bother too much with SQL. 
-
-Very generally an ORM works by creating classes that correspond to different database things. The table `Rci` in the database is referred to in the code as the class `Rci`. The column `IsCurrent` within the Rci table is referred to as a field within the Rci class in the code. So 10 Rci rows in the dabatase would correspond to a list of 10 Rci objects in C#. 
-
-For our project, we are using the Entity Framework ORM. Given a database, it can generate all the corresponding class definitions automatically.
-
-So when you change the database, you also need to update the class definitions. We deleted the old class definitions and then regenerated them from the database.
-
+Both the RCI database or the RCITrain database exist on this server. I would stay away from querying the RCI database completely since it contains real user data (unless you know what you are doing). 
+Naturally, you will need to be familiar with some SQL query the database, and as this is not an SQL tutorial, you will find no help with that here...
 
 
 ### Deep Dive
@@ -227,18 +214,21 @@ The IsCurrent column is used to differentiate active rcis from old rcis. An rci 
 If an RCI has a GordonID, it is a normal rci. If it’s GordonID column is NULL, it is a common area rci.|
 -------------------------------------------------------------------------------------------------------|
 
-RciComponent: In the spirit of the paper rci, each rci is made up of different components. These components can then be associated with damages through the Damage table.
+RoomComponentType: In the spirit of the paper rci, each rci is made up of different components. These components can then be associated with damages through the Damage table.
+
+RciType: The different types of Rcis we might have
+
+RciTypeRoomComponentTypeMap: A mappipng table between the RciType and RoomComponentType tables.
 
 _Stored Procedures:_
 
 We only have one stored procedure. Normally, we would try to keep business logic outside the database, but this query was too complex to write through c#. This stored procedure is used to determine if any new rcis need to be created. A more in-depth explanation will be given in the Rci Generation section.
 
-
 #### Authentication
 Authentication is the process of determining that the user has a valid identity. To help us determine validity, Gordon maintains a directory of all its users and resources. This directory is accessible via the LDAP (Lightweight Directory Access Protocol).
 
 _So how does this happen in our application?_
-When the user gets to the login page and inputs some credentials, the credentials are sent via LDAP to Gordon’s user directory. Given a username and a password, the Gordon directory can determine if the user is real and their password is correct. The result of this validation is sent back to our application. If the user is validated, a JWT (Json Web Token) iis created for the user and stored in a cookie.
+When the user gets to the login page and inputs some credentials, the credentials are sent via LDAP to Gordon’s user directory. Given a username and a password, the Gordon directory can determine if the user is real and their password is correct. The result of this validation is sent back to our application. If the user is validated, a JWT (Json Web Token) is created for the user and stored in a cookie.
 You can read about JWTs [here](https://jwt.io/introduction/). In short, these tokens are a secure way to reliably establish the identity of the user on the server on each request.
 
 _Where is the code that does this?_
@@ -251,7 +241,7 @@ The next method “Authenticate” is annotated with [HttpPost]. This method is 
 #### Controllers and Views
 Controllers and Views are at the center of the ASP.NET MVC framework. Controllers contain the “endpoints” of your application, the accessible url routes. If your controller was called HomeController.cs and had a method called Method1, the url route to access that method would be /Home/Method1. So if you application was running on rci.gordon.edu, the full url would be “rci.gordon.edu/Home/Method1”. 
 
-Views are basically the HTML that you return to the user. Methods in the controller usually return Views. 
+Views represent the html that the user ends up seeing in their browser.
 
 There is no need to go deeper into Controllers and Views here. Microsoft has good documentation on starting out with their ASP.NET framework. If you are not familiar with ASP.NET at all, you should start by reading their guides and walking through their tutorials. Use these search terms to get you started: “ASP.NET MVC 5”.
 Here are some links to get you started:
@@ -263,12 +253,11 @@ https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/introductio
 https://mva.microsoft.com/en-US/training-courses/introduction-to-asp-net-mvc-8322?l=VZ2619Zy_8804984382
 
 
-
-
 #### RCI Generation
 
 How are RCI’s generated? That’s a big question, and we’ll try to break it down here:
-RCIs are represented first as rows in the database. In ASP.NET, the table of RCIs is interpreted as a list of RCI objects with various properties. The goal is to detect when a new RCI is needed, create a new RCI object, and save it to the database. 
+RCIs are represented first as rows in the database. In ASP.NET, the table of RCIs is interpreted as a list of RCI objects with various properties.  
+The goal is to detect when a new RCI is needed, create a new RCI object, and save it to the database. 
 
 _Detect when a new RCI is needed:_
 
@@ -282,8 +271,7 @@ This is a simple step. Once we detect that someone needs a new RCI, we create a 
 
 _Save to the Database:_
 
-To map objects to database rows, we use what is called an Object Relational Mapper, or an ORM for short. Microsoft created an ORM to go with the ASP.NET framework called Entity Framework. An ORM will give you an interface to communicate with an underlying database.
-Once we have the object in memory we can use Entity Framework to actually save it to the database.
+Send an SQL query to the database. In this case, it will be something like `insert into RCI(column1, column2, etc...) values (value1, value2, etc...)`
 
 _Code please?_
 
@@ -291,5 +279,39 @@ RCI Generation happens in the DashboardController.cs file. Depending on who logs
 
 If a resident logs in, the system will detect if a new rci is needed for that specific user.
 If an RA/RD logs in, a stored procedure is run that returns a list of new room assignments for which no rci has been created.
+RCIs are then created for all of them.
+
+
+#### Unit Tests
+
+Testing is important for peace of mind.  
+The most important part of our application is the part that reads and writes data from/to the database. That logic is all in one place, specifically the `DapperDal.cs` file. 
+Unit tests have been written for every single function in this file. You can find the tests in the `Phoenix.UnitTests` project.  
+Please make sure that if you add a new function, you also add a corresponding unit test.  
+I use the term `unit test` loosely here. Historically, unit tests are supposed to only test a single function in a very controlled way. No network requests, no database accesses.  
+Our `unit tests` actually hit the RCITrain database. My thought process was that "If I am testing the Data Access Layer, then I better test that the data is accessed properly".  
+As a consequence, you'll notice that after every test that creates something new in the database, there is a cleanup section to clear all the things that test created. Do you best to follow the same template.
+
+
+#### Querying the Database
+
+We were not always making raw SQL queries to the database. We actulally started out using Microsoft's Entity Framework ORM. Once setup, it makes accessing the database intiuitive. The syntax for accessing rows in a table resembles that of accessing a C# list for example. This is all well and good until you need to modify the database in some manner.  
+I never got around to really mastering Entity Framework. Making schema changes was always a hassle. I doubt any future maintainers working on this project would want to deal with Entity Framework as well.  
+So, I switched to using Dapper. Dapper does much less than Entity Framework does and requires 0 knowledge other than C# and SQL. You write your sql queries, send them to the database and get your results back. It is as simple as that. No weird setup. No hours wasted trying to figure out Entity Framework migrations (I still don't understand what these are .__.). 
+
+
+#### Exception Handling
+
+- In the Data Access Layer (DAL): If I know a specific type of exception might be thrown (e.g. For methods that expect exactly one result and use `.Single()`, I catch `InvalidOperationException`, which will be thrown when there are either many or no results), I'll catch it and deal with it. Dealing with it means (a) performing some other action that will fix the problem or (b) wrapping the exception in a custom exception (e.g. UserNotFoundException) and throwing that.
+- In the Services: If I know a DAL method can throw a custom Exception (e.g UserNotFoundException), I catch that, log and either throw or fix the issue if possible. I also always wrap EVERY call in a try/catch for the general exception type, log it and rethrow it.
+- Controllers: I don't think I do any exception handling here.
+- ExceptionFilter: Logs any unhandled exceptions (in case something was missed)
+
+*The result is that there are two types of errors*:  
+(1) Error cases I KNOW about. These are caught using Custom Exceptions and handled correctly.  
+(2) Error cases I DON'T KNOW about. I log these and let the application error out. The logs will give me enough information to identify the error and possibly fix it, thus making it part of (1). 
+
+
+
 
 
