@@ -501,19 +501,8 @@ namespace Phoenix.DapperDal
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
-                // We are not simply selecting the session in which we fall in.
-                // GETDATE() >= SESS_BEGN_DTE makes sure we select a session where the current date is after that session's start date.
-                // RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09') narrows the list of sessions considered to those that are Fall or Spring terms.
-                // The -15 effectively lets us "kick in" sessions earlier than they actually are. That part is important because Residence life 
-                // gets to campus before the fall session officially starts.
-                // This logic is brought to you by Jay Whitehouse of CTS, quite brilliant.
-                
-                var currentSessionSql = @"
-select top 1 SESS_CDE
-from Session
-where GETDATE() >= SESS_BEGN_DTE - 15 and RIGHT(RTRIM(SESS_CDE), 2) in ('01', '09')
-order by SESS_CDE desc
-";
+                var currentSessionSql = "GetCurrentSession";
+
                 try
                 {
                     var currentSession = connection.Query<string>(currentSessionSql).Single();
@@ -724,7 +713,7 @@ order by SESS_CDE desc
                 }
                 catch (InvalidOperationException e)
                 {
-                    throw new UserNotFoundException($"User with gordon id={gordonId} was not found in the Accounts table.");
+                    throw new UserNotFoundException($"User with gordon id={gordonId} was not found in the Accounts table.", e);
                 }
             }
         }
