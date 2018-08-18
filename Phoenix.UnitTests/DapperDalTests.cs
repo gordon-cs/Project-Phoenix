@@ -484,7 +484,7 @@ namespace Phoenix.UnitTests
             var studentId = "50196746";
 
             // Drew Ra
-            var raId = "50159101";
+            var raId = "50184205";
 
             // Road Hall RD
             var rdId = "9529423";
