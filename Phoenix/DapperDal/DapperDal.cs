@@ -487,7 +487,7 @@ namespace Phoenix.DapperDal
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
-                var sql = @"select s.SESS_CDE as SessionCode, 
+                var sql = @"select RTRIM(s.SESS_CDE) as SessionCode, 
                             s.SESS_DESC as SessionDescription, 
                             s.SESS_BEGN_DTE as SessionStartDate, 
                             s.SESS_END_DTE as SessionEndDate

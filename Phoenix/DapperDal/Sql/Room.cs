@@ -4,16 +4,16 @@
     {
         public const string RoomSelectStatement =
             @"
-select room.BLDG_CDE as BuildingCode,
-		room.BUILDING_DESC as BuildingDescription,
-		room.ROOM_CDE as RoomNumber,
+select RTRIM(room.BLDG_CDE) as BuildingCode,
+		RTRIM(room.BUILDING_DESC) as BuildingDescription,
+		RTRIM(room.ROOM_CDE) as RoomNumber,
 		room.ROOM_TYPE as RoomType
 from Room room
 ";
 
         public const string BuildingCodeToBuildingMapSelectStatement =
             @"
-select BLDG_CDE as BuildingCode, BUILDING_DESC as BuildingDescription
+select RTRIM(BLDG_CDE) as BuildingCode, RTRIM(BUILDING_DESC) as BuildingDescription
 from Room 
 group by BLDG_CDE, BUILDING_DESC
 ";
