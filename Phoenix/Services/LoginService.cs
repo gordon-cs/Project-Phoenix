@@ -117,7 +117,7 @@ namespace Phoenix.Services
                 currentRoomNumber = mostRecentRoomAssign.RoomNumber.Trim();
             }
 
-            var name = account.FirstName + " " + account.LastName;
+            var name = account.FirstName.Trim() + " " + account.LastName.Trim();
 
             // ****** THIS NEEDS TO BE CHANGED. NOT VERY SECURE **********
             var secretKey = new byte[] { 1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29 };
