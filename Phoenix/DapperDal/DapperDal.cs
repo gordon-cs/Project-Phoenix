@@ -792,14 +792,14 @@ namespace Phoenix.DapperDal
             }
         }
 
-        public RoomAssignment FetchLatestRoomAssignmentForId(string id)
+        public RoomAssignment FetchRoomAssignmentForId(string id, string sessionCode)
         {
             using (var connection = this._dbConnectionFactory.CreateConnection())
             {
                 var sql = Sql.RoomAssign.RoomAssignmentSelectStatment +
-                    "where ID_NUM = @Id order by ASSIGN_DTE desc";
+                    "where ID_NUM = @Id and SESS_CDE = @SessionCode";
 
-                var queryResult = connection.Query<RoomAssignment>(sql, new { Id = id }).ToList();
+                var queryResult = connection.Query<RoomAssignment>(sql, new { Id = id, SessionCode = sessionCode}).ToList();
 
                 try
                 {

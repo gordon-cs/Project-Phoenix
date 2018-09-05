@@ -214,7 +214,7 @@ namespace Phoenix.Services
         {
             try
             {
-                return this.Dal.FetchLatestRoomAssignmentForId(id);
+                return this.Dal.FetchRoomAssignmentForId(id, this.Dal.FetchCurrentSession());
             }
             catch (RoomAssignNotFoundException)
             {

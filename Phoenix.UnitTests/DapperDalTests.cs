@@ -542,7 +542,7 @@ namespace Phoenix.UnitTests
         {
             var id = "43";
 
-            Assert.Throws<RoomAssignNotFoundException>(() => this.Dal.FetchLatestRoomAssignmentForId(id));
+            Assert.Throws<RoomAssignNotFoundException>(() => this.Dal.FetchRoomAssignmentForId(id, "201701"));
         }
 
         [Fact]
@@ -551,7 +551,7 @@ namespace Phoenix.UnitTests
             // This is the id of someone who has multiple room assignments (unlike the test accounts)
             var id = "50153295";
 
-            var result = this.Dal.FetchLatestRoomAssignmentForId(id);
+            var result = this.Dal.FetchRoomAssignmentForId(id, "201701");
 
             Assert.NotNull(result);
             Assert.NotNull(result.GordonId);

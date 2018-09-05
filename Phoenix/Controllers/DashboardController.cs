@@ -65,9 +65,10 @@ namespace Phoenix.Controllers
 
             // These values will be null for RD, Staff and Faculty.
             // We'll let them log in, we just won't show them anything.
-            if (currentBuilding != null && currentRoom != null)
+            if (!string.IsNullOrWhiteSpace(currentBuilding) && !string.IsNullOrWhiteSpace(currentRoom))
             {
-                dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID);
+                // Commenting out because this individual room sync is different from the all-building sync. Might not even need this function.
+                //dashboardService.SyncRoomRcisFor(currentBuilding, currentRoom, strID);
 
                 dashboardService.SyncCommonAreaRcisFor(currentBuilding, currentRoom); 
 

@@ -21,9 +21,11 @@ namespace Phoenix.Filters
 
             var user = filterContext.Controller.TempData["user"];
 
+            var userId = filterContext.Controller.TempData["id"];
+
             var logStatement = new StringBuilder();
 
-            logStatement.Append($"User {user} at {controllerName}.{controllerActionName}. Arguments: ");
+            logStatement.Append($"User {user} {userId} at {controllerName}.{controllerActionName}. Arguments: ");
 
             foreach (var kvp in actionArguments)
             {
