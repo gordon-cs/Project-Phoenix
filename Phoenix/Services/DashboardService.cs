@@ -37,7 +37,7 @@ namespace Phoenix.Services
                     .Where(x => x.IsCurrent)
                     .Select(x => new HomeRciViewModel(x));
 
-                logger.Debug($"Got {currentRcis.Count()} back for resident {gordonId}");
+                logger.Debug($"Got {currentRcis.Count()} room rci(s) back for resident {gordonId}");
 
                 return currentRcis;
             }
@@ -86,7 +86,7 @@ namespace Phoenix.Services
                     .Where(x => x.GordonId == null) // Common Area
                     .Select(x => new HomeRciViewModel(x));
 
-                logger.Debug($"Got {currentCommonAreaRcis.Count()} rcis back for room {building} {currentRoom}");
+                logger.Debug($"Got {currentCommonAreaRcis.Count()} common area rci(s) back for room {building} {currentRoom}");
 
                 return currentCommonAreaRcis;
             }
@@ -230,39 +230,41 @@ namespace Phoenix.Services
                     .Where(x => x.BuildingCode == buildingCode)
                     .Where(x => x.RoomNumber == roomNumber);
 
-                RoomAssignment mostRecentRoomAssign;
+                var currentSession = this.GetCurrentSession();
+
+                RoomAssignment currentSessionRoomAssignment;
 
                 try
                 {
-                    mostRecentRoomAssign = this.Dal.FetchLatestRoomAssignmentForId(idNumber);
+                    currentSessionRoomAssignment = this.Dal.FetchRoomAssignmentForId(idNumber, currentSession);
                 }
                 catch(RoomAssignNotFoundException)
                 {
                     // This person has no previous room assignments.
-                    mostRecentRoomAssign = null;
+                    currentSessionRoomAssignment = null;
                 }
 
-                logger.Debug($"Person {idNumber} has {myRcis.Count()} total Rcis (Including archived ones)");
+                logger.Debug($"Person {idNumber} has {myRcis.Count()} total Rcis (Including archived ones) for room {buildingCode} {roomNumber}");
 
                 // Get most recent rci.
                 var mostRecentRci = myRcis.OrderByDescending(m => m.CreationDate).FirstOrDefault();
 
-                logger.Debug($"Most recent Rci for Person {idNumber} is  {mostRecentRci?.RciId}. Their most recent room assignment date is {mostRecentRoomAssign?.AssignmentDate}");
+                logger.Debug($"Most recent Rci for Person {idNumber} is  {mostRecentRci?.RciId}. The assignment date for their current room assignment is: {currentSessionRoomAssignment?.AssignmentDate}");
 
                 var createNewRci = false;
 
                 // There are room assign records for this person but no rcis.
-                if (mostRecentRci == null && mostRecentRoomAssign != null)
+                if (mostRecentRci == null && currentSessionRoomAssignment != null)
                 {
                     createNewRci = true;
                 }
-                // This will happen if there is no room assign record for the person
-                else if (mostRecentRci != null && mostRecentRoomAssign == null)
+                // This will happen if there is no room assign record for the person in this session.
+                else if (mostRecentRci != null && currentSessionRoomAssignment == null)
                 {
                     createNewRci = false;
                 }
                 // For people who have no room assignments and no rcis.
-                else if (mostRecentRci == null && mostRecentRoomAssign == null)
+                else if (mostRecentRci == null && currentSessionRoomAssignment == null)
                 {
                     createNewRci = false;
                 }
@@ -270,14 +272,14 @@ namespace Phoenix.Services
                 else
                 {
                     // Compare Creation date of rci and assign date of room assign record
-                    createNewRci = mostRecentRci.CreationDate < mostRecentRoomAssign.AssignmentDate;
+                    createNewRci = mostRecentRci.CreationDate < currentSessionRoomAssignment.AssignmentDate;
                 }
 
                 logger.Debug($"The boolean variable createNewRci for person {idNumber} is {createNewRci}...");
 
                 if (createNewRci)
                 {
-                    this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, mostRecentRoomAssign.SessionCode);
+                    this.Dal.CreateNewDormRci(idNumber, buildingCode, roomNumber, currentSessionRoomAssignment.SessionCode);
                 }
             }
             catch (Exception e)
@@ -311,7 +313,7 @@ namespace Phoenix.Services
                     .Where(x => x.IsCurrent)
                     .Where(x => x.GordonId == null); // This indicates a common area rci
 
-                logger.Debug($"Got {activeCommonAreaRcis.Count()} active (current) rcis for room {buildingCode} {apartmentNumber}...");
+                logger.Debug($"Got {activeCommonAreaRcis.Count()} active (current) common area rcis for room {buildingCode} {apartmentNumber}...");
 
                 var commonAreaRciExists = activeCommonAreaRcis.Any();
 

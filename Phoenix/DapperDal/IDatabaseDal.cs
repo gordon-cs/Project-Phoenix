@@ -120,7 +120,7 @@ namespace Phoenix.DapperDal
 
         List<RoomComponentType> FetchRoomComponentTypesForRci(int rciId);
 
-        RoomAssignment FetchLatestRoomAssignmentForId(string id);
+        RoomAssignment FetchRoomAssignmentForId(string id, string sessionCode);
         List<RoomAssignment> FetchRoomAssignmentsThatDoNotHaveRcis(string buildingCode, string sessionCode);
 
         List<Session> FetchSessions();

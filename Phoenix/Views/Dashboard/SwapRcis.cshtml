@@ -14,7 +14,7 @@
                 <select id="first-rci" name="firstRciId" class="divAddOn-field">
                     @foreach (var rci in @Model)
                     {
-                        <option value="@rci.RciID">@rci.FirstName @rci.LastName</option>
+                        <option value="@rci.RciID">@rci.FirstName @rci.LastName - @rci.BuildingName @rci.RoomNumber</option>
                     }
                 </select>
             </div>
@@ -23,7 +23,7 @@
                 <select id="second-rci" name="secondRciId" class="divAddOn-field">
                     @foreach (var rci in @Model)
                     {
-                        <option value="@rci.RciID">@rci.FirstName @rci.LastName</option>
+                    <option value="@rci.RciID">@rci.FirstName @rci.LastName - @rci.BuildingName @rci.RoomNumber</option>
                     }
                 </select>
             </div>
