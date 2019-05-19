@@ -195,7 +195,7 @@ namespace Phoenix.Services
                     Password = password
                 };
                 smtp.Credentials = credential;
-                smtp.Host = "smtp.office365.com";
+                smtp.Host = "smtp.gordon.edu";
                 smtp.Port = 587;
                 smtp.EnableSsl = true;
 
