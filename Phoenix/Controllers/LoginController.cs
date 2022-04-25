@@ -100,7 +100,7 @@ namespace Phoenix.Controllers
                     // e.g. user is not in accounts table for some reason
                     _ADContext.Dispose();
 
-                    loginViewModel.ErrorMessage = "Ther username/password combination provided is not valid.";
+                    loginViewModel.ErrorMessage = "The username/password combination provided is not valid.";
 
                     logger.Error(e, $"Username={username} provided correct credientials but was not found in the Accounts table, so was denied login.");
 

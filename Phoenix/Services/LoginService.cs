@@ -31,9 +31,7 @@ namespace Phoenix.Services
                 ContextType.Domain,
                 "elder.gordon.edu:636",
                 "DC=gordon,DC=edu",
-                ContextOptions.Negotiate | ContextOptions.ServerBind | ContextOptions.SecureSocketLayer,
-                "CS-LDAP-CCT",
-                "QUl59QpdpL**sTwZ");
+                ContextOptions.Negotiate | ContextOptions.ServerBind | ContextOptions.SecureSocketLayer);
             // This password should probs be stored elsewhere
 
             return ADContext;
