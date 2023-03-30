@@ -33,7 +33,7 @@ namespace Phoenix.Controllers
             {
                 return RedirectToAction("Index", "Dashboard");
             }
-            return View();
+            return View(new LoginViewModel());
         }
 
         // POST: Login

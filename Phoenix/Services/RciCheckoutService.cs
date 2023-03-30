@@ -216,6 +216,7 @@ namespace Phoenix.Services
 
                     var message = new MailMessage();
                     var to = recepientAccount.Email;
+
                     var from = emailAddress;
                     var today = DateTime.Now.ToLongDateString();
                     var recepientName = recepientAccount.FirstName;
@@ -282,14 +283,14 @@ namespace Phoenix.Services
         }
 
         public HttpStatusCode PostWorkRequest(HttpClient client, 
-                                                                        string workRequest, 
-                                                                        string ADUsername, 
-                                                                        string fullBuildingName, 
-                                                                        string roomNumber,
-                                                                        string phoneNumber, 
-                                                                        string firstname,
-                                                                        string lastname,
-                                                                        string gordonID)
+                                            string workRequest, 
+                                            string ADUsername, 
+                                            string fullBuildingName, 
+                                            string roomNumber,
+                                            string phoneNumber, 
+                                            string firstname,
+                                            string lastname,
+                                            string gordonID)
         {
             var data = new List<KeyValuePair<string, string>>
             {

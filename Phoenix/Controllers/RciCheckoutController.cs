@@ -364,7 +364,8 @@ namespace Phoenix.Controllers
 
             this.CheckoutService.CheckoutRDSignRci(rci.RciId, (string)TempData["id"]);
 
-            this.CheckoutService.SendFineEmail(id, username + "@gordon.edu", password);
+            //Bennett Forkner - 03/30/2023 09:20 AM - Commented per request from Jeff Carpenter, CTS Ticket 162006
+            //this.CheckoutService.SendFineEmail(id, username + "@gordon.edu", password);
 
             this.CheckoutService.WorkRequestDamages(workRequest, username, password, gordonId, id, phoneNumber);
 

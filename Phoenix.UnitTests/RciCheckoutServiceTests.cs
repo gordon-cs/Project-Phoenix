@@ -74,7 +74,8 @@ namespace Phoenix.UnitTests
                     Email = "ENTER EMAIL HERE"
                 });
 
-            this.CheckoutService.SendFineEmail(1, "ENTER EMAIL HERE", "ENTER PASSWORD HERE");
+            //Bennett Forkner - 03/30/2023 09:21 AM - Commenting out per request from Jeff Carpenter, CTS Ticket 162006
+            //this.CheckoutService.SendFineEmail(1, "ENTER EMAIL HERE", "ENTER PASSWORD HERE");
         }
     }
 }
