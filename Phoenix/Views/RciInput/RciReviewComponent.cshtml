@@ -5,17 +5,17 @@
 
     <div class="input pane-content">
         <h3>Recorded Damages:</h3>
-        <div id="img-preview-@Model.RoomComponentTypeId" class="img-thumbnails">
-            @foreach (var damage in Model.Damages)
+        <!-->div id="img-preview-@Model.RoomComponentTypeId" class="img-thumbnails">
+        @foreach (var damage in Model.Damages)
+        {
+            if (damage.ImagePath != null)
             {
-                if (damage.ImagePath != null)
-                {
-                    <div class="thumbnail-container">
-                        <img id="thumbnail-img-@damage.DamageId" class="uploaded-img thumbnail" src=@damage.ImagePath alt="Damage Image Thumbnail">
-                    </div>
-                }
+                <div class="thumbnail-container">
+                    <img id="thumbnail-img-@damage.DamageId" class="uploaded-img thumbnail" src=@damage.ImagePath alt="Damage Image Thumbnail">
+                </div>
             }
-        </div>
+        }
+        </div-->
         <div id="modal-@Model.RoomComponentTypeId" class="img-modal">
             <div class="modal-header"><i class="material-icons clear">clear</i></div>
             <div class="modal-content">

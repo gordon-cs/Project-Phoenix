@@ -30,7 +30,7 @@
             <div class="pane component" id="@component.RoomComponentTypeId">
                 <h2 class="pane-title div-list-toggle component-title">@component.RoomComponentName<i class="material-icons">arrow_drop_down</i></h2>
                 <div class="checkout pane-content @visible">
-                    <div class="component-cost">
+                    <!--div class="component-cost">
                         @{
                             var costString = component.SuggestedCosts;
                             var costArray = costString.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -40,7 +40,7 @@
                                 <span>| @tmp[0] - $@tmp[1] |</span>
                             }
                         }
-                    </div>
+                    </div-->
                     <div class="div-list">
                         <div id="img-preview-@component.RoomComponentTypeId" class="img-thumbnails">
                             @foreach (var damage in component.Damages)

@@ -6,78 +6,78 @@
     {
         visible = "show";
     }
-    <div class="input pane-content @visible">
-        <div class="component-cost">
-            @{
-                var costString = Model.SuggestedCosts;
-                var costArray = costString.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var suggestion in costArray)
-                {
-                    var tmp = suggestion.Split(new char[] { ',' });
-                    <span>| @tmp[0] - $@tmp[1] |</span>
-                }
+<div class="input pane-content @visible">
+    <!--div class="component-cost">
+        @{
+            var costString = Model.SuggestedCosts;
+            var costArray = costString.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var suggestion in costArray)
+            {
+                var tmp = suggestion.Split(new char[] { ',' });
+                <span>| @tmp[0] - $@tmp[1] |</span>
             }
-        </div>
-        <div class="divAddOn">
-            <label class="file-input-label divAddOn-field" for="dmg-input-@Model.RoomComponentTypeId">
-                <i class="material-icons">add_a_photo</i>
-                <span>Take picture</span>
-            </label>
-            @*<span class="divAddOn-item">0 Picture(s)</span>*@
-        </div>
-        <input id="dmg-input-@Model.RoomComponentTypeId" class="file-input" multiple type="file" accept="image/*;capture=camera" onchange="uploadPhoto(this,@Model.RciId, @Model.RoomComponentTypeId)">
-        <div id="img-preview-@Model.RoomComponentTypeId" class="img-thumbnails">
+        }
+    </div-->
+    <div class="divAddOn">
+        <label class="file-input-label divAddOn-field" for="dmg-input-@Model.RoomComponentTypeId">
+            <i class="material-icons">add_a_photo</i>
+            <span>Take picture</span>
+        </label>
+        @*<span class="divAddOn-item">0 Picture(s)</span>*@
+    </div>
+    <input id="dmg-input-@Model.RoomComponentTypeId" class="file-input" multiple type="file" accept="image/*;capture=camera" onchange="uploadPhoto(this,@Model.RciId, @Model.RoomComponentTypeId)">
+    <div id="img-preview-@Model.RoomComponentTypeId" class="img-thumbnails">
+        @foreach (var damage in Model.Damages)
+        {
+            if (damage.DamageType.Equals("IMAGE"))
+            {
+                <div class="thumbnail-container">
+                    <img id="thumbnail-img-@damage.DamageId" class="uploaded-img thumbnail" src=@damage.ImagePath alt="Damage Image Thumbnail">
+                    <div class="delete-icon"><i id="@damage.DamageId" class="material-icons delete">close</i></div>
+                </div>
+            }
+        }
+    </div>
+    <div id="modal-@Model.RoomComponentTypeId" class="img-modal">
+        <div class="modal-header"><i class="material-icons clear">clear</i></div>
+        <div class="modal-content">
             @foreach (var damage in Model.Damages)
             {
                 if (damage.DamageType.Equals("IMAGE"))
                 {
-                    <div class="thumbnail-container">
-                        <img id ="thumbnail-img-@damage.DamageId"class="uploaded-img thumbnail" src=@damage.ImagePath alt="Damage Image Thumbnail">
-                        <div class="delete-icon"><i id="@damage.DamageId" class="material-icons delete">close</i></div>
-                    </div>
+                    <div id="img-slide-@damage.DamageId" class="img-slide"><img class="uploaded-img" src=@damage.ImagePath alt="Damage Image Enlarged"></div>
                 }
             }
-        </div>
-        <div id="modal-@Model.RoomComponentTypeId" class="img-modal">
-            <div class="modal-header"><i class="material-icons clear">clear</i></div>
-            <div class="modal-content">
-                @foreach (var damage in Model.Damages)
-                {
-                    if (damage.DamageType.Equals("IMAGE"))
-                    {
-                        <div id="img-slide-@damage.DamageId" class="img-slide"><img class="uploaded-img" src=@damage.ImagePath alt="Damage Image Enlarged"></div>
-                    }
-                }
-                <i class="material-icons backward">navigate_before</i>
-                <i class="material-icons forward">navigate_next</i>
-            </div>
-        </div>
-        <br />
-        <div>
-            <p>OR</p>
-        </div>
-        <br />
-        <div>
-            <p>Describe the damage and its location:</p>
-        </div>
-        <div class="divAddOn">
-            <input class="divAddOn-field adding-damages" type="text" placeholder="Damage + Location"
-                   id="text-input-@Model.RoomComponentTypeId" />
-            <button class="divAddOn-item" onclick="addDamage(@Model.RoomComponentTypeId, @Model.RciId);" id="add-@Model.RoomComponentTypeId">Add</button>
-        </div>
-        <div class="div-list" id="div-list-@Model.RoomComponentTypeId">
-            
-            @foreach (var damage in Model.Damages)
-            {
-                if (damage.Description != null)
-                {
-                    <div class="divAddOn damage-wrapper">
-                        <p class="damage-element">@damage.Description</p>
-                        <i class='material-icons' id="@damage.DamageId" onclick="deleteDamage(event, this)">close</i>
-                    </div>
-                }
-            }
+            <i class="material-icons backward">navigate_before</i>
+            <i class="material-icons forward">navigate_next</i>
         </div>
     </div>
+    <br />
+    <div>
+        <p>OR</p>
+    </div>
+    <br />
+    <div>
+        <p>Describe the damage and its location:</p>
+    </div>
+    <div class="divAddOn">
+        <input class="divAddOn-field adding-damages" type="text" placeholder="Damage + Location"
+               id="text-input-@Model.RoomComponentTypeId" />
+        <button class="divAddOn-item" onclick="addDamage(@Model.RoomComponentTypeId, @Model.RciId);" id="add-@Model.RoomComponentTypeId">Add</button>
+    </div>
+    <div class="div-list" id="div-list-@Model.RoomComponentTypeId">
+
+        @foreach (var damage in Model.Damages)
+        {
+            if (damage.Description != null)
+            {
+                <div class="divAddOn damage-wrapper">
+                    <p class="damage-element">@damage.Description</p>
+                    <i class='material-icons' id="@damage.DamageId" onclick="deleteDamage(event, this)">close</i>
+                </div>
+            }
+        }
+    </div>
+</div>
 </div>
 
